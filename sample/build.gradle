@@ -23,7 +23,7 @@ android {
     buildToolsVersion androidBuildToolsVersion
 
     defaultConfig {
-        applicationId "org.smartregister.family.sample"
+        applicationId "org.smartregister.chw.anc.sample"
         minSdkVersion androidMinSdkVersion
         targetSdkVersion androidTargetSdkVersion
         versionCode 1

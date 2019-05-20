@@ -1,4 +1,4 @@
-description = 'OpenSRP family client library'
+description = 'OpenSRP chw anc client library'
 
 buildscript {
     repositories {

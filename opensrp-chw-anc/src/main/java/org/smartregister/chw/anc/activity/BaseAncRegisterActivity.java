@@ -26,6 +26,7 @@ import org.smartregister.listener.BottomNavigationListener;
 import org.smartregister.view.activity.BaseRegisterActivity;
 import org.smartregister.view.fragment.BaseRegisterFragment;
 
+import java.util.Arrays;
 import java.util.List;
 
 public abstract class BaseAncRegisterActivity extends BaseRegisterActivity implements AncRegisterContract.View {
@@ -97,7 +98,7 @@ public abstract class BaseAncRegisterActivity extends BaseRegisterActivity imple
 
     @Override
     public List<String> getViewIdentifiers() {
-        return null;
+        return Arrays.asList(Constants.CONFIGURATION.ANC_REGISTER);
     }
 
     /**

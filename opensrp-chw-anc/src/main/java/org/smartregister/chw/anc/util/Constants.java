@@ -21,4 +21,8 @@ public interface Constants {
     interface TABLES {
         String ANC_MEMBERS = "ec_anc_register";
     }
+
+    interface CONFIGURATION {
+        String ANC_REGISTER = "anc_register";
+    }
 }

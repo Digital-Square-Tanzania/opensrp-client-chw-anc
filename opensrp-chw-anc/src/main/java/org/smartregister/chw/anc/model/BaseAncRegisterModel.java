@@ -10,8 +10,4 @@ public class BaseAncRegisterModel implements AncRegisterContract.Model {
         return null;
     }
 
-    @Override
-    public String getInitials() {
-        return null;
-    }
 }

@@ -1,7 +1,6 @@
 package org.smartregister.chw.anc;
 
 import org.smartregister.Context;
-import org.smartregister.CoreLibrary;
 import org.smartregister.repository.Repository;
 import org.smartregister.repository.UniqueIdRepository;
 import org.smartregister.sync.ClientProcessorForJava;
@@ -33,7 +32,7 @@ public class AncLibrary {
     public static AncLibrary getInstance() {
         if (instance == null) {
             throw new IllegalStateException(" Instance does not exist!!! Call "
-                    + CoreLibrary.class.getName()
+                    + AncLibrary.class.getName()
                     + ".init method in the onCreate method of "
                     + "your Application class ");
         }

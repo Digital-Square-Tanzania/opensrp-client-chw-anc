@@ -28,7 +28,7 @@ import org.smartregister.view.fragment.BaseRegisterFragment;
 
 import java.util.List;
 
-public class BaseAncRegisterActivity extends BaseRegisterActivity implements AncRegisterContract.View {
+public abstract class BaseAncRegisterActivity extends BaseRegisterActivity implements AncRegisterContract.View {
     public static final String TAG = BaseAncRegisterActivity.class.getCanonicalName();
 
     @Override

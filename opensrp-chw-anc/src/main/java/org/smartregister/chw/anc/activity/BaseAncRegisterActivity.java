@@ -2,6 +2,7 @@ package org.smartregister.chw.anc.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Bundle;
 import android.support.annotation.MenuRes;
 import android.support.design.bottomnavigation.LabelVisibilityMode;
 import android.support.v4.app.Fragment;
@@ -31,6 +32,25 @@ import java.util.List;
 
 public abstract class BaseAncRegisterActivity extends BaseRegisterActivity implements AncRegisterContract.View {
     public static final String TAG = BaseAncRegisterActivity.class.getCanonicalName();
+    protected String BASE_ENTITY_ID;
+    protected String ACTION;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        BASE_ENTITY_ID = getIntent().getStringExtra(Constants.ACTIVITY_PAYLOAD.BASE_ENTITY_ID);
+        ACTION = getIntent().getStringExtra(Constants.ACTIVITY_PAYLOAD.ACTION);
+        onStartActivityWithAction();
+    }
+
+    /**
+     * Process a payload when an activity is started with an action
+     */
+    protected void onStartActivityWithAction() {
+        if (ACTION != null && ACTION.equals(Constants.ACTIVITY_PAYLOAD_TYPE.REGISTRATION)) {
+            startFormActivity(getRegistrationForm(), BASE_ENTITY_ID, null);
+        }
+    }
 
     @Override
     public void startRegistration() {

@@ -25,4 +25,13 @@ public interface Constants {
     interface CONFIGURATION {
         String ANC_REGISTER = "anc_register";
     }
+
+    interface ACTIVITY_PAYLOAD {
+        String BASE_ENTITY_ID = "BASE_ENTITY_ID";
+        String ACTION = "ACTION";
+    }
+
+    interface ACTIVITY_PAYLOAD_TYPE {
+        String REGISTRATION = "REGISTRATION";
+    }
 }

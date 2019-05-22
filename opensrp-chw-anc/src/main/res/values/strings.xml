@@ -11,4 +11,9 @@
     <string name="add_family">Add family</string>
     <string name="scan_qr">Scan QR</string>
     <string name="job_aids">Job Aids</string>
+
+    <!-- register details -->
+    <string name="age">Age</string>
+    <string name="weeks">Weeks</string>
+    <string name="gestation_age_initial">GA</string>
 </resources>

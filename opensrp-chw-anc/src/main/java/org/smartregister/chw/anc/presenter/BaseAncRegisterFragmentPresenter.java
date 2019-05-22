@@ -47,6 +47,11 @@ public class BaseAncRegisterFragmentPresenter implements AncRegisterFragmentCont
     }
 
     @Override
+    public String getMainTable() {
+        return Constants.TABLES.ANC_MEMBERS;
+    }
+
+    @Override
     public void processViewConfigurations() {
         if (StringUtils.isBlank(viewConfigurationIdentifier)) {
             return;
@@ -65,7 +70,7 @@ public class BaseAncRegisterFragmentPresenter implements AncRegisterFragmentCont
 
     @Override
     public void initializeQueries(String mainCondition) {
-        String tableName = Constants.TABLES.ANC_MEMBERS;
+        String tableName = getMainTable();
 
         String countSelect = model.countSelect(tableName, mainCondition);
         String mainSelect = model.mainSelect(tableName, mainCondition);

@@ -9,8 +9,17 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Period;
+import org.smartregister.chw.anc.fragment.BaseAncRegisterFragment;
+import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.chw.opensrp_chw_anc.R;
+import org.smartregister.commonregistry.CommonPersonObject;
+import org.smartregister.commonregistry.CommonPersonObjectClient;
+import org.smartregister.commonregistry.CommonRepository;
 import org.smartregister.cursoradapter.RecyclerViewProvider;
+import org.smartregister.util.Utils;
 import org.smartregister.view.contract.SmartRegisterClient;
 import org.smartregister.view.contract.SmartRegisterClients;
 import org.smartregister.view.dialog.FilterOption;
@@ -19,27 +28,110 @@ import org.smartregister.view.dialog.SortOption;
 import org.smartregister.view.viewholder.OnClickFormLauncher;
 
 import java.text.MessageFormat;
+import java.util.Set;
+
+import static org.smartregister.util.Utils.getName;
 
 public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProvider.RegisterViewHolder> {
 
     private final LayoutInflater inflater;
+    private Set<org.smartregister.configurableviews.model.View> visibleColumns;
 
+    private View.OnClickListener onClickListener;
     private View.OnClickListener paginationClickListener;
 
     private Context context;
+    private CommonRepository commonRepository;
 
-    public AncRegisterProvider(Context context, View.OnClickListener paginationClickListener) {
+    public AncRegisterProvider(Context context, CommonRepository commonRepository, Set visibleColumns, View.OnClickListener onClickListener, View.OnClickListener paginationClickListener) {
 //        TODO add onClickListener and commonRepository to constructor
 
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
+        this.visibleColumns = visibleColumns;
+
+        this.onClickListener = onClickListener;
         this.paginationClickListener = paginationClickListener;
 
         this.context = context;
+        this.commonRepository = commonRepository;
     }
 
     @Override
-    public void getView(Cursor cursor, SmartRegisterClient smartRegisterClient, RegisterViewHolder registerViewHolder) {
-//        checkout how family module is implemented
+    public void getView(Cursor cursor, SmartRegisterClient client, RegisterViewHolder viewHolder) {
+        CommonPersonObjectClient pc = (CommonPersonObjectClient) client;
+        if (visibleColumns.isEmpty()) {
+            populatePatientColumn(pc, client, viewHolder);
+            populateLastColumn(pc, viewHolder);
+
+            return;
+        }
+    }
+
+    private void populatePatientColumn(CommonPersonObjectClient pc, SmartRegisterClient client, final RegisterViewHolder viewHolder) {
+
+        String patientName = getName(
+                Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.FIRST_NAME, true),
+                Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LAST_NAME, true)
+        );
+        viewHolder.patientName.setText(patientName);
+        viewHolder.villageTown.setText(Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.VILLAGE_TOWN, true));
+
+        // calculate LMP
+        String dobString = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.DOB, false);
+        String lmpString = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LAST_MENSTRUAL_PERIOD, false);
+        if (StringUtils.isNotBlank(dobString) && StringUtils.isNotBlank(lmpString)) {
+
+            int age = new Period(new DateTime(dobString), new DateTime()).getYears();
+            int ga = new Period(new DateTime(lmpString), new DateTime()).getWeeks() / 7;
+
+            String dates = MessageFormat.format("{0}: {1}, {2}: {3} {4}",
+                    context.getString(R.string.age),
+                    age,
+                    context.getString(R.string.gestation_age_initial),
+                    ga,
+                    context.getString(R.string.weeks)
+            );
+
+            viewHolder.patientAge.setText(dates);
+        }
+
+        // add patient listener
+        viewHolder.patientColumn.setOnClickListener(onClickListener);
+        viewHolder.patientColumn.setTag(client);
+        viewHolder.patientColumn.setTag(R.id.VIEW_ID, BaseAncRegisterFragment.CLICK_VIEW_NORMAL);
+
+
+        // add due listener
+        viewHolder.dueButton.setOnClickListener(onClickListener);
+        viewHolder.dueButton.setTag(client);
+        viewHolder.dueButton.setTag(R.id.VIEW_ID, BaseAncRegisterFragment.CLICK_VIEW_DOSAGE_STATUS);
+
+        viewHolder.registerColumns.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewHolder.patientColumn.performClick();
+            }
+        });
+
+        viewHolder.dueWrapper.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                viewHolder.dueButton.performClick();
+            }
+        });
+    }
+
+    private void populateLastColumn(CommonPersonObjectClient pc, RegisterViewHolder viewHolder) {
+        if (commonRepository != null) {
+            CommonPersonObject commonPersonObject = commonRepository.findByBaseEntityId(pc.entityId());
+            if (commonPersonObject != null) {
+                viewHolder.dueButton.setVisibility(View.VISIBLE);
+                viewHolder.dueButton.setText("Home Visit");
+                viewHolder.dueButton.setAllCaps(true);
+            } else {
+                viewHolder.dueButton.setVisibility(View.GONE);
+            }
+        }
     }
 
     @Override
@@ -57,7 +149,7 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
     }
 
     @Override
-    public SmartRegisterClients updateClients(FilterOption filterOption, ServiceModeOption serviceModeOption, FilterOption filterOption1, SortOption sortOption) {
+    public SmartRegisterClients updateClients(FilterOption villageFilter, ServiceModeOption serviceModeOption, FilterOption searchFilter, SortOption sortOption) {
         return null;
     }
 
@@ -96,10 +188,31 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
 
     // implement place holder view
     public class RegisterViewHolder extends RecyclerView.ViewHolder {
+        public TextView patientName;
+        public TextView patientAge;
+        public TextView villageTown;
+        public Button dueButton;
+        public View patientColumn;
+        public View memberIcon;
+
+        public View registerColumns;
+        public View dueWrapper;
 
         public RegisterViewHolder(View itemView) {
             super(itemView);
 
+            patientName = itemView.findViewById(R.id.patient_name);
+            patientAge = itemView.findViewById(R.id.age_and_period);
+
+            villageTown = itemView.findViewById(R.id.village_town);
+            dueButton = itemView.findViewById(R.id.due_button);
+
+            patientColumn = itemView.findViewById(R.id.patient_column);
+
+            memberIcon = itemView.findViewById(R.id.member_icon_layout);
+
+            registerColumns = itemView.findViewById(R.id.register_columns);
+            dueWrapper = itemView.findViewById(R.id.due_button_wrapper);
         }
     }
 

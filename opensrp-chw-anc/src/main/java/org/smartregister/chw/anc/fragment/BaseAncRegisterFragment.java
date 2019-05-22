@@ -18,10 +18,13 @@ import java.util.HashMap;
 import java.util.Set;
 
 public class BaseAncRegisterFragment extends BaseRegisterFragment implements AncRegisterFragmentContract.View {
+    public static final String CLICK_VIEW_NORMAL = "click_view_normal";
+    public static final String CLICK_VIEW_DOSAGE_STATUS = "click_view_dosage_status";
+
     @Override
     public void initializeAdapter(Set<View> visibleColumns) {
-        AncRegisterProvider malariaRegisterProvider = new AncRegisterProvider(getActivity(), paginationViewHandler);
-        clientAdapter = new RecyclerViewPaginatedAdapter(null, malariaRegisterProvider, context().commonrepository(this.tablename));
+        AncRegisterProvider ancRegisterProvider = new AncRegisterProvider(getActivity(), commonRepository(), visibleColumns, registerActionHandler, paginationViewHandler);
+        clientAdapter = new RecyclerViewPaginatedAdapter(null, ancRegisterProvider, context().commonrepository(this.tablename));
         clientAdapter.setCurrentlimit(20);
         clientsView.setAdapter(clientAdapter);
     }

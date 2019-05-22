@@ -29,6 +29,8 @@ public interface AncRegisterFragmentContract {
 
         String getDefaultSortQuery();
 
+        String getMainTable();
+
     }
 
     interface Model {

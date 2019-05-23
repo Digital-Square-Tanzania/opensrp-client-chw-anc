@@ -9,7 +9,8 @@ public class BaseAncRegisterInteractor implements AncRegisterContract.Interactor
     }
 
     @Override
-    public void saveRegistration(AncRegisterContract.InteractorCallBack callBack) {
+    public void saveRegistration(String jsonString, boolean isEditMode, AncRegisterContract.InteractorCallBack callBack) {
+        // save it
 
     }
 }

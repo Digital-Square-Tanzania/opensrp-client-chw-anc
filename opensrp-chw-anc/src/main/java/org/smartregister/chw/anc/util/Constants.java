@@ -8,6 +8,7 @@ public interface Constants {
     interface JSON_FORM_EXTRA {
         String JSON = "json";
         String NEXT = "next";
+        String ENCOUNTER_TYPE = "encounter_type";
     }
 
     interface EVENT_TYPE {

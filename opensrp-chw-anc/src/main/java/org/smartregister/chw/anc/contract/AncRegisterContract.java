@@ -34,7 +34,7 @@ public interface AncRegisterContract {
 
         void onDestroy(boolean isChangingConfiguration);
 
-        void saveRegistration(final InteractorCallBack callBack);
+        void saveRegistration(String jsonString, boolean isEditMode, final InteractorCallBack callBack);
 
     }
 

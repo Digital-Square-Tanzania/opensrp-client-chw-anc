@@ -7,6 +7,7 @@ import android.support.annotation.MenuRes;
 import android.support.design.bottomnavigation.LabelVisibilityMode;
 import android.support.v4.app.Fragment;
 import android.util.Log;
+import android.widget.Toast;
 
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 import com.vijay.jsonwizard.domain.Form;
@@ -98,6 +99,14 @@ public abstract class BaseAncRegisterActivity extends BaseRegisterActivity imple
         return BaseAncRegisterActivity.class;
     }
 
+    public String getFormRegistrationEvent() {
+        return Constants.EVENT_TYPE.ANC_REGISTRATION;
+    }
+
+    public String getFormEditRegistrationEvent() {
+        return Constants.EVENT_TYPE.ANC_REGISTRATION;
+    }
+
     @Override
     protected void onActivityResultExtended(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constants.REQUEST_CODE_GET_JSON && resultCode == RESULT_OK) {
@@ -184,4 +193,27 @@ public abstract class BaseAncRegisterActivity extends BaseRegisterActivity imple
         return (AncRegisterContract.Presenter) presenter;
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_CODE_GET_JSON) {
+            // process the form
+
+            try {
+                String jsonString = data.getStringExtra(Constants.JSON_FORM_EXTRA.JSON);
+                Log.d("JSONResult", jsonString);
+
+                JSONObject form = new JSONObject(jsonString);
+                String encounter_type = form.getString(Constants.JSON_FORM_EXTRA.ENCOUNTER_TYPE);
+                // process child registration
+                if (encounter_type.equalsIgnoreCase(getFormRegistrationEvent())) {
+                    presenter().saveForm(form.toString(), false);
+                } else if (encounter_type.equalsIgnoreCase(getFormEditRegistrationEvent())) {
+                    presenter().saveForm(form.toString(), true);
+                }
+            } catch (Exception e) {
+                Log.e(TAG, Log.getStackTraceString(e));
+                Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
 }

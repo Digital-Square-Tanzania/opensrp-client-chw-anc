@@ -1,8 +1,11 @@
 package org.smartregister.chw.anc.presenter;
 
+import android.util.Log;
+
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.contract.AncRegisterContract;
+import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.configurableviews.ConfigurableViewsLibrary;
 import org.smartregister.util.Utils;
 
@@ -33,14 +36,26 @@ public class BaseAncRegisterPresenter implements AncRegisterContract.Presenter, 
         getView().startFormActivity(form);
     }
 
+    /**
+     * Override this method to provide customizations for form editing
+     *
+     * @param jsonString
+     * @param isEditMode
+     */
     @Override
     public void saveForm(String jsonString, boolean isEditMode) {
+        try {
 
+            getView().showProgressDialog(R.string.saving_dialog_title);
+            interactor.saveRegistration(jsonString, isEditMode, this);
+        } catch (Exception e) {
+            Log.e(TAG, Log.getStackTraceString(e));
+        }
     }
 
     @Override
     public void onRegistrationSaved(boolean isEdit) {
-
+        getView().hideProgressDialog();
     }
 
     @Override

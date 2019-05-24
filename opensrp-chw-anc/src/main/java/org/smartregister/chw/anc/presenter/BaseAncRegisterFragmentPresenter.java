@@ -3,6 +3,7 @@ package org.smartregister.chw.anc.presenter;
 import org.apache.commons.lang3.StringUtils;
 import org.smartregister.chw.anc.contract.AncRegisterFragmentContract;
 import org.smartregister.chw.anc.util.Constants;
+import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.configurableviews.model.Field;
 import org.smartregister.configurableviews.model.RegisterConfiguration;
 import org.smartregister.configurableviews.model.View;
@@ -43,7 +44,7 @@ public class BaseAncRegisterFragmentPresenter implements AncRegisterFragmentCont
 
     @Override
     public String getDefaultSortQuery() {
-        return "";
+        return DBConstants.KEY.LAST_INTERACTED_WITH + " DESC ";
     }
 
     @Override

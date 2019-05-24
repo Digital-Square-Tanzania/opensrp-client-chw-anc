@@ -12,6 +12,8 @@ import android.widget.TextView;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.smartregister.chw.anc.fragment.BaseAncRegisterFragment;
 import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.chw.opensrp_chw_anc.R;
@@ -69,20 +71,23 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
 
     private void populatePatientColumn(CommonPersonObjectClient pc, SmartRegisterClient client, final RegisterViewHolder viewHolder) {
 
-        String patientName = getName(
+        String fname = getName(
                 Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.FIRST_NAME, true),
-                Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LAST_NAME, true)
+                Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.MIDDLE_NAME, true)
         );
+
+        String patientName = getName(fname, Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LAST_NAME, true));
         viewHolder.patientName.setText(patientName);
         viewHolder.villageTown.setText(Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.VILLAGE_TOWN, true));
 
         // calculate LMP
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
         String dobString = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.DOB, false);
         String lmpString = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LAST_MENSTRUAL_PERIOD, false);
         if (StringUtils.isNotBlank(dobString) && StringUtils.isNotBlank(lmpString)) {
 
             int age = new Period(new DateTime(dobString), new DateTime()).getYears();
-            int ga = new Period(new DateTime(lmpString), new DateTime()).getWeeks() / 7;
+            int ga = new Period(formatter.parseDateTime(lmpString), new DateTime()).getWeeks() / 7;
 
             String dates = MessageFormat.format("{0}: {1}, {2}: {3} {4}",
                     context.getString(R.string.age),

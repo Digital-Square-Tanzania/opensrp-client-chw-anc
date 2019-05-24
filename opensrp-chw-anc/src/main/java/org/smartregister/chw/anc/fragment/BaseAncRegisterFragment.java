@@ -95,12 +95,12 @@ public class BaseAncRegisterFragment extends BaseRegisterFragment implements Anc
 
     @Override
     protected String getMainCondition() {
-        return "";
+        return presenter().getMainCondition();
     }
 
     @Override
     protected String getDefaultSortQuery() {
-        return "";
+        return presenter().getDefaultSortQuery();
     }
 
     @Override

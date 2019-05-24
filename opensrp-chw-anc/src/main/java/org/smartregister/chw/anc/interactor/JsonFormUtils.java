@@ -1,8 +1,5 @@
 package org.smartregister.chw.anc.interactor;
 
-import android.content.Context;
-import android.util.Pair;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.json.JSONArray;
@@ -10,13 +7,10 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.util.Constants;
-import org.smartregister.clientandeventmodel.Client;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.domain.tag.FormTag;
 import org.smartregister.repository.AllSharedPreferences;
-import org.smartregister.repository.EventClientRepository;
 
-import static org.apache.commons.lang3.StringUtils.isBlank;
 import static org.smartregister.chw.anc.util.Constants.ENCOUNTER_TYPE;
 
 public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {

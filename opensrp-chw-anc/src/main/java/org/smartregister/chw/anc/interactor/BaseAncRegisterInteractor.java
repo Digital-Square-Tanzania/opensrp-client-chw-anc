@@ -17,6 +17,8 @@ import java.util.Date;
 import java.util.concurrent.Executor;
 import java.util.concurrent.Executors;
 
+import timber.log.Timber;
+
 import static org.smartregister.util.Utils.getAllSharedPreferences;
 
 public class BaseAncRegisterInteractor implements AncRegisterContract.Interactor {
@@ -33,7 +35,7 @@ public class BaseAncRegisterInteractor implements AncRegisterContract.Interactor
 
     @Override
     public void onDestroy(boolean isChangingConfiguration) {
-
+        Timber.v("Empty onDestroy");
     }
 
     @Override

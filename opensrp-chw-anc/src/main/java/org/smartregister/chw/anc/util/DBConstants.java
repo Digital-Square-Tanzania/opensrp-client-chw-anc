@@ -19,5 +19,7 @@ public class DBConstants {
         public static final String LAST_INTERACTED_WITH = "last_interacted_with";
         public static final String VILLAGE_TOWN = "village_town";
         public static final String DATE_REMOVED = "date_removed";
+        public static final String VISIT_NOT_DONE = "visit_not_done";
+        public static final String LAST_HOME_VISIT = "last_home_visit";
     }
 }

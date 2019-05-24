@@ -31,6 +31,8 @@ public interface AncRegisterFragmentContract {
 
         String getMainTable();
 
+        String getDueFilterCondition();
+
     }
 
     interface Model {

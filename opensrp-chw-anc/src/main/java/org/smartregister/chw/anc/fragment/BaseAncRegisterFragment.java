@@ -124,14 +124,10 @@ public class BaseAncRegisterFragment extends BaseRegisterFragment implements Anc
             return;
         }
 
-        if (view.getTag() != null && view.getTag(R.id.VIEW_ID) == CLICK_VIEW_NORMAL) {
-            if (view.getTag() instanceof CommonPersonObjectClient) {
-                openProfile((CommonPersonObjectClient) view.getTag());
-            }
-        } else if (view.getTag() != null && view.getTag(R.id.VIEW_ID) == CLICK_VIEW_DOSAGE_STATUS) {
-            if (view.getTag() instanceof CommonPersonObjectClient) {
-                openHomeVisit((CommonPersonObjectClient) view.getTag());
-            }
+        if (view.getTag() instanceof CommonPersonObjectClient && view.getTag(R.id.VIEW_ID) == CLICK_VIEW_NORMAL) {
+            openProfile((CommonPersonObjectClient) view.getTag());
+        } else if (view.getTag() instanceof CommonPersonObjectClient && view.getTag(R.id.VIEW_ID) == CLICK_VIEW_DOSAGE_STATUS) {
+            openHomeVisit((CommonPersonObjectClient) view.getTag());
         }
     }
 

@@ -8,6 +8,8 @@ import android.view.View;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.view.activity.SecuredActivity;
 
+import timber.log.Timber;
+
 public class BaseAncHomeVisit extends SecuredActivity implements View.OnClickListener {
 
     public static void startMe(Activity activity, String memberBaseEntityID) {
@@ -24,16 +26,16 @@ public class BaseAncHomeVisit extends SecuredActivity implements View.OnClickLis
 
     @Override
     protected void onCreation() {
-
+        Timber.v("Empty onCreation");
     }
 
     @Override
     protected void onResumption() {
-
+        Timber.v("Empty onResumption");
     }
 
     @Override
     public void onClick(View v) {
-
+        Timber.v("Empty onClick");
     }
 }

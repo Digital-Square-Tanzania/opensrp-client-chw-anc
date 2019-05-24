@@ -31,7 +31,7 @@ import org.smartregister.view.fragment.BaseRegisterFragment;
 import java.util.Arrays;
 import java.util.List;
 
-public abstract class BaseAncRegisterActivity extends BaseRegisterActivity implements AncRegisterContract.View {
+public class BaseAncRegisterActivity extends BaseRegisterActivity implements AncRegisterContract.View {
     public static final String TAG = BaseAncRegisterActivity.class.getCanonicalName();
     protected String BASE_ENTITY_ID;
     protected String ACTION;
@@ -49,7 +49,7 @@ public abstract class BaseAncRegisterActivity extends BaseRegisterActivity imple
      */
     protected void onStartActivityWithAction() {
         if (ACTION != null && ACTION.equals(Constants.ACTIVITY_PAYLOAD_TYPE.REGISTRATION)) {
-            startFormActivity(getRegistrationForm(), BASE_ENTITY_ID, null);
+            startFormActivity(getRegistrationForm(), BASE_ENTITY_ID, null, null);
         }
     }
 
@@ -64,14 +64,7 @@ public abstract class BaseAncRegisterActivity extends BaseRegisterActivity imple
 
     @Override
     public void startFormActivity(String formName, String entityId, String metaData) {
-        try {
-            if (mBaseFragment instanceof BaseAncRegisterFragment) {
-                presenter().startForm(formName, entityId, metaData, getLocationID());
-            }
-        } catch (Exception e) {
-            Log.e(TAG, Log.getStackTraceString(e));
-            displayToast(getString(R.string.error_unable_to_start_form));
-        }
+        startFormActivity(formName, null, entityId, metaData);
     }
 
     protected String getLocationID() {
@@ -93,6 +86,19 @@ public abstract class BaseAncRegisterActivity extends BaseRegisterActivity imple
     @Override
     public Form getFormConfig() {
         return null;
+    }
+
+    @Override
+    public void startFormActivity(String formName, String memberID, String entityId, String metaData) {
+        try {
+            if (mBaseFragment instanceof BaseAncRegisterFragment) {
+                presenter().startForm(formName, null, entityId, metaData, getLocationID());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, Log.getStackTraceString(e));
+            displayToast(getString(R.string.error_unable_to_start_form));
+        }
+
     }
 
     public Class getFamilyFormActivity() {

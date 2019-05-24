@@ -1,2 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="org.smartregister.chw.opensrp_chw_anc" />
+    package="org.smartregister.chw.opensrp_chw_anc">
+
+    <application>
+        <activity android:name="org.smartregister.chw.anc.activity.BaseAncMemberProfile"></activity>
+        <activity android:name="org.smartregister.chw.anc.activity.BaseAncHomeVisit" />
+    </application>
+
+</manifest>

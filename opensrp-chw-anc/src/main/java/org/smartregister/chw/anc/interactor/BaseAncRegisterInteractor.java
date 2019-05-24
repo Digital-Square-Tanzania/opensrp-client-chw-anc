@@ -80,6 +80,14 @@ public class BaseAncRegisterInteractor implements AncRegisterContract.Interactor
 
     }
 
+    public ECSyncHelper getSyncHelper() {
+        return AncLibrary.getInstance().getEcSyncHelper();
+    }
+
+    public ClientProcessorForJava getClientProcessorForJava() {
+        return AncLibrary.getInstance().getClientProcessorForJava();
+    }
+
     private static class MainThreadExecutor implements Executor {
         private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
 
@@ -87,13 +95,5 @@ public class BaseAncRegisterInteractor implements AncRegisterContract.Interactor
         public void execute(@NonNull Runnable command) {
             mainThreadHandler.post(command);
         }
-    }
-
-    public ECSyncHelper getSyncHelper() {
-        return AncLibrary.getInstance().getEcSyncHelper();
-    }
-
-    public ClientProcessorForJava getClientProcessorForJava() {
-        return AncLibrary.getInstance().getClientProcessorForJava();
     }
 }

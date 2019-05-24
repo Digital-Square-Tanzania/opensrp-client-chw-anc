@@ -44,7 +44,7 @@ public class BaseAncRegisterFragmentPresenter implements AncRegisterFragmentCont
 
     @Override
     public String getDefaultSortQuery() {
-        return DBConstants.KEY.LAST_INTERACTED_WITH + " DESC ";
+        return Constants.TABLES.ANC_MEMBERS + "." + DBConstants.KEY.LAST_INTERACTED_WITH + " DESC ";
     }
 
     @Override

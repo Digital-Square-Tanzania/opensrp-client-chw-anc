@@ -3,13 +3,18 @@ package org.smartregister.chw.anc.fragment;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import org.smartregister.chw.anc.activity.BaseAncHomeVisit;
+import org.smartregister.chw.anc.activity.BaseAncMemberProfile;
 import org.smartregister.chw.anc.contract.AncRegisterFragmentContract;
 import org.smartregister.chw.anc.model.BaseAncRegisterFragmentModel;
 import org.smartregister.chw.anc.presenter.BaseAncRegisterFragmentPresenter;
 import org.smartregister.chw.anc.provider.AncRegisterProvider;
+import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.chw.opensrp_chw_anc.R;
+import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.configurableviews.model.View;
 import org.smartregister.cursoradapter.RecyclerViewPaginatedAdapter;
+import org.smartregister.util.Utils;
 import org.smartregister.view.customcontrols.CustomFontTextView;
 import org.smartregister.view.customcontrols.FontVariant;
 import org.smartregister.view.fragment.BaseRegisterFragment;
@@ -109,12 +114,34 @@ public class BaseAncRegisterFragment extends BaseRegisterFragment implements Anc
     }
 
     @Override
-    protected void onViewClicked(android.view.View view) {
-//        implement onclick actions
+    public void showNotFoundPopup(String s) {
+//        implement dialog
     }
 
     @Override
-    public void showNotFoundPopup(String s) {
-//        implement dialog
+    protected void onViewClicked(android.view.View view) {
+        if (getActivity() == null) {
+            return;
+        }
+
+        if (view.getTag() != null && view.getTag(R.id.VIEW_ID) == CLICK_VIEW_NORMAL) {
+            if (view.getTag() instanceof CommonPersonObjectClient) {
+                openProfile((CommonPersonObjectClient) view.getTag());
+            }
+        } else if (view.getTag() != null && view.getTag(R.id.VIEW_ID) == CLICK_VIEW_DOSAGE_STATUS) {
+            if (view.getTag() instanceof CommonPersonObjectClient) {
+                openHomeVisit((CommonPersonObjectClient) view.getTag());
+            }
+        }
+    }
+
+    protected void openProfile(CommonPersonObjectClient client) {
+        String baseEntityId = Utils.getValue(client.getColumnmaps(), DBConstants.KEY.BASE_ENTITY_ID, true);
+        BaseAncMemberProfile.startMe(getActivity(), baseEntityId);
+    }
+
+    protected void openHomeVisit(CommonPersonObjectClient client) {
+        String baseEntityId = Utils.getValue(client.getColumnmaps(), DBConstants.KEY.BASE_ENTITY_ID, true);
+        BaseAncHomeVisit.startMe(getActivity(), baseEntityId);
     }
 }

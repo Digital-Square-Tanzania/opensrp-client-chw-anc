@@ -13,12 +13,11 @@ public interface AncRegisterContract {
 
         Form getFormConfig();
 
-        void startFormActivity(String formName, String memberID, String entityId, String metaData);
     }
 
     interface Presenter extends BaseRegisterContract.Presenter {
 
-        void startForm(String formName, String memberID,  String entityId, String metadata, String currentLocationId) throws Exception;
+        void startForm(String formName, String entityId, String metadata, String currentLocationId) throws Exception;
 
         void saveForm(String jsonString, boolean isEditMode);
 
@@ -26,7 +25,7 @@ public interface AncRegisterContract {
 
     interface Model {
 
-        JSONObject getFormAsJson(String formName, String memberID,  String entityId,
+        JSONObject getFormAsJson(String formName, String entityId,
                                  String currentLocationId) throws Exception;
 
     }

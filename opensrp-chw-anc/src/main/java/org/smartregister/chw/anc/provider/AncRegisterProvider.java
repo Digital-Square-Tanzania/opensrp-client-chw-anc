@@ -11,6 +11,7 @@ import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
@@ -87,7 +88,7 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
         if (StringUtils.isNotBlank(dobString) && StringUtils.isNotBlank(lmpString)) {
 
             int age = new Period(new DateTime(dobString), new DateTime()).getYears();
-            int ga = new Period(formatter.parseDateTime(lmpString), new DateTime()).getWeeks() / 7;
+            int ga = Days.daysBetween(formatter.parseDateTime(lmpString), new DateTime()).getDays() / 7;
 
             String dates = MessageFormat.format("{0}: {1}, {2}: {3} {4}",
                     context.getString(R.string.age),
@@ -198,7 +199,6 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
         public TextView villageTown;
         public Button dueButton;
         public View patientColumn;
-        public View memberIcon;
 
         public View registerColumns;
         public View dueWrapper;
@@ -213,8 +213,6 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
             dueButton = itemView.findViewById(R.id.due_button);
 
             patientColumn = itemView.findViewById(R.id.patient_column);
-
-            memberIcon = itemView.findViewById(R.id.member_icon_layout);
 
             registerColumns = itemView.findViewById(R.id.register_columns);
             dueWrapper = itemView.findViewById(R.id.due_button_wrapper);

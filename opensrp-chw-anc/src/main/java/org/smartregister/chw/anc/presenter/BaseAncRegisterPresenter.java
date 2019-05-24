@@ -27,12 +27,12 @@ public class BaseAncRegisterPresenter implements AncRegisterContract.Presenter, 
     }
 
     @Override
-    public void startForm(String formName, String memberID, String entityId, String metadata, String currentLocationId) throws Exception {
-        if (StringUtils.isBlank(memberID)) {
+    public void startForm(String formName, String entityId, String metadata, String currentLocationId) throws Exception {
+        if (StringUtils.isBlank(entityId)) {
             return;
         }
 
-        JSONObject form = model.getFormAsJson(formName, memberID, entityId, currentLocationId);
+        JSONObject form = model.getFormAsJson(formName, entityId, currentLocationId);
         getView().startFormActivity(form);
     }
 

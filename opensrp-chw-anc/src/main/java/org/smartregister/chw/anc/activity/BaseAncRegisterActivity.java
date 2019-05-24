@@ -49,7 +49,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Anc
      */
     protected void onStartActivityWithAction() {
         if (ACTION != null && ACTION.equals(Constants.ACTIVITY_PAYLOAD_TYPE.REGISTRATION)) {
-            startFormActivity(getRegistrationForm(), BASE_ENTITY_ID, null, null);
+            startFormActivity(getRegistrationForm(), BASE_ENTITY_ID, null);
         }
     }
 
@@ -64,7 +64,14 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Anc
 
     @Override
     public void startFormActivity(String formName, String entityId, String metaData) {
-        startFormActivity(formName, null, entityId, metaData);
+        try {
+            if (mBaseFragment instanceof BaseAncRegisterFragment) {
+                presenter().startForm(formName, entityId, metaData, getLocationID());
+            }
+        } catch (Exception e) {
+            Log.e(TAG, Log.getStackTraceString(e));
+            displayToast(getString(R.string.error_unable_to_start_form));
+        }
     }
 
     protected String getLocationID() {
@@ -86,19 +93,6 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Anc
     @Override
     public Form getFormConfig() {
         return null;
-    }
-
-    @Override
-    public void startFormActivity(String formName, String memberID, String entityId, String metaData) {
-        try {
-            if (mBaseFragment instanceof BaseAncRegisterFragment) {
-                presenter().startForm(formName, null, entityId, metaData, getLocationID());
-            }
-        } catch (Exception e) {
-            Log.e(TAG, Log.getStackTraceString(e));
-            displayToast(getString(R.string.error_unable_to_start_form));
-        }
-
     }
 
     public Class getFamilyFormActivity() {

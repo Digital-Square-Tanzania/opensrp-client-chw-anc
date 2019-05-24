@@ -78,19 +78,8 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         return userLocationId;
     }
 
-    public static void getRegistrationForm(JSONObject jsonObject, String memberID, String entityId, String currentLocationId) throws JSONException {
+    public static void getRegistrationForm(JSONObject jsonObject, String entityId, String currentLocationId) throws JSONException {
         jsonObject.getJSONObject(METADATA).put(ENCOUNTER_LOCATION, currentLocationId);
-
-        if (StringUtils.isBlank(entityId)) {
-            entityId = generateRandomUUIDString();
-        }
         jsonObject.put(org.smartregister.util.JsonFormUtils.ENTITY_ID, entityId);
-
-        if (!isBlank(entityId)) {
-            JSONObject metaDataJson = jsonObject.getJSONObject("metadata");
-            JSONObject lookup = metaDataJson.getJSONObject("look_up");
-            lookup.put("entity_id", "family");
-            lookup.put("value", memberID);
-        }
     }
 }

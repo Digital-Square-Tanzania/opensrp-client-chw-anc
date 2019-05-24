@@ -10,10 +10,10 @@ import org.smartregister.util.FormUtils;
 public class BaseAncRegisterModel implements AncRegisterContract.Model {
 
     @Override
-    public JSONObject getFormAsJson(String formName, String memberID, String entityId, String currentLocationId) throws Exception {
+    public JSONObject getFormAsJson(String formName, String entityId, String currentLocationId) throws Exception {
         JSONObject jsonObject = FormUtils.getInstance(AncLibrary.getInstance().context().applicationContext()).getFormJson(formName);
 
-        JsonFormUtils.getRegistrationForm(jsonObject, memberID, entityId, currentLocationId);
+        JsonFormUtils.getRegistrationForm(jsonObject, entityId, currentLocationId);
 
         return jsonObject;
     }

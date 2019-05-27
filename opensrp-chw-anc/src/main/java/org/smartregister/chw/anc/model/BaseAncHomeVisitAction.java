@@ -1,11 +1,39 @@
 package org.smartregister.chw.anc.model;
 
+import android.support.v4.app.Fragment;
+
+import org.apache.commons.lang3.StringUtils;
+
+/**
+ * This action list allows users to either load a form or link it to a separate fragment.
+ */
 public class BaseAncHomeVisitAction {
 
     private String title;
     private String subTitle;
     private Status actionStatus = Status.PENDING;
-    private boolean completed = false;
+    private boolean optional;
+    private Fragment destinationFragment;
+    private String formName;
+
+    public BaseAncHomeVisitAction(String title, String subTitle, boolean optional, Fragment destinationFragment, String formName) throws Exception {
+        this.title = title;
+        this.subTitle = subTitle;
+        this.optional = optional;
+        this.destinationFragment = destinationFragment;
+        this.formName = formName;
+
+        validateMe();
+    }
+
+    /**
+     * Validate that action object has a proper end point destination
+     */
+    private void validateMe() throws Exception {
+        if(StringUtils.isBlank(formName) && destinationFragment == null){
+            throw new Exception("This action object lacks a valid form or destination fragment");
+        }
+    }
 
     public String getTitle() {
         return title;
@@ -31,13 +59,14 @@ public class BaseAncHomeVisitAction {
         this.actionStatus = actionStatus;
     }
 
-    public boolean isCompleted() {
-        return completed;
+    public boolean isOptional() {
+        return optional;
     }
 
-    public void setCompleted(boolean completed) {
-        this.completed = completed;
+    public void setOptional(boolean optional) {
+        this.optional = optional;
     }
 
-    public enum Status {COMPLETED, PARTIALLY_COMPLETED, PENDING;}
+    public enum Status {COMPLETED, PARTIALLY_COMPLETED, PENDING}
+
 }

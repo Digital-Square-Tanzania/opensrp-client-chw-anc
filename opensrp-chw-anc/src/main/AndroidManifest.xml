@@ -4,7 +4,7 @@
 
     <application>
         <activity android:name="org.smartregister.chw.anc.activity.BaseAncMemberProfile"></activity>
-        <activity android:name="org.smartregister.chw.anc.activity.BaseAncHomeVisit"/>
+        <activity android:name="org.smartregister.chw.anc.activity.BaseAncHomeVisitActivity"/>
     </application>
 
 </manifest>

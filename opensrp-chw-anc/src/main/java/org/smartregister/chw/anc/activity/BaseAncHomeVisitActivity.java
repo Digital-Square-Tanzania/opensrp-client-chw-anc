@@ -13,6 +13,8 @@ import android.widget.TextView;
 
 import com.vijay.jsonwizard.domain.Form;
 
+import org.smartregister.AllConstants;
+import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.adapter.BaseAncHomeVisitAdapter;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.interactor.BaseAncHomeVisitInteractor;
@@ -53,7 +55,6 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
             BASE_ENTITY_ID = extras.getString(Constants.ACTIVITY_PAYLOAD.BASE_ENTITY_ID);
         }
 
-        preloadHeader();
         setUpView();
         registerPresenter();
     }
@@ -74,7 +75,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
         try {
             initializeActions();
-        } catch (Exception e) {
+        } catch (BaseAncHomeVisitAction.ValidationException e) {
             Timber.e(e);
         }
         mAdapter = new BaseAncHomeVisitAdapter(this, this, (LinkedHashMap) actionList);
@@ -93,7 +94,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
      * Implement new actions on the display.
      * This function can be pre-populated by fragments
      */
-    protected void initializeActions() throws Exception {
+    protected void initializeActions() throws BaseAncHomeVisitAction.ValidationException {
         actionList.put("Danger Signs", new BaseAncHomeVisitAction("Danger Signs", "None", false, null, "ds"));
         actionList.put("ANC Counseling", new BaseAncHomeVisitAction("ANC Counseling", "", false, null, "anc"));
         actionList.put("Sleeping under a LLITN", new BaseAncHomeVisitAction("Sleeping under a LLITN", "", false, null, "anc"));
@@ -102,13 +103,6 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         actionList.put("TT Immunization 1", new BaseAncHomeVisitAction("TT Immunization 1", "", false, null, "anc"));
         actionList.put("IPTp-SP dose 1", new BaseAncHomeVisitAction("IPTp-SP dose 1", "", false, null, "anc"));
         actionList.put("Observation & Illness", new BaseAncHomeVisitAction("Observation & Illness", "", true, null, "anc"));
-    }
-
-    /**
-     * initializes the header data
-     */
-    protected void preloadHeader() {
-
     }
 
     @Override
@@ -142,12 +136,13 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     @Override
     public void startFrom(String formName) {
-
+        String locationId = AncLibrary.getInstance().context().allSharedPreferences().getPreference(AllConstants.CURRENT_LOCATION_ID);
+        presenter().startForm(formName, BASE_ENTITY_ID, locationId);
     }
 
     @Override
     public void startFragment(Fragment fragment) {
-
+        Timber.v("startFragment");
     }
 
     @Override
@@ -193,7 +188,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     @Override
     public void submitVisit() {
-
+        Timber.v("submitVisit");
     }
 
     @Override

@@ -33,7 +33,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
     @Override
     public void saveRegistration(String jsonString, boolean isEditMode, BaseAncHomeVisitContract.InteractorCallBack callBack) {
-
+        Timber.v("saveRegistration");
     }
 
     @Override

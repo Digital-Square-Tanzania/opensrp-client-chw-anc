@@ -16,7 +16,7 @@ public class BaseAncHomeVisitAction {
     private Fragment destinationFragment;
     private String formName;
 
-    public BaseAncHomeVisitAction(String title, String subTitle, boolean optional, Fragment destinationFragment, String formName) throws Exception {
+    public BaseAncHomeVisitAction(String title, String subTitle, boolean optional, Fragment destinationFragment, String formName) throws ValidationException {
         this.title = title;
         this.subTitle = subTitle;
         this.optional = optional;
@@ -29,9 +29,9 @@ public class BaseAncHomeVisitAction {
     /**
      * Validate that action object has a proper end point destination
      */
-    private void validateMe() throws Exception {
-        if(StringUtils.isBlank(formName) && destinationFragment == null){
-            throw new Exception("This action object lacks a valid form or destination fragment");
+    private void validateMe() throws ValidationException {
+        if (StringUtils.isBlank(formName) && destinationFragment == null) {
+            throw new ValidationException("This action object lacks a valid form or destination fragment");
         }
     }
 
@@ -69,4 +69,9 @@ public class BaseAncHomeVisitAction {
 
     public enum Status {COMPLETED, PARTIALLY_COMPLETED, PENDING}
 
+    public static class ValidationException extends Exception {
+        public ValidationException(String message) {
+            super(message);
+        }
+    }
 }

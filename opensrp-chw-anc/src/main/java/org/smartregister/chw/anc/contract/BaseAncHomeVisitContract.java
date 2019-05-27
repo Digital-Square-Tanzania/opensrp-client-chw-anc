@@ -39,7 +39,7 @@ public interface BaseAncHomeVisitContract {
 
     interface Presenter {
 
-        void startForm(String formName, String memberID, String metadata, String currentLocationId);
+        void startForm(String formName, String memberID, String currentLocationId);
 
         /**
          * Recall this method to redraw ui after every submission

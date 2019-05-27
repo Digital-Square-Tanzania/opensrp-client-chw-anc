@@ -4,6 +4,8 @@ import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 
 import java.lang.ref.WeakReference;
 
+import timber.log.Timber;
+
 public class BaseAncHomeVisitPresenter implements BaseAncHomeVisitContract.Presenter, BaseAncHomeVisitContract.InteractorCallBack {
 
     protected WeakReference<BaseAncHomeVisitContract.View> view;
@@ -19,8 +21,8 @@ public class BaseAncHomeVisitPresenter implements BaseAncHomeVisitContract.Prese
     }
 
     @Override
-    public void startForm(String formName, String memberID, String metadata, String currentLocationId) {
-
+    public void startForm(String formName, String memberID, String currentLocationId) {
+        Timber.v("startForm");
     }
 
     @Override
@@ -36,7 +38,7 @@ public class BaseAncHomeVisitPresenter implements BaseAncHomeVisitContract.Prese
 
     @Override
     public void onRegistrationSaved(boolean isEdit) {
-
+        Timber.v("onRegistrationSaved");
     }
 
     @Override

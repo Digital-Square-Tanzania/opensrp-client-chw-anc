@@ -19,4 +19,8 @@
 
     <!-- other -->
     <string name="saving_dialog_title">Saving</string>
+
+    <!-- anc home visit -->
+    <string name="optional">optional</string>
+    <string name="anc_visit">ANC Visit</string>
 </resources>

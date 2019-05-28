@@ -1,12 +1,11 @@
 package org.smartregister.chw.anc.interactor;
 
-import android.os.Handler;
-import android.os.Looper;
-import android.support.annotation.NonNull;
+import android.support.annotation.VisibleForTesting;
 
 import org.json.JSONObject;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.contract.AncRegisterContract;
+import org.smartregister.chw.anc.util.AppExecutors;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.repository.BaseRepository;
@@ -14,8 +13,6 @@ import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.helper.ECSyncHelper;
 
 import java.util.Date;
-import java.util.concurrent.Executor;
-import java.util.concurrent.Executors;
 
 import timber.log.Timber;
 
@@ -23,14 +20,15 @@ import static org.smartregister.util.Utils.getAllSharedPreferences;
 
 public class BaseAncRegisterInteractor implements AncRegisterContract.Interactor {
 
-    private Executor executor;
+    private AppExecutors appExecutors;
 
-    public BaseAncRegisterInteractor() {
-        executor = Executors.newSingleThreadExecutor();
+    @VisibleForTesting
+    BaseAncRegisterInteractor(AppExecutors appExecutors) {
+        this.appExecutors = appExecutors;
     }
 
-    public BaseAncRegisterInteractor(Executor executor) {
-        this.executor = executor;
+    public BaseAncRegisterInteractor() {
+        this(new AppExecutors());
     }
 
     @Override
@@ -51,7 +49,7 @@ public class BaseAncRegisterInteractor implements AncRegisterContract.Interactor
                     e.printStackTrace();
                 }
 
-                new MainThreadExecutor().execute(new Runnable() {
+                appExecutors.mainThread().execute(new Runnable() {
                     @Override
                     public void run() {
                         callBack.onRegistrationSaved(isEditMode);
@@ -59,7 +57,7 @@ public class BaseAncRegisterInteractor implements AncRegisterContract.Interactor
                 });
             }
         };
-        executor.execute(runnable);
+        appExecutors.diskIO().execute(runnable);
     }
 
     private void saveRegistration(final String jsonString) throws Exception {
@@ -86,14 +84,5 @@ public class BaseAncRegisterInteractor implements AncRegisterContract.Interactor
 
     public ClientProcessorForJava getClientProcessorForJava() {
         return AncLibrary.getInstance().getClientProcessorForJava();
-    }
-
-    private static class MainThreadExecutor implements Executor {
-        private Handler mainThreadHandler = new Handler(Looper.getMainLooper());
-
-        @Override
-        public void execute(@NonNull Runnable command) {
-            mainThreadHandler.post(command);
-        }
     }
 }

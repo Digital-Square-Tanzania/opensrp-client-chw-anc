@@ -1,48 +1,37 @@
 package org.smartregister.chw.anc.fragment;
 
 
+import android.app.DialogFragment;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
+import android.os.Handler;
+import android.support.annotation.LayoutRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.FrameLayout;
 
 import org.jetbrains.annotations.NotNull;
+import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
-public class BaseAncHomeVisitFragment extends Fragment {
+public class BaseAncHomeVisitFragment extends DialogFragment {
 
-    /*
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
+    private BaseAncHomeVisitContract.View homeVisitView;
+    private String title;
+    private String question;
+    private QuestionType questionType;
+    @LayoutRes
+    private int layoutRes;
 
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
 
-
-    public BaseAncHomeVisitFragment() {
-        // Required empty public constructor
-    }
-
-    public static BaseAncHomeVisitFragment newInstance(String param1, String param2) {
+    public static BaseAncHomeVisitFragment getInstance(String title, String question, int layoutRes, QuestionType type) {
         BaseAncHomeVisitFragment fragment = new BaseAncHomeVisitFragment();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
+        fragment.setTitle(title);
+        fragment.setQuestion(question);
+        fragment.setLayoutRes(layoutRes);
+        fragment.setQuestionType(type);
         return fragment;
     }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
-    }
-    */
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
@@ -51,4 +40,68 @@ public class BaseAncHomeVisitFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_base_anc_home_visit, container, false);
     }
 
+    @Override
+    public void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+
+        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Light_NoActionBar);
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        new Handler().post(new Runnable() {
+            @Override
+            public void run() {
+                if (getDialog() != null && getDialog().getWindow() != null) {
+                    getDialog().getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
+                }
+            }
+        });
+
+    }
+
+    public String getTitle() {
+        return title;
+    }
+
+    public void setTitle(String title) {
+        this.title = title;
+    }
+
+    public String getQuestion() {
+        return question;
+    }
+
+    public void setQuestion(String question) {
+        this.question = question;
+    }
+
+    public BaseAncHomeVisitContract.View getHomeVisitView() {
+        return homeVisitView;
+    }
+
+    public void setHomeVisitView(BaseAncHomeVisitContract.View homeVisitView) {
+        this.homeVisitView = homeVisitView;
+    }
+
+    public int getLayoutRes() {
+        return layoutRes;
+    }
+
+    public void setLayoutRes(int layoutRes) {
+        this.layoutRes = layoutRes;
+    }
+
+    public QuestionType getQuestionType() {
+        return questionType;
+    }
+
+    public void setQuestionType(QuestionType questionType) {
+        this.questionType = questionType;
+    }
+
+    public enum QuestionType {
+        BOOLEAN
+    }
 }

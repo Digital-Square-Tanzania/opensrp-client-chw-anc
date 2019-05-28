@@ -1,9 +1,9 @@
 package org.smartregister.chw.anc.activity;
 
 import android.app.Activity;
+import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -37,6 +37,8 @@ import java.util.Map;
 import timber.log.Timber;
 
 public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAncHomeVisitContract.View, View.OnClickListener {
+
+    private static final String TAG = BaseAncHomeVisitActivity.class.getCanonicalName();
 
     private RecyclerView.Adapter mAdapter;
     protected Map<String, BaseAncHomeVisitAction> actionList = new LinkedHashMap<>();
@@ -102,9 +104,14 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
      * This function can be pre-populated by fragments
      */
     protected void initializeActions() throws BaseAncHomeVisitAction.ValidationException {
-        actionList.put("Danger Signs", new BaseAncHomeVisitAction("Danger Signs", "None", false, null, Constants.FORMS.ANC_REGISTRATION));
-        actionList.put("ANC Counseling", new BaseAncHomeVisitAction("ANC Counseling", "", false, new BaseAncHomeVisitFragment(), null));
-        actionList.put("Sleeping under a LLITN", new BaseAncHomeVisitAction("Sleeping under a LLITN", "", false, null, "anc"));
+        actionList.put("Danger Signs", new BaseAncHomeVisitAction("Danger Signs", "", false, null, Constants.FORMS.ANC_REGISTRATION));
+        actionList.put("ANC Counseling", new BaseAncHomeVisitAction("ANC Counseling", "", false, null, "anc"));
+        BaseAncHomeVisitFragment llitn = BaseAncHomeVisitFragment.getInstance("Sleeping under a LLITN",
+                "Is the woman sleeping under a Long Lasting Insecticide-Treated Net (LLITN)?",
+                R.drawable.avatar_woman,
+                BaseAncHomeVisitFragment.QuestionType.BOOLEAN
+        );
+        actionList.put("Sleeping under a LLITN", new BaseAncHomeVisitAction("Sleeping under a LLITN", "", false, llitn, null));
         actionList.put("ANC Card Received", new BaseAncHomeVisitAction("ANC Card Received", "", false, null, "anc"));
         actionList.put("ANC Health Facility Visit 1", new BaseAncHomeVisitAction("ANC Health Facility Visit 1", "", false, null, "anc"));
         actionList.put("TT Immunization 1", new BaseAncHomeVisitAction("TT Immunization 1", "", false, null, "anc"));
@@ -162,8 +169,10 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     }
 
     @Override
-    public void startFragment(Fragment fragment) {
-        Timber.v("startFragment");
+    public void startFragment(BaseAncHomeVisitAction ancHomeVisitAction) {
+        if (ancHomeVisitAction.getDestinationFragment() != null) {
+            ancHomeVisitAction.getDestinationFragment().show(getFragmentManager(), TAG);
+        }
     }
 
     @Override
@@ -238,7 +247,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         }
 
         // update the adapter after every payload
-        if(mAdapter != null){
+        if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }
     }

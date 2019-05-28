@@ -1,7 +1,5 @@
 package org.smartregister.chw.anc.contract;
 
-import android.support.v4.app.Fragment;
-
 import com.vijay.jsonwizard.domain.Form;
 
 import org.json.JSONObject;
@@ -21,7 +19,7 @@ public interface BaseAncHomeVisitContract {
 
         void startFormActivity(JSONObject jsonForm);
 
-        void startFragment(Fragment fragment);
+        void startFragment(BaseAncHomeVisitAction ancHomeVisitAction);
 
         void redrawHeader(String memberName, String age);
 

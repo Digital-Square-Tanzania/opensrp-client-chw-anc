@@ -103,7 +103,8 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ancHomeVisitActionList.get(ancHomeVisitAction.getTitle()).setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
+                //ancHomeVisitActionList.get(ancHomeVisitAction.getTitle()).setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
+                visitContractView.startFrom(ancHomeVisitAction);
                 visitContractView.redrawVisitUI();
             }
         });

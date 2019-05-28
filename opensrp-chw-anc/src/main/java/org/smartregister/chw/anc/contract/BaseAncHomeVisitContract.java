@@ -17,7 +17,9 @@ public interface BaseAncHomeVisitContract {
 
         Form getFormConfig();
 
-        void startFrom(String formName);
+        void startFrom(BaseAncHomeVisitAction ancHomeVisitAction);
+
+        void startFormActivity(JSONObject jsonForm);
 
         void startFragment(Fragment fragment);
 

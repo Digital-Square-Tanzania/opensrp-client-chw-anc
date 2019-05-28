@@ -7,16 +7,22 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.vijay.jsonwizard.activities.JsonFormActivity;
+import com.vijay.jsonwizard.constants.JsonFormConstants;
 import com.vijay.jsonwizard.domain.Form;
 
+import org.json.JSONObject;
 import org.smartregister.AllConstants;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.adapter.BaseAncHomeVisitAdapter;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
+import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
 import org.smartregister.chw.anc.interactor.BaseAncHomeVisitInteractor;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.anc.presenter.BaseAncHomeVisitPresenter;
@@ -39,6 +45,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     private TextView tvTitle;
     private BaseAncHomeVisitContract.Presenter presenter;
     private String BASE_ENTITY_ID;
+    private String current_action;
 
     public static void startMe(Activity activity, String memberBaseEntityID) {
         Intent intent = new Intent(activity, BaseAncHomeVisitActivity.class);
@@ -95,8 +102,8 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
      * This function can be pre-populated by fragments
      */
     protected void initializeActions() throws BaseAncHomeVisitAction.ValidationException {
-        actionList.put("Danger Signs", new BaseAncHomeVisitAction("Danger Signs", "None", false, null, "ds"));
-        actionList.put("ANC Counseling", new BaseAncHomeVisitAction("ANC Counseling", "", false, null, "anc"));
+        actionList.put("Danger Signs", new BaseAncHomeVisitAction("Danger Signs", "None", false, null, Constants.FORMS.ANC_REGISTRATION));
+        actionList.put("ANC Counseling", new BaseAncHomeVisitAction("ANC Counseling", "", false, new BaseAncHomeVisitFragment(), null));
         actionList.put("Sleeping under a LLITN", new BaseAncHomeVisitAction("Sleeping under a LLITN", "", false, null, "anc"));
         actionList.put("ANC Card Received", new BaseAncHomeVisitAction("ANC Card Received", "", false, null, "anc"));
         actionList.put("ANC Health Facility Visit 1", new BaseAncHomeVisitAction("ANC Health Facility Visit 1", "", false, null, "anc"));
@@ -126,7 +133,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     @Override
     public BaseAncHomeVisitContract.Presenter presenter() {
-        return null;
+        return presenter;
     }
 
     @Override
@@ -135,9 +142,23 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     }
 
     @Override
-    public void startFrom(String formName) {
+    public void startFrom(BaseAncHomeVisitAction ancHomeVisitAction) {
+        current_action = ancHomeVisitAction.getTitle();
+
         String locationId = AncLibrary.getInstance().context().allSharedPreferences().getPreference(AllConstants.CURRENT_LOCATION_ID);
-        presenter().startForm(formName, BASE_ENTITY_ID, locationId);
+        presenter().startForm(ancHomeVisitAction.getFormName(), BASE_ENTITY_ID, locationId);
+    }
+
+    @Override
+    public void startFormActivity(JSONObject jsonForm) {
+        Intent intent = new Intent(this, JsonFormActivity.class);
+        intent.putExtra(Constants.JSON_FORM_EXTRA.JSON, jsonForm.toString());
+
+        if (getFormConfig() != null) {
+            intent.putExtra(JsonFormConstants.JSON_FORM_KEY.FORM, getFormConfig());
+        }
+
+        startActivityForResult(intent, Constants.REQUEST_CODE_GET_JSON);
     }
 
     @Override
@@ -193,6 +214,32 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.REQUEST_CODE_GET_JSON) {
+            if (resultCode == Activity.RESULT_OK) {
+                try {
+                    String jsonString = data.getStringExtra(Constants.JSON_FORM_EXTRA.JSON);
+                    BaseAncHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
+                    if (ancHomeVisitAction != null) {
+                        ancHomeVisitAction.setJsonPayload(jsonString);
+                        ancHomeVisitAction.setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
+                    }
+                } catch (Exception e) {
+                    Timber.e(Log.getStackTraceString(e));
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            } else {
+
+                BaseAncHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
+                if (ancHomeVisitAction != null) {
+                    ancHomeVisitAction.setActionStatus(BaseAncHomeVisitAction.Status.PENDING);
+                }
+            }
+
+        }
+
+        // update the adapter after every payload
+        if(mAdapter != null){
+            mAdapter.notifyDataSetChanged();
+        }
     }
 }

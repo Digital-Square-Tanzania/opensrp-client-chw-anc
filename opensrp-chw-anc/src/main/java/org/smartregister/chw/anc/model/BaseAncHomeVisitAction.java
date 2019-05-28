@@ -15,6 +15,7 @@ public class BaseAncHomeVisitAction {
     private boolean optional;
     private Fragment destinationFragment;
     private String formName;
+    private String jsonPayload;
 
     public BaseAncHomeVisitAction(String title, String subTitle, boolean optional, Fragment destinationFragment, String formName) throws ValidationException {
         this.title = title;
@@ -65,6 +66,30 @@ public class BaseAncHomeVisitAction {
 
     public void setOptional(boolean optional) {
         this.optional = optional;
+    }
+
+    public String getJsonPayload() {
+        return jsonPayload;
+    }
+
+    public void setJsonPayload(String jsonPayload) {
+        this.jsonPayload = jsonPayload;
+    }
+
+    public Fragment getDestinationFragment() {
+        return destinationFragment;
+    }
+
+    public void setDestinationFragment(Fragment destinationFragment) {
+        this.destinationFragment = destinationFragment;
+    }
+
+    public String getFormName() {
+        return formName;
+    }
+
+    public void setFormName(String formName) {
+        this.formName = formName;
     }
 
     public enum Status {COMPLETED, PARTIALLY_COMPLETED, PENDING}

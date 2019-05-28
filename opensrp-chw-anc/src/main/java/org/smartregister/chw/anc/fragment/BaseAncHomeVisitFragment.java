@@ -4,31 +4,33 @@ package org.smartregister.chw.anc.fragment;
 import android.app.DialogFragment;
 import android.os.Bundle;
 import android.os.Handler;
-import android.support.annotation.LayoutRes;
+import android.support.annotation.DrawableRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
+import android.widget.TextView;
 
 import org.jetbrains.annotations.NotNull;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
-public class BaseAncHomeVisitFragment extends DialogFragment {
+public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnClickListener {
 
     private BaseAncHomeVisitContract.View homeVisitView;
     private String title;
     private String question;
     private QuestionType questionType;
-    @LayoutRes
-    private int layoutRes;
+    @DrawableRes
+    private int imageRes;
 
 
-    public static BaseAncHomeVisitFragment getInstance(String title, String question, int layoutRes, QuestionType type) {
+    public static BaseAncHomeVisitFragment getInstance(String title, String question, @DrawableRes int imageRes, QuestionType type) {
         BaseAncHomeVisitFragment fragment = new BaseAncHomeVisitFragment();
         fragment.setTitle(title);
         fragment.setQuestion(question);
-        fragment.setLayoutRes(layoutRes);
+        fragment.setImageRes(imageRes);
         fragment.setQuestionType(type);
         return fragment;
     }
@@ -37,7 +39,16 @@ public class BaseAncHomeVisitFragment extends DialogFragment {
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_base_anc_home_visit, container, false);
+        View view = inflater.inflate(R.layout.fragment_base_anc_home_visit, container, false);
+        ((TextView) view.findViewById(R.id.customFontTextViewTitle)).setText(title);
+        ((TextView) view.findViewById(R.id.customFontTextViewQuestion)).setText(question);
+        ((ImageView) view.findViewById(R.id.imageViewMain)).setImageResource(imageRes);
+        customizeQuestionType();
+        return view;
+    }
+
+    private void customizeQuestionType(){
+
     }
 
     @Override
@@ -85,12 +96,12 @@ public class BaseAncHomeVisitFragment extends DialogFragment {
         this.homeVisitView = homeVisitView;
     }
 
-    public int getLayoutRes() {
-        return layoutRes;
+    public int getImageRes() {
+        return imageRes;
     }
 
-    public void setLayoutRes(int layoutRes) {
-        this.layoutRes = layoutRes;
+    public void setImageRes(int imageRes) {
+        this.imageRes = imageRes;
     }
 
     public QuestionType getQuestionType() {
@@ -99,6 +110,11 @@ public class BaseAncHomeVisitFragment extends DialogFragment {
 
     public void setQuestionType(QuestionType questionType) {
         this.questionType = questionType;
+    }
+
+    @Override
+    public void onClick(View v) {
+
     }
 
     public enum QuestionType {

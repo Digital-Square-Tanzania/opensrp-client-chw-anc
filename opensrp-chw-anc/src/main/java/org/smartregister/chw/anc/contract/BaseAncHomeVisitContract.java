@@ -15,7 +15,7 @@ public interface BaseAncHomeVisitContract {
 
         Form getFormConfig();
 
-        void startFrom(BaseAncHomeVisitAction ancHomeVisitAction);
+        void startForm(BaseAncHomeVisitAction ancHomeVisitAction);
 
         void startFormActivity(JSONObject jsonForm);
 
@@ -34,6 +34,8 @@ public interface BaseAncHomeVisitContract {
         Presenter getPresenter();
 
         void submitVisit();
+
+        void onDialogOptionUpdated(String option);
 
     }
 

@@ -24,10 +24,12 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     private QuestionType questionType;
     @DrawableRes
     private int imageRes;
+    private String selectedOption;
 
 
-    public static BaseAncHomeVisitFragment getInstance(String title, String question, @DrawableRes int imageRes, QuestionType type) {
+    public static BaseAncHomeVisitFragment getInstance(BaseAncHomeVisitContract.View view, String title, String question, @DrawableRes int imageRes, QuestionType type) {
         BaseAncHomeVisitFragment fragment = new BaseAncHomeVisitFragment();
+        fragment.setHomeVisitView(view);
         fragment.setTitle(title);
         fragment.setQuestion(question);
         fragment.setImageRes(imageRes);
@@ -40,14 +42,20 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_base_anc_home_visit, container, false);
-        ((TextView) view.findViewById(R.id.customFontTextViewTitle)).setText(title);
-        ((TextView) view.findViewById(R.id.customFontTextViewQuestion)).setText(question);
-        ((ImageView) view.findViewById(R.id.imageViewMain)).setImageResource(imageRes);
+        ((TextView) view.findViewById(R.id.customFontTextViewTitle)).setText(getTitle());
+        ((TextView) view.findViewById(R.id.customFontTextViewQuestion)).setText(getQuestion());
+        ((ImageView) view.findViewById(R.id.imageViewMain)).setImageResource(getImageRes());
         customizeQuestionType();
+
+        view.findViewById(R.id.close).setOnClickListener(this);
+        view.findViewById(R.id.radioButtonYes).setOnClickListener(this);
+        view.findViewById(R.id.radioButtonNo).setOnClickListener(this);
+        view.findViewById(R.id.buttonSave).setOnClickListener(this);
+
         return view;
     }
 
-    private void customizeQuestionType(){
+    private void customizeQuestionType() {
 
     }
 
@@ -114,10 +122,27 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
 
     @Override
     public void onClick(View v) {
+        if (v.getId() == R.id.radioButtonYes) {
+            selectOption("Yes");
+        } else if (v.getId() == R.id.radioButtonNo) {
+            selectOption("No");
+        } else if (v.getId() == R.id.buttonSave) {
+            save();
+        } else if (v.getId() == R.id.close) {
+            dismiss();
+        }
+    }
 
+    protected void save() {
+        homeVisitView.onDialogOptionUpdated(selectedOption);
+        dismiss();
+    }
+
+    protected void selectOption(String option) {
+        selectedOption = option;
     }
 
     public enum QuestionType {
-        BOOLEAN
+        BOOLEAN, DATE_SELECTOR, MULTI_OPTIONS
     }
 }

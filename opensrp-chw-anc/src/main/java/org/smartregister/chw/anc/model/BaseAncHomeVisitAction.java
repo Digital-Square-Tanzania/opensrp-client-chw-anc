@@ -15,6 +15,7 @@ public class BaseAncHomeVisitAction {
     private BaseAncHomeVisitFragment destinationFragment;
     private String formName;
     private String jsonPayload;
+    private String selectedOption;
 
     public BaseAncHomeVisitAction(String title, String subTitle, boolean optional, BaseAncHomeVisitFragment destinationFragment, String formName) throws ValidationException {
         this.title = title;
@@ -89,6 +90,14 @@ public class BaseAncHomeVisitAction {
 
     public void setFormName(String formName) {
         this.formName = formName;
+    }
+
+    public String getSelectedOption() {
+        return selectedOption;
+    }
+
+    public void setSelectedOption(String selectedOption) {
+        this.selectedOption = selectedOption;
     }
 
     public enum Status {COMPLETED, PARTIALLY_COMPLETED, PENDING}

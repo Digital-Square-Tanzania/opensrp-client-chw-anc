@@ -1,7 +1,6 @@
 package org.smartregister.chw.anc.activity;
 
 import android.app.Activity;
-import android.app.DialogFragment;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -106,7 +105,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     protected void initializeActions() throws BaseAncHomeVisitAction.ValidationException {
         actionList.put("Danger Signs", new BaseAncHomeVisitAction("Danger Signs", "", false, null, Constants.FORMS.ANC_REGISTRATION));
         actionList.put("ANC Counseling", new BaseAncHomeVisitAction("ANC Counseling", "", false, null, "anc"));
-        BaseAncHomeVisitFragment llitn = BaseAncHomeVisitFragment.getInstance("Sleeping under a LLITN",
+        BaseAncHomeVisitFragment llitn = BaseAncHomeVisitFragment.getInstance(this, "Sleeping under a LLITN",
                 "Is the woman sleeping under a Long Lasting Insecticide-Treated Net (LLITN)?",
                 R.drawable.avatar_woman,
                 BaseAncHomeVisitFragment.QuestionType.BOOLEAN
@@ -149,7 +148,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     }
 
     @Override
-    public void startFrom(BaseAncHomeVisitAction ancHomeVisitAction) {
+    public void startForm(BaseAncHomeVisitAction ancHomeVisitAction) {
         current_action = ancHomeVisitAction.getTitle();
 
         String locationId = AncLibrary.getInstance().context().allSharedPreferences().getPreference(AllConstants.CURRENT_LOCATION_ID);
@@ -170,6 +169,8 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     @Override
     public void startFragment(BaseAncHomeVisitAction ancHomeVisitAction) {
+        current_action = ancHomeVisitAction.getTitle();
+
         if (ancHomeVisitAction.getDestinationFragment() != null) {
             ancHomeVisitAction.getDestinationFragment().show(getFragmentManager(), TAG);
         }
@@ -219,6 +220,19 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     @Override
     public void submitVisit() {
         Timber.v("submitVisit");
+    }
+
+    @Override
+    public void onDialogOptionUpdated(String option) {
+        BaseAncHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
+        if (ancHomeVisitAction != null) {
+            ancHomeVisitAction.setSelectedOption(option);
+            ancHomeVisitAction.setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
+        }
+
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+        }
     }
 
     @Override

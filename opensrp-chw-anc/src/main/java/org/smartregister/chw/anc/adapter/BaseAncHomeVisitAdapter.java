@@ -105,7 +105,7 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
             public void onClick(View v) {
                 //ancHomeVisitActionList.get(ancHomeVisitAction.getTitle()).setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
                 if (StringUtils.isNotBlank(ancHomeVisitAction.getFormName())) {
-                    visitContractView.startFrom(ancHomeVisitAction);
+                    visitContractView.startForm(ancHomeVisitAction);
                 } else {
                     visitContractView.startFragment(ancHomeVisitAction);
                 }

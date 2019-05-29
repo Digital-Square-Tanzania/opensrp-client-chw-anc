@@ -1,18 +1,23 @@
 package org.smartregister.chw.anc.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.vijay.jsonwizard.activities.JsonFormActivity;
+import com.vijay.jsonwizard.constants.JsonFormConstants;
 import com.vijay.jsonwizard.domain.Form;
 
+import org.json.JSONObject;
 import org.smartregister.AllConstants;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.adapter.BaseAncHomeVisitAdapter;
@@ -32,13 +37,16 @@ import timber.log.Timber;
 
 public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAncHomeVisitContract.View, View.OnClickListener {
 
+    private static final String TAG = BaseAncHomeVisitActivity.class.getCanonicalName();
+
     private RecyclerView.Adapter mAdapter;
     protected Map<String, BaseAncHomeVisitAction> actionList = new LinkedHashMap<>();
     private ProgressBar progressBar;
     private TextView tvSubmit;
     private TextView tvTitle;
-    private BaseAncHomeVisitContract.Presenter presenter;
-    private String BASE_ENTITY_ID;
+    protected BaseAncHomeVisitContract.Presenter presenter;
+    protected String BASE_ENTITY_ID;
+    private String current_action;
 
     public static void startMe(Activity activity, String memberBaseEntityID) {
         Intent intent = new Intent(activity, BaseAncHomeVisitActivity.class);
@@ -56,6 +64,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         }
 
         setUpView();
+        displayProgressBar(true);
         registerPresenter();
     }
 
@@ -73,11 +82,6 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        try {
-            initializeActions();
-        } catch (BaseAncHomeVisitAction.ValidationException e) {
-            Timber.e(e);
-        }
         mAdapter = new BaseAncHomeVisitAdapter(this, this, (LinkedHashMap) actionList);
         recyclerView.setAdapter(mAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
@@ -89,20 +93,20 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         presenter = new BaseAncHomeVisitPresenter(BASE_ENTITY_ID, this, new BaseAncHomeVisitInteractor());
     }
 
-    /**
-     * initializes the action list.
-     * Implement new actions on the display.
-     * This function can be pre-populated by fragments
-     */
-    protected void initializeActions() throws BaseAncHomeVisitAction.ValidationException {
-        actionList.put("Danger Signs", new BaseAncHomeVisitAction("Danger Signs", "None", false, null, "ds"));
-        actionList.put("ANC Counseling", new BaseAncHomeVisitAction("ANC Counseling", "", false, null, "anc"));
-        actionList.put("Sleeping under a LLITN", new BaseAncHomeVisitAction("Sleeping under a LLITN", "", false, null, "anc"));
-        actionList.put("ANC Card Received", new BaseAncHomeVisitAction("ANC Card Received", "", false, null, "anc"));
-        actionList.put("ANC Health Facility Visit 1", new BaseAncHomeVisitAction("ANC Health Facility Visit 1", "", false, null, "anc"));
-        actionList.put("TT Immunization 1", new BaseAncHomeVisitAction("TT Immunization 1", "", false, null, "anc"));
-        actionList.put("IPTp-SP dose 1", new BaseAncHomeVisitAction("IPTp-SP dose 1", "", false, null, "anc"));
-        actionList.put("Observation & Illness", new BaseAncHomeVisitAction("Observation & Illness", "", true, null, "anc"));
+    @Override
+    public void initializeActions(LinkedHashMap<String, BaseAncHomeVisitAction> map) {
+        for (Map.Entry<String, BaseAncHomeVisitAction> entry : map.entrySet()) {
+            actionList.put(entry.getKey(), entry.getValue());
+        }
+        if(mAdapter != null){
+            mAdapter.notifyDataSetChanged();
+        }
+        displayProgressBar(false);
+    }
+
+    @Override
+    public Context getContext() {
+        return getApplicationContext();
     }
 
     @Override
@@ -126,7 +130,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     @Override
     public BaseAncHomeVisitContract.Presenter presenter() {
-        return null;
+        return presenter;
     }
 
     @Override
@@ -135,14 +139,32 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     }
 
     @Override
-    public void startFrom(String formName) {
+    public void startForm(BaseAncHomeVisitAction ancHomeVisitAction) {
+        current_action = ancHomeVisitAction.getTitle();
+
         String locationId = AncLibrary.getInstance().context().allSharedPreferences().getPreference(AllConstants.CURRENT_LOCATION_ID);
-        presenter().startForm(formName, BASE_ENTITY_ID, locationId);
+        presenter().startForm(ancHomeVisitAction.getFormName(), BASE_ENTITY_ID, locationId);
     }
 
     @Override
-    public void startFragment(Fragment fragment) {
-        Timber.v("startFragment");
+    public void startFormActivity(JSONObject jsonForm) {
+        Intent intent = new Intent(this, JsonFormActivity.class);
+        intent.putExtra(Constants.JSON_FORM_EXTRA.JSON, jsonForm.toString());
+
+        if (getFormConfig() != null) {
+            intent.putExtra(JsonFormConstants.JSON_FORM_KEY.FORM, getFormConfig());
+        }
+
+        startActivityForResult(intent, Constants.REQUEST_CODE_GET_JSON);
+    }
+
+    @Override
+    public void startFragment(BaseAncHomeVisitAction ancHomeVisitAction) {
+        current_action = ancHomeVisitAction.getTitle();
+
+        if (ancHomeVisitAction.getDestinationFragment() != null) {
+            ancHomeVisitAction.getDestinationFragment().show(getFragmentManager(), TAG);
+        }
     }
 
     @Override
@@ -192,7 +214,46 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     }
 
     @Override
+    public void onDialogOptionUpdated(String option) {
+        BaseAncHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
+        if (ancHomeVisitAction != null) {
+            ancHomeVisitAction.setSelectedOption(option);
+            ancHomeVisitAction.setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
+        }
+
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == Constants.REQUEST_CODE_GET_JSON) {
+            if (resultCode == Activity.RESULT_OK) {
+                try {
+                    String jsonString = data.getStringExtra(Constants.JSON_FORM_EXTRA.JSON);
+                    BaseAncHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
+                    if (ancHomeVisitAction != null) {
+                        ancHomeVisitAction.setJsonPayload(jsonString);
+                        ancHomeVisitAction.setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
+                    }
+                } catch (Exception e) {
+                    Timber.e(Log.getStackTraceString(e));
+                    Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
+                }
+            } else {
+
+                BaseAncHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
+                if (ancHomeVisitAction != null) {
+                    ancHomeVisitAction.setActionStatus(BaseAncHomeVisitAction.Status.PENDING);
+                }
+            }
+
+        }
+
+        // update the adapter after every payload
+        if (mAdapter != null) {
+            mAdapter.notifyDataSetChanged();
+        }
     }
 }

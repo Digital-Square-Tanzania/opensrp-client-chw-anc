@@ -1,8 +1,12 @@
 package org.smartregister.chw.anc.presenter;
 
+import org.json.JSONObject;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
+import org.smartregister.chw.anc.interactor.JsonFormUtils;
+import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 
 import java.lang.ref.WeakReference;
+import java.util.LinkedHashMap;
 
 import timber.log.Timber;
 
@@ -22,7 +26,16 @@ public class BaseAncHomeVisitPresenter implements BaseAncHomeVisitContract.Prese
 
     @Override
     public void startForm(String formName, String memberID, String currentLocationId) {
-        Timber.v("startForm");
+        try {
+            JSONObject jsonObject = JsonFormUtils.getFormAsJson(formName);
+            JsonFormUtils.getRegistrationForm(jsonObject, memberID, currentLocationId);
+
+            if(view.get() != null){
+                view.get().startFormActivity(jsonObject);
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        }
     }
 
     @Override
@@ -34,6 +47,7 @@ public class BaseAncHomeVisitPresenter implements BaseAncHomeVisitContract.Prese
     public void initialize() {
         view.get().displayProgressBar(true);
         interactor.getUserInformation(memberID, this);
+        interactor.calculateActions(view.get(), memberID, this);
     }
 
     @Override
@@ -46,6 +60,13 @@ public class BaseAncHomeVisitPresenter implements BaseAncHomeVisitContract.Prese
         if (view.get() != null) {
             view.get().redrawHeader(memberName, age);
             view.get().displayProgressBar(false);
+        }
+    }
+
+    @Override
+    public void preloadActions(LinkedHashMap<String, BaseAncHomeVisitAction> map) {
+        if (view.get() != null) {
+            view.get().initializeActions(map);
         }
     }
 }

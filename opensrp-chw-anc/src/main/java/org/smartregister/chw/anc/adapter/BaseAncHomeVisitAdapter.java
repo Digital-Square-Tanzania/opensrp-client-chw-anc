@@ -42,7 +42,7 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
         }
     }
 
-    public BaseAncHomeVisitAdapter(Context context, BaseAncHomeVisitContract.View view , LinkedHashMap<String, BaseAncHomeVisitAction> myDataset) {
+    public BaseAncHomeVisitAdapter(Context context, BaseAncHomeVisitContract.View view, LinkedHashMap<String, BaseAncHomeVisitAction> myDataset) {
         ancHomeVisitActionList = myDataset;
         this.context = context;
         this.visitContractView = view;
@@ -99,11 +99,16 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
         bindClickListener(holder.getView(), ancHomeVisitAction);
     }
 
-    private void bindClickListener(View view, final BaseAncHomeVisitAction ancHomeVisitAction){
+    private void bindClickListener(View view, final BaseAncHomeVisitAction ancHomeVisitAction) {
         view.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                ancHomeVisitActionList.get(ancHomeVisitAction.getTitle()).setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
+                //ancHomeVisitActionList.get(ancHomeVisitAction.getTitle()).setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
+                if (StringUtils.isNotBlank(ancHomeVisitAction.getFormName())) {
+                    visitContractView.startForm(ancHomeVisitAction);
+                } else {
+                    visitContractView.startFragment(ancHomeVisitAction);
+                }
                 visitContractView.redrawVisitUI();
             }
         });

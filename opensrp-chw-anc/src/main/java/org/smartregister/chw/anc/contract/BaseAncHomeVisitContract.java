@@ -1,12 +1,13 @@
 package org.smartregister.chw.anc.contract;
 
-import android.support.v4.app.Fragment;
+import android.content.Context;
 
 import com.vijay.jsonwizard.domain.Form;
 
 import org.json.JSONObject;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public interface BaseAncHomeVisitContract {
@@ -17,9 +18,11 @@ public interface BaseAncHomeVisitContract {
 
         Form getFormConfig();
 
-        void startFrom(String formName);
+        void startForm(BaseAncHomeVisitAction ancHomeVisitAction);
 
-        void startFragment(Fragment fragment);
+        void startFormActivity(JSONObject jsonForm);
+
+        void startFragment(BaseAncHomeVisitAction ancHomeVisitAction);
 
         void redrawHeader(String memberName, String age);
 
@@ -35,6 +38,11 @@ public interface BaseAncHomeVisitContract {
 
         void submitVisit();
 
+        void onDialogOptionUpdated(String option);
+
+        void initializeActions(LinkedHashMap<String, BaseAncHomeVisitAction> map);
+
+        Context getContext();
     }
 
     interface Presenter {
@@ -67,6 +75,7 @@ public interface BaseAncHomeVisitContract {
 
         void getUserInformation(String memberID, final BaseAncHomeVisitContract.InteractorCallBack callBack);
 
+        void calculateActions(View view, String memberID, BaseAncHomeVisitContract.InteractorCallBack callBack);
     }
 
     interface InteractorCallBack {
@@ -74,6 +83,8 @@ public interface BaseAncHomeVisitContract {
         void onRegistrationSaved(boolean isEdit);
 
         void onMemberDetailsLoaded(String memberName, String age);
+
+        void preloadActions(LinkedHashMap<String, BaseAncHomeVisitAction> map);
 
     }
 }

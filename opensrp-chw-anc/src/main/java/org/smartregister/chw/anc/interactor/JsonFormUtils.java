@@ -10,6 +10,7 @@ import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.domain.tag.FormTag;
 import org.smartregister.repository.AllSharedPreferences;
+import org.smartregister.util.FormUtils;
 
 import static org.smartregister.chw.anc.util.Constants.ENCOUNTER_TYPE;
 
@@ -76,4 +77,9 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         jsonObject.getJSONObject(METADATA).put(ENCOUNTER_LOCATION, currentLocationId);
         jsonObject.put(org.smartregister.util.JsonFormUtils.ENTITY_ID, entityId);
     }
+
+    public static JSONObject getFormAsJson(String formName) throws Exception {
+        return FormUtils.getInstance(AncLibrary.getInstance().context().applicationContext()).getFormJson(formName);
+    }
+
 }

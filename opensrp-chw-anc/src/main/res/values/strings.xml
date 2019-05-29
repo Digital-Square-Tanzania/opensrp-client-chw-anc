@@ -23,4 +23,7 @@
     <!-- anc home visit -->
     <string name="optional">optional</string>
     <string name="anc_visit">ANC Visit</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>

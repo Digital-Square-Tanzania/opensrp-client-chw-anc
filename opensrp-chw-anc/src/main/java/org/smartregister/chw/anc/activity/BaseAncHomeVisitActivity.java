@@ -257,7 +257,11 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
                 BaseAncHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
                 if (ancHomeVisitAction != null) {
-                    ancHomeVisitAction.setActionStatus(BaseAncHomeVisitAction.Status.PENDING);
+                    if (StringUtils.isNotBlank(ancHomeVisitAction.getJsonPayload())) {
+                        ancHomeVisitAction.setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
+                    } else {
+                        ancHomeVisitAction.setActionStatus(BaseAncHomeVisitAction.Status.PENDING);
+                    }
                 }
             }
 

@@ -1,5 +1,7 @@
 package org.smartregister.chw.anc.contract;
 
+import android.content.Context;
+
 import com.vijay.jsonwizard.domain.Form;
 
 import org.json.JSONObject;
@@ -39,6 +41,8 @@ public interface BaseAncHomeVisitContract {
         void onDialogOptionUpdated(String option);
 
         void initializeActions(LinkedHashMap<String, BaseAncHomeVisitAction> map);
+
+        Context getContext();
     }
 
     interface Presenter {

@@ -1,6 +1,7 @@
 package org.smartregister.chw.anc.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.widget.DividerItemDecoration;
@@ -101,6 +102,11 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
             mAdapter.notifyDataSetChanged();
         }
         displayProgressBar(false);
+    }
+
+    @Override
+    public Context getContext() {
+        return getApplicationContext();
     }
 
     @Override

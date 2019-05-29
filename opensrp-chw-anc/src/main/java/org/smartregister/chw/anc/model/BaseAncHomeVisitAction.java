@@ -1,8 +1,7 @@
 package org.smartregister.chw.anc.model;
 
-import android.support.v4.app.Fragment;
-
 import org.apache.commons.lang3.StringUtils;
+import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
 
 /**
  * This action list allows users to either load a form or link it to a separate fragment.
@@ -13,10 +12,12 @@ public class BaseAncHomeVisitAction {
     private String subTitle;
     private Status actionStatus = Status.PENDING;
     private boolean optional;
-    private Fragment destinationFragment;
+    private BaseAncHomeVisitFragment destinationFragment;
     private String formName;
+    private String jsonPayload;
+    private String selectedOption;
 
-    public BaseAncHomeVisitAction(String title, String subTitle, boolean optional, Fragment destinationFragment, String formName) throws Exception {
+    public BaseAncHomeVisitAction(String title, String subTitle, boolean optional, BaseAncHomeVisitFragment destinationFragment, String formName) throws ValidationException {
         this.title = title;
         this.subTitle = subTitle;
         this.optional = optional;
@@ -29,9 +30,9 @@ public class BaseAncHomeVisitAction {
     /**
      * Validate that action object has a proper end point destination
      */
-    private void validateMe() throws Exception {
-        if(StringUtils.isBlank(formName) && destinationFragment == null){
-            throw new Exception("This action object lacks a valid form or destination fragment");
+    private void validateMe() throws ValidationException {
+        if (StringUtils.isBlank(formName) && destinationFragment == null) {
+            throw new ValidationException("This action object lacks a valid form or destination fragment");
         }
     }
 
@@ -67,6 +68,43 @@ public class BaseAncHomeVisitAction {
         this.optional = optional;
     }
 
+    public String getJsonPayload() {
+        return jsonPayload;
+    }
+
+    public void setJsonPayload(String jsonPayload) {
+        this.jsonPayload = jsonPayload;
+    }
+
+    public BaseAncHomeVisitFragment getDestinationFragment() {
+        return destinationFragment;
+    }
+
+    public void setDestinationFragment(BaseAncHomeVisitFragment destinationFragment) {
+        this.destinationFragment = destinationFragment;
+    }
+
+    public String getFormName() {
+        return formName;
+    }
+
+    public void setFormName(String formName) {
+        this.formName = formName;
+    }
+
+    public String getSelectedOption() {
+        return selectedOption;
+    }
+
+    public void setSelectedOption(String selectedOption) {
+        this.selectedOption = selectedOption;
+    }
+
     public enum Status {COMPLETED, PARTIALLY_COMPLETED, PENDING}
 
+    public static class ValidationException extends Exception {
+        public ValidationException(String message) {
+            super(message);
+        }
+    }
 }

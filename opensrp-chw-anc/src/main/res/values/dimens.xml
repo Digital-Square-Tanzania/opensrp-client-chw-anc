@@ -44,4 +44,12 @@
     <dimen name="home_visit_right_margin">20dp</dimen>
     <dimen name="home_visit_left_margin">10dp</dimen>
     <dimen name="home_visit_title_text_size">20sp</dimen>
+
+    <dimen name="btn_margin_bottom">10dp</dimen>
+    <dimen name="btn_margin_left">20dp</dimen>
+    <dimen name="btn_margin_right">20dp</dimen>
+    <dimen name="btn_padding_bottom">5dp</dimen>
+    <dimen name="btn_padding_top">5dp</dimen>
+    <dimen name="btn_text_size">15sp</dimen>
+
 </resources>

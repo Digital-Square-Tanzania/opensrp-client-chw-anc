@@ -21,7 +21,6 @@ import org.smartregister.AllConstants;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.adapter.BaseAncHomeVisitAdapter;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
-import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
 import org.smartregister.chw.anc.interactor.BaseAncHomeVisitInteractor;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.anc.presenter.BaseAncHomeVisitPresenter;
@@ -44,8 +43,8 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     private ProgressBar progressBar;
     private TextView tvSubmit;
     private TextView tvTitle;
-    private BaseAncHomeVisitContract.Presenter presenter;
-    private String BASE_ENTITY_ID;
+    protected BaseAncHomeVisitContract.Presenter presenter;
+    protected String BASE_ENTITY_ID;
     private String current_action;
 
     public static void startMe(Activity activity, String memberBaseEntityID) {
@@ -64,6 +63,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         }
 
         setUpView();
+        displayProgressBar(true);
         registerPresenter();
     }
 
@@ -81,11 +81,6 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        try {
-            initializeActions();
-        } catch (BaseAncHomeVisitAction.ValidationException e) {
-            Timber.e(e);
-        }
         mAdapter = new BaseAncHomeVisitAdapter(this, this, (LinkedHashMap) actionList);
         recyclerView.setAdapter(mAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
@@ -97,25 +92,15 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         presenter = new BaseAncHomeVisitPresenter(BASE_ENTITY_ID, this, new BaseAncHomeVisitInteractor());
     }
 
-    /**
-     * initializes the action list.
-     * Implement new actions on the display.
-     * This function can be pre-populated by fragments
-     */
-    protected void initializeActions() throws BaseAncHomeVisitAction.ValidationException {
-        actionList.put("Danger Signs", new BaseAncHomeVisitAction("Danger Signs", "", false, null, Constants.FORMS.ANC_REGISTRATION));
-        actionList.put("ANC Counseling", new BaseAncHomeVisitAction("ANC Counseling", "", false, null, "anc"));
-        BaseAncHomeVisitFragment llitn = BaseAncHomeVisitFragment.getInstance(this, "Sleeping under a LLITN",
-                "Is the woman sleeping under a Long Lasting Insecticide-Treated Net (LLITN)?",
-                R.drawable.avatar_woman,
-                BaseAncHomeVisitFragment.QuestionType.BOOLEAN
-        );
-        actionList.put("Sleeping under a LLITN", new BaseAncHomeVisitAction("Sleeping under a LLITN", "", false, llitn, null));
-        actionList.put("ANC Card Received", new BaseAncHomeVisitAction("ANC Card Received", "", false, null, "anc"));
-        actionList.put("ANC Health Facility Visit 1", new BaseAncHomeVisitAction("ANC Health Facility Visit 1", "", false, null, "anc"));
-        actionList.put("TT Immunization 1", new BaseAncHomeVisitAction("TT Immunization 1", "", false, null, "anc"));
-        actionList.put("IPTp-SP dose 1", new BaseAncHomeVisitAction("IPTp-SP dose 1", "", false, null, "anc"));
-        actionList.put("Observation & Illness", new BaseAncHomeVisitAction("Observation & Illness", "", true, null, "anc"));
+    @Override
+    public void initializeActions(LinkedHashMap<String, BaseAncHomeVisitAction> map) {
+        for (Map.Entry<String, BaseAncHomeVisitAction> entry : map.entrySet()) {
+            actionList.put(entry.getKey(), entry.getValue());
+        }
+        if(mAdapter != null){
+            mAdapter.notifyDataSetChanged();
+        }
+        displayProgressBar(false);
     }
 
     @Override

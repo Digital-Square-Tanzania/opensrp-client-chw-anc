@@ -5,6 +5,7 @@ import com.vijay.jsonwizard.domain.Form;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 
+import java.util.LinkedHashMap;
 import java.util.Map;
 
 public interface BaseAncHomeVisitContract {
@@ -37,6 +38,7 @@ public interface BaseAncHomeVisitContract {
 
         void onDialogOptionUpdated(String option);
 
+        void initializeActions(LinkedHashMap<String, BaseAncHomeVisitAction> map);
     }
 
     interface Presenter {
@@ -69,6 +71,7 @@ public interface BaseAncHomeVisitContract {
 
         void getUserInformation(String memberID, final BaseAncHomeVisitContract.InteractorCallBack callBack);
 
+        void calculateActions(View view, String memberID, BaseAncHomeVisitContract.InteractorCallBack callBack);
     }
 
     interface InteractorCallBack {
@@ -76,6 +79,8 @@ public interface BaseAncHomeVisitContract {
         void onRegistrationSaved(boolean isEdit);
 
         void onMemberDetailsLoaded(String memberName, String age);
+
+        void preloadActions(LinkedHashMap<String, BaseAncHomeVisitAction> map);
 
     }
 }

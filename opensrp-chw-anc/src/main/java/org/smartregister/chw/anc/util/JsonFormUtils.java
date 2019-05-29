@@ -1,4 +1,4 @@
-package org.smartregister.chw.anc.interactor;
+package org.smartregister.chw.anc.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;

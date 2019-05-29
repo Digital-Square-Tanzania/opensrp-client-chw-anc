@@ -17,6 +17,7 @@ import com.vijay.jsonwizard.activities.JsonFormActivity;
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 import com.vijay.jsonwizard.domain.Form;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.smartregister.AllConstants;
 import org.smartregister.chw.anc.AncLibrary;
@@ -98,7 +99,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         for (Map.Entry<String, BaseAncHomeVisitAction> entry : map.entrySet()) {
             actionList.put(entry.getKey(), entry.getValue());
         }
-        if(mAdapter != null){
+        if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
         }
         displayProgressBar(false);
@@ -142,8 +143,19 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     public void startForm(BaseAncHomeVisitAction ancHomeVisitAction) {
         current_action = ancHomeVisitAction.getTitle();
 
-        String locationId = AncLibrary.getInstance().context().allSharedPreferences().getPreference(AllConstants.CURRENT_LOCATION_ID);
-        presenter().startForm(ancHomeVisitAction.getFormName(), BASE_ENTITY_ID, locationId);
+        if (StringUtils.isNotBlank(ancHomeVisitAction.getJsonPayload())) {
+            try {
+                JSONObject jsonObject = new JSONObject(ancHomeVisitAction.getJsonPayload());
+                startFormActivity(jsonObject);
+            } catch (Exception e) {
+                Timber.e(e);
+                String locationId = AncLibrary.getInstance().context().allSharedPreferences().getPreference(AllConstants.CURRENT_LOCATION_ID);
+                presenter().startForm(ancHomeVisitAction.getFormName(), BASE_ENTITY_ID, locationId);
+            }
+        } else {
+            String locationId = AncLibrary.getInstance().context().allSharedPreferences().getPreference(AllConstants.CURRENT_LOCATION_ID);
+            presenter().startForm(ancHomeVisitAction.getFormName(), BASE_ENTITY_ID, locationId);
+        }
     }
 
     @Override

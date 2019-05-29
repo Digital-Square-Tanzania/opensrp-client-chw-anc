@@ -1,0 +1,16 @@
+<resources>
+    <style name="ChwAncTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
+        <item name="android:textColorPrimary">@color/white</item>
+        <item name="android:textColorSecondary">@color/black</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="colorBackgroundFloating">@color/white</item>
+        <item name="android:windowBackground">@color/white</item>
+        <item name="android:colorBackground">@color/white</item>
+    </style>
+    <style name="ChwAncTheme.AppBarOverlay.Light" parent="ChwAncTheme.AppBarOverlay">
+        <item name="android:textColorPrimary">@color/customAppThemeBlue</item>
+        <item name="android:textColorSecondary">@color/black</item>
+        <item name="android:textColor">@color/black</item>
+    </style>
+
+</resources>

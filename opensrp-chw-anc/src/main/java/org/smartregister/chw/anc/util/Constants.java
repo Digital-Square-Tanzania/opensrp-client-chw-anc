@@ -36,4 +36,10 @@ public interface Constants {
     interface ACTIVITY_PAYLOAD_TYPE {
         String REGISTRATION = "REGISTRATION";
     }
+
+    final class INTENT_KEY {
+        public static final String BASE_ENTITY_ID = "base_entity_id";
+        public static final String IS_FROM_FAMILY_REGISTER ="is_from_family_register";
+
+    }
 }

@@ -4,7 +4,7 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.smartregister.chw.anc.activity.BaseAncHomeVisitActivity;
-import org.smartregister.chw.anc.activity.BaseAncMemberProfile;
+import org.smartregister.chw.anc.activity.AncMemberProfileActivity;
 import org.smartregister.chw.anc.contract.AncRegisterFragmentContract;
 import org.smartregister.chw.anc.model.BaseAncRegisterFragmentModel;
 import org.smartregister.chw.anc.presenter.BaseAncRegisterFragmentPresenter;
@@ -133,7 +133,7 @@ public class BaseAncRegisterFragment extends BaseRegisterFragment implements Anc
 
     protected void openProfile(CommonPersonObjectClient client) {
         String baseEntityId = Utils.getValue(client.getColumnmaps(), DBConstants.KEY.BASE_ENTITY_ID, true);
-        BaseAncMemberProfile.startMe(getActivity(), baseEntityId);
+        AncMemberProfileActivity.startMe(getActivity(), baseEntityId);
     }
 
     protected void openHomeVisit(CommonPersonObjectClient client) {

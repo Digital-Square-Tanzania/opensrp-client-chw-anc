@@ -16,6 +16,8 @@ import org.jetbrains.annotations.NotNull;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
+import timber.log.Timber;
+
 public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnClickListener {
 
     private BaseAncHomeVisitContract.View homeVisitView;
@@ -56,7 +58,8 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     }
 
     private void customizeQuestionType() {
-
+        // hide / show view depending on the question type
+        Timber.v("customizeQuestionType");
     }
 
     @Override

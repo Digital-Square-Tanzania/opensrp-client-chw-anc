@@ -5,8 +5,9 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 
 import org.smartregister.chw.anc.activity.BaseAncHomeVisitActivity;
-import org.smartregister.chw.anc.activity.AncMemberProfileActivity;
+import org.smartregister.chw.anc.activity.BaseAncMemberProfileActivity;
 import org.smartregister.chw.anc.activity.BaseAncRegisterActivity;
+import org.smartregister.chw.anc.util.MemberObject;
 import org.smartregister.chw.anc_sample.R;
 
 public class AncRegisterActivity extends BaseAncRegisterActivity {
@@ -37,6 +38,6 @@ public class AncRegisterActivity extends BaseAncRegisterActivity {
     }
 
     private void openProfilePage() {
-        AncMemberProfileActivity.startMe(this, "1233435");
+        BaseAncMemberProfileActivity.startMe(this, new MemberObject("1233435"));
     }
 }

@@ -11,6 +11,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
+import android.widget.RadioButton;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
@@ -32,7 +33,6 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     private QuestionType questionType;
     @DrawableRes
     private int imageRes;
-    private String selectedOption;
     private JSONObject jsonObject;
     private String formName;
 
@@ -41,17 +41,8 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     private CustomFontTextView customFontTextViewTitle;
     private CustomFontTextView customFontTextViewQuestion;
     private ImageView imageViewMain;
-
-    public static BaseAncHomeVisitFragment getInstance(BaseAncHomeVisitContract.View view, String title, String question, @DrawableRes int imageRes, QuestionType type) {
-        BaseAncHomeVisitFragment fragment = new BaseAncHomeVisitFragment();
-        fragment.setHomeVisitView(view);
-        fragment.setTitle(title);
-        fragment.setQuestion(question);
-        fragment.setImageRes(imageRes);
-        fragment.setQuestionType(type);
-        return fragment;
-    }
-
+    private RadioButton radioButtonYes;
+    private RadioButton radioButtonNo;
 
     public static BaseAncHomeVisitFragment getInstance(BaseAncHomeVisitContract.View view, String form_name, JSONObject jsonObject) {
         BaseAncHomeVisitFragment fragment = new BaseAncHomeVisitFragment();
@@ -78,9 +69,12 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
 
         customizeQuestionType();
 
+        radioButtonYes = view.findViewById(R.id.radioButtonYes);
+        radioButtonYes.setOnClickListener(this);
+        radioButtonNo = view.findViewById(R.id.radioButtonNo);
+        radioButtonNo.setOnClickListener(this);
+
         view.findViewById(R.id.close).setOnClickListener(this);
-        view.findViewById(R.id.radioButtonYes).setOnClickListener(this);
-        view.findViewById(R.id.radioButtonNo).setOnClickListener(this);
         view.findViewById(R.id.buttonSave).setOnClickListener(this);
 
         initializePresenter();
@@ -90,8 +84,34 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
 
 
     private void customizeQuestionType() {
-        // hide / show view depending on the question type
-        Timber.v("customizeQuestionType");
+        if (getQuestionType() == null) {
+            return;
+        }
+        switch (getQuestionType()) {
+            case BOOLEAN:
+                prepareBooleanView();
+                return;
+            case DATE_SELECTOR:
+                prepareDateView();
+                return;
+            case MULTI_OPTIONS:
+                prepareOptionView();
+                return;
+            default:
+                prepareBooleanView();
+        }
+    }
+
+    private void prepareBooleanView() {
+        Timber.v("prepareBooleanView");
+    }
+
+    private void prepareDateView() {
+        Timber.v("prepareDateView");
+    }
+
+    private void prepareOptionView() {
+        Timber.v("prepareOptionView");
     }
 
     @Override
@@ -127,11 +147,6 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     @Override
     public Context getMyContext() {
         return getActivity().getApplicationContext();
-    }
-
-    @Override
-    public void setBooleanChoiceState(Boolean isYes) {
-
     }
 
     public void setTitle(String title) {
@@ -187,19 +202,28 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
 
     @Override
     public BaseAncHomeVisitFragmentContract.Presenter getPresenter() {
-        return null;
+        return presenter;
     }
 
     public JSONObject getJsonObject() {
         return jsonObject;
     }
 
-    public void setJsonObject(JSONObject jsonObject) {
-        this.jsonObject = jsonObject;
+    @Override
+    public void setValue(String value) {
+        if (radioButtonNo != null && radioButtonYes != null) {
+            if (value.equalsIgnoreCase("Yes")) {
+                radioButtonYes.setSelected(true);
+                radioButtonNo.setSelected(false);
+            } else {
+                radioButtonYes.setSelected(false);
+                radioButtonNo.setSelected(true);
+            }
+        }
     }
 
-    public String getFormName() {
-        return formName;
+    public void setJsonObject(JSONObject jsonObject) {
+        this.jsonObject = jsonObject;
     }
 
     public void setFormName(String formName) {
@@ -229,12 +253,12 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     }
 
     protected void save() {
-        homeVisitView.onDialogOptionUpdated(selectedOption);
+        getHomeVisitView().onDialogOptionUpdated(getJsonObject().toString());
         dismiss();
     }
 
     protected void selectOption(String option) {
-        selectedOption = option;
+        getPresenter().writeValue(getJsonObject(), option);
     }
 
     public enum QuestionType {

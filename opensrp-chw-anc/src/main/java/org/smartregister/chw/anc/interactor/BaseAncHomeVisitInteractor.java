@@ -11,7 +11,6 @@ import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.anc.util.AppExecutors;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.DBConstants;
-import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.commonregistry.CommonPersonObject;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.commonregistry.CommonRepository;
@@ -99,6 +98,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
                     actionList.put("ANC Counseling", new BaseAncHomeVisitAction("ANC Counseling", "", false,
                             null, "anc"));
 
+                    /*
                     // sample action using custom payload
                     BaseAncHomeVisitFragment llitn = BaseAncHomeVisitFragment.getInstance(view, "Sleeping under a LLITN",
                             "Is the woman sleeping under a Long Lasting Insecticide-Treated Net (LLITN)?",
@@ -107,6 +107,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
                     );
                     actionList.put("Sleeping under a LLITN", new BaseAncHomeVisitAction("Sleeping under a LLITN", "", false,
                             llitn, null));
+                            */
 
                     // sample action using json form configured payload
                     actionList.put("ANC Card Received", new BaseAncHomeVisitAction("ANC Card Received", "", false,

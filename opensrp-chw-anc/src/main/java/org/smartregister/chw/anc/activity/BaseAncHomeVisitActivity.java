@@ -226,10 +226,10 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     }
 
     @Override
-    public void onDialogOptionUpdated(String option) {
+    public void onDialogOptionUpdated(String jsonString) {
         BaseAncHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
         if (ancHomeVisitAction != null) {
-            ancHomeVisitAction.setSelectedOption(option);
+            ancHomeVisitAction.setJsonPayload(jsonString);
             ancHomeVisitAction.setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
         }
 

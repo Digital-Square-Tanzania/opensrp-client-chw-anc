@@ -1,5 +1,6 @@
 package org.smartregister.chw.anc.presenter;
 
+import org.json.JSONObject;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitFragmentContract;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
 
@@ -54,10 +55,22 @@ public class BaseAncHomeVisitFragmentPresenter implements BaseAncHomeVisitFragme
 
     @Override
     public BaseAncHomeVisitFragmentContract.View getView() {
-        if(view.get() != null){
+        if (view.get() != null) {
             return view.get();
         }
         return null;
+    }
+
+    @Override
+    public void writeValue(JSONObject jsonObject, String value) {
+        model.writeValue(jsonObject, value);
+    }
+
+    @Override
+    public void setValue(String value) {
+        if (view.get() != null) {
+            view.get().setValue(value);
+        }
     }
 
 }

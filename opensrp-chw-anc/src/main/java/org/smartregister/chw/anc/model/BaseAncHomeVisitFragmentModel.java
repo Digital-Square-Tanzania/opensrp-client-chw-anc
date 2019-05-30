@@ -26,11 +26,13 @@ public class BaseAncHomeVisitFragmentModel implements BaseAncHomeVisitFragmentCo
                 String question = getQuestion(jsonObject);
                 int image = getImage(jsonObject, presenter);
                 BaseAncHomeVisitFragment.QuestionType questionType = getQuestionType(jsonObject);
+                String value = getValue(jsonObject);
 
                 presenter.setTitle(title);
                 presenter.setQuestion(question);
                 presenter.setImageRes(image);
                 presenter.setQuestionType(questionType);
+                presenter.setValue(value);
             } catch (JSONException e) {
                 Timber.e(e);
             }
@@ -39,8 +41,14 @@ public class BaseAncHomeVisitFragmentModel implements BaseAncHomeVisitFragmentCo
     }
 
     @Override
-    public void writeValue(JSONObject jsonObject, String key, String value) {
-
+    public void writeValue(JSONObject jsonObject, String value) {
+        if (jsonObject != null) {
+            try {
+                jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0).put(JsonFormConstants.VALUE, value);
+            } catch (JSONException e) {
+                Timber.e(e);
+            }
+        }
     }
 
 
@@ -83,5 +91,13 @@ public class BaseAncHomeVisitFragmentModel implements BaseAncHomeVisitFragmentCo
         }
 
         return questionType;
+    }
+
+    private String getValue(JSONObject jsonObject) {
+        try {
+            return jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0).getString(JsonFormConstants.VALUE);
+        } catch (JSONException e) {
+            return "";
+        }
     }
 }

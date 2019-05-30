@@ -17,8 +17,6 @@ public interface BaseAncHomeVisitFragmentContract {
 
         Context getMyContext();
 
-        void setBooleanChoiceState(Boolean isYes);
-
         void setTitle(String title);
 
         void setQuestion(String question);
@@ -28,6 +26,11 @@ public interface BaseAncHomeVisitFragmentContract {
         void setQuestionType(BaseAncHomeVisitFragment.QuestionType questionType);
 
         JSONObject getJsonObject();
+
+        /**
+         * Set the selected value
+         */
+        void setValue(String value);
     }
 
     interface Presenter {
@@ -47,6 +50,9 @@ public interface BaseAncHomeVisitFragmentContract {
 
         View getView();
 
+        void writeValue(JSONObject jsonObject, String value);
+
+        void setValue(String value);
     }
 
     interface Model {
@@ -64,10 +70,9 @@ public interface BaseAncHomeVisitFragmentContract {
          * Updates the value of the question options with the selected value
          *
          * @param jsonObject
-         * @param key
          * @param value
          */
-        void writeValue(JSONObject jsonObject, String key, String value);
+        void writeValue(JSONObject jsonObject, String value);
     }
 
 }

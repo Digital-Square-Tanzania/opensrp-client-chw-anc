@@ -1,39 +1,23 @@
 package org.smartregister.chw.anc.util;
 
-import android.Manifest;
-import android.app.Activity;
-import android.content.ClipData;
-import android.content.ClipboardManager;
 import android.content.Context;
-import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
-import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
-import android.support.v4.app.ActivityCompat;
-import android.support.v4.content.ContextCompat;
-import android.telephony.TelephonyManager;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
-import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.smartregister.chw.anc.AncLibrary;
-import org.smartregister.util.PermissionUtils;
 
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
 
 public class Utils {
@@ -101,7 +85,6 @@ public class Utils {
     }
 
 
-
     public static Integer daysBetweenDateAndNow(String date) {
         DateTime duration;
         if (StringUtils.isNotBlank(date)) {
@@ -117,8 +100,6 @@ public class Utils {
     }
 
 
-
-
     private static String replaceSingularPlural(String string, String dwmyString, String singular, String plural) {
         int dwmy = Integer.valueOf(string.substring(0, string.indexOf(dwmyString)));
         return " " + string.replace(dwmyString, dwmy > 1 ? plural : singular);
@@ -132,10 +113,9 @@ public class Utils {
         String suffix = Locale.getDefault().getLanguage().equals("fr") ? "_fr" : "";
         return MessageFormat.format("{0}{1}", jsonForm, suffix);
     }
-
-
-
+    
     public static org.smartregister.Context context() {
         return AncLibrary.getInstance().context();
     }
+
 }

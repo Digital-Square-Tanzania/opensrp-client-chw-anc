@@ -130,5 +130,5 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     public AncMemberProfileContract.Presenter presenter() {
         return (AncMemberProfileContract.Presenter) presenter;
     }
-    
+
 }

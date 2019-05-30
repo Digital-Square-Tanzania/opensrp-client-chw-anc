@@ -45,6 +45,8 @@ public interface BaseAncHomeVisitFragmentContract {
 
         void setQuestionType(BaseAncHomeVisitFragment.QuestionType questionType);
 
+        View getView();
+
     }
 
     interface Model {

@@ -11,7 +11,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
-import android.widget.TextView;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
@@ -21,6 +20,7 @@ import org.smartregister.chw.anc.model.BaseAncHomeVisitFragmentModel;
 import org.smartregister.chw.anc.presenter.BaseAncHomeVisitFragmentPresenter;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
+import org.smartregister.view.customcontrols.CustomFontTextView;
 
 import timber.log.Timber;
 
@@ -37,6 +37,10 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     private String formName;
 
     private BaseAncHomeVisitFragmentContract.Presenter presenter;
+
+    private CustomFontTextView customFontTextViewTitle;
+    private CustomFontTextView customFontTextViewQuestion;
+    private ImageView imageViewMain;
 
     public static BaseAncHomeVisitFragment getInstance(BaseAncHomeVisitContract.View view, String title, String question, @DrawableRes int imageRes, QuestionType type) {
         BaseAncHomeVisitFragment fragment = new BaseAncHomeVisitFragment();
@@ -62,9 +66,16 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_base_anc_home_visit, container, false);
-        ((TextView) view.findViewById(R.id.customFontTextViewTitle)).setText(getTitle());
-        ((TextView) view.findViewById(R.id.customFontTextViewQuestion)).setText(getQuestion());
-        ((ImageView) view.findViewById(R.id.imageViewMain)).setImageResource(getImageRes());
+
+        customFontTextViewTitle = view.findViewById(R.id.customFontTextViewTitle);
+        customFontTextViewTitle.setText(getTitle());
+
+        customFontTextViewQuestion = view.findViewById(R.id.customFontTextViewQuestion);
+        customFontTextViewQuestion.setText(getQuestion());
+
+        imageViewMain = view.findViewById(R.id.imageViewMain);
+        imageViewMain.setImageResource(getImageRes());
+
         customizeQuestionType();
 
         view.findViewById(R.id.close).setOnClickListener(this);
@@ -125,6 +136,9 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
 
     public void setTitle(String title) {
         this.title = title;
+        if (customFontTextViewTitle != null) {
+            customFontTextViewTitle.setText(this.title);
+        }
     }
 
     public String getQuestion() {
@@ -133,6 +147,9 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
 
     public void setQuestion(String question) {
         this.question = question;
+        if (customFontTextViewQuestion != null) {
+            customFontTextViewQuestion.setText(this.question);
+        }
     }
 
     public BaseAncHomeVisitContract.View getHomeVisitView() {
@@ -149,6 +166,9 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
 
     public void setImageRes(int imageRes) {
         this.imageRes = imageRes;
+        if (imageViewMain != null) {
+            imageViewMain.setImageResource(this.imageRes);
+        }
     }
 
     public QuestionType getQuestionType() {
@@ -157,6 +177,7 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
 
     public void setQuestionType(QuestionType questionType) {
         this.questionType = questionType;
+        customizeQuestionType();
     }
 
     @Override

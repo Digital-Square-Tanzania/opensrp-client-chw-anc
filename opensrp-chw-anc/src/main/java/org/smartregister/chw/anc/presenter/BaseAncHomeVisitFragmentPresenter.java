@@ -52,4 +52,12 @@ public class BaseAncHomeVisitFragmentPresenter implements BaseAncHomeVisitFragme
         }
     }
 
+    @Override
+    public BaseAncHomeVisitFragmentContract.View getView() {
+        if(view.get() != null){
+            return view.get();
+        }
+        return null;
+    }
+
 }

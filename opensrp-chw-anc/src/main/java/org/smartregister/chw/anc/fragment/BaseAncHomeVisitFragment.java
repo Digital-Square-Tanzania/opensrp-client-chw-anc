@@ -34,7 +34,6 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     @DrawableRes
     private int imageRes;
     private JSONObject jsonObject;
-    private String formName;
 
     private BaseAncHomeVisitFragmentContract.Presenter presenter;
 
@@ -90,15 +89,16 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
         switch (getQuestionType()) {
             case BOOLEAN:
                 prepareBooleanView();
-                return;
+                break;
             case DATE_SELECTOR:
                 prepareDateView();
-                return;
+                break;
             case MULTI_OPTIONS:
                 prepareOptionView();
-                return;
+                break;
             default:
                 prepareBooleanView();
+                break;
         }
     }
 
@@ -141,7 +141,7 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
 
     @Override
     public void showProgressBar(boolean status) {
-
+        Timber.v("showProgressBar");
     }
 
     @Override
@@ -227,7 +227,6 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     }
 
     public void setFormName(String formName) {
-        this.formName = formName;
         if (this.getJsonObject() == null) {
             // load form from assets directory
             try {

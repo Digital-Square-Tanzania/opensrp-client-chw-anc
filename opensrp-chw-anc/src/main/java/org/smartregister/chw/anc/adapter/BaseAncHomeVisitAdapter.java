@@ -70,6 +70,22 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
             holder.descriptionText.setVisibility(View.GONE);
         }
 
+        int color_res = getCircleColor(ancHomeVisitAction);
+
+        holder.circleImageView.setCircleBackgroundColor(context.getResources().getColor(color_res));
+        holder.circleImageView.setImageResource(R.drawable.ic_checked);
+        holder.circleImageView.setColorFilter(context.getResources().getColor(R.color.white));
+
+        if (color_res == R.color.transparent_gray) {
+            holder.circleImageView.setBorderColor(context.getResources().getColor(R.color.light_grey));
+        } else {
+            holder.circleImageView.setBorderColor(context.getResources().getColor(color_res));
+        }
+
+        bindClickListener(holder.getView(), ancHomeVisitAction);
+    }
+
+    private int getCircleColor(BaseAncHomeVisitAction ancHomeVisitAction) {
         int color_res;
         switch (ancHomeVisitAction.getActionStatus()) {
             case PENDING:
@@ -85,18 +101,7 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
                 color_res = R.color.alert_complete_green;
                 break;
         }
-
-        holder.circleImageView.setCircleBackgroundColor(context.getResources().getColor(color_res));
-        holder.circleImageView.setImageResource(R.drawable.ic_checked);
-        holder.circleImageView.setColorFilter(context.getResources().getColor(R.color.white));
-
-        if (color_res == R.color.transparent_gray) {
-            holder.circleImageView.setBorderColor(context.getResources().getColor(R.color.light_grey));
-        } else {
-            holder.circleImageView.setBorderColor(context.getResources().getColor(color_res));
-        }
-
-        bindClickListener(holder.getView(), ancHomeVisitAction);
+        return color_res;
     }
 
     private void bindClickListener(View view, final BaseAncHomeVisitAction ancHomeVisitAction) {

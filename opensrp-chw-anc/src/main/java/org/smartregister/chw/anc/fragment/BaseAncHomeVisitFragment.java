@@ -2,6 +2,7 @@ package org.smartregister.chw.anc.fragment;
 
 
 import android.app.DialogFragment;
+import android.content.Context;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.DrawableRes;
@@ -13,12 +14,17 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONObject;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
+import org.smartregister.chw.anc.contract.BaseAncHomeVisitFragmentContract;
+import org.smartregister.chw.anc.model.BaseAncHomeVisitFragmentModel;
+import org.smartregister.chw.anc.presenter.BaseAncHomeVisitFragmentPresenter;
+import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
 import timber.log.Timber;
 
-public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnClickListener {
+public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnClickListener, BaseAncHomeVisitFragmentContract.View {
 
     private BaseAncHomeVisitContract.View homeVisitView;
     private String title;
@@ -27,7 +33,10 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     @DrawableRes
     private int imageRes;
     private String selectedOption;
+    private JSONObject jsonObject;
+    private String formName;
 
+    private BaseAncHomeVisitFragmentContract.Presenter presenter;
 
     public static BaseAncHomeVisitFragment getInstance(BaseAncHomeVisitContract.View view, String title, String question, @DrawableRes int imageRes, QuestionType type) {
         BaseAncHomeVisitFragment fragment = new BaseAncHomeVisitFragment();
@@ -36,6 +45,15 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
         fragment.setQuestion(question);
         fragment.setImageRes(imageRes);
         fragment.setQuestionType(type);
+        return fragment;
+    }
+
+
+    public static BaseAncHomeVisitFragment getInstance(BaseAncHomeVisitContract.View view, String form_name, JSONObject jsonObject) {
+        BaseAncHomeVisitFragment fragment = new BaseAncHomeVisitFragment();
+        fragment.setHomeVisitView(view);
+        fragment.setJsonObject(jsonObject);
+        fragment.setFormName(form_name);
         return fragment;
     }
 
@@ -54,8 +72,11 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
         view.findViewById(R.id.radioButtonNo).setOnClickListener(this);
         view.findViewById(R.id.buttonSave).setOnClickListener(this);
 
+        initializePresenter();
+
         return view;
     }
+
 
     private void customizeQuestionType() {
         // hide / show view depending on the question type
@@ -85,6 +106,21 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
 
     public String getTitle() {
         return title;
+    }
+
+    @Override
+    public void showProgressBar(boolean status) {
+
+    }
+
+    @Override
+    public Context getMyContext() {
+        return getActivity().getApplicationContext();
+    }
+
+    @Override
+    public void setBooleanChoiceState(Boolean isYes) {
+
     }
 
     public void setTitle(String title) {
@@ -121,6 +157,41 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
 
     public void setQuestionType(QuestionType questionType) {
         this.questionType = questionType;
+    }
+
+    @Override
+    public void initializePresenter() {
+        presenter = new BaseAncHomeVisitFragmentPresenter(this, new BaseAncHomeVisitFragmentModel());
+    }
+
+    @Override
+    public BaseAncHomeVisitFragmentContract.Presenter getPresenter() {
+        return null;
+    }
+
+    public JSONObject getJsonObject() {
+        return jsonObject;
+    }
+
+    public void setJsonObject(JSONObject jsonObject) {
+        this.jsonObject = jsonObject;
+    }
+
+    public String getFormName() {
+        return formName;
+    }
+
+    public void setFormName(String formName) {
+        this.formName = formName;
+        if (this.getJsonObject() == null) {
+            // load form from assets directory
+            try {
+                JSONObject jsonObject = JsonFormUtils.getFormAsJson(formName);
+                setJsonObject(jsonObject);
+            } catch (Exception e) {
+                Timber.e(e);
+            }
+        }
     }
 
     @Override

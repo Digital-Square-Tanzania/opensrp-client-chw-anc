@@ -113,7 +113,7 @@ public class Utils {
         String suffix = Locale.getDefault().getLanguage().equals("fr") ? "_fr" : "";
         return MessageFormat.format("{0}{1}", jsonForm, suffix);
     }
-    
+
     public static org.smartregister.Context context() {
         return AncLibrary.getInstance().context();
     }

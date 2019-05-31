@@ -1,14 +1,21 @@
 package org.smartregister.chw.anc_sample.activity;
 
+import android.content.Intent;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 
+import com.vijay.jsonwizard.activities.JsonWizardFormActivity;
+import com.vijay.jsonwizard.constants.JsonFormConstants;
+import com.vijay.jsonwizard.domain.Form;
+
+import org.json.JSONObject;
 import org.smartregister.chw.anc.activity.BaseAncHomeVisitActivity;
 import org.smartregister.chw.anc.activity.BaseAncMemberProfileActivity;
 import org.smartregister.chw.anc.activity.BaseAncRegisterActivity;
 import org.smartregister.chw.anc.util.MemberObject;
 import org.smartregister.chw.anc_sample.R;
+import org.smartregister.chw.anc_sample.utils.JsonFormUtils;
 
 public class AncRegisterActivity extends BaseAncRegisterActivity {
     @Override
@@ -31,6 +38,20 @@ public class AncRegisterActivity extends BaseAncRegisterActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void startFormActivity(JSONObject jsonForm) {
+
+        Intent intent = new Intent(this, JsonWizardFormActivity.class);
+        intent.putExtra(JsonFormUtils.JSON_FORM_EXTRA.JSON, jsonForm.toString());
+
+        Form form = new Form();
+        form.setActionBarBackground(R.color.family_actionbar);
+        form.setWizard(false);
+        intent.putExtra(JsonFormConstants.JSON_FORM_KEY.FORM, form);
+
+        startActivityForResult(intent, JsonFormUtils.REQUEST_CODE_GET_JSON);
     }
 
     private void openVisitPage() {

@@ -11,7 +11,6 @@ import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.anc.util.AppExecutors;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.DBConstants;
-import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.commonregistry.CommonPersonObject;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.commonregistry.CommonRepository;
@@ -90,19 +89,38 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
                 final LinkedHashMap<String, BaseAncHomeVisitAction> actionList = new LinkedHashMap<>();
 
                 try {
-                    actionList.put("Danger Signs", new BaseAncHomeVisitAction("Danger Signs", "", false, null, Constants.FORMS.ANC_REGISTRATION));
-                    actionList.put("ANC Counseling", new BaseAncHomeVisitAction("ANC Counseling", "", false, null, "anc"));
+
+                    // sample form opening action
+                    actionList.put("Danger Signs", new BaseAncHomeVisitAction("Danger Signs", "", false,
+                            null, Constants.FORMS.ANC_REGISTRATION));
+
+                    // sample error action
+                    actionList.put("ANC Counseling", new BaseAncHomeVisitAction("ANC Counseling", "", false,
+                            null, "anc"));
+
+                    /*
+                    // sample action using custom payload
                     BaseAncHomeVisitFragment llitn = BaseAncHomeVisitFragment.getInstance(view, "Sleeping under a LLITN",
                             "Is the woman sleeping under a Long Lasting Insecticide-Treated Net (LLITN)?",
                             R.drawable.avatar_woman,
                             BaseAncHomeVisitFragment.QuestionType.BOOLEAN
                     );
-                    actionList.put("Sleeping under a LLITN", new BaseAncHomeVisitAction("Sleeping under a LLITN", "", false, llitn, null));
-                    actionList.put("ANC Card Received", new BaseAncHomeVisitAction("ANC Card Received", "", false, null, "anc"));
-                    actionList.put("ANC Health Facility Visit 1", new BaseAncHomeVisitAction("ANC Health Facility Visit 1", "", false, null, "anc"));
-                    actionList.put("TT Immunization 1", new BaseAncHomeVisitAction("TT Immunization 1", "", false, null, "anc"));
-                    actionList.put("IPTp-SP dose 1", new BaseAncHomeVisitAction("IPTp-SP dose 1", "", false, null, "anc"));
-                    actionList.put("Observation & Illness", new BaseAncHomeVisitAction("Observation & Illness", "", true, null, "anc"));
+                    actionList.put("Sleeping under a LLITN", new BaseAncHomeVisitAction("Sleeping under a LLITN", "", false,
+                            llitn, null));
+                            */
+
+                    // sample action using json form configured payload
+                    actionList.put("ANC Card Received", new BaseAncHomeVisitAction("ANC Card Received", "", false,
+                            BaseAncHomeVisitFragment.getInstance(view, Constants.FORMS.HOME_VISIT_FORMS.ANC_CARD_FORM, null), null));
+
+                    actionList.put("ANC Health Facility Visit 1", new BaseAncHomeVisitAction("ANC Health Facility Visit 1", "", false,
+                            null, "anc"));
+                    actionList.put("TT Immunization 1", new BaseAncHomeVisitAction("TT Immunization 1", "", false,
+                            null, "anc"));
+                    actionList.put("IPTp-SP dose 1", new BaseAncHomeVisitAction("IPTp-SP dose 1", "", false,
+                            null, "anc"));
+                    actionList.put("Observation & Illness", new BaseAncHomeVisitAction("Observation & Illness", "", true,
+                            null, "anc"));
                 } catch (BaseAncHomeVisitAction.ValidationException e) {
                     e.printStackTrace();
                 }

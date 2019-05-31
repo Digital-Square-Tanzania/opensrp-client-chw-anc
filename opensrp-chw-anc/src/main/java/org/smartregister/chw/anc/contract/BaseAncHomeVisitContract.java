@@ -44,6 +44,7 @@ public interface BaseAncHomeVisitContract {
 
         /**
          * Results action when a dialog is opened and returns a payload
+         *
          * @param jsonString
          */
         void onDialogOptionUpdated(String jsonString);
@@ -51,6 +52,8 @@ public interface BaseAncHomeVisitContract {
         void initializeActions(LinkedHashMap<String, BaseAncHomeVisitAction> map);
 
         Context getContext();
+
+        void displayToast(String message);
     }
 
     interface Presenter {
@@ -69,6 +72,7 @@ public interface BaseAncHomeVisitContract {
          */
         void initialize();
 
+        void submitVisit();
     }
 
     interface Model {
@@ -84,6 +88,8 @@ public interface BaseAncHomeVisitContract {
         void getUserInformation(String memberID, final BaseAncHomeVisitContract.InteractorCallBack callBack);
 
         void calculateActions(View view, String memberID, BaseAncHomeVisitContract.InteractorCallBack callBack);
+
+        void submitVisit(String memberID, Map<String, BaseAncHomeVisitAction> map, InteractorCallBack callBack);
     }
 
     interface InteractorCallBack {
@@ -94,5 +100,6 @@ public interface BaseAncHomeVisitContract {
 
         void preloadActions(LinkedHashMap<String, BaseAncHomeVisitAction> map);
 
+        void onSubmitted(boolean successful);
     }
 }

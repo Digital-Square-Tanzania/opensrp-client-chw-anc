@@ -76,7 +76,6 @@ public class BaseAncRegisterInteractor implements AncRegisterContract.Interactor
             getClientProcessorForJava().processClient(getSyncHelper().getEvents(lastSyncDate, BaseRepository.TYPE_Unsynced));
             getAllSharedPreferences().saveLastUpdatedAtDate(lastSyncDate.getTime());
         }
-
     }
 
     public ECSyncHelper getSyncHelper() {

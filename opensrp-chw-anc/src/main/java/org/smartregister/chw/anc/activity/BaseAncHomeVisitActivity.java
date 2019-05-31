@@ -111,6 +111,11 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     }
 
     @Override
+    public void displayToast(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     protected void onCreation() {
         Timber.v("Empty onCreation");
     }
@@ -222,7 +227,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     @Override
     public void submitVisit() {
-        Timber.v("submitVisit");
+        getPresenter().submitVisit();
     }
 
     @Override
@@ -234,6 +239,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
+            redrawVisitUI();
         }
     }
 
@@ -263,6 +269,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         // update the adapter after every payload
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
+            redrawVisitUI();
         }
     }
 }

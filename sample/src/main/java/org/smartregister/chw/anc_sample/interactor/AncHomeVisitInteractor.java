@@ -28,10 +28,6 @@ public class AncHomeVisitInteractor extends BaseAncHomeVisitInteractor {
                     final BaseAncHomeVisitAction ds = new BaseAncHomeVisitAction("Danger Signs", "", false, null, Constants.FORMS.ANC_REGISTRATION);
                     actionList.put("Danger Signs", ds);
 
-                    // sample error action
-                    actionList.put("ANC Counseling", new BaseAncHomeVisitAction("ANC Counseling", "", false,
-                            null, "anc"));
-
                     // sample action using json form configured payload
                     final BaseAncHomeVisitAction anc = new BaseAncHomeVisitAction("ANC Card Received", "", false,
                             BaseAncHomeVisitFragment.getInstance(view, Constants.HOME_VISIT_FORMS.ANC_CARD_FORM, null), null);
@@ -60,16 +56,10 @@ public class AncHomeVisitInteractor extends BaseAncHomeVisitInteractor {
 
                     actionList.put("ANC Card Received", anc);
 
-                    actionList.put("ANC Health Facility Visit 1", new BaseAncHomeVisitAction("ANC Health Facility Visit 1", "", false,
-                            null, "anc"));
 
                     actionList.put("TT Immunization 1", new BaseAncHomeVisitAction("TT Immunization 1", "", false,
                             BaseAncHomeVisitFragment.getInstance(view, Constants.HOME_VISIT_FORMS.IMMUNIZATION, null), null));
 
-                    actionList.put("IPTp-SP dose 1", new BaseAncHomeVisitAction("IPTp-SP dose 1", "", false,
-                            null, "anc"));
-                    actionList.put("Observation & Illness", new BaseAncHomeVisitAction("Observation & Illness", "", true,
-                            null, "anc"));
                 } catch (BaseAncHomeVisitAction.ValidationException e) {
                     e.printStackTrace();
                 }

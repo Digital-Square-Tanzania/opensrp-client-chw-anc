@@ -13,6 +13,7 @@ public interface Constants {
 
     interface EVENT_TYPE {
         String ANC_REGISTRATION = "Anc Registration";
+        String ANC_HOME_VISIT = "ANC Home Visit";
     }
 
     interface FORMS {

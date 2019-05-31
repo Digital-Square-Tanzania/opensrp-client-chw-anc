@@ -2,6 +2,7 @@
     <string name="app_name">OpenSRP Chw Anc</string>
 
     <string name="error_unable_to_start_form">An error occurred when starting the form</string>
+    <string name="error_unable_save_home_visit">An error occurred when saving home visit</string>
     <string name="anc">ANC Clients</string>
 
     <!-- menu -->

@@ -186,7 +186,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     @Override
     public void redrawVisitUI() {
-        boolean valid = true;
+        boolean valid = actionList.size() > 0;
         for (Map.Entry<String, BaseAncHomeVisitAction> entry : actionList.entrySet()) {
             if (!entry.getValue().isOptional() && entry.getValue().getActionStatus() == BaseAncHomeVisitAction.Status.PENDING) {
                 valid = false;

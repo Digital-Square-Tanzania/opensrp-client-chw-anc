@@ -2,7 +2,7 @@ package org.smartregister.chw.anc.presenter;
 
 import org.json.JSONObject;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
-import org.smartregister.chw.anc.interactor.JsonFormUtils;
+import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 
 import java.lang.ref.WeakReference;

@@ -38,7 +38,7 @@ public interface BaseAncHomeVisitContract {
 
         void submitVisit();
 
-        void onDialogOptionUpdated(String option);
+        void onDialogOptionUpdated(String jsonString);
 
         void initializeActions(LinkedHashMap<String, BaseAncHomeVisitAction> map);
 

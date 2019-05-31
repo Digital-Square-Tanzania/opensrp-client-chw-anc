@@ -1,4 +1,4 @@
-package org.smartregister.chw.anc.interactor;
+package org.smartregister.chw.anc.util;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
@@ -16,6 +16,7 @@ import static org.smartregister.chw.anc.util.Constants.ENCOUNTER_TYPE;
 
 public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     public static final String METADATA = "metadata";
+    public static final String IMAGE = "image";
 
     protected static Triple<Boolean, JSONObject, JSONArray> validateParameters(String jsonString) {
 

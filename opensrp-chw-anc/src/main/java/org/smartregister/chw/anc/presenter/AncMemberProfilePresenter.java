@@ -29,12 +29,11 @@ public class AncMemberProfilePresenter implements BaseProfileContract.Presenter,
 
     @Override
     public void refreshProfileTopSection(MemberObject memberObject) {
-//        if (client == null || client.getColumnmaps() == null) {
-//            return;
-//        }
+
         getView().setMemberName(memberObject.getMemberName());
-
-
+        getView().setMemberGA(memberObject.getLastMenstrualPeriod());
+        getView().setMemberAddress(memberObject.getAddress());
+        getView().setMemberChwMemberId(memberObject.getChwMemberId());
     }
 
     @Override

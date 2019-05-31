@@ -1,8 +1,6 @@
 package org.smartregister.chw.anc.util;
 
-/**
- * Created by keyman on 13/11/2018.
- */
+
 public class DBConstants {
 
     public final class KEY {

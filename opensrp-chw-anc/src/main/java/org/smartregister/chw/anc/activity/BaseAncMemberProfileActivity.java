@@ -13,6 +13,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.format.DateTimeFormat;
 import org.smartregister.chw.anc.contract.AncMemberProfileContract;
 import org.smartregister.chw.anc.presenter.AncMemberProfilePresenter;
 import org.smartregister.chw.anc.util.MemberObject;
@@ -24,7 +27,7 @@ import timber.log.Timber;
 
 public class BaseAncMemberProfileActivity extends BaseProfileActivity implements AncMemberProfileContract.View {
     private boolean isFromFamilyRegister = false;
-    private TextView textViewTitle, text_view_anc_member_name;
+    private TextView textViewTitle, text_view_anc_member_name, text_view_ga, text_view_address, text_view_id;
     protected MemberObject MEMBER_OBJECT;
 
     public static void startMe(Activity activity, MemberObject memberObject) {
@@ -79,6 +82,9 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     @Override
     protected void setupViews() {
         text_view_anc_member_name = findViewById(R.id.text_view_anc_member_name);
+        text_view_ga = findViewById(R.id.text_view_ga);
+        text_view_address = findViewById(R.id.text_view_address);
+        text_view_id = findViewById(R.id.text_view_id);
     }
 
     @Override
@@ -109,6 +115,21 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     public void setMemberName(String memberName) {
         text_view_anc_member_name.setText(memberName);
 
+    }
+
+    @Override
+    public void setMemberGA(String memberGA) {
+        int ga = Days.daysBetween(DateTimeFormat.forPattern("dd-MM-yyyy").parseDateTime(memberGA), new DateTime()).getDays() / 7;
+        text_view_ga.setText(String.valueOf(ga));
+    }
+
+    @Override
+    public void setMemberAddress(String memberAddress) {
+        text_view_address.setText(memberAddress);
+    }
+
+    public void setMemberChwMemberId(String memberChwMemberId) {
+        text_view_id.setText(memberChwMemberId);
     }
 
     @Override

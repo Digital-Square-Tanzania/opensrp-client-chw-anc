@@ -11,7 +11,9 @@ public interface AncMemberProfileContract {
         Context getContext();
 
         void setMemberName(String memberName);
-
+        void setMemberGA(String memberGA);
+        void setMemberAddress(String memberAddress);
+        void setMemberChwMemberId(String memberChwMemberId);
         AncMemberProfileContract.Presenter presenter();
 
     }

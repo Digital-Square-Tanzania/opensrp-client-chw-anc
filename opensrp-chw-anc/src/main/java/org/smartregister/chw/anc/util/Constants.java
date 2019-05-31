@@ -20,6 +20,7 @@ public interface Constants {
 
         interface HOME_VISIT_FORMS {
             String  ANC_CARD_FORM = "anc_card_form";
+            String  IMMUNIZATION = "hv_immunization";
         }
     }
 

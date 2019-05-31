@@ -115,8 +115,10 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
                     actionList.put("ANC Health Facility Visit 1", new BaseAncHomeVisitAction("ANC Health Facility Visit 1", "", false,
                             null, "anc"));
+
                     actionList.put("TT Immunization 1", new BaseAncHomeVisitAction("TT Immunization 1", "", false,
-                            null, "anc"));
+                            BaseAncHomeVisitFragment.getInstance(view, Constants.FORMS.HOME_VISIT_FORMS.IMMUNIZATION, null), null));
+
                     actionList.put("IPTp-SP dose 1", new BaseAncHomeVisitAction("IPTp-SP dose 1", "", false,
                             null, "anc"));
                     actionList.put("Observation & Illness", new BaseAncHomeVisitAction("Observation & Illness", "", true,

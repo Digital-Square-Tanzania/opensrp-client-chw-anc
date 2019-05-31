@@ -27,6 +27,10 @@ import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.util.DatePickerUtils;
 import org.smartregister.view.customcontrols.CustomFontTextView;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
+
 import timber.log.Timber;
 
 public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnClickListener, BaseAncHomeVisitFragmentContract.View {
@@ -50,6 +54,7 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     private Button buttonCancel;
     private Button buttonSave;
     private DatePicker datePicker;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
 
     public static BaseAncHomeVisitFragment getInstance(BaseAncHomeVisitContract.View view, String form_name, JSONObject jsonObject) {
         BaseAncHomeVisitFragment fragment = new BaseAncHomeVisitFragment();
@@ -248,6 +253,15 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
             }
         } else if (getQuestionType() == QuestionType.DATE_SELECTOR) {
             // datePicker.updateDate();
+            try {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(dateFormat.parse(value));
+                datePicker.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+            } catch (Exception e) {
+                Calendar cal = Calendar.getInstance();
+                datePicker.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+                Timber.e(e);
+            }
         }
     }
 
@@ -270,24 +284,47 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.radioButtonYes) {
-            selectOption("Yes");
+            onSelectOption("Yes");
         } else if (v.getId() == R.id.radioButtonNo) {
-            selectOption("No");
+            onSelectOption("No");
         } else if (v.getId() == R.id.buttonSave) {
-            save();
+            onSave();
         } else if (v.getId() == R.id.close) {
             dismiss();
+        } else if (v.getId() == R.id.buttonCancel) {
+            onCancel();
         }
     }
 
     // to support the date values
-    protected void save() {
+    protected void onSave() {
+        if (getQuestionType() == QuestionType.DATE_SELECTOR) {
+            onSelectOption(dateFormat.format(getDateFromDatePicker(datePicker)));
+        }
+
         getHomeVisitView().onDialogOptionUpdated(getJsonObject().toString());
         dismiss();
     }
 
-    protected void selectOption(String option) {
+    protected void onSelectOption(String option) {
         getPresenter().writeValue(getJsonObject(), option);
+    }
+
+    protected void onCancel() {
+        onSelectOption("Dose not given");
+        getHomeVisitView().onDialogOptionUpdated(getJsonObject().toString());
+        dismiss();
+    }
+
+    public java.util.Date getDateFromDatePicker(DatePicker datePicker) {
+        int day = datePicker.getDayOfMonth();
+        int month = datePicker.getMonth();
+        int year = datePicker.getYear();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+
+        return calendar.getTime();
     }
 
     public enum QuestionType {

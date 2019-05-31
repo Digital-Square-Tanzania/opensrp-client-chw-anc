@@ -123,18 +123,22 @@ public class BaseAncHomeVisitAction {
      * or pending if the payload is not present. Any custom execution will also be processed to get the final value
      */
     public void evaluateStatus() {
-        if (StringUtils.isNotBlank(getJsonPayload())) {
-            setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
-        } else {
-            setActionStatus(BaseAncHomeVisitAction.Status.PENDING);
-        }
+        setActionStatus(computedStatus());
 
         if (getAncHomeVisitActionHelper() != null) {
             setActionStatus(getAncHomeVisitActionHelper().evaluateStatusOnPayload());
         }
     }
 
-    interface AncHomeVisitActionHelper {
+    public BaseAncHomeVisitAction.Status computedStatus() {
+        if (StringUtils.isNotBlank(getJsonPayload())) {
+            return Status.COMPLETED;
+        } else {
+            return Status.PENDING;
+        }
+    }
+
+    public interface AncHomeVisitActionHelper {
         Status evaluateStatusOnPayload();
     }
 }

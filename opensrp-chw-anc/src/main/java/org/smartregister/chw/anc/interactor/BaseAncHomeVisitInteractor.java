@@ -2,8 +2,11 @@ package org.smartregister.chw.anc.interactor;
 
 import android.support.annotation.VisibleForTesting;
 
+import com.vijay.jsonwizard.constants.JsonFormConstants;
+
 import org.joda.time.DateTime;
 import org.joda.time.Period;
+import org.json.JSONObject;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
@@ -91,8 +94,8 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
                 try {
 
                     // sample form opening action
-                    actionList.put("Danger Signs", new BaseAncHomeVisitAction("Danger Signs", "", false,
-                            null, Constants.FORMS.ANC_REGISTRATION));
+                    final BaseAncHomeVisitAction ds = new BaseAncHomeVisitAction("Danger Signs", "", false, null, Constants.FORMS.ANC_REGISTRATION);
+                    actionList.put("Danger Signs", ds);
 
                     // sample error action
                     actionList.put("ANC Counseling", new BaseAncHomeVisitAction("ANC Counseling", "", false,
@@ -110,8 +113,32 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
                             */
 
                     // sample action using json form configured payload
-                    actionList.put("ANC Card Received", new BaseAncHomeVisitAction("ANC Card Received", "", false,
-                            BaseAncHomeVisitFragment.getInstance(view, Constants.FORMS.HOME_VISIT_FORMS.ANC_CARD_FORM, null), null));
+                    final BaseAncHomeVisitAction anc = new BaseAncHomeVisitAction("ANC Card Received", "", false,
+                            BaseAncHomeVisitFragment.getInstance(view, Constants.FORMS.HOME_VISIT_FORMS.ANC_CARD_FORM, null), null);
+                    anc.setAncHomeVisitActionHelper(new BaseAncHomeVisitAction.AncHomeVisitActionHelper() {
+                        @Override
+                        public BaseAncHomeVisitAction.Status evaluateStatusOnPayload() {
+                            if (anc.getJsonPayload() != null) {
+                                try {
+                                    JSONObject jsonObject = new JSONObject(anc.getJsonPayload());
+                                    String value = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0).getString(JsonFormConstants.VALUE);
+
+                                    if (value.equalsIgnoreCase("Yes")) {
+                                        return BaseAncHomeVisitAction.Status.COMPLETED;
+                                    } else if (value.equalsIgnoreCase("No")) {
+                                        return BaseAncHomeVisitAction.Status.PARTIALLY_COMPLETED;
+                                    } else {
+                                        return BaseAncHomeVisitAction.Status.PENDING;
+                                    }
+                                } catch (Exception e) {
+                                    Timber.e(e);
+                                }
+                            }
+                            return anc.computedStatus();
+                        }
+                    });
+
+                    actionList.put("ANC Card Received", anc);
 
                     actionList.put("ANC Health Facility Visit 1", new BaseAncHomeVisitAction("ANC Health Facility Visit 1", "", false,
                             null, "anc"));

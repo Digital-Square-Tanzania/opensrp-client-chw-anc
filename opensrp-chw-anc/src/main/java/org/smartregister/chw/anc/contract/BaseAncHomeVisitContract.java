@@ -36,8 +36,16 @@ public interface BaseAncHomeVisitContract {
 
         Presenter getPresenter();
 
+        /**
+         * Save the received data into the events table
+         * Start aggregation of all events and persist results into the events table
+         */
         void submitVisit();
 
+        /**
+         * Results action when a dialog is opened and returns a payload
+         * @param jsonString
+         */
         void onDialogOptionUpdated(String jsonString);
 
         void initializeActions(LinkedHashMap<String, BaseAncHomeVisitAction> map);

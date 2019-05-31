@@ -230,7 +230,6 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         BaseAncHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
         if (ancHomeVisitAction != null) {
             ancHomeVisitAction.setJsonPayload(jsonString);
-            ancHomeVisitAction.setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
         }
 
         if (mAdapter != null) {
@@ -247,7 +246,6 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
                     BaseAncHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
                     if (ancHomeVisitAction != null) {
                         ancHomeVisitAction.setJsonPayload(jsonString);
-                        ancHomeVisitAction.setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
                     }
                 } catch (Exception e) {
                     Timber.e(Log.getStackTraceString(e));
@@ -256,13 +254,8 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
             } else {
 
                 BaseAncHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
-                if (ancHomeVisitAction != null) {
-                    if (StringUtils.isNotBlank(ancHomeVisitAction.getJsonPayload())) {
-                        ancHomeVisitAction.setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
-                    } else {
-                        ancHomeVisitAction.setActionStatus(BaseAncHomeVisitAction.Status.PENDING);
-                    }
-                }
+                if (ancHomeVisitAction != null)
+                    ancHomeVisitAction.evaluateStatus();
             }
 
         }

@@ -14,7 +14,9 @@ import org.smartregister.chw.anc.activity.BaseAncHomeVisitActivity;
 import org.smartregister.chw.anc.activity.BaseAncMemberProfile;
 import org.smartregister.chw.anc.activity.BaseAncRegisterActivity;
 import org.smartregister.chw.anc_sample.R;
+import org.smartregister.chw.anc_sample.fragment.AncRegisterFragment;
 import org.smartregister.chw.anc_sample.utils.JsonFormUtils;
+import org.smartregister.view.fragment.BaseRegisterFragment;
 
 public class AncRegisterActivity extends BaseAncRegisterActivity {
     @Override
@@ -40,6 +42,11 @@ public class AncRegisterActivity extends BaseAncRegisterActivity {
     }
 
     @Override
+    protected BaseRegisterFragment getRegisterFragment() {
+        return new AncRegisterFragment();
+    }
+
+    @Override
     public void startFormActivity(JSONObject jsonForm) {
 
         Intent intent = new Intent(this, JsonWizardFormActivity.class);
@@ -54,7 +61,7 @@ public class AncRegisterActivity extends BaseAncRegisterActivity {
     }
 
     private void openVisitPage() {
-        BaseAncHomeVisitActivity.startMe(this, "1233435");
+        AncHomeVisitActivity.startMe(this, "1233435");
     }
 
     private void openProfilePage() {

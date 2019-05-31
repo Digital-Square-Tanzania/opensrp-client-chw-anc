@@ -17,11 +17,6 @@ public interface Constants {
 
     interface FORMS {
         String ANC_REGISTRATION = "anc_registration";
-
-        interface HOME_VISIT_FORMS {
-            String  ANC_CARD_FORM = "anc_card_form";
-            String  IMMUNIZATION = "hv_immunization";
-        }
     }
 
     interface TABLES {

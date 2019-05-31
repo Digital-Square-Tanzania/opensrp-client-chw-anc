@@ -86,7 +86,7 @@
                     android:orientation="horizontal">
 
                     <org.smartregister.view.customcontrols.CustomFontTextView
-                        android:id="@+id/textview_gender"
+                        android:id="@+id/text_view_ga"
                         style="@style/CustomFontTextViewStyle.ClientList.Light"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -106,7 +106,7 @@
                         android:textColor="@android:color/black" />
 
                     <org.smartregister.view.customcontrols.CustomFontTextView
-                        android:id="@+id/textview_address"
+                        android:id="@+id/text_view_address"
                         style="@style/CustomFontTextViewStyle.ClientList.Light"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
@@ -128,7 +128,7 @@
 
 
                     <org.smartregister.view.customcontrols.CustomFontTextView
-                        android:id="@+id/textview_id"
+                        android:id="@+id/text_view_id"
                         style="@style/CustomFontTextViewStyle.ClientList.Light"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"

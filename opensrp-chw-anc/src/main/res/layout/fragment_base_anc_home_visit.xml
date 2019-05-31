@@ -56,6 +56,7 @@
             android:id="@+id/scroll_layout"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/linearLayoutButtons"
             android:layout_alignParentTop="true">
 
             <RelativeLayout
@@ -89,6 +90,17 @@
                         android:textColor="@color/text_black"
                         android:textSize="18dp" />
 
+                    <DatePicker
+                        android:id="@+id/earlier_date_picker"
+                        style="@android:style/Widget.DatePicker"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_horizontal"
+                        android:layout_marginTop="@dimen/btn_padding_top"
+                        android:calendarViewShown="false"
+                        android:descendantFocusability="blocksDescendants"
+                        android:visibility="gone" />
+
                     <RadioGroup
                         android:id="@+id/radioGroupChoices"
                         android:layout_width="wrap_content"
@@ -116,37 +128,66 @@
                             android:textColor="@color/text_black"
                             android:textSize="@dimen/register_list_desc_size" />
                     </RadioGroup>
+
                 </LinearLayout>
             </RelativeLayout>
         </android.support.v4.widget.NestedScrollView>
 
-        <View
-            android:id="@+id/view"
-            android:layout_width="match_parent"
-            android:layout_height="1px"
-            android:layout_above="@+id/buttonSave"
-            android:background="@color/light_grey" />
-
-        <Button
-            android:id="@+id/buttonSave"
-            style="?android:attr/borderlessButtonStyle"
+        <LinearLayout
+            android:id="@+id/linearLayoutButtons"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_alignBottom="@+id/scroll_layout"
             android:layout_alignParentBottom="true"
-            android:layout_marginStart="@dimen/btn_margin_left"
-            android:layout_marginLeft="@dimen/btn_margin_left"
-            android:layout_marginEnd="@dimen/btn_margin_right"
-            android:layout_marginRight="@dimen/btn_margin_right"
-            android:layout_marginBottom="@dimen/btn_margin_right"
-            android:background="@drawable/button_bg"
-            android:paddingTop="@dimen/btn_padding_top"
-            android:paddingBottom="@dimen/btn_padding_bottom"
-            android:text="@string/save"
-            android:textAllCaps="true"
-            android:textAppearance="?android:textAppearanceSmall"
-            android:textColor="@color/white"
-            android:textSize="@dimen/btn_text_size" />
+            android:orientation="vertical">
+
+            <View
+                android:id="@+id/view"
+                android:layout_width="match_parent"
+                android:layout_height="1px"
+                android:background="@color/light_grey" />
+
+            <Button
+                android:id="@+id/buttonSave"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/scroll_layout"
+                android:layout_alignParentBottom="true"
+                android:layout_marginStart="@dimen/btn_margin_left"
+                android:layout_marginLeft="@dimen/btn_margin_left"
+                android:layout_marginEnd="@dimen/btn_margin_right"
+                android:layout_marginRight="@dimen/btn_margin_right"
+                android:layout_marginBottom="@dimen/btn_margin_right"
+                android:background="@drawable/button_bg"
+                android:paddingTop="@dimen/btn_padding_top"
+                android:paddingBottom="@dimen/btn_padding_bottom"
+                android:text="@string/save"
+                android:textAllCaps="true"
+                android:textAppearance="?android:textAppearanceSmall"
+                android:textColor="@color/white"
+                android:textSize="@dimen/btn_text_size" />
+
+            <Button
+                android:id="@+id/buttonCancel"
+                style="?android:attr/borderlessButtonStyle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="@dimen/btn_margin_left"
+                android:layout_marginLeft="@dimen/btn_margin_left"
+                android:layout_marginEnd="@dimen/btn_margin_right"
+                android:layout_marginRight="@dimen/btn_margin_right"
+                android:layout_marginBottom="@dimen/btn_margin_right"
+                android:background="@drawable/vaccination_earlier_bg"
+                android:paddingTop="@dimen/btn_padding_top"
+                android:paddingBottom="@dimen/btn_padding_bottom"
+                android:text="@string/dose_not_given"
+                android:textAllCaps="false"
+                android:textAppearance="?android:textAppearanceSmall"
+                android:textColor="@color/client_list_grey"
+                android:textSize="@dimen/btn_text_size"
+                android:visibility="gone" />
+
+        </LinearLayout>
 
     </RelativeLayout>
 

@@ -9,12 +9,11 @@ public class MemberObject implements Serializable {
     String address;
     String chwMemberId;
 
-    public MemberObject(String memberName) {
-//    public MemberObject(String memberName, String lastMenstrualPeriod, String address, String chwMemberId) {
+    public MemberObject(String memberName, String lastMenstrualPeriod, String address, String chwMemberId) {
         this.memberName = memberName;
-//        this.lastMenstrualPeriod = lastMenstrualPeriod;
-//        this.address = address;
-//        this.chwMemberId = chwMemberId;
+        this.lastMenstrualPeriod = lastMenstrualPeriod;
+        this.address = address;
+        this.chwMemberId = chwMemberId;
     }
 
     public String getMemberName() {

@@ -59,6 +59,6 @@ public class AncRegisterActivity extends BaseAncRegisterActivity {
     }
 
     private void openProfilePage() {
-        BaseAncMemberProfileActivity.startMe(this, new MemberObject("1233435"));
+        BaseAncMemberProfileActivity.startMe(this, new MemberObject("Glory Juma, 26", "GA: 10 weeks", "Lavingtone #445", "ID: 3503504"));
     }
 }

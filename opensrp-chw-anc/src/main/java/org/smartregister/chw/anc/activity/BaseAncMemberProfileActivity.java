@@ -13,9 +13,6 @@ import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.widget.TextView;
 
-import org.joda.time.DateTime;
-import org.joda.time.Days;
-import org.joda.time.format.DateTimeFormat;
 import org.smartregister.chw.anc.contract.AncMemberProfileContract;
 import org.smartregister.chw.anc.presenter.AncMemberProfilePresenter;
 import org.smartregister.chw.anc.util.MemberObject;
@@ -25,6 +22,8 @@ import org.smartregister.view.activity.BaseProfileActivity;
 
 import timber.log.Timber;
 
+import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER_PROFILE_OBJECT;
+
 public class BaseAncMemberProfileActivity extends BaseProfileActivity implements AncMemberProfileContract.View {
     private boolean isFromFamilyRegister = false;
     private TextView textViewTitle, text_view_anc_member_name, text_view_ga, text_view_address, text_view_id;
@@ -32,7 +31,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     public static void startMe(Activity activity, MemberObject memberObject) {
         Intent intent = new Intent(activity, BaseAncMemberProfileActivity.class);
-        intent.putExtra("MemberObject", memberObject);
+        intent.putExtra(MEMBER_PROFILE_OBJECT, memberObject);
         activity.startActivity(intent);
     }
 
@@ -45,11 +44,11 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         setContentView(R.layout.activity_anc_member_profile);
         Toolbar toolbar = findViewById(R.id.collapsing_toolbar);
         textViewTitle = toolbar.findViewById(R.id.toolbar_title);
-//        setSupportActionBar(toolbar);
+        setSupportActionBar(toolbar);
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
-            MEMBER_OBJECT = (MemberObject) getIntent().getSerializableExtra("MemberObject");
+            MEMBER_OBJECT = (MemberObject) getIntent().getSerializableExtra(MEMBER_PROFILE_OBJECT);
         }
 
         registerPresenter();
@@ -119,8 +118,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     public void setMemberGA(String memberGA) {
-        int ga = Days.daysBetween(DateTimeFormat.forPattern("dd-MM-yyyy").parseDateTime(memberGA), new DateTime()).getDays() / 7;
-        text_view_ga.setText(String.valueOf(ga));
+        text_view_ga.setText(String.valueOf(memberGA));
     }
 
     @Override

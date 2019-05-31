@@ -133,7 +133,10 @@ public class BaseAncRegisterFragment extends BaseRegisterFragment implements Anc
     }
 
     protected void openProfile(CommonPersonObjectClient client) {
-        MemberObject memberObject = new MemberObject(client.getName());
+        MemberObject memberObject = new MemberObject(client.getName(),
+                client.getColumnmaps().get(DBConstants.KEY.LAST_MENSTRUAL_PERIOD),
+                client.getColumnmaps().get(DBConstants.KEY.VILLAGE_TOWN),
+                client.getColumnmaps().get(DBConstants.KEY.UNIQUE_ID));
         BaseAncMemberProfileActivity.startMe(getActivity(), memberObject);
     }
 

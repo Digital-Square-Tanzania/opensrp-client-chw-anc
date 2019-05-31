@@ -154,7 +154,7 @@
 
         <include layout="@layout/view_record_visit" />
 
-        <include layout="@layout/content_profile" />
+        <include layout="@layout/anc_member_content_profile" />
 
     </android.support.design.widget.AppBarLayout>
 </android.support.design.widget.CoordinatorLayout>

@@ -14,14 +14,20 @@ import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.anc.util.Util;
 import org.smartregister.clientandeventmodel.Event;
+import org.smartregister.clientandeventmodel.Obs;
 import org.smartregister.commonregistry.CommonPersonObject;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.commonregistry.CommonRepository;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.util.Utils;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -158,7 +164,23 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
         AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
         Event baseEvent = JsonFormUtils.processAncJsonForm(allSharedPreferences, memberID, encounterType, jsonString);
+        prepareEvent(baseEvent);
         Util.processEvent(allSharedPreferences, baseEvent);
+    }
+
+    /**
+     * Injects implementation specific changes to the event
+     *
+     * @param baseEvent
+     */
+    protected void prepareEvent(Event baseEvent) {
+        if (baseEvent != null) {
+            // add anc date obs and last
+            List<Object> list = new ArrayList<>();
+            list.add(new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date()));
+            baseEvent.addObs(new Obs("concept", "text", "anc_visit_date", "",
+                    list, new ArrayList<>(), null, "anc_visit_date"));
+        }
     }
 
     public String getTableName() {

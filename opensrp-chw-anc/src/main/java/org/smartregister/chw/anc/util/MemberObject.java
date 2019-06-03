@@ -4,14 +4,14 @@ import java.io.Serializable;
 
 @SuppressWarnings("serial")
 public class MemberObject implements Serializable {
-    String memberName;
-    String lastMenstrualPeriod;
-    String address;
-    String chwMemberId;
-    String baseEntityId;
-    String familyBaseEntityId;
-    String familyHead;
-    String primaryCareGiver;
+    protected String memberName;
+    protected String lastMenstrualPeriod;
+    protected String address;
+    protected String chwMemberId;
+    protected String baseEntityId;
+    protected String familyBaseEntityId;
+    protected String familyHead;
+    protected String primaryCareGiver;
 
     public MemberObject(String memberName, String lastMenstrualPeriod, String address, String chwMemberId, String baseEntityId, String familyBaseEntityId, String familyHead, String primaryCareGiver) {
         this.memberName = memberName;

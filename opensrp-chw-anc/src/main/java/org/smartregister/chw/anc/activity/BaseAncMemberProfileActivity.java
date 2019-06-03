@@ -25,7 +25,7 @@ import timber.log.Timber;
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER_PROFILE_OBJECT;
 
 public class BaseAncMemberProfileActivity extends BaseProfileActivity implements AncMemberProfileContract.View {
-    private TextView textViewTitle, text_view_anc_member_name, text_view_ga, text_view_address, text_view_id;
+    private TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id;
     protected MemberObject MEMBER_OBJECT;
 
     public static void startMe(Activity activity, MemberObject memberObject) {
@@ -42,7 +42,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     protected void onCreation() {
         setContentView(R.layout.activity_anc_member_profile);
         Toolbar toolbar = findViewById(R.id.collapsing_toolbar);
-        textViewTitle = toolbar.findViewById(R.id.toolbar_title);
         setSupportActionBar(toolbar);
         Bundle extras = getIntent().getExtras();
 

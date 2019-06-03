@@ -9,8 +9,6 @@ import java.lang.ref.WeakReference;
 
 public class AncMemberProfilePresenter implements BaseProfileContract.Presenter, AncMemberProfileContract.InteractorCallBack, AncMemberProfileContract.Presenter {
 
-    private static final String TAG = AncMemberProfilePresenter.class.getCanonicalName();
-
     private WeakReference<AncMemberProfileContract.View> view;
     private AncMemberProfileContract.Interactor interactor;
 
@@ -48,6 +46,6 @@ public class AncMemberProfilePresenter implements BaseProfileContract.Presenter,
 
     @Override
     public void onDestroy(boolean b) {
-
+//        implement
     }
 }

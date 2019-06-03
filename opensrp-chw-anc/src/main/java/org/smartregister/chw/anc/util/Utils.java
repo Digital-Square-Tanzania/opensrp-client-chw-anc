@@ -99,16 +99,6 @@ public class Utils {
         return null;
     }
 
-
-    private static String replaceSingularPlural(String string, String dwmyString, String singular, String plural) {
-        int dwmy = Integer.valueOf(string.substring(0, string.indexOf(dwmyString)));
-        return " " + string.replace(dwmyString, dwmy > 1 ? plural : singular);
-    }
-
-    private static String getStringSpacePrefix(Context context, int resId) {
-        return " " + context.getString(resId);
-    }
-
     public static String getLocalForm(String jsonForm) {
         String suffix = Locale.getDefault().getLanguage().equals("fr") ? "_fr" : "";
         return MessageFormat.format("{0}{1}", jsonForm, suffix);

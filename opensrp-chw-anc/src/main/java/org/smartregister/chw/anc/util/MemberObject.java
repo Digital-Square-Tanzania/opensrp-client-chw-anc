@@ -8,12 +8,20 @@ public class MemberObject implements Serializable {
     String lastMenstrualPeriod;
     String address;
     String chwMemberId;
+    String baseEntityId;
+    String familyBaseEntityId;
+    String familyHead;
+    String primaryCareGiver;
 
-    public MemberObject(String memberName, String lastMenstrualPeriod, String address, String chwMemberId) {
+    public MemberObject(String memberName, String lastMenstrualPeriod, String address, String chwMemberId, String baseEntityId, String familyBaseEntityId, String familyHead, String primaryCareGiver) {
         this.memberName = memberName;
         this.lastMenstrualPeriod = lastMenstrualPeriod;
         this.address = address;
         this.chwMemberId = chwMemberId;
+        this.baseEntityId = baseEntityId;
+        this.familyBaseEntityId = familyBaseEntityId;
+        this.familyHead = familyHead;
+        this.primaryCareGiver = primaryCareGiver;
     }
 
     public String getMemberName() {
@@ -32,4 +40,19 @@ public class MemberObject implements Serializable {
         return chwMemberId;
     }
 
+    public String getBaseEntityId() {
+        return baseEntityId;
+    }
+
+    public String getFamilyBaseEntityId() {
+        return familyBaseEntityId;
+    }
+
+    public String getFamilyHead() {
+        return familyHead;
+    }
+
+    public String getPrimaryCareGiver() {
+        return primaryCareGiver;
+    }
 }

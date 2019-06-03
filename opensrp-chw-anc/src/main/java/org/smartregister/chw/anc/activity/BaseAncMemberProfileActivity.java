@@ -25,7 +25,6 @@ import timber.log.Timber;
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER_PROFILE_OBJECT;
 
 public class BaseAncMemberProfileActivity extends BaseProfileActivity implements AncMemberProfileContract.View {
-    private boolean isFromFamilyRegister = false;
     private TextView textViewTitle, text_view_anc_member_name, text_view_ga, text_view_address, text_view_id;
     protected MemberObject MEMBER_OBJECT;
 
@@ -74,7 +73,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         initializePresenter();
 
         setupViews();
-        setUpToolbar();
+//        setUpToolbar();
 
     }
 
@@ -96,13 +95,13 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         Timber.v("Empty onClick");
     }
 
-    private void setUpToolbar() {
-        if (isFromFamilyRegister) {
-            textViewTitle.setText(getString(R.string.return_to_family_members));
-        } else {
-            textViewTitle.setText(getString(R.string.return_to_all_anc_women));
-        }
-    }
+//    private void setUpToolbar() {
+//        if (isFromFamilyRegister) {
+//            textViewTitle.setText(getString(R.string.return_to_family_members));
+//        } else {
+//            textViewTitle.setText(getString(R.string.return_to_all_anc_women));
+//        }
+//    }
 
     @Override
     protected void initializePresenter() {

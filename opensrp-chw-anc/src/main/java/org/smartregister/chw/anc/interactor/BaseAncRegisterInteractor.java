@@ -2,22 +2,15 @@ package org.smartregister.chw.anc.interactor;
 
 import android.support.annotation.VisibleForTesting;
 
-import org.json.JSONObject;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.contract.AncRegisterContract;
 import org.smartregister.chw.anc.util.AppExecutors;
 import org.smartregister.chw.anc.util.JsonFormUtils;
+import org.smartregister.chw.anc.util.Util;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.repository.AllSharedPreferences;
-import org.smartregister.repository.BaseRepository;
-import org.smartregister.sync.ClientProcessorForJava;
-import org.smartregister.sync.helper.ECSyncHelper;
-
-import java.util.Date;
 
 import timber.log.Timber;
-
-import static org.smartregister.util.Utils.getAllSharedPreferences;
 
 public class BaseAncRegisterInteractor implements AncRegisterContract.Interactor {
 
@@ -66,23 +59,6 @@ public class BaseAncRegisterInteractor implements AncRegisterContract.Interactor
         AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
         Event baseEvent = JsonFormUtils.processJsonForm(allSharedPreferences, jsonString);
 
-        if (baseEvent != null) {
-            JsonFormUtils.tagEvent(allSharedPreferences, baseEvent);
-            JSONObject eventJson = new JSONObject(JsonFormUtils.gson.toJson(baseEvent));
-            getSyncHelper().addEvent(baseEvent.getBaseEntityId(), eventJson);
-
-            long lastSyncTimeStamp = getAllSharedPreferences().fetchLastUpdatedAtDate(0);
-            Date lastSyncDate = new Date(lastSyncTimeStamp);
-            getClientProcessorForJava().processClient(getSyncHelper().getEvents(lastSyncDate, BaseRepository.TYPE_Unsynced));
-            getAllSharedPreferences().saveLastUpdatedAtDate(lastSyncDate.getTime());
-        }
-    }
-
-    public ECSyncHelper getSyncHelper() {
-        return AncLibrary.getInstance().getEcSyncHelper();
-    }
-
-    public ClientProcessorForJava getClientProcessorForJava() {
-        return AncLibrary.getInstance().getClientProcessorForJava();
+        Util.processEvent(allSharedPreferences, baseEvent);
     }
 }

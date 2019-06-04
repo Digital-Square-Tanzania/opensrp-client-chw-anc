@@ -19,7 +19,6 @@
         </activity>
         <activity android:name="com.vijay.jsonwizard.activities.JsonFormActivity" />
 
-
         <provider
             android:name="android.support.v4.content.FileProvider"
             android:authorities="${applicationId}.fileprovider"

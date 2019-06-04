@@ -37,4 +37,8 @@ public interface Constants {
     interface ACTIVITY_PAYLOAD_TYPE {
         String REGISTRATION = "REGISTRATION";
     }
+
+    interface ANC_MEMBER_OBJECTS {
+        String MEMBER_PROFILE_OBJECT = "MemberObject";
+    }
 }

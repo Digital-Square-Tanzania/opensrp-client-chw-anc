@@ -26,6 +26,15 @@
     <string name="anc_visit">ANC Visit</string>
     <string name="dose_not_given">DOSE NOT GIVEN</string>
 
+
+    <string name="return_to_family_members">Return to family members</string>
+    <string name="return_to_all_anc_women">Return to all ANC women</string>
+    <string name="record_visit">Record visit</string>
+    <string name="visit_not_done_btn_child_profile">Visit not done</string>
+    <string name="not_visiting_this_month">Not visiting this month</string>
+    <string name="undo">UNDO</string>
+    <string name="edit">EDIT</string>
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="unique_id_text">ID: %1$s</string>
 </resources>

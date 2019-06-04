@@ -3,7 +3,7 @@
     package="org.smartregister.chw.opensrp_chw_anc">
 
     <application>
-        <activity android:name="org.smartregister.chw.anc.activity.BaseAncMemberProfile"></activity>
+        <activity android:name="org.smartregister.chw.anc.activity.BaseAncMemberProfileActivity"></activity>
         <activity android:name="org.smartregister.chw.anc.activity.BaseAncHomeVisitActivity"/>
     </application>
 

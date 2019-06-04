@@ -11,11 +11,18 @@ import org.smartregister.domain.tag.FormTag;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.util.FormUtils;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+
+import timber.log.Timber;
+
 import static org.smartregister.chw.anc.util.Constants.ENCOUNTER_TYPE;
 
 public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     public static final String METADATA = "metadata";
     public static final String IMAGE = "image";
+    public static final String ANC_HOME_VISIT = "home_visit_group";
 
     protected static Triple<Boolean, JSONObject, JSONArray> validateParameters(String jsonString) {
 
@@ -26,6 +33,49 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         return registrationFormParams;
     }
 
+    public static Event processAncJsonForm(AllSharedPreferences allSharedPreferences, String entityId, String encounterType, Map<String, String> jsonStrings) {
+
+        // aggregate all the fields into 1 payload
+
+        JSONObject jsonForm = null;
+        JSONObject metadata = null;
+
+        List<JSONObject> fields_obj = new ArrayList<>();
+
+        for (Map.Entry<String, String> map : jsonStrings.entrySet()) {
+            Triple<Boolean, JSONObject, JSONArray> registrationFormParams = validateParameters(map.getValue());
+
+            if (!registrationFormParams.getLeft()) {
+                return null;
+            }
+
+            if (jsonForm == null) {
+                jsonForm = registrationFormParams.getMiddle();
+            }
+
+            if (metadata == null) {
+                metadata = getJSONObject(jsonForm, METADATA);
+            }
+
+            // add all the fields to the event while injecting a new variable for grouping
+            JSONArray local_fields = registrationFormParams.getRight();
+            int x = 0;
+            while (local_fields.length() > x) {
+                try {
+                    JSONObject obj = local_fields.getJSONObject(x);
+                    obj.put(ANC_HOME_VISIT, map.getKey());
+                    fields_obj.add(obj);
+                } catch (JSONException e) {
+                    Timber.e(e);
+                }
+                x++;
+            }
+        }
+
+        JSONArray fields = new JSONArray(fields_obj);
+
+        return org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, encounterType, Constants.TABLES.ANC_MEMBERS);
+    }
 
     public static Event processJsonForm(AllSharedPreferences allSharedPreferences, String jsonString) {
 

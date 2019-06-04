@@ -15,7 +15,9 @@ import org.smartregister.chw.anc.activity.BaseAncMemberProfileActivity;
 import org.smartregister.chw.anc.activity.BaseAncRegisterActivity;
 import org.smartregister.chw.anc.util.MemberObject;
 import org.smartregister.chw.anc_sample.R;
+import org.smartregister.chw.anc_sample.fragment.AncRegisterFragment;
 import org.smartregister.chw.anc_sample.utils.JsonFormUtils;
+import org.smartregister.view.fragment.BaseRegisterFragment;
 
 public class AncRegisterActivity extends BaseAncRegisterActivity {
     @Override
@@ -41,6 +43,11 @@ public class AncRegisterActivity extends BaseAncRegisterActivity {
     }
 
     @Override
+    protected BaseRegisterFragment getRegisterFragment() {
+        return new AncRegisterFragment();
+    }
+
+    @Override
     public void startFormActivity(JSONObject jsonForm) {
 
         Intent intent = new Intent(this, JsonWizardFormActivity.class);
@@ -55,10 +62,10 @@ public class AncRegisterActivity extends BaseAncRegisterActivity {
     }
 
     private void openVisitPage() {
-        BaseAncHomeVisitActivity.startMe(this, "1233435");
+        AncHomeVisitActivity.startMe(this, "1233435");
     }
 
     private void openProfilePage() {
-        BaseAncMemberProfileActivity.startMe(this, new MemberObject("Glory Juma, 26", "GA: 10 weeks", "Lavingtone #445", "ID: 3503504"));
+        BaseAncMemberProfileActivity.startMe(this, new MemberObject("Glory Juma, 26", "GA: 10 weeks", "Lavingtone #445", "ID: 3503504", "", "", "", ""));
     }
 }

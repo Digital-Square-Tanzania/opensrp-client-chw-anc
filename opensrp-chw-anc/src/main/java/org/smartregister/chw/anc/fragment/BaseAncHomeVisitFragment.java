@@ -9,9 +9,12 @@ import android.support.annotation.DrawableRes;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Button;
+import android.widget.DatePicker;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.RadioButton;
+import android.widget.RadioGroup;
 
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONObject;
@@ -21,7 +24,12 @@ import org.smartregister.chw.anc.model.BaseAncHomeVisitFragmentModel;
 import org.smartregister.chw.anc.presenter.BaseAncHomeVisitFragmentPresenter;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
+import org.smartregister.util.DatePickerUtils;
 import org.smartregister.view.customcontrols.CustomFontTextView;
+
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -40,8 +48,13 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     private CustomFontTextView customFontTextViewTitle;
     private CustomFontTextView customFontTextViewQuestion;
     private ImageView imageViewMain;
+    private RadioGroup radioGroupChoices;
     private RadioButton radioButtonYes;
     private RadioButton radioButtonNo;
+    private Button buttonCancel;
+    private Button buttonSave;
+    private DatePicker datePicker;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
 
     public static BaseAncHomeVisitFragment getInstance(BaseAncHomeVisitContract.View view, String form_name, JSONObject jsonObject) {
         BaseAncHomeVisitFragment fragment = new BaseAncHomeVisitFragment();
@@ -66,17 +79,24 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
         imageViewMain = view.findViewById(R.id.imageViewMain);
         imageViewMain.setImageResource(getImageRes());
 
-        customizeQuestionType();
-
+        radioGroupChoices = view.findViewById(R.id.radioGroupChoices);
         radioButtonYes = view.findViewById(R.id.radioButtonYes);
         radioButtonYes.setOnClickListener(this);
         radioButtonNo = view.findViewById(R.id.radioButtonNo);
         radioButtonNo.setOnClickListener(this);
 
+        datePicker = view.findViewById(R.id.datePicker);
+        DatePickerUtils.themeDatePicker(datePicker, new char[]{'d', 'm', 'y'});
+
+        buttonCancel = view.findViewById(R.id.buttonCancel);
+        buttonCancel.setOnClickListener(this);
+
+        buttonSave = view.findViewById(R.id.buttonSave);
+        buttonSave.setOnClickListener(this);
         view.findViewById(R.id.close).setOnClickListener(this);
-        view.findViewById(R.id.buttonSave).setOnClickListener(this);
 
         initializePresenter();
+        customizeQuestionType();
 
         return view;
     }
@@ -103,11 +123,21 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     }
 
     private void prepareBooleanView() {
-        Timber.v("prepareBooleanView");
+        // hide date picker and cancel option. Enable radio group and save
+        radioGroupChoices.setVisibility(View.VISIBLE);
+        buttonSave.setVisibility(View.VISIBLE);
+
+        datePicker.setVisibility(View.GONE);
+        buttonCancel.setVisibility(View.GONE);
     }
 
     private void prepareDateView() {
-        Timber.v("prepareDateView");
+        // hide date picker and cancel option. Enable radio group and save
+        radioGroupChoices.setVisibility(View.GONE);
+
+        buttonSave.setVisibility(View.VISIBLE);
+        datePicker.setVisibility(View.VISIBLE);
+        buttonCancel.setVisibility(View.VISIBLE);
     }
 
     private void prepareOptionView() {
@@ -211,13 +241,26 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
 
     @Override
     public void setValue(String value) {
-        if (radioButtonNo != null && radioButtonYes != null) {
-            if (value.equalsIgnoreCase("Yes")) {
-                radioButtonYes.setSelected(true);
-                radioButtonNo.setSelected(false);
-            } else {
-                radioButtonYes.setSelected(false);
-                radioButtonNo.setSelected(true);
+        if (getQuestionType() == QuestionType.BOOLEAN) {
+            if (radioButtonNo != null && radioButtonYes != null) {
+                if (value.equalsIgnoreCase("Yes")) {
+                    radioButtonYes.setSelected(true);
+                    radioButtonNo.setSelected(false);
+                } else {
+                    radioButtonYes.setSelected(false);
+                    radioButtonNo.setSelected(true);
+                }
+            }
+        } else if (getQuestionType() == QuestionType.DATE_SELECTOR) {
+            // datePicker.updateDate();
+            try {
+                Calendar cal = Calendar.getInstance();
+                cal.setTime(dateFormat.parse(value));
+                datePicker.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+            } catch (Exception e) {
+                Calendar cal = Calendar.getInstance();
+                datePicker.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
+                Timber.e(e);
             }
         }
     }
@@ -241,23 +284,47 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.radioButtonYes) {
-            selectOption("Yes");
+            onSelectOption("Yes");
         } else if (v.getId() == R.id.radioButtonNo) {
-            selectOption("No");
+            onSelectOption("No");
         } else if (v.getId() == R.id.buttonSave) {
-            save();
+            onSave();
         } else if (v.getId() == R.id.close) {
             dismiss();
+        } else if (v.getId() == R.id.buttonCancel) {
+            onCancel();
         }
     }
 
-    protected void save() {
+    // to support the date values
+    protected void onSave() {
+        if (getQuestionType() == QuestionType.DATE_SELECTOR) {
+            onSelectOption(dateFormat.format(getDateFromDatePicker(datePicker)));
+        }
+
         getHomeVisitView().onDialogOptionUpdated(getJsonObject().toString());
         dismiss();
     }
 
-    protected void selectOption(String option) {
+    protected void onSelectOption(String option) {
         getPresenter().writeValue(getJsonObject(), option);
+    }
+
+    protected void onCancel() {
+        onSelectOption("Dose not given");
+        getHomeVisitView().onDialogOptionUpdated(getJsonObject().toString());
+        dismiss();
+    }
+
+    public java.util.Date getDateFromDatePicker(DatePicker datePicker) {
+        int day = datePicker.getDayOfMonth();
+        int month = datePicker.getMonth();
+        int year = datePicker.getYear();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+
+        return calendar.getTime();
     }
 
     public enum QuestionType {

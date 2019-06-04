@@ -2,21 +2,33 @@ package org.smartregister.chw.anc.interactor;
 
 import android.support.annotation.VisibleForTesting;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
-import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.anc.util.AppExecutors;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.DBConstants;
+import org.smartregister.chw.anc.util.JsonFormUtils;
+import org.smartregister.chw.anc.util.Util;
+import org.smartregister.clientandeventmodel.Event;
+import org.smartregister.clientandeventmodel.Obs;
 import org.smartregister.commonregistry.CommonPersonObject;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.commonregistry.CommonRepository;
+import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.util.Utils;
 
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -90,39 +102,11 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
                 try {
 
-                    // sample form opening action
-                    actionList.put("Danger Signs", new BaseAncHomeVisitAction("Danger Signs", "", false,
-                            null, Constants.FORMS.ANC_REGISTRATION));
-
-                    // sample error action
-                    actionList.put("ANC Counseling", new BaseAncHomeVisitAction("ANC Counseling", "", false,
+                    actionList.put("Sample Action", new BaseAncHomeVisitAction("Sample Action", "Override class org.smartregister.chw.anc.interactor.BaseAncHomeVisitInteractor", false,
                             null, "anc"));
 
-                    /*
-                    // sample action using custom payload
-                    BaseAncHomeVisitFragment llitn = BaseAncHomeVisitFragment.getInstance(view, "Sleeping under a LLITN",
-                            "Is the woman sleeping under a Long Lasting Insecticide-Treated Net (LLITN)?",
-                            R.drawable.avatar_woman,
-                            BaseAncHomeVisitFragment.QuestionType.BOOLEAN
-                    );
-                    actionList.put("Sleeping under a LLITN", new BaseAncHomeVisitAction("Sleeping under a LLITN", "", false,
-                            llitn, null));
-                            */
-
-                    // sample action using json form configured payload
-                    actionList.put("ANC Card Received", new BaseAncHomeVisitAction("ANC Card Received", "", false,
-                            BaseAncHomeVisitFragment.getInstance(view, Constants.FORMS.HOME_VISIT_FORMS.ANC_CARD_FORM, null), null));
-
-                    actionList.put("ANC Health Facility Visit 1", new BaseAncHomeVisitAction("ANC Health Facility Visit 1", "", false,
-                            null, "anc"));
-                    actionList.put("TT Immunization 1", new BaseAncHomeVisitAction("TT Immunization 1", "", false,
-                            null, "anc"));
-                    actionList.put("IPTp-SP dose 1", new BaseAncHomeVisitAction("IPTp-SP dose 1", "", false,
-                            null, "anc"));
-                    actionList.put("Observation & Illness", new BaseAncHomeVisitAction("Observation & Illness", "", true,
-                            null, "anc"));
                 } catch (BaseAncHomeVisitAction.ValidationException e) {
-                    e.printStackTrace();
+                    Timber.e(e);
                 }
 
                 appExecutors.mainThread().execute(new Runnable() {
@@ -137,11 +121,77 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         appExecutors.diskIO().execute(runnable);
     }
 
+    @Override
+    public void submitVisit(final String memberID, final Map<String, BaseAncHomeVisitAction> map, final BaseAncHomeVisitContract.InteractorCallBack callBack) {
+        final Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+
+                boolean result = true;
+                try {
+
+
+                    Map<String, String> jsons = new HashMap<>();
+
+                    // aggregate forms to be processed
+                    for (Map.Entry<String, BaseAncHomeVisitAction> entry : map.entrySet()) {
+                        String json = entry.getValue().getJsonPayload();
+                        if (StringUtils.isNotBlank(json)) {
+                            jsons.put(entry.getKey(), json);
+                        }
+                    }
+
+                    saveVisit(memberID, getEncounterType(), jsons);
+                } catch (Exception e) {
+                    Timber.e(e);
+                    result = false;
+                }
+
+                final boolean finalResult = result;
+                appExecutors.mainThread().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        callBack.onSubmitted(finalResult);
+                    }
+                });
+            }
+        };
+
+        appExecutors.diskIO().execute(runnable);
+    }
+
+    private void saveVisit(String memberID, String encounterType, final Map<String, String> jsonString) throws Exception {
+
+        AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
+        Event baseEvent = JsonFormUtils.processAncJsonForm(allSharedPreferences, memberID, encounterType, jsonString);
+        prepareEvent(baseEvent);
+        Util.processEvent(allSharedPreferences, baseEvent);
+    }
+
+    /**
+     * Injects implementation specific changes to the event
+     *
+     * @param baseEvent
+     */
+    protected void prepareEvent(Event baseEvent) {
+        if (baseEvent != null) {
+            // add anc date obs and last
+            List<Object> list = new ArrayList<>();
+            list.add(new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault()).format(new Date()));
+            baseEvent.addObs(new Obs("concept", "text", "anc_visit_date", "",
+                    list, new ArrayList<>(), null, "anc_visit_date"));
+        }
+    }
+
     public String getTableName() {
         return Constants.TABLES.FAMILY_MEMBER;
     }
 
     public CommonRepository getCommonRepository(String tableName) {
         return AncLibrary.getInstance().context().commonrepository(tableName);
+    }
+
+    protected String getEncounterType() {
+        return Constants.EVENT_TYPE.ANC_HOME_VISIT;
     }
 }

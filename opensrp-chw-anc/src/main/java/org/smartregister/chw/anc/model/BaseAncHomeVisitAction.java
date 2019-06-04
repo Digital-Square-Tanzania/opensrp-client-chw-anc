@@ -16,6 +16,7 @@ public class BaseAncHomeVisitAction {
     private String formName;
     private String jsonPayload;
     private String selectedOption;
+    private AncHomeVisitActionHelper ancHomeVisitActionHelper;
 
     public BaseAncHomeVisitAction(String title, String subTitle, boolean optional, BaseAncHomeVisitFragment destinationFragment, String formName) throws ValidationException {
         this.title = title;
@@ -74,6 +75,7 @@ public class BaseAncHomeVisitAction {
 
     public void setJsonPayload(String jsonPayload) {
         this.jsonPayload = jsonPayload;
+        evaluateStatus();
     }
 
     public BaseAncHomeVisitFragment getDestinationFragment() {
@@ -100,11 +102,43 @@ public class BaseAncHomeVisitAction {
         this.selectedOption = selectedOption;
     }
 
+    public AncHomeVisitActionHelper getAncHomeVisitActionHelper() {
+        return ancHomeVisitActionHelper;
+    }
+
+    public void setAncHomeVisitActionHelper(AncHomeVisitActionHelper ancHomeVisitActionHelper) {
+        this.ancHomeVisitActionHelper = ancHomeVisitActionHelper;
+    }
+
     public enum Status {COMPLETED, PARTIALLY_COMPLETED, PENDING}
 
     public static class ValidationException extends Exception {
         public ValidationException(String message) {
             super(message);
         }
+    }
+
+    /**
+     * This value will evaluate the json payload as complete if payload is preset
+     * or pending if the payload is not present. Any custom execution will also be processed to get the final value
+     */
+    public void evaluateStatus() {
+        setActionStatus(computedStatus());
+
+        if (getAncHomeVisitActionHelper() != null) {
+            setActionStatus(getAncHomeVisitActionHelper().evaluateStatusOnPayload());
+        }
+    }
+
+    public BaseAncHomeVisitAction.Status computedStatus() {
+        if (StringUtils.isNotBlank(getJsonPayload())) {
+            return Status.COMPLETED;
+        } else {
+            return Status.PENDING;
+        }
+    }
+
+    public interface AncHomeVisitActionHelper {
+        Status evaluateStatusOnPayload();
     }
 }

@@ -4,6 +4,7 @@ import org.json.JSONObject;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.anc.util.JsonFormUtils;
+import org.smartregister.chw.opensrp_chw_anc.R;
 
 import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
@@ -51,6 +52,13 @@ public class BaseAncHomeVisitPresenter implements BaseAncHomeVisitContract.Prese
     }
 
     @Override
+    public void submitVisit() {
+        if (view.get() != null) {
+            interactor.submitVisit(memberID, view.get().getAncHomeVisitActions(), this);
+        }
+    }
+
+    @Override
     public void onRegistrationSaved(boolean isEdit) {
         Timber.v("onRegistrationSaved");
     }
@@ -67,6 +75,17 @@ public class BaseAncHomeVisitPresenter implements BaseAncHomeVisitContract.Prese
     public void preloadActions(LinkedHashMap<String, BaseAncHomeVisitAction> map) {
         if (view.get() != null) {
             view.get().initializeActions(map);
+        }
+    }
+
+    @Override
+    public void onSubmitted(boolean successful) {
+        if (view.get() != null) {
+            if (successful) {
+                view.get().close();
+            } else {
+                view.get().displayToast(view.get().getContext().getString(R.string.error_unable_save_home_visit));
+            }
         }
     }
 }

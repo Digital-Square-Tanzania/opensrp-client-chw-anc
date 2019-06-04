@@ -111,6 +111,11 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     }
 
     @Override
+    public void displayToast(String message) {
+        Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
     protected void onCreation() {
         Timber.v("Empty onCreation");
     }
@@ -186,7 +191,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     @Override
     public void redrawVisitUI() {
-        boolean valid = true;
+        boolean valid = actionList.size() > 0;
         for (Map.Entry<String, BaseAncHomeVisitAction> entry : actionList.entrySet()) {
             if (!entry.getValue().isOptional() && entry.getValue().getActionStatus() == BaseAncHomeVisitAction.Status.PENDING) {
                 valid = false;
@@ -222,7 +227,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     @Override
     public void submitVisit() {
-        Timber.v("submitVisit");
+        getPresenter().submitVisit();
     }
 
     @Override
@@ -230,11 +235,11 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         BaseAncHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
         if (ancHomeVisitAction != null) {
             ancHomeVisitAction.setJsonPayload(jsonString);
-            ancHomeVisitAction.setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
         }
 
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
+            redrawVisitUI();
         }
     }
 
@@ -247,7 +252,6 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
                     BaseAncHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
                     if (ancHomeVisitAction != null) {
                         ancHomeVisitAction.setJsonPayload(jsonString);
-                        ancHomeVisitAction.setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
                     }
                 } catch (Exception e) {
                     Timber.e(Log.getStackTraceString(e));
@@ -256,13 +260,8 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
             } else {
 
                 BaseAncHomeVisitAction ancHomeVisitAction = actionList.get(current_action);
-                if (ancHomeVisitAction != null) {
-                    if (StringUtils.isNotBlank(ancHomeVisitAction.getJsonPayload())) {
-                        ancHomeVisitAction.setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
-                    } else {
-                        ancHomeVisitAction.setActionStatus(BaseAncHomeVisitAction.Status.PENDING);
-                    }
-                }
+                if (ancHomeVisitAction != null)
+                    ancHomeVisitAction.evaluateStatus();
             }
 
         }
@@ -270,6 +269,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         // update the adapter after every payload
         if (mAdapter != null) {
             mAdapter.notifyDataSetChanged();
+            redrawVisitUI();
         }
     }
 }

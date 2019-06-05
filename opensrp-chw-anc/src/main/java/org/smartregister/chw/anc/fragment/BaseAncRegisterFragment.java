@@ -142,7 +142,8 @@ public class BaseAncRegisterFragment extends BaseRegisterFragment implements Anc
                 baseEntityId,
                 client.getColumnmaps().get(DBConstants.KEY.RELATIONAL_ID),
                 client.getColumnmaps().get(DBConstants.KEY.FAMILY_HEAD),
-                client.getColumnmaps().get(DBConstants.KEY.PRIMARY_CAREGIVER));
+                client.getColumnmaps().get(DBConstants.KEY.PRIMARY_CAREGIVER),
+                client.getColumnmaps().get(DBConstants.KEY.FIRST_NAME));
         BaseAncMemberProfileActivity.startMe(getActivity(), memberObject);
     }
 

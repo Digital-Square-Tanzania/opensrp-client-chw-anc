@@ -14,7 +14,7 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.smartregister.chw.anc.contract.AncMemberProfileContract;
-import org.smartregister.chw.anc.presenter.AncMemberProfilePresenter;
+import org.smartregister.chw.anc.presenter.BaseAncMemberProfilePresenter;
 import org.smartregister.chw.anc.util.MemberObject;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.helper.ImageRenderHelper;
@@ -35,7 +35,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     protected void registerPresenter() {
-        presenter = new AncMemberProfilePresenter(this, MEMBER_OBJECT);
+        presenter = new BaseAncMemberProfilePresenter(this, MEMBER_OBJECT);
     }
 
     @Override
@@ -49,7 +49,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             MEMBER_OBJECT = (MemberObject) getIntent().getSerializableExtra(MEMBER_PROFILE_OBJECT);
         }
 
-        registerPresenter();
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -72,7 +71,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         initializePresenter();
 
         setupViews();
-//        setUpToolbar();
 
     }
 
@@ -94,13 +92,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         Timber.v("Empty onClick");
     }
 
-//    private void setUpToolbar() {
-//        if (isFromFamilyRegister) {
-//            textViewTitle.setText(getString(R.string.return_to_family_members));
-//        } else {
-//            textViewTitle.setText(getString(R.string.return_to_all_anc_women));
-//        }
-//    }
 
     @Override
     protected void initializePresenter() {

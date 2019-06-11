@@ -10,10 +10,9 @@ import com.vijay.jsonwizard.constants.JsonFormConstants;
 import com.vijay.jsonwizard.domain.Form;
 
 import org.json.JSONObject;
-import org.smartregister.chw.anc.activity.BaseAncHomeVisitActivity;
 import org.smartregister.chw.anc.activity.BaseAncMemberProfileActivity;
 import org.smartregister.chw.anc.activity.BaseAncRegisterActivity;
-import org.smartregister.chw.anc.util.MemberObject;
+import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc_sample.R;
 import org.smartregister.chw.anc_sample.fragment.AncRegisterFragment;
 import org.smartregister.chw.anc_sample.utils.JsonFormUtils;
@@ -66,6 +65,6 @@ public class AncRegisterActivity extends BaseAncRegisterActivity {
     }
 
     private void openProfilePage() {
-        BaseAncMemberProfileActivity.startMe(this, new MemberObject("Glory Juma, 26", "GA: 10 weeks", "Lavingtone #445", "ID: 3503504", "", "", "", ""));
+        BaseAncMemberProfileActivity.startMe(this, new MemberObject("Glory Juma, 26", "GA: 10 weeks", "Lavingtone #445", "ID: 3503504", "00001", "00004", "00001", "00001", "Family Name"));
     }
 }

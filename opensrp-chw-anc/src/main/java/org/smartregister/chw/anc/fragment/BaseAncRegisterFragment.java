@@ -10,7 +10,7 @@ import org.smartregister.chw.anc.model.BaseAncRegisterFragmentModel;
 import org.smartregister.chw.anc.presenter.BaseAncRegisterFragmentPresenter;
 import org.smartregister.chw.anc.provider.AncRegisterProvider;
 import org.smartregister.chw.anc.util.DBConstants;
-import org.smartregister.chw.anc.util.MemberObject;
+import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.configurableviews.model.View;

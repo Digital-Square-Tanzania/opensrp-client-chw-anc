@@ -4,7 +4,7 @@ import android.support.annotation.VisibleForTesting;
 
 import org.smartregister.chw.anc.contract.AncMemberProfileContract;
 import org.smartregister.chw.anc.util.AppExecutors;
-import org.smartregister.chw.anc.util.MemberObject;
+import org.smartregister.chw.anc.domain.MemberObject;
 
 import java.util.Date;
 import java.util.LinkedHashMap;

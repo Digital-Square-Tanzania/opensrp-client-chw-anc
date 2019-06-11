@@ -15,7 +15,7 @@ import android.widget.TextView;
 
 import org.smartregister.chw.anc.contract.AncMemberProfileContract;
 import org.smartregister.chw.anc.presenter.BaseAncMemberProfilePresenter;
-import org.smartregister.chw.anc.util.MemberObject;
+import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.helper.ImageRenderHelper;
 import org.smartregister.view.activity.BaseProfileActivity;

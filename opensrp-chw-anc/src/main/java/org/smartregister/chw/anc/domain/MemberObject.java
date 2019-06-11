@@ -1,4 +1,4 @@
-package org.smartregister.chw.anc.util;
+package org.smartregister.chw.anc.domain;
 
 import java.io.Serializable;
 
@@ -13,6 +13,9 @@ public class MemberObject implements Serializable {
     protected String familyHead;
     protected String primaryCareGiver;
     protected String familyName;
+
+    public MemberObject() {
+    }
 
     public MemberObject(String memberName, String lastMenstrualPeriod, String address, String chwMemberId, String baseEntityId, String familyBaseEntityId, String familyHead, String primaryCareGiver, String familyName) {
         this.memberName = memberName;

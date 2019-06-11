@@ -1,8 +1,8 @@
 package org.smartregister.chw.anc.presenter;
 
 import org.smartregister.chw.anc.contract.AncMemberProfileContract;
-import org.smartregister.chw.anc.interactor.AncMemberProfileInteractor;
 import org.smartregister.chw.anc.domain.MemberObject;
+import org.smartregister.chw.anc.interactor.AncMemberProfileInteractor;
 import org.smartregister.view.contract.BaseProfileContract;
 
 import java.lang.ref.WeakReference;

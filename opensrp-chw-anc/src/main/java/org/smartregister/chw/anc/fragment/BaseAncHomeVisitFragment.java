@@ -169,6 +169,13 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
         return title;
     }
 
+    public void setTitle(String title) {
+        this.title = title;
+        if (customFontTextViewTitle != null) {
+            customFontTextViewTitle.setText(this.title);
+        }
+    }
+
     @Override
     public void showProgressBar(boolean status) {
         Timber.v("showProgressBar");
@@ -177,13 +184,6 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     @Override
     public Context getMyContext() {
         return getActivity().getApplicationContext();
-    }
-
-    public void setTitle(String title) {
-        this.title = title;
-        if (customFontTextViewTitle != null) {
-            customFontTextViewTitle.setText(this.title);
-        }
     }
 
     public String getQuestion() {
@@ -239,6 +239,10 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
         return jsonObject;
     }
 
+    public void setJsonObject(JSONObject jsonObject) {
+        this.jsonObject = jsonObject;
+    }
+
     @Override
     public void setValue(String value) {
         if (getQuestionType() == QuestionType.BOOLEAN) {
@@ -263,10 +267,6 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
                 Timber.e(e);
             }
         }
-    }
-
-    public void setJsonObject(JSONObject jsonObject) {
-        this.jsonObject = jsonObject;
     }
 
     public void setFormName(String formName) {

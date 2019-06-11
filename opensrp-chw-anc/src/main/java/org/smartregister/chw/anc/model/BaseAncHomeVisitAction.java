@@ -110,14 +110,6 @@ public class BaseAncHomeVisitAction {
         this.ancHomeVisitActionHelper = ancHomeVisitActionHelper;
     }
 
-    public enum Status {COMPLETED, PARTIALLY_COMPLETED, PENDING}
-
-    public static class ValidationException extends Exception {
-        public ValidationException(String message) {
-            super(message);
-        }
-    }
-
     /**
      * This value will evaluate the json payload as complete if payload is preset
      * or pending if the payload is not present. Any custom execution will also be processed to get the final value
@@ -138,7 +130,15 @@ public class BaseAncHomeVisitAction {
         }
     }
 
+    public enum Status {COMPLETED, PARTIALLY_COMPLETED, PENDING}
+
     public interface AncHomeVisitActionHelper {
         Status evaluateStatusOnPayload();
+    }
+
+    public static class ValidationException extends Exception {
+        public ValidationException(String message) {
+            super(message);
+        }
     }
 }

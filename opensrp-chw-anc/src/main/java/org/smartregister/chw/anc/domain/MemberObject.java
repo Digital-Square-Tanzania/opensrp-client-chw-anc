@@ -1,4 +1,4 @@
-package org.smartregister.chw.anc.util;
+package org.smartregister.chw.anc.domain;
 
 import java.io.Serializable;
 
@@ -12,8 +12,12 @@ public class MemberObject implements Serializable {
     protected String familyBaseEntityId;
     protected String familyHead;
     protected String primaryCareGiver;
+    protected String familyName;
 
-    public MemberObject(String memberName, String lastMenstrualPeriod, String address, String chwMemberId, String baseEntityId, String familyBaseEntityId, String familyHead, String primaryCareGiver) {
+    public MemberObject() {
+    }
+
+    public MemberObject(String memberName, String lastMenstrualPeriod, String address, String chwMemberId, String baseEntityId, String familyBaseEntityId, String familyHead, String primaryCareGiver, String familyName) {
         this.memberName = memberName;
         this.lastMenstrualPeriod = lastMenstrualPeriod;
         this.address = address;
@@ -22,6 +26,7 @@ public class MemberObject implements Serializable {
         this.familyBaseEntityId = familyBaseEntityId;
         this.familyHead = familyHead;
         this.primaryCareGiver = primaryCareGiver;
+        this.familyName = familyName;
     }
 
     public String getMemberName() {
@@ -54,5 +59,9 @@ public class MemberObject implements Serializable {
 
     public String getPrimaryCareGiver() {
         return primaryCareGiver;
+    }
+
+    public String getFamilyName() {
+        return familyName;
     }
 }

@@ -2,7 +2,7 @@ package org.smartregister.chw.anc.contract;
 
 import android.content.Context;
 
-import org.smartregister.chw.anc.util.MemberObject;
+import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.view.contract.BaseProfileContract;
 
 public interface AncMemberProfileContract {
@@ -11,9 +11,13 @@ public interface AncMemberProfileContract {
         Context getContext();
 
         void setMemberName(String memberName);
+
         void setMemberGA(String memberGA);
+
         void setMemberAddress(String memberAddress);
+
         void setMemberChwMemberId(String memberChwMemberId);
+
         AncMemberProfileContract.Presenter presenter();
 
     }

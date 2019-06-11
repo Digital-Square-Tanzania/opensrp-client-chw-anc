@@ -22,10 +22,9 @@ import java.util.Locale;
 
 public class Utils {
 
-    private static String TAG = Utils.class.getCanonicalName();
-
     public static final SimpleDateFormat dd_MMM_yyyy = new SimpleDateFormat("dd MMM yyyy");
     public static final SimpleDateFormat yyyy_mm_dd = new SimpleDateFormat("yyyy-mm-dd");
+    private static String TAG = Utils.class.getCanonicalName();
 
     public static String firstCharacterUppercase(String str) {
         if (TextUtils.isEmpty(str)) return "";

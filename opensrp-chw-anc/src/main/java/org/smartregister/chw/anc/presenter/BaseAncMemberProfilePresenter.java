@@ -1,20 +1,20 @@
 package org.smartregister.chw.anc.presenter;
 
 import org.smartregister.chw.anc.contract.AncMemberProfileContract;
+import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.interactor.AncMemberProfileInteractor;
-import org.smartregister.chw.anc.util.MemberObject;
 import org.smartregister.view.contract.BaseProfileContract;
 
 import java.lang.ref.WeakReference;
 
-public class AncMemberProfilePresenter implements BaseProfileContract.Presenter, AncMemberProfileContract.InteractorCallBack, AncMemberProfileContract.Presenter {
+public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presenter, AncMemberProfileContract.InteractorCallBack, AncMemberProfileContract.Presenter {
 
-    private WeakReference<AncMemberProfileContract.View> view;
+    protected WeakReference<AncMemberProfileContract.View> view;
     private AncMemberProfileContract.Interactor interactor;
 
     private MemberObject memberObject;
 
-    public AncMemberProfilePresenter(AncMemberProfileContract.View view, MemberObject memberObject) {
+    public BaseAncMemberProfilePresenter(AncMemberProfileContract.View view, MemberObject memberObject) {
         this.view = new WeakReference<>(view);
         this.interactor = new AncMemberProfileInteractor();
         this.memberObject = memberObject;
@@ -27,7 +27,6 @@ public class AncMemberProfilePresenter implements BaseProfileContract.Presenter,
 
     @Override
     public void refreshProfileTopSection(MemberObject memberObject) {
-
         getView().setMemberName(memberObject.getMemberName());
         getView().setMemberGA(memberObject.getLastMenstrualPeriod());
         getView().setMemberAddress(memberObject.getAddress());
@@ -46,6 +45,6 @@ public class AncMemberProfilePresenter implements BaseProfileContract.Presenter,
 
     @Override
     public void onDestroy(boolean b) {
-//        implement
+//        TODO implement onDestroy
     }
 }

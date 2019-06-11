@@ -39,14 +39,13 @@ import timber.log.Timber;
 public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAncHomeVisitContract.View, View.OnClickListener {
 
     private static final String TAG = BaseAncHomeVisitActivity.class.getCanonicalName();
-
-    private RecyclerView.Adapter mAdapter;
     protected Map<String, BaseAncHomeVisitAction> actionList = new LinkedHashMap<>();
+    protected BaseAncHomeVisitContract.Presenter presenter;
+    protected String BASE_ENTITY_ID;
+    private RecyclerView.Adapter mAdapter;
     private ProgressBar progressBar;
     private TextView tvSubmit;
     private TextView tvTitle;
-    protected BaseAncHomeVisitContract.Presenter presenter;
-    protected String BASE_ENTITY_ID;
     private String current_action;
 
     public static void startMe(Activity activity, String memberBaseEntityID) {

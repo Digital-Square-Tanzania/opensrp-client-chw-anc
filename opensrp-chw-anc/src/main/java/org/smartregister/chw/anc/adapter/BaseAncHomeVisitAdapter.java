@@ -24,24 +24,6 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
     private Context context;
     private BaseAncHomeVisitContract.View visitContractView;
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView titleText, descriptionText;
-        private CircleImageView circleImageView;
-        private View myView;
-
-        private MyViewHolder(View view) {
-            super(view);
-            titleText = view.findViewById(R.id.customFontTextViewTitle);
-            descriptionText = view.findViewById(R.id.customFontTextViewDetails);
-            circleImageView = view.findViewById(R.id.circleImageView);
-            myView = view;
-        }
-
-        public View getView() {
-            return myView;
-        }
-    }
-
     public BaseAncHomeVisitAdapter(Context context, BaseAncHomeVisitContract.View view, LinkedHashMap<String, BaseAncHomeVisitAction> myDataset) {
         ancHomeVisitActionList = myDataset;
         this.context = context;
@@ -122,6 +104,24 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
     @Override
     public int getItemCount() {
         return ancHomeVisitActionList.size();
+    }
+
+    public class MyViewHolder extends RecyclerView.ViewHolder {
+        private TextView titleText, descriptionText;
+        private CircleImageView circleImageView;
+        private View myView;
+
+        private MyViewHolder(View view) {
+            super(view);
+            titleText = view.findViewById(R.id.customFontTextViewTitle);
+            descriptionText = view.findViewById(R.id.customFontTextViewDetails);
+            circleImageView = view.findViewById(R.id.circleImageView);
+            myView = view;
+        }
+
+        public View getView() {
+            return myView;
+        }
     }
 
 }

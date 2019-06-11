@@ -28,7 +28,7 @@
             android:paddingTop="10dp"
             android:paddingRight="30dp"
             android:paddingBottom="10dp"
-            android:text="@string/record_visit"
+            android:text="@string/record_anc_visit"
             android:textColor="@color/white" />
 
     </RelativeLayout>
@@ -54,7 +54,7 @@
             android:paddingTop="10dp"
             android:paddingRight="30dp"
             android:paddingBottom="10dp"
-            android:text="@string/record_visit"
+            android:text="@string/record_anc_visit"
             android:textColor="@color/grey" />
     </RelativeLayout>
 

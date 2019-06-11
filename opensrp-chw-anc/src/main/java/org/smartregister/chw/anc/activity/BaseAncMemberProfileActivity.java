@@ -14,8 +14,8 @@ import android.view.View;
 import android.widget.TextView;
 
 import org.smartregister.chw.anc.contract.AncMemberProfileContract;
-import org.smartregister.chw.anc.presenter.AncMemberProfilePresenter;
-import org.smartregister.chw.anc.util.MemberObject;
+import org.smartregister.chw.anc.domain.MemberObject;
+import org.smartregister.chw.anc.presenter.BaseAncMemberProfilePresenter;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.helper.ImageRenderHelper;
 import org.smartregister.view.activity.BaseProfileActivity;
@@ -25,8 +25,8 @@ import timber.log.Timber;
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER_PROFILE_OBJECT;
 
 public class BaseAncMemberProfileActivity extends BaseProfileActivity implements AncMemberProfileContract.View {
-    private TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id;
     protected MemberObject MEMBER_OBJECT;
+    private TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id;
 
     public static void startMe(Activity activity, MemberObject memberObject) {
         Intent intent = new Intent(activity, BaseAncMemberProfileActivity.class);
@@ -35,7 +35,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     protected void registerPresenter() {
-        presenter = new AncMemberProfilePresenter(this, MEMBER_OBJECT);
+        presenter = new BaseAncMemberProfilePresenter(this, MEMBER_OBJECT);
     }
 
     @Override
@@ -49,7 +49,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             MEMBER_OBJECT = (MemberObject) getIntent().getSerializableExtra(MEMBER_PROFILE_OBJECT);
         }
 
-        registerPresenter();
         ActionBar actionBar = getSupportActionBar();
         if (actionBar != null) {
             actionBar.setDisplayHomeAsUpEnabled(true);
@@ -72,7 +71,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         initializePresenter();
 
         setupViews();
-//        setUpToolbar();
 
     }
 
@@ -94,13 +92,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         Timber.v("Empty onClick");
     }
 
-//    private void setUpToolbar() {
-//        if (isFromFamilyRegister) {
-//            textViewTitle.setText(getString(R.string.return_to_family_members));
-//        } else {
-//            textViewTitle.setText(getString(R.string.return_to_all_anc_women));
-//        }
-//    }
 
     @Override
     protected void initializePresenter() {

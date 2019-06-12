@@ -29,6 +29,7 @@ import org.smartregister.view.customcontrols.CustomFontTextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.Locale;
 
 import timber.log.Timber;
@@ -87,6 +88,7 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
 
         datePicker = view.findViewById(R.id.datePicker);
         DatePickerUtils.themeDatePicker(datePicker, new char[]{'d', 'm', 'y'});
+        datePicker.setMaxDate((new Date()).getTime());
 
         buttonCancel = view.findViewById(R.id.buttonCancel);
         buttonCancel.setOnClickListener(this);

@@ -54,6 +54,20 @@ public class BaseAncHomeVisitFragmentPresenter implements BaseAncHomeVisitFragme
     }
 
     @Override
+    public void setInfoIconTitle(String infoIconTitle) {
+        if (view.get() != null) {
+            view.get().setInfoIconTitle(infoIconTitle);
+        }
+    }
+
+    @Override
+    public void setInfoIconDetails(String infoIconDetails) {
+        if (view.get() != null) {
+            view.get().setInfoIconDetails(infoIconDetails);
+        }
+    }
+
+    @Override
     public BaseAncHomeVisitFragmentContract.View getView() {
         if (view.get() != null) {
             return view.get();

@@ -191,7 +191,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     @Override
     public void redrawHeader(String memberName, String age) {
-        tvTitle.setText(MessageFormat.format("{0}, {1} . {2}", memberName, age, getString(R.string.anc_visit)));
+        tvTitle.setText(MessageFormat.format("{0}, {1} \u00B7 {2}", memberName, age, getString(R.string.anc_visit)));
     }
 
     @Override

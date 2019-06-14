@@ -21,5 +21,6 @@ public class DBConstants {
         public static final String LAST_HOME_VISIT = "last_home_visit";
         public static final String FAMILY_HEAD = "family_head";
         public static final String PRIMARY_CAREGIVER = "primary_caregiver";
+        public static final String LAST_CONTACT_VISIT = "last_contact_visit";
     }
 }

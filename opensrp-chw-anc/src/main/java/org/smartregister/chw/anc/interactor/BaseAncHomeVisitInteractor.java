@@ -3,23 +3,18 @@ package org.smartregister.chw.anc.interactor;
 import android.support.annotation.VisibleForTesting;
 
 import org.apache.commons.lang3.StringUtils;
-import org.joda.time.DateTime;
-import org.joda.time.Period;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
+import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.anc.util.AppExecutors;
 import org.smartregister.chw.anc.util.Constants;
-import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.anc.util.Util;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.clientandeventmodel.Obs;
-import org.smartregister.commonregistry.CommonPersonObject;
-import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.commonregistry.CommonRepository;
 import org.smartregister.repository.AllSharedPreferences;
-import org.smartregister.util.Utils;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -31,8 +26,6 @@ import java.util.Locale;
 import java.util.Map;
 
 import timber.log.Timber;
-
-import static org.smartregister.util.Utils.getName;
 
 public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Interactor {
 
@@ -53,48 +46,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
     }
 
     @Override
-    public void getUserInformation(final String memberID, final BaseAncHomeVisitContract.InteractorCallBack callBack) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                String patientName = "";
-                String age = "";
-                try {
-                    CommonPersonObject personObject = getCommonRepository(getTableName()).findByBaseEntityId(memberID);
-                    CommonPersonObjectClient pc = new CommonPersonObjectClient(personObject.getCaseId(),
-                            personObject.getDetails(), "");
-                    pc.setColumnmaps(personObject.getColumnmaps());
-
-                    String fname = getName(
-                            Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.FIRST_NAME, true),
-                            Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.MIDDLE_NAME, true)
-                    );
-
-                    patientName = getName(fname, Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LAST_NAME, true));
-                    String dobString = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.DOB, false);
-
-                    age = String.valueOf(new Period(new DateTime(dobString), new DateTime()).getYears());
-
-                } catch (Exception e) {
-                    Timber.e(e);
-                }
-
-                final String finalPatientName = patientName;
-                final String finalAge = age;
-                appExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        callBack.onMemberDetailsLoaded(finalPatientName, finalAge);
-                    }
-                });
-            }
-        };
-
-        appExecutors.diskIO().execute(runnable);
-    }
-
-    @Override
-    public void calculateActions(final BaseAncHomeVisitContract.View view, String memberID, final BaseAncHomeVisitContract.InteractorCallBack callBack) {
+    public void calculateActions(final BaseAncHomeVisitContract.View view, MemberObject memberObject, final BaseAncHomeVisitContract.InteractorCallBack callBack) {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {

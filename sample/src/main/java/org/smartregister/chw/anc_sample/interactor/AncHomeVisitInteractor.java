@@ -4,6 +4,7 @@ import com.vijay.jsonwizard.constants.JsonFormConstants;
 
 import org.json.JSONObject;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
+import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
 import org.smartregister.chw.anc.interactor.BaseAncHomeVisitInteractor;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
@@ -16,7 +17,7 @@ import timber.log.Timber;
 public class AncHomeVisitInteractor extends BaseAncHomeVisitInteractor {
 
     @Override
-    public void calculateActions(final BaseAncHomeVisitContract.View view, final String memberID, final BaseAncHomeVisitContract.InteractorCallBack callBack) {
+    public void calculateActions(final BaseAncHomeVisitContract.View view, final MemberObject memberObject, final BaseAncHomeVisitContract.InteractorCallBack callBack) {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {

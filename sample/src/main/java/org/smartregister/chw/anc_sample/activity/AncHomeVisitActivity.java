@@ -4,19 +4,22 @@ import android.app.Activity;
 import android.content.Intent;
 
 import org.smartregister.chw.anc.activity.BaseAncHomeVisitActivity;
+import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.presenter.BaseAncHomeVisitPresenter;
 import org.smartregister.chw.anc_sample.interactor.AncHomeVisitInteractor;
 
+import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER_PROFILE_OBJECT;
+
 public class AncHomeVisitActivity extends BaseAncHomeVisitActivity {
 
-    public static void startMe(Activity activity, String memberBaseEntityID) {
+    public static void startMe(Activity activity, MemberObject memberObject) {
         Intent intent = new Intent(activity, AncHomeVisitActivity.class);
-        intent.putExtra("BASE_ENTITY_ID", memberBaseEntityID);
+        intent.putExtra(MEMBER_PROFILE_OBJECT, memberObject);
         activity.startActivity(intent);
     }
 
     @Override
     protected void registerPresenter() {
-        presenter = new BaseAncHomeVisitPresenter(BASE_ENTITY_ID, this, new AncHomeVisitInteractor());
+        presenter = new BaseAncHomeVisitPresenter(memberObject, this, new AncHomeVisitInteractor());
     }
 }

@@ -1,5 +1,6 @@
 package org.smartregister.chw.anc.domain;
 
+import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Period;
 import org.smartregister.chw.anc.util.DBConstants;
@@ -26,6 +27,8 @@ public class MemberObject implements Serializable {
     protected String middleName;
     protected String lastName;
     protected String dob;
+    protected int confirmedContacts = 0;
+    protected String dateCreated;
 
     public MemberObject() {
     }
@@ -38,6 +41,12 @@ public class MemberObject implements Serializable {
         middleName = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.MIDDLE_NAME, true);
         lastName = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LAST_NAME, true);
         dob = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.DOB, false);
+        dateCreated = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.DATE_CREATED, false);
+
+        String visits = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.CONFIRMED_VISITS, false);
+        if (StringUtils.isNotBlank(visits)) {
+            confirmedContacts = Integer.parseInt(visits);
+        }
     }
 
     public MemberObject(String memberName, String lastMenstrualPeriod, String address, String chwMemberId, String baseEntityId, String familyBaseEntityId, String familyHead, String primaryCareGiver, String familyName) {
@@ -106,6 +115,14 @@ public class MemberObject implements Serializable {
 
     public String getDob() {
         return dob;
+    }
+
+    public int getConfirmedContacts() {
+        return confirmedContacts;
+    }
+
+    public String getDateCreated() {
+        return dateCreated;
     }
 
     public int getAge() {

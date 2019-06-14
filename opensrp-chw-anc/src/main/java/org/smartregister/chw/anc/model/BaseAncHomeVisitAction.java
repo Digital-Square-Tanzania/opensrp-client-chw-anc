@@ -19,6 +19,9 @@ public class BaseAncHomeVisitAction {
     private String selectedOption;
     private AncHomeVisitActionHelper ancHomeVisitActionHelper;
 
+    // event based behaviors
+    private Runnable onPayLoadReceived;
+
     public BaseAncHomeVisitAction(String title, String subTitle, boolean optional, BaseAncHomeVisitFragment destinationFragment, String formName) throws ValidationException {
         this.title = title;
         this.subTitle = subTitle;
@@ -85,6 +88,9 @@ public class BaseAncHomeVisitAction {
     public void setJsonPayload(String jsonPayload) {
         this.jsonPayload = jsonPayload;
         evaluateStatus();
+        if (onPayLoadReceived != null) {
+            onPayLoadReceived.run();
+        }
     }
 
     public BaseAncHomeVisitFragment getDestinationFragment() {
@@ -151,5 +157,9 @@ public class BaseAncHomeVisitAction {
         public ValidationException(String message) {
             super(message);
         }
+    }
+
+    public void setOnPayLoadReceived(Runnable onPayLoadReceived) {
+        this.onPayLoadReceived = onPayLoadReceived;
     }
 }

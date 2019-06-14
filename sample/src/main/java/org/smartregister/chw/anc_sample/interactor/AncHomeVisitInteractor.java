@@ -30,7 +30,7 @@ public class AncHomeVisitInteractor extends BaseAncHomeVisitInteractor {
                     actionList.put("Danger Signs", ds);
 
                     // sample action using json form configured payload
-                    final BaseAncHomeVisitAction anc = new BaseAncHomeVisitAction("ANC Card Received", "", true,
+                    final BaseAncHomeVisitAction anc = new BaseAncHomeVisitAction("ANC Card Received", "Due 06 May 2019", true,
                             BaseAncHomeVisitFragment.getInstance(view, Constants.HOME_VISIT_FORMS.ANC_CARD_FORM, null), null);
                     anc.setAncHomeVisitActionHelper(new BaseAncHomeVisitAction.AncHomeVisitActionHelper() {
                         @Override
@@ -54,7 +54,7 @@ public class AncHomeVisitInteractor extends BaseAncHomeVisitInteractor {
                             return anc.computedStatus();
                         }
                     });
-
+                    anc.setScheduleStatus(BaseAncHomeVisitAction.ScheduleStatus.OVERDUE);
                     actionList.put("ANC Card Received", anc);
 
 

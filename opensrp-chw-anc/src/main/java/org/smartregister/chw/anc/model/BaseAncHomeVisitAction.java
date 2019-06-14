@@ -11,6 +11,7 @@ public class BaseAncHomeVisitAction {
     private String title;
     private String subTitle;
     private Status actionStatus = Status.PENDING;
+    private ScheduleStatus scheduleStatus = ScheduleStatus.DUE;
     private boolean optional;
     private BaseAncHomeVisitFragment destinationFragment;
     private String formName;
@@ -59,6 +60,14 @@ public class BaseAncHomeVisitAction {
 
     public void setActionStatus(Status actionStatus) {
         this.actionStatus = actionStatus;
+    }
+
+    public ScheduleStatus getScheduleStatus() {
+        return scheduleStatus;
+    }
+
+    public void setScheduleStatus(ScheduleStatus scheduleStatus) {
+        this.scheduleStatus = scheduleStatus;
     }
 
     public boolean isOptional() {
@@ -131,6 +140,8 @@ public class BaseAncHomeVisitAction {
     }
 
     public enum Status {COMPLETED, PARTIALLY_COMPLETED, PENDING}
+
+    public enum ScheduleStatus {DUE, OVERDUE}
 
     public interface AncHomeVisitActionHelper {
         Status evaluateStatusOnPayload();

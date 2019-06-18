@@ -17,7 +17,10 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:padding="@dimen/home_visit_right_margin">
+            android:paddingTop="@dimen/home_visit_header_margin_top"
+            android:paddingBottom="@dimen/home_visit_header_margin_bottom"
+            android:paddingRight="@dimen/home_visit_header_margin_right"
+            android:paddingLeft="@dimen/home_visit_header_margin_left">
 
             <ImageView
                 android:id="@+id/close"
@@ -51,7 +54,7 @@
             android:layout_height="wrap_content"
             android:layout_marginStart="@dimen/home_visit_left_margin"
             android:layout_marginLeft="@dimen/home_visit_left_margin"
-            android:layout_marginTop="5dp"
+            android:layout_marginTop="0dp"
             android:layout_marginEnd="@dimen/home_visit_right_margin"
             android:layout_marginRight="@dimen/home_visit_right_margin"
             android:layout_marginBottom="@dimen/dialog_toolbar_close_margin"

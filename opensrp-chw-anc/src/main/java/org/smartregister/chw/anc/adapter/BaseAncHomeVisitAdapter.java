@@ -2,6 +2,7 @@ package org.smartregister.chw.anc.adapter;
 
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
+import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -44,10 +45,19 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
     public void onBindViewHolder(@NotNull MyViewHolder holder, int position) {
 
         BaseAncHomeVisitAction ancHomeVisitAction = new ArrayList<>(ancHomeVisitActionList.values()).get(position);
-        holder.titleText.setText(MessageFormat.format("{0}{1}", ancHomeVisitAction.getTitle(), ancHomeVisitAction.isOptional() ? " - " + context.getString(R.string.optional) : ""));
+        String title = MessageFormat.format("{0}<i>{1}</i>",
+                ancHomeVisitAction.getTitle(),
+                ancHomeVisitAction.isOptional() ? " - " + context.getString(R.string.optional) : ""
+        );
+        holder.titleText.setText(Html.fromHtml(title));
         if (StringUtils.isNotBlank(ancHomeVisitAction.getSubTitle())) {
             holder.descriptionText.setText(ancHomeVisitAction.getSubTitle());
             holder.descriptionText.setVisibility(View.VISIBLE);
+            if (ancHomeVisitAction.getScheduleStatus() == BaseAncHomeVisitAction.ScheduleStatus.OVERDUE) {
+                holder.descriptionText.setTextColor(context.getResources().getColor(R.color.alert_urgent_red));
+            } else {
+                holder.descriptionText.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
+            }
         } else {
             holder.descriptionText.setVisibility(View.GONE);
         }

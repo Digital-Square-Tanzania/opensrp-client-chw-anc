@@ -2,6 +2,8 @@ package org.smartregister.chw.anc.model;
 
 import org.apache.commons.lang3.StringUtils;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
+import org.smartregister.immunization.domain.ServiceWrapper;
+import org.smartregister.immunization.domain.VaccineWrapper;
 
 /**
  * This action list allows users to either load a form or link it to a separate fragment.
@@ -11,12 +13,18 @@ public class BaseAncHomeVisitAction {
     private String title;
     private String subTitle;
     private Status actionStatus = Status.PENDING;
+    private ScheduleStatus scheduleStatus = ScheduleStatus.DUE;
     private boolean optional;
     private BaseAncHomeVisitFragment destinationFragment;
     private String formName;
     private String jsonPayload;
     private String selectedOption;
     private AncHomeVisitActionHelper ancHomeVisitActionHelper;
+    private VaccineWrapper vaccineWrapper;
+    private ServiceWrapper serviceWrapper;
+
+    // event based behaviors
+    private Runnable onPayLoadReceived;
 
     public BaseAncHomeVisitAction(String title, String subTitle, boolean optional, BaseAncHomeVisitFragment destinationFragment, String formName) throws ValidationException {
         this.title = title;
@@ -61,6 +69,14 @@ public class BaseAncHomeVisitAction {
         this.actionStatus = actionStatus;
     }
 
+    public ScheduleStatus getScheduleStatus() {
+        return scheduleStatus;
+    }
+
+    public void setScheduleStatus(ScheduleStatus scheduleStatus) {
+        this.scheduleStatus = scheduleStatus;
+    }
+
     public boolean isOptional() {
         return optional;
     }
@@ -76,6 +92,9 @@ public class BaseAncHomeVisitAction {
     public void setJsonPayload(String jsonPayload) {
         this.jsonPayload = jsonPayload;
         evaluateStatus();
+        if (onPayLoadReceived != null) {
+            onPayLoadReceived.run();
+        }
     }
 
     public BaseAncHomeVisitFragment getDestinationFragment() {
@@ -132,6 +151,8 @@ public class BaseAncHomeVisitAction {
 
     public enum Status {COMPLETED, PARTIALLY_COMPLETED, PENDING}
 
+    public enum ScheduleStatus {DUE, OVERDUE}
+
     public interface AncHomeVisitActionHelper {
         Status evaluateStatusOnPayload();
     }
@@ -140,5 +161,25 @@ public class BaseAncHomeVisitAction {
         public ValidationException(String message) {
             super(message);
         }
+    }
+
+    public void setOnPayLoadReceived(Runnable onPayLoadReceived) {
+        this.onPayLoadReceived = onPayLoadReceived;
+    }
+
+    public VaccineWrapper getVaccineWrapper() {
+        return (getActionStatus() == Status.COMPLETED) ? vaccineWrapper : null;
+    }
+
+    public void setVaccineWrapper(VaccineWrapper vaccineWrapper) {
+        this.vaccineWrapper = vaccineWrapper;
+    }
+
+    public ServiceWrapper getServiceWrapper() {
+        return (getActionStatus() == Status.COMPLETED) ? serviceWrapper : null;
+    }
+
+    public void setServiceWrapper(ServiceWrapper serviceWrapper) {
+        this.serviceWrapper = serviceWrapper;
     }
 }

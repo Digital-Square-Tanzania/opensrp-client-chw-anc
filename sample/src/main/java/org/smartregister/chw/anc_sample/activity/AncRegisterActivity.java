@@ -13,10 +13,15 @@ import org.json.JSONObject;
 import org.smartregister.chw.anc.activity.BaseAncMemberProfileActivity;
 import org.smartregister.chw.anc.activity.BaseAncRegisterActivity;
 import org.smartregister.chw.anc.domain.MemberObject;
+import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.chw.anc_sample.R;
 import org.smartregister.chw.anc_sample.fragment.AncRegisterFragment;
 import org.smartregister.chw.anc_sample.utils.JsonFormUtils;
+import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.view.fragment.BaseRegisterFragment;
+
+import java.util.HashMap;
+import java.util.Map;
 
 public class AncRegisterActivity extends BaseAncRegisterActivity {
     @Override
@@ -61,7 +66,18 @@ public class AncRegisterActivity extends BaseAncRegisterActivity {
     }
 
     private void openVisitPage() {
-        AncHomeVisitActivity.startMe(this, "1233435");
+        // dumy common person object
+        Map<String, String> details = new HashMap<>();
+        details.put(DBConstants.KEY.FIRST_NAME, "Lydia");
+        details.put(DBConstants.KEY.MIDDLE_NAME, "Wambui");
+        details.put(DBConstants.KEY.DOB, "1982-01-18T03:00:00.000+03:00");
+        details.put(DBConstants.KEY.LAST_HOME_VISIT, "");
+        details.put(DBConstants.KEY.LAST_MENSTRUAL_PERIOD, "");
+        CommonPersonObjectClient commonPersonObject = new CommonPersonObjectClient("", details, "Yo");
+        commonPersonObject.setColumnmaps(details);
+
+        MemberObject memberObject = new MemberObject(commonPersonObject);
+        AncHomeVisitActivity.startMe(this, memberObject);
     }
 
     private void openProfilePage() {

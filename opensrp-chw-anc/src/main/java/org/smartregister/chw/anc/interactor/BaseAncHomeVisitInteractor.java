@@ -16,8 +16,11 @@ import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.clientandeventmodel.Obs;
 import org.smartregister.commonregistry.CommonRepository;
 import org.smartregister.immunization.ImmunizationLibrary;
+import org.smartregister.immunization.domain.ServiceRecord;
+import org.smartregister.immunization.domain.ServiceWrapper;
 import org.smartregister.immunization.domain.Vaccine;
 import org.smartregister.immunization.domain.VaccineWrapper;
+import org.smartregister.immunization.repository.RecurringServiceRecordRepository;
 import org.smartregister.immunization.repository.VaccineRepository;
 import org.smartregister.repository.AllSharedPreferences;
 
@@ -90,6 +93,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
                     Map<String, String> jsons = new HashMap<>();
                     List<VaccineWrapper> vaccineWrappers = new ArrayList<>();
+                    List<ServiceWrapper> serviceWrappers = new ArrayList<>();
 
                     // aggregate forms to be processed
                     for (Map.Entry<String, BaseAncHomeVisitAction> entry : map.entrySet()) {
@@ -100,10 +104,14 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
                         if (entry.getValue().getVaccineWrapper() != null) {
                             vaccineWrappers.add(entry.getValue().getVaccineWrapper());
                         }
+                        if (entry.getValue().getServiceWrapper() != null) {
+                            serviceWrappers.add(entry.getValue().getServiceWrapper());
+                        }
                     }
 
                     saveVisit(memberID, getEncounterType(), jsons);
-                    saveVaccineEvent(vaccineWrappers, memberID);
+                    saveVaccines(vaccineWrappers, memberID);
+                    saveServices(serviceWrappers, memberID);
 
                 } catch (Exception e) {
                     Timber.e(e);
@@ -158,7 +166,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         return Constants.EVENT_TYPE.ANC_HOME_VISIT;
     }
 
-    private void saveVaccineEvent(List<VaccineWrapper> tags, String baseEntityID) {
+    protected void saveVaccines(List<VaccineWrapper> tags, String baseEntityID) {
         for (VaccineWrapper tag : tags) {
             if (tag.getUpdatedVaccineDate() == null) {
                 return;
@@ -180,6 +188,48 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
             JsonFormUtils.tagSyncMetadata(Utils.context().allSharedPreferences(), vaccine);
             tag.setDbKey(vaccine.getId());
+        }
+    }
+
+    protected static void saveServices(List<ServiceWrapper> tags, String baseEntityId) {
+        for (ServiceWrapper tag : tags) {
+            if (tag.getUpdatedVaccineDate() == null) {
+                return;
+            }
+
+            RecurringServiceRecordRepository recurringServiceRecordRepository = ImmunizationLibrary.getInstance().recurringServiceRecordRepository();
+
+            ServiceRecord serviceRecord = new ServiceRecord();
+            if (tag.getDbKey() != null) {
+                serviceRecord = recurringServiceRecordRepository.find(tag.getDbKey());
+                if (serviceRecord == null) {
+                    serviceRecord = new ServiceRecord();
+                    serviceRecord.setDate(tag.getUpdatedVaccineDate().toDate());
+
+                    serviceRecord.setBaseEntityId(baseEntityId);
+                    serviceRecord.setRecurringServiceId(tag.getTypeId());
+                    serviceRecord.setDate(tag.getUpdatedVaccineDate().toDate());
+                    serviceRecord.setValue(tag.getValue());
+
+                    JsonFormUtils.tagSyncMetadata(Utils.context().allSharedPreferences(), serviceRecord);
+                } else {
+                    serviceRecord.setDate(tag.getUpdatedVaccineDate().toDate());
+                    serviceRecord.setValue(tag.getValue());
+                }
+
+            } else {
+                serviceRecord.setDate(tag.getUpdatedVaccineDate().toDate());
+
+                serviceRecord.setBaseEntityId(baseEntityId);
+                serviceRecord.setRecurringServiceId(tag.getTypeId());
+                serviceRecord.setDate(tag.getUpdatedVaccineDate().toDate());
+                serviceRecord.setValue(tag.getValue());
+
+                JsonFormUtils.tagSyncMetadata(Utils.context().allSharedPreferences(), serviceRecord);
+            }
+
+            recurringServiceRecordRepository.add(serviceRecord);
+            tag.setDbKey(serviceRecord.getId());
         }
     }
 

@@ -2,6 +2,7 @@ package org.smartregister.chw.anc.model;
 
 import org.apache.commons.lang3.StringUtils;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
+import org.smartregister.immunization.domain.ServiceWrapper;
 import org.smartregister.immunization.domain.VaccineWrapper;
 
 /**
@@ -20,6 +21,7 @@ public class BaseAncHomeVisitAction {
     private String selectedOption;
     private AncHomeVisitActionHelper ancHomeVisitActionHelper;
     private VaccineWrapper vaccineWrapper;
+    private ServiceWrapper serviceWrapper;
 
     // event based behaviors
     private Runnable onPayLoadReceived;
@@ -171,5 +173,13 @@ public class BaseAncHomeVisitAction {
 
     public void setVaccineWrapper(VaccineWrapper vaccineWrapper) {
         this.vaccineWrapper = vaccineWrapper;
+    }
+
+    public ServiceWrapper getServiceWrapper() {
+        return (getActionStatus() == Status.COMPLETED) ? serviceWrapper : null;
+    }
+
+    public void setServiceWrapper(ServiceWrapper serviceWrapper) {
+        this.serviceWrapper = serviceWrapper;
     }
 }

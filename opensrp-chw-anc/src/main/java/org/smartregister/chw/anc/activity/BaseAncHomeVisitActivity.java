@@ -2,8 +2,10 @@ package org.smartregister.chw.anc.activity;
 
 import android.app.Activity;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -47,6 +49,8 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     private TextView tvSubmit;
     private TextView tvTitle;
     private String current_action;
+    private String confirmCloseTitle;
+    private String confirmCloseMessage;
 
     public static void startMe(Activity activity, String memberBaseEntityID) {
         Intent intent = new Intent(activity, BaseAncHomeVisitActivity.class);
@@ -63,6 +67,8 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
             BASE_ENTITY_ID = extras.getString(Constants.ACTIVITY_PAYLOAD.BASE_ENTITY_ID);
         }
 
+        confirmCloseTitle = getString(R.string.confirm_form_close);
+        confirmCloseMessage = getString(R.string.confirm_form_close_explanation);
         setUpView();
         displayProgressBar(true);
         registerPresenter();
@@ -185,7 +191,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     @Override
     public void redrawHeader(String memberName, String age) {
-        tvTitle.setText(MessageFormat.format("{0}, {1} - {2}", memberName, age, getString(R.string.anc_visit)));
+        tvTitle.setText(MessageFormat.format("{0}, {1} \u00B7 {2}", memberName, age, getString(R.string.anc_visit)));
     }
 
     @Override
@@ -270,5 +276,23 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
             mAdapter.notifyDataSetChanged();
             redrawVisitUI();
         }
+    }
+
+    @Override
+    public void onBackPressed() {
+        AlertDialog dialog = new AlertDialog.Builder(this, com.vijay.jsonwizard.R.style.AppThemeAlertDialog).setTitle(confirmCloseTitle)
+                .setMessage(confirmCloseMessage).setNegativeButton(com.vijay.jsonwizard.R.string.yes, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        BaseAncHomeVisitActivity.this.finish();
+                    }
+                }).setPositiveButton(com.vijay.jsonwizard.R.string.no, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        Log.d(TAG, "No button on dialog in " + JsonFormActivity.class.getCanonicalName());
+                    }
+                }).create();
+
+        dialog.show();
     }
 }

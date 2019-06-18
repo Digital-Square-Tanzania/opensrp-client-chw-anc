@@ -55,7 +55,7 @@
             android:layout_height="wrap_content"
             android:paddingStart="0dp"
             android:paddingLeft="0dp"
-            android:paddingTop="@dimen/register_list_top_bottom_padding"
+            android:paddingTop="0dp"
             android:text="Lavington #445"
             android:textColor="@color/light_grey_text"
             android:textSize="@dimen/register_list_desc_size"

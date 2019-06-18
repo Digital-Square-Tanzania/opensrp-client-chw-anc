@@ -55,7 +55,7 @@ public class BaseAncRegisterFragmentPresenter implements AncRegisterFragmentCont
     @Override
     public String getDueFilterCondition() {
         return "(( " +
-                "IFNULL(STRFTIME('%Y%m%d%H%M%S', datetime((" + DBConstants.KEY.LAST_HOME_VISIT + ")/1000,'unixepoch')),0) " +
+                "IFNULL(SUBSTR(" + DBConstants.KEY.LAST_HOME_VISIT + ",7,4) || SUBSTR(" + DBConstants.KEY.LAST_HOME_VISIT + ",4,2) || SUBSTR(" + DBConstants.KEY.LAST_HOME_VISIT + ",1,2) || '000000',0) " +
                 "< STRFTIME('%Y%m%d%H%M%S', datetime('now','start of month')) " +
                 "AND IFNULL(STRFTIME('%Y%m%d%H%M%S', datetime((" + DBConstants.KEY.VISIT_NOT_DONE + ")/1000,'unixepoch')),0) " +
                 "< STRFTIME('%Y%m%d%H%M%S', datetime('now','start of month')) " +

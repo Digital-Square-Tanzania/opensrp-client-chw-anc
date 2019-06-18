@@ -29,7 +29,7 @@ public class AncHomeVisitInteractor extends BaseAncHomeVisitInteractor {
                     actionList.put("Danger Signs", ds);
 
                     // sample action using json form configured payload
-                    final BaseAncHomeVisitAction anc = new BaseAncHomeVisitAction("ANC Card Received", "", false,
+                    final BaseAncHomeVisitAction anc = new BaseAncHomeVisitAction("ANC Card Received", "", true,
                             BaseAncHomeVisitFragment.getInstance(view, Constants.HOME_VISIT_FORMS.ANC_CARD_FORM, null), null);
                     anc.setAncHomeVisitActionHelper(new BaseAncHomeVisitAction.AncHomeVisitActionHelper() {
                         @Override

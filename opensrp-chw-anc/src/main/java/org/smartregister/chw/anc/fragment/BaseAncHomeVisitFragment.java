@@ -20,6 +20,7 @@ import android.widget.RadioGroup;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitFragmentContract;
@@ -30,12 +31,15 @@ import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.util.DatePickerUtils;
 import org.smartregister.view.customcontrols.CustomFontTextView;
 
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
 import timber.log.Timber;
+
+import static org.smartregister.util.JsonFormUtils.fields;
 
 public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnClickListener, BaseAncHomeVisitFragmentContract.View {
 
@@ -48,6 +52,7 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     @DrawableRes
     private int imageRes;
     private JSONObject jsonObject;
+    private String count = "1";
 
     private BaseAncHomeVisitFragmentContract.Presenter presenter;
 
@@ -63,11 +68,12 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     private DatePicker datePicker;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
 
-    public static BaseAncHomeVisitFragment getInstance(BaseAncHomeVisitContract.View view, String form_name, JSONObject jsonObject) {
+    public static BaseAncHomeVisitFragment getInstance(BaseAncHomeVisitContract.View view, String form_name, JSONObject jsonObject, String count) {
         BaseAncHomeVisitFragment fragment = new BaseAncHomeVisitFragment();
         fragment.setHomeVisitView(view);
         fragment.setJsonObject(jsonObject);
         fragment.setFormName(form_name);
+        fragment.setCount(count);
         return fragment;
     }
 
@@ -300,6 +306,10 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
         this.jsonObject = jsonObject;
     }
 
+    public void setCount(String count) {
+        this.count = count;
+    }
+
     @Override
     public void setValue(String value) {
         if (getQuestionType() == QuestionType.BOOLEAN) {
@@ -331,6 +341,25 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
             // load form from assets directory
             try {
                 JSONObject jsonObject = JsonFormUtils.getFormAsJson(formName);
+                // evaluate the count
+                if (StringUtils.isNotBlank(count)) {
+                    try {
+                        // update title
+                        String title = jsonObject.getJSONObject("step1").getString("title");
+                        jsonObject.getJSONObject("step1").put("title", MessageFormat.format(title, count));
+
+                        // update key
+                        JSONArray fields = fields(jsonObject);
+                        String key = fields.getJSONObject(0).getString("key");
+                        fields.getJSONObject(0).put("key", MessageFormat.format(key, count));
+
+                        String hint = fields.getJSONObject(0).getString("hint");
+                        fields.getJSONObject(0).put("hint", MessageFormat.format(hint, count));
+
+                    } catch (Exception e) {
+                        Timber.e(e);
+                    }
+                }
                 setJsonObject(jsonObject);
             } catch (Exception e) {
                 Timber.e(e);

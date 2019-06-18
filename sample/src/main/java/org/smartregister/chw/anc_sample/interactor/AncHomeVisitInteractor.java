@@ -31,7 +31,7 @@ public class AncHomeVisitInteractor extends BaseAncHomeVisitInteractor {
 
                     // sample action using json form configured payload
                     final BaseAncHomeVisitAction anc = new BaseAncHomeVisitAction("ANC Card Received", "Due 06 May 2019", true,
-                            BaseAncHomeVisitFragment.getInstance(view, Constants.HOME_VISIT_FORMS.ANC_CARD_FORM, null), null);
+                            BaseAncHomeVisitFragment.getInstance(view, Constants.HOME_VISIT_FORMS.ANC_CARD_FORM, null, null), null);
                     anc.setAncHomeVisitActionHelper(new BaseAncHomeVisitAction.AncHomeVisitActionHelper() {
                         @Override
                         public BaseAncHomeVisitAction.Status evaluateStatusOnPayload() {
@@ -59,7 +59,7 @@ public class AncHomeVisitInteractor extends BaseAncHomeVisitInteractor {
 
 
                     actionList.put("TT Immunization 1", new BaseAncHomeVisitAction("TT Immunization 1", "", false,
-                            BaseAncHomeVisitFragment.getInstance(view, Constants.HOME_VISIT_FORMS.IMMUNIZATION, null), null));
+                            BaseAncHomeVisitFragment.getInstance(view, Constants.HOME_VISIT_FORMS.IMMUNIZATION, null, "1"), null));
 
                 } catch (BaseAncHomeVisitAction.ValidationException e) {
                     e.printStackTrace();

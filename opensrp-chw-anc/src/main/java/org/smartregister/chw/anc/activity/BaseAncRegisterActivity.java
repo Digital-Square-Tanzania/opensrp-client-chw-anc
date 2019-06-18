@@ -31,10 +31,13 @@ import org.smartregister.view.fragment.BaseRegisterFragment;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.smartregister.chw.anc.util.Constants.EVENT_TYPE.UPDATE_EVENT_CONDITION;
+
 public class BaseAncRegisterActivity extends BaseRegisterActivity implements AncRegisterContract.View {
     public static final String TAG = BaseAncRegisterActivity.class.getCanonicalName();
     protected String BASE_ENTITY_ID;
     protected String ACTION;
+    protected String TABLE;
 
 
     @Override
@@ -42,6 +45,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Anc
         super.onCreate(savedInstanceState);
         BASE_ENTITY_ID = getIntent().getStringExtra(Constants.ACTIVITY_PAYLOAD.BASE_ENTITY_ID);
         ACTION = getIntent().getStringExtra(Constants.ACTIVITY_PAYLOAD.ACTION);
+        TABLE = getIntent().getStringExtra(Constants.ACTIVITY_PAYLOAD.TABLE_NAME);
         onStartActivityWithAction();
     }
 
@@ -201,16 +205,15 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Anc
 //            process the form
             try {
                 String jsonString = data.getStringExtra(Constants.JSON_FORM_EXTRA.JSON);
-                String table = data.getStringExtra(Constants.ACTIVITY_PAYLOAD.TABLE_NAME);
                 Log.d("JSONResult", jsonString);
 
                 JSONObject form = new JSONObject(jsonString);
                 String encounter_type = form.getString(Constants.JSON_FORM_EXTRA.ENCOUNTER_TYPE);
                 // process child registration
-                if (!encounter_type.equalsIgnoreCase("Update")) {
-                    presenter().saveForm(form.toString(), false, table);
+                if (!encounter_type.startsWith(UPDATE_EVENT_CONDITION)) {
+                    presenter().saveForm(form.toString(), false, TABLE);
                 } else {
-                    presenter().saveForm(form.toString(), true, table);
+                    presenter().saveForm(form.toString(), true, TABLE);
                 }
             } catch (Exception e) {
                 Log.e(TAG, Log.getStackTraceString(e));

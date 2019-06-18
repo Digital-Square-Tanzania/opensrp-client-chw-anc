@@ -77,7 +77,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         return org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, encounterType, Constants.TABLES.ANC_MEMBERS);
     }
 
-    public static Event processJsonForm(AllSharedPreferences allSharedPreferences, String jsonString) {
+    public static Event processJsonForm(AllSharedPreferences allSharedPreferences, String jsonString, String table) {
 
         Triple<Boolean, JSONObject, JSONArray> registrationFormParams = validateParameters(jsonString);
 
@@ -89,7 +89,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         JSONArray fields = registrationFormParams.getRight();
         String entityId = getString(jsonForm, ENTITY_ID);
 
-        return org.smartregister.util.JsonFormUtils.createEvent(fields, getJSONObject(jsonForm, METADATA), formTag(allSharedPreferences), entityId, getString(jsonForm, ENCOUNTER_TYPE), Constants.TABLES.ANC_MEMBERS);
+        return org.smartregister.util.JsonFormUtils.createEvent(fields, getJSONObject(jsonForm, METADATA), formTag(allSharedPreferences), entityId, getString(jsonForm, ENCOUNTER_TYPE), table);
     }
 
     protected static FormTag formTag(AllSharedPreferences allSharedPreferences) {

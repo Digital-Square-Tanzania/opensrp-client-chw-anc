@@ -23,6 +23,7 @@ public interface Constants {
     interface TABLES {
         String ANC_MEMBERS = "ec_anc_register";
         String FAMILY_MEMBER = "ec_family_member";
+        String PREGNANCY_OUTCOME = "ec_pregnancy_outcome";
     }
 
     interface CONFIGURATION {
@@ -32,6 +33,7 @@ public interface Constants {
     interface ACTIVITY_PAYLOAD {
         String BASE_ENTITY_ID = "BASE_ENTITY_ID";
         String ACTION = "ACTION";
+        String TABLE_NAME = "table";
     }
 
     interface ACTIVITY_PAYLOAD_TYPE {

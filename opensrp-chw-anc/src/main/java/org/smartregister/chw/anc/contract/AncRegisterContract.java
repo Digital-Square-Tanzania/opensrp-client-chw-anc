@@ -19,7 +19,7 @@ public interface AncRegisterContract {
 
         void startForm(String formName, String entityId, String metadata, String currentLocationId) throws Exception;
 
-        void saveForm(String jsonString, boolean isEditMode);
+        void saveForm(String jsonString, boolean isEditMode, String table);
 
     }
 
@@ -34,7 +34,7 @@ public interface AncRegisterContract {
 
         void onDestroy(boolean isChangingConfiguration);
 
-        void saveRegistration(String jsonString, boolean isEditMode, final InteractorCallBack callBack);
+        void saveRegistration(String jsonString, boolean isEditMode, final InteractorCallBack callBack, String table);
 
     }
 

@@ -31,14 +31,14 @@ public class BaseAncRegisterInteractor implements AncRegisterContract.Interactor
     }
 
     @Override
-    public void saveRegistration(final String jsonString, final boolean isEditMode, final AncRegisterContract.InteractorCallBack callBack) {
+    public void saveRegistration(final String jsonString, final boolean isEditMode, final AncRegisterContract.InteractorCallBack callBack, final String table) {
 
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 // save it
                 try {
-                    saveRegistration(jsonString);
+                    saveRegistration(jsonString, table);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
@@ -54,10 +54,10 @@ public class BaseAncRegisterInteractor implements AncRegisterContract.Interactor
         appExecutors.diskIO().execute(runnable);
     }
 
-    private void saveRegistration(final String jsonString) throws Exception {
+    private void saveRegistration(final String jsonString, String table) throws Exception {
 
         AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
-        Event baseEvent = JsonFormUtils.processJsonForm(allSharedPreferences, jsonString);
+        Event baseEvent = JsonFormUtils.processJsonForm(allSharedPreferences, jsonString, table);
 
         Util.processEvent(allSharedPreferences, baseEvent);
     }

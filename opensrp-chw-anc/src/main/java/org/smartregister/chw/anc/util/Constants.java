@@ -14,6 +14,7 @@ public interface Constants {
     interface EVENT_TYPE {
         String ANC_REGISTRATION = "Anc Registration";
         String ANC_HOME_VISIT = "ANC Home Visit";
+        String UPDATE_EVENT_CONDITION = "Update";
     }
 
     interface FORMS {
@@ -23,6 +24,7 @@ public interface Constants {
     interface TABLES {
         String ANC_MEMBERS = "ec_anc_register";
         String FAMILY_MEMBER = "ec_family_member";
+        String PREGNANCY_OUTCOME = "ec_pregnancy_outcome";
     }
 
     interface CONFIGURATION {
@@ -32,6 +34,7 @@ public interface Constants {
     interface ACTIVITY_PAYLOAD {
         String BASE_ENTITY_ID = "BASE_ENTITY_ID";
         String ACTION = "ACTION";
+        String TABLE_NAME = "TABLE";
     }
 
     interface ACTIVITY_PAYLOAD_TYPE {

@@ -1,7 +1,6 @@
 package org.smartregister.chw.anc.util;
 
 import org.json.JSONObject;
-import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.repository.BaseRepository;
@@ -10,6 +9,7 @@ import org.smartregister.sync.helper.ECSyncHelper;
 
 import java.util.Date;
 
+import static org.smartregister.chw.anc.AncLibrary.getInstance;
 import static org.smartregister.util.Utils.getAllSharedPreferences;
 
 public class Util {
@@ -28,10 +28,11 @@ public class Util {
     }
 
     public static ECSyncHelper getSyncHelper() {
-        return AncLibrary.getInstance().getEcSyncHelper();
+        return getInstance().getEcSyncHelper();
     }
 
     public static ClientProcessorForJava getClientProcessorForJava() {
-        return AncLibrary.getInstance().getClientProcessorForJava();
+        return getInstance().getClientProcessorForJava();
     }
+
 }

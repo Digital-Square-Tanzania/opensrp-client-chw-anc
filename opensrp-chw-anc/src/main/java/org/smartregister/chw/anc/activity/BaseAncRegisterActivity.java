@@ -31,16 +31,21 @@ import org.smartregister.view.fragment.BaseRegisterFragment;
 import java.util.Arrays;
 import java.util.List;
 
+import static org.smartregister.chw.anc.util.Constants.EVENT_TYPE.UPDATE_EVENT_CONDITION;
+
 public class BaseAncRegisterActivity extends BaseRegisterActivity implements AncRegisterContract.View {
     public static final String TAG = BaseAncRegisterActivity.class.getCanonicalName();
     protected String BASE_ENTITY_ID;
     protected String ACTION;
+    protected String TABLE;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         BASE_ENTITY_ID = getIntent().getStringExtra(Constants.ACTIVITY_PAYLOAD.BASE_ENTITY_ID);
         ACTION = getIntent().getStringExtra(Constants.ACTIVITY_PAYLOAD.ACTION);
+        TABLE = getIntent().getStringExtra(Constants.ACTIVITY_PAYLOAD.TABLE_NAME);
         onStartActivityWithAction();
     }
 
@@ -112,11 +117,12 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Anc
         if (requestCode == Constants.REQUEST_CODE_GET_JSON && resultCode == RESULT_OK) {
             try {
                 String jsonString = data.getStringExtra(Constants.JSON_FORM_EXTRA.JSON);
+                String table = data.getStringExtra(Constants.ACTIVITY_PAYLOAD.TABLE_NAME);
                 Log.d("JSONResult", jsonString);
 
                 JSONObject form = new JSONObject(jsonString);
                 if (form.getString(Constants.ENCOUNTER_TYPE).equals(getRegisterEventType())) {
-                    presenter().saveForm(jsonString, false);
+                    presenter().saveForm(jsonString, false, table);
                 }
             } catch (Exception e) {
                 Log.e(TAG, Log.getStackTraceString(e));
@@ -196,8 +202,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Anc
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_CODE_GET_JSON) {
-            // process the form
-
+//            process the form
             try {
                 String jsonString = data.getStringExtra(Constants.JSON_FORM_EXTRA.JSON);
                 Log.d("JSONResult", jsonString);
@@ -205,15 +210,16 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Anc
                 JSONObject form = new JSONObject(jsonString);
                 String encounter_type = form.getString(Constants.JSON_FORM_EXTRA.ENCOUNTER_TYPE);
                 // process child registration
-                if (encounter_type.equalsIgnoreCase(getFormRegistrationEvent())) {
-                    presenter().saveForm(form.toString(), false);
-                } else if (encounter_type.equalsIgnoreCase(getFormEditRegistrationEvent())) {
-                    presenter().saveForm(form.toString(), true);
+                if (!encounter_type.startsWith(UPDATE_EVENT_CONDITION)) {
+                    presenter().saveForm(form.toString(), false, TABLE);
+                } else {
+                    presenter().saveForm(form.toString(), true, TABLE);
                 }
             } catch (Exception e) {
                 Log.e(TAG, Log.getStackTraceString(e));
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         }
+        finish();
     }
 }

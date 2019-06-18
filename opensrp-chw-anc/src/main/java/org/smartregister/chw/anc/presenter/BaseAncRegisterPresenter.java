@@ -43,11 +43,11 @@ public class BaseAncRegisterPresenter implements AncRegisterContract.Presenter, 
      * @param isEditMode
      */
     @Override
-    public void saveForm(String jsonString, boolean isEditMode) {
+    public void saveForm(String jsonString, boolean isEditMode, String table) {
         try {
 
             getView().showProgressDialog(R.string.saving_dialog_title);
-            interactor.saveRegistration(jsonString, isEditMode, this);
+            interactor.saveRegistration(jsonString, isEditMode, this, table);
         } catch (Exception e) {
             Log.e(TAG, Log.getStackTraceString(e));
         }

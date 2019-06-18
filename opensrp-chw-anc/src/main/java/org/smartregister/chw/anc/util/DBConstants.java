@@ -14,6 +14,7 @@ public class DBConstants {
         public static final String LAST_MENSTRUAL_PERIOD = "last_menstrual_period";
         public static final String DOD = "dod";
         public static final String UNIQUE_ID = "unique_id";
+        public static final String TEMP_UNIQUE_ID = "temp_unique_id";
         public static final String LAST_INTERACTED_WITH = "last_interacted_with";
         public static final String VILLAGE_TOWN = "village_town";
         public static final String DATE_REMOVED = "date_removed";
@@ -21,8 +22,10 @@ public class DBConstants {
         public static final String LAST_HOME_VISIT = "last_home_visit";
         public static final String FAMILY_HEAD = "family_head";
         public static final String PRIMARY_CAREGIVER = "primary_caregiver";
+        public static final String IS_CLOSED = "is_closed";
         public static final String CONFIRMED_VISITS = "confirmed_visits";
         public static final String LAST_CONTACT_VISIT = "last_contact_visit";
         public static final String DATE_CREATED = "date_created";
+
     }
 }

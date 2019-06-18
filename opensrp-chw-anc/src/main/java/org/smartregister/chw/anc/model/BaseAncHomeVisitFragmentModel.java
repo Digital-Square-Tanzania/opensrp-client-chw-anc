@@ -26,11 +26,15 @@ public class BaseAncHomeVisitFragmentModel implements BaseAncHomeVisitFragmentCo
             int image = getImage(jsonObject, presenter);
             BaseAncHomeVisitFragment.QuestionType questionType = getQuestionType(jsonObject);
             String value = getValue(jsonObject);
+            String infoIconTitle = getInfoIconTitle(jsonObject);
+            String infoIconDetails = getInfoIconDetails(jsonObject);
 
             presenter.setTitle(title);
             presenter.setQuestion(question);
             presenter.setImageRes(image);
             presenter.setQuestionType(questionType);
+            presenter.setInfoIconTitle(infoIconTitle);
+            presenter.setInfoIconDetails(infoIconDetails);
             presenter.setValue(value);
 
         }
@@ -96,6 +100,24 @@ public class BaseAncHomeVisitFragmentModel implements BaseAncHomeVisitFragmentCo
         } catch (JSONException e) {
             Timber.e(e);
             return BaseAncHomeVisitFragment.QuestionType.BOOLEAN;
+        }
+    }
+
+    private String getInfoIconTitle(JSONObject jsonObject) {
+        try {
+            return jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0).getString(JsonFormConstants.LABEL_INFO_TITLE);
+        } catch (JSONException e) {
+            Timber.e(e);
+            return "";
+        }
+    }
+
+    private String getInfoIconDetails(JSONObject jsonObject) {
+        try {
+            return jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0).getString(JsonFormConstants.LABEL_INFO_TEXT);
+        } catch (JSONException e) {
+            Timber.e(e);
+            return "";
         }
     }
 

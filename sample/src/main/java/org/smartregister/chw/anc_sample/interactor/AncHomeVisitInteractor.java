@@ -4,6 +4,7 @@ import com.vijay.jsonwizard.constants.JsonFormConstants;
 
 import org.json.JSONObject;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
+import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
 import org.smartregister.chw.anc.interactor.BaseAncHomeVisitInteractor;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
@@ -16,7 +17,7 @@ import timber.log.Timber;
 public class AncHomeVisitInteractor extends BaseAncHomeVisitInteractor {
 
     @Override
-    public void calculateActions(final BaseAncHomeVisitContract.View view, final String memberID, final BaseAncHomeVisitContract.InteractorCallBack callBack) {
+    public void calculateActions(final BaseAncHomeVisitContract.View view, final MemberObject memberObject, final BaseAncHomeVisitContract.InteractorCallBack callBack) {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -29,8 +30,8 @@ public class AncHomeVisitInteractor extends BaseAncHomeVisitInteractor {
                     actionList.put("Danger Signs", ds);
 
                     // sample action using json form configured payload
-                    final BaseAncHomeVisitAction anc = new BaseAncHomeVisitAction("ANC Card Received", "", true,
-                            BaseAncHomeVisitFragment.getInstance(view, Constants.HOME_VISIT_FORMS.ANC_CARD_FORM, null), null);
+                    final BaseAncHomeVisitAction anc = new BaseAncHomeVisitAction("ANC Card Received", "Due 06 May 2019", true,
+                            BaseAncHomeVisitFragment.getInstance(view, Constants.HOME_VISIT_FORMS.ANC_CARD_FORM, null, null), null);
                     anc.setAncHomeVisitActionHelper(new BaseAncHomeVisitAction.AncHomeVisitActionHelper() {
                         @Override
                         public BaseAncHomeVisitAction.Status evaluateStatusOnPayload() {
@@ -53,12 +54,12 @@ public class AncHomeVisitInteractor extends BaseAncHomeVisitInteractor {
                             return anc.computedStatus();
                         }
                     });
-
+                    anc.setScheduleStatus(BaseAncHomeVisitAction.ScheduleStatus.OVERDUE);
                     actionList.put("ANC Card Received", anc);
 
 
                     actionList.put("TT Immunization 1", new BaseAncHomeVisitAction("TT Immunization 1", "", false,
-                            BaseAncHomeVisitFragment.getInstance(view, Constants.HOME_VISIT_FORMS.IMMUNIZATION, null), null));
+                            BaseAncHomeVisitFragment.getInstance(view, Constants.HOME_VISIT_FORMS.IMMUNIZATION, null, "1"), null));
 
                 } catch (BaseAncHomeVisitAction.ValidationException e) {
                     e.printStackTrace();

@@ -53,6 +53,11 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
         if (StringUtils.isNotBlank(ancHomeVisitAction.getSubTitle())) {
             holder.descriptionText.setText(ancHomeVisitAction.getSubTitle());
             holder.descriptionText.setVisibility(View.VISIBLE);
+            if (ancHomeVisitAction.getScheduleStatus() == BaseAncHomeVisitAction.ScheduleStatus.OVERDUE) {
+                holder.descriptionText.setTextColor(context.getResources().getColor(R.color.alert_urgent_red));
+            } else {
+                holder.descriptionText.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
+            }
         } else {
             holder.descriptionText.setVisibility(View.GONE);
         }

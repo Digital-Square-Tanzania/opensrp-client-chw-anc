@@ -148,7 +148,6 @@ public class BaseAncRegisterFragment extends BaseRegisterFragment implements Anc
     }
 
     protected void openHomeVisit(CommonPersonObjectClient client) {
-        String baseEntityId = Utils.getValue(client.getColumnmaps(), DBConstants.KEY.BASE_ENTITY_ID, true);
-        BaseAncHomeVisitActivity.startMe(getActivity(), baseEntityId);
+        BaseAncHomeVisitActivity.startMe(getActivity(), new MemberObject(client));
     }
 }

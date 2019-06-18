@@ -1,8 +1,10 @@
 package org.smartregister.chw.anc.fragment;
 
 
+import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.annotation.DrawableRes;
@@ -16,7 +18,9 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitFragmentContract;
@@ -27,6 +31,7 @@ import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.util.DatePickerUtils;
 import org.smartregister.view.customcontrols.CustomFontTextView;
 
+import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
@@ -34,15 +39,20 @@ import java.util.Locale;
 
 import timber.log.Timber;
 
+import static org.smartregister.util.JsonFormUtils.fields;
+
 public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnClickListener, BaseAncHomeVisitFragmentContract.View {
 
     private BaseAncHomeVisitContract.View homeVisitView;
     private String title;
     private String question;
     private QuestionType questionType;
+    private String infoIconTitle;
+    private String infoIconDetails;
     @DrawableRes
     private int imageRes;
     private JSONObject jsonObject;
+    private String count = "1";
 
     private BaseAncHomeVisitFragmentContract.Presenter presenter;
 
@@ -54,14 +64,16 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     private RadioButton radioButtonNo;
     private Button buttonCancel;
     private Button buttonSave;
+    private ImageView infoIcon;
     private DatePicker datePicker;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
 
-    public static BaseAncHomeVisitFragment getInstance(BaseAncHomeVisitContract.View view, String form_name, JSONObject jsonObject) {
+    public static BaseAncHomeVisitFragment getInstance(BaseAncHomeVisitContract.View view, String form_name, JSONObject jsonObject, String count) {
         BaseAncHomeVisitFragment fragment = new BaseAncHomeVisitFragment();
         fragment.setHomeVisitView(view);
         fragment.setJsonObject(jsonObject);
         fragment.setFormName(form_name);
+        fragment.setCount(count);
         return fragment;
     }
 
@@ -92,6 +104,9 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
 
         buttonCancel = view.findViewById(R.id.buttonCancel);
         buttonCancel.setOnClickListener(this);
+
+        infoIcon = view.findViewById(R.id.info_icon);
+        infoIcon.setOnClickListener(this);
 
         buttonSave = view.findViewById(R.id.buttonSave);
         buttonSave.setOnClickListener(this);
@@ -227,6 +242,52 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
         customizeQuestionType();
     }
 
+    public String getInfoIconTitle() {
+        return infoIconTitle;
+    }
+
+    @Override
+    public void setInfoIconTitle(String infoIconTitle) {
+        this.infoIconTitle = infoIconTitle;
+        initializeInfoIcon();
+    }
+
+    public String getInfoIconDetails() {
+        return infoIconDetails;
+    }
+
+    @Override
+    public void setInfoIconDetails(String infoIconDetails) {
+        this.infoIconDetails = infoIconDetails;
+        initializeInfoIcon();
+    }
+
+    private void initializeInfoIcon() {
+        if (StringUtils.isNotBlank(infoIconTitle) && StringUtils.isNotBlank(infoIconDetails)) {
+            infoIcon.setVisibility(View.VISIBLE);
+        } else {
+            infoIcon.setVisibility(View.GONE);
+        }
+    }
+
+
+    protected void onShowInfo() {
+        AlertDialog.Builder builderSingle = new AlertDialog.Builder(getView().getContext(), com.vijay.jsonwizard.R.style.AppThemeAlertDialog);
+        builderSingle.setTitle(getInfoIconTitle());
+        builderSingle.setMessage(getInfoIconDetails());
+        builderSingle.setIcon(com.vijay.jsonwizard.R.drawable.dialog_info_filled);
+
+        builderSingle.setNegativeButton(getView().getContext().getResources().getString(com.vijay.jsonwizard.R.string.ok),
+                new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.dismiss();
+                    }
+                });
+
+        builderSingle.show();
+    }
+
     @Override
     public void initializePresenter() {
         presenter = new BaseAncHomeVisitFragmentPresenter(this, new BaseAncHomeVisitFragmentModel());
@@ -243,6 +304,10 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
 
     public void setJsonObject(JSONObject jsonObject) {
         this.jsonObject = jsonObject;
+    }
+
+    public void setCount(String count) {
+        this.count = count;
     }
 
     @Override
@@ -276,6 +341,25 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
             // load form from assets directory
             try {
                 JSONObject jsonObject = JsonFormUtils.getFormAsJson(formName);
+                // evaluate the count
+                if (StringUtils.isNotBlank(count)) {
+                    try {
+                        // update title
+                        String title = jsonObject.getJSONObject("step1").getString("title");
+                        jsonObject.getJSONObject("step1").put("title", MessageFormat.format(title, count));
+
+                        // update key
+                        JSONArray fields = fields(jsonObject);
+                        String key = fields.getJSONObject(0).getString("key");
+                        fields.getJSONObject(0).put("key", MessageFormat.format(key, count));
+
+                        String hint = fields.getJSONObject(0).getString("hint");
+                        fields.getJSONObject(0).put("hint", MessageFormat.format(hint, count));
+
+                    } catch (Exception e) {
+                        Timber.e(e);
+                    }
+                }
                 setJsonObject(jsonObject);
             } catch (Exception e) {
                 Timber.e(e);
@@ -295,6 +379,8 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
             dismiss();
         } else if (v.getId() == R.id.buttonCancel) {
             onCancel();
+        } else if (v.getId() == R.id.info_icon) {
+            onShowInfo();
         }
     }
 

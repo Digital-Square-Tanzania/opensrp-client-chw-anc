@@ -25,6 +25,7 @@ import org.smartregister.AllConstants;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.adapter.BaseAncHomeVisitAdapter;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
+import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.interactor.BaseAncHomeVisitInteractor;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.anc.presenter.BaseAncHomeVisitPresenter;
@@ -38,12 +39,14 @@ import java.util.Map;
 
 import timber.log.Timber;
 
+import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER_PROFILE_OBJECT;
+
 public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAncHomeVisitContract.View, View.OnClickListener {
 
     private static final String TAG = BaseAncHomeVisitActivity.class.getCanonicalName();
     protected Map<String, BaseAncHomeVisitAction> actionList = new LinkedHashMap<>();
     protected BaseAncHomeVisitContract.Presenter presenter;
-    protected String BASE_ENTITY_ID;
+    protected MemberObject memberObject;
     private RecyclerView.Adapter mAdapter;
     private ProgressBar progressBar;
     private TextView tvSubmit;
@@ -52,9 +55,9 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     private String confirmCloseTitle;
     private String confirmCloseMessage;
 
-    public static void startMe(Activity activity, String memberBaseEntityID) {
+    public static void startMe(Activity activity, MemberObject memberObject) {
         Intent intent = new Intent(activity, BaseAncHomeVisitActivity.class);
-        intent.putExtra(Constants.ACTIVITY_PAYLOAD.BASE_ENTITY_ID, memberBaseEntityID);
+        intent.putExtra(MEMBER_PROFILE_OBJECT, memberObject);
         activity.startActivity(intent);
     }
 
@@ -64,7 +67,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         setContentView(R.layout.activity_base_anc_homevisit);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
-            BASE_ENTITY_ID = extras.getString(Constants.ACTIVITY_PAYLOAD.BASE_ENTITY_ID);
+            memberObject = (MemberObject) getIntent().getSerializableExtra(MEMBER_PROFILE_OBJECT);
         }
 
         confirmCloseTitle = getString(R.string.confirm_form_close);
@@ -96,7 +99,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     }
 
     protected void registerPresenter() {
-        presenter = new BaseAncHomeVisitPresenter(BASE_ENTITY_ID, this, new BaseAncHomeVisitInteractor());
+        presenter = new BaseAncHomeVisitPresenter(memberObject, this, new BaseAncHomeVisitInteractor());
     }
 
     @Override
@@ -160,11 +163,11 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
             } catch (Exception e) {
                 Timber.e(e);
                 String locationId = AncLibrary.getInstance().context().allSharedPreferences().getPreference(AllConstants.CURRENT_LOCATION_ID);
-                presenter().startForm(ancHomeVisitAction.getFormName(), BASE_ENTITY_ID, locationId);
+                presenter().startForm(ancHomeVisitAction.getFormName(), memberObject.getBaseEntityId(), locationId);
             }
         } else {
             String locationId = AncLibrary.getInstance().context().allSharedPreferences().getPreference(AllConstants.CURRENT_LOCATION_ID);
-            presenter().startForm(ancHomeVisitAction.getFormName(), BASE_ENTITY_ID, locationId);
+            presenter().startForm(ancHomeVisitAction.getFormName(), memberObject.getBaseEntityId(), locationId);
         }
     }
 
@@ -190,8 +193,8 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     }
 
     @Override
-    public void redrawHeader(String memberName, String age) {
-        tvTitle.setText(MessageFormat.format("{0}, {1} \u00B7 {2}", memberName, age, getString(R.string.anc_visit)));
+    public void redrawHeader(MemberObject memberObject) {
+        tvTitle.setText(MessageFormat.format("{0}, {1} \u00B7 {2}", memberObject.getFullName(), memberObject.getAge(), getString(R.string.anc_visit)));
     }
 
     @Override

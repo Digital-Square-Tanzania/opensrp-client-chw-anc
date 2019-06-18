@@ -25,6 +25,10 @@ public interface BaseAncHomeVisitFragmentContract {
 
         void setQuestionType(BaseAncHomeVisitFragment.QuestionType questionType);
 
+        void setInfoIconTitle(String infoIconTitle);
+
+        void setInfoIconDetails(String infoIconDetails);
+
         JSONObject getJsonObject();
 
         /**
@@ -47,6 +51,10 @@ public interface BaseAncHomeVisitFragmentContract {
         void setImageRes(int imageRes);
 
         void setQuestionType(BaseAncHomeVisitFragment.QuestionType questionType);
+
+        void setInfoIconTitle(String infoIconTitle);
+
+        void setInfoIconDetails(String infoIconDetails);
 
         View getView();
 

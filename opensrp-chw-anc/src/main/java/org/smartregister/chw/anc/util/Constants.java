@@ -34,7 +34,7 @@ public interface Constants {
     interface ACTIVITY_PAYLOAD {
         String BASE_ENTITY_ID = "BASE_ENTITY_ID";
         String ACTION = "ACTION";
-        String TABLE_NAME = "table";
+        String TABLE_NAME = "TABLE";
     }
 
     interface ACTIVITY_PAYLOAD_TYPE {

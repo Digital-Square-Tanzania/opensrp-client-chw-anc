@@ -1,11 +1,7 @@
 package org.smartregister.chw.anc.util;
 
-import android.content.ContentValues;
-
 import org.json.JSONObject;
 import org.smartregister.clientandeventmodel.Event;
-import org.smartregister.commonregistry.AllCommonsRepository;
-import org.smartregister.commonregistry.CommonFtsObject;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.sync.ClientProcessorForJava;

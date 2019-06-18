@@ -11,9 +11,14 @@ import org.smartregister.chw.anc.util.AppExecutors;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.anc.util.Util;
+import org.smartregister.chw.anc.util.Utils;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.clientandeventmodel.Obs;
 import org.smartregister.commonregistry.CommonRepository;
+import org.smartregister.immunization.ImmunizationLibrary;
+import org.smartregister.immunization.domain.Vaccine;
+import org.smartregister.immunization.domain.VaccineWrapper;
+import org.smartregister.immunization.repository.VaccineRepository;
 import org.smartregister.repository.AllSharedPreferences;
 
 import java.text.SimpleDateFormat;
@@ -84,6 +89,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
 
                     Map<String, String> jsons = new HashMap<>();
+                    List<VaccineWrapper> vaccineWrappers = new ArrayList<>();
 
                     // aggregate forms to be processed
                     for (Map.Entry<String, BaseAncHomeVisitAction> entry : map.entrySet()) {
@@ -91,9 +97,14 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
                         if (StringUtils.isNotBlank(json)) {
                             jsons.put(entry.getKey(), json);
                         }
+                        if (entry.getValue().getVaccineWrapper() != null) {
+                            vaccineWrappers.add(entry.getValue().getVaccineWrapper());
+                        }
                     }
 
                     saveVisit(memberID, getEncounterType(), jsons);
+                    saveVaccineEvent(vaccineWrappers, memberID);
+
                 } catch (Exception e) {
                     Timber.e(e);
                     result = false;
@@ -145,5 +156,34 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
     protected String getEncounterType() {
         return Constants.EVENT_TYPE.ANC_HOME_VISIT;
+    }
+
+    private void saveVaccineEvent(List<VaccineWrapper> tags, String baseEntityID) {
+        for (VaccineWrapper tag : tags) {
+            if (tag.getUpdatedVaccineDate() == null) {
+                return;
+            }
+            Vaccine vaccine = new Vaccine();
+            if (tag.getDbKey() != null) {
+                vaccine = getVaccineRepository().find(tag.getDbKey());
+            }
+            vaccine.setBaseEntityId(baseEntityID);
+            vaccine.setName(tag.getName());
+            vaccine.setDate(tag.getUpdatedVaccineDate().toDate());
+
+            String lastChar = vaccine.getName().substring(vaccine.getName().length() - 1);
+            if (StringUtils.isNumeric(lastChar)) {
+                vaccine.setCalculation(Integer.valueOf(lastChar));
+            } else {
+                vaccine.setCalculation(-1);
+            }
+
+            JsonFormUtils.tagSyncMetadata(Utils.context().allSharedPreferences(), vaccine);
+            tag.setDbKey(vaccine.getId());
+        }
+    }
+
+    protected VaccineRepository getVaccineRepository() {
+        return ImmunizationLibrary.getInstance().vaccineRepository();
     }
 }

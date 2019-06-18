@@ -8,6 +8,7 @@ import org.json.JSONObject;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.domain.tag.FormTag;
+import org.smartregister.immunization.domain.Vaccine;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.util.FormUtils;
 
@@ -100,7 +101,6 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         return formTag;
     }
 
-
     public static void tagEvent(AllSharedPreferences allSharedPreferences, Event event) {
         String providerId = allSharedPreferences.fetchRegisteredANM();
         event.setProviderId(providerId);
@@ -132,4 +132,13 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         return FormUtils.getInstance(AncLibrary.getInstance().context().applicationContext()).getFormJson(formName);
     }
 
+    public static Vaccine tagSyncMetadata(AllSharedPreferences allSharedPreferences, Vaccine vaccine) {
+        String providerId = allSharedPreferences.fetchRegisteredANM();
+        vaccine.setAnmId(providerId);
+        vaccine.setLocationId(locationId(allSharedPreferences));
+        vaccine.setChildLocationId(allSharedPreferences.fetchCurrentLocality());
+        vaccine.setTeam(allSharedPreferences.fetchDefaultTeam(providerId));
+        vaccine.setTeamId(allSharedPreferences.fetchDefaultTeamId(providerId));
+        return vaccine;
+    }
 }

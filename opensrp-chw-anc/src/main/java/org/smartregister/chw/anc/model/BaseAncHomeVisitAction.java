@@ -2,6 +2,7 @@ package org.smartregister.chw.anc.model;
 
 import org.apache.commons.lang3.StringUtils;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
+import org.smartregister.immunization.domain.VaccineWrapper;
 
 /**
  * This action list allows users to either load a form or link it to a separate fragment.
@@ -18,6 +19,7 @@ public class BaseAncHomeVisitAction {
     private String jsonPayload;
     private String selectedOption;
     private AncHomeVisitActionHelper ancHomeVisitActionHelper;
+    private VaccineWrapper vaccineWrapper;
 
     // event based behaviors
     private Runnable onPayLoadReceived;
@@ -161,5 +163,13 @@ public class BaseAncHomeVisitAction {
 
     public void setOnPayLoadReceived(Runnable onPayLoadReceived) {
         this.onPayLoadReceived = onPayLoadReceived;
+    }
+
+    public VaccineWrapper getVaccineWrapper() {
+        return (getActionStatus() == Status.COMPLETED) ? vaccineWrapper : null;
+    }
+
+    public void setVaccineWrapper(VaccineWrapper vaccineWrapper) {
+        this.vaccineWrapper = vaccineWrapper;
     }
 }

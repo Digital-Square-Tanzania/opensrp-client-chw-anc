@@ -27,6 +27,7 @@ import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER
 public class BaseAncMemberProfileActivity extends BaseProfileActivity implements AncMemberProfileContract.View {
     protected MemberObject MEMBER_OBJECT;
     protected TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id, textview_record_anc_visit;
+    protected View view_anc_record;
 
     public static void startMe(Activity activity, MemberObject memberObject) {
         Intent intent = new Intent(activity, BaseAncMemberProfileActivity.class);
@@ -81,6 +82,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         text_view_address = findViewById(R.id.text_view_address);
         text_view_id = findViewById(R.id.text_view_id);
         textview_record_anc_visit = findViewById(R.id.textview_record_anc_visit);
+        view_anc_record = findViewById(R.id.view_anc_record);
 
         textview_record_anc_visit.setOnClickListener(this);
     }

@@ -97,6 +97,11 @@ public class BaseAncHomeVisitAction {
         }
     }
 
+
+    public void setProcessedJsonPayload(String jsonPayload) {
+        this.jsonPayload = jsonPayload;
+    }
+
     public BaseAncHomeVisitFragment getDestinationFragment() {
         return destinationFragment;
     }

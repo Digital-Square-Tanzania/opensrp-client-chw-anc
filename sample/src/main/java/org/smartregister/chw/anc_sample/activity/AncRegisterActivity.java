@@ -81,6 +81,24 @@ public class AncRegisterActivity extends BaseAncRegisterActivity {
     }
 
     private void openProfilePage() {
-        BaseAncMemberProfileActivity.startMe(this, new MemberObject("Glory Juma, 26", "GA: 10 weeks", "Lavingtone #445", "ID: 3503504", "00001", "00004", "00001", "00001", "Family Name"));
+
+        Map<String, String> details = new HashMap<>();
+        details.put(DBConstants.KEY.FIRST_NAME, "Glory");
+        details.put(DBConstants.KEY.LAST_NAME, "Juma");
+        details.put(DBConstants.KEY.MIDDLE_NAME, "Wambui");
+        details.put(DBConstants.KEY.DOB, "1982-01-18T03:00:00.000+03:00");
+        details.put(DBConstants.KEY.LAST_HOME_VISIT, "");
+        details.put(DBConstants.KEY.VILLAGE_TOWN, "Lavingtone #221");
+        details.put(DBConstants.KEY.FAMILY_NAME, "Jumwa");
+        details.put(DBConstants.KEY.UNIQUE_ID, "3503504");
+        details.put(DBConstants.KEY.LAST_MENSTRUAL_PERIOD, "04-01-2019");
+        details.put(DBConstants.KEY.BASE_ENTITY_ID, "3503504");
+        details.put(DBConstants.KEY.FAMILY_HEAD, "3503504");
+        details.put(DBConstants.KEY.PRIMARY_CAREGIVER, "3503504");
+        CommonPersonObjectClient commonPersonObject = new CommonPersonObjectClient("", details, "Yo");
+        commonPersonObject.setColumnmaps(details);
+
+        MemberObject memberObject = new MemberObject(commonPersonObject);
+        BaseAncMemberProfileActivity.startMe(this, memberObject);
     }
 }

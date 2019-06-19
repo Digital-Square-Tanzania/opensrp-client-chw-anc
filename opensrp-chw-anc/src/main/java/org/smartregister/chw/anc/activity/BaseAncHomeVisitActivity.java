@@ -209,6 +209,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
         int res_color = valid ? R.color.white : R.color.light_grey;
         tvSubmit.setTextColor(getResources().getColor(res_color));
+        tvSubmit.setOnClickListener(valid ? this : null); // update listener to null
 
         mAdapter.notifyDataSetChanged();
     }

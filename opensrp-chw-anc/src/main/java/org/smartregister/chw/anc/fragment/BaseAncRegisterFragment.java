@@ -133,18 +133,7 @@ public class BaseAncRegisterFragment extends BaseRegisterFragment implements Anc
     }
 
     protected void openProfile(CommonPersonObjectClient client) {
-        String baseEntityId = Utils.getValue(client.getColumnmaps(), DBConstants.KEY.BASE_ENTITY_ID, true);
-
-        MemberObject memberObject = new MemberObject(client.getName(),
-                client.getColumnmaps().get(DBConstants.KEY.LAST_MENSTRUAL_PERIOD),
-                client.getColumnmaps().get(DBConstants.KEY.VILLAGE_TOWN),
-                client.getColumnmaps().get(DBConstants.KEY.UNIQUE_ID),
-                baseEntityId,
-                client.getColumnmaps().get(DBConstants.KEY.RELATIONAL_ID),
-                client.getColumnmaps().get(DBConstants.KEY.FAMILY_HEAD),
-                client.getColumnmaps().get(DBConstants.KEY.PRIMARY_CAREGIVER),
-                client.getColumnmaps().get(DBConstants.KEY.FIRST_NAME));
-        BaseAncMemberProfileActivity.startMe(getActivity(), memberObject);
+        BaseAncMemberProfileActivity.startMe(getActivity(), new MemberObject(client));
     }
 
     protected void openHomeVisit(CommonPersonObjectClient client) {

@@ -28,7 +28,7 @@ public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presen
     @Override
     public void refreshProfileTopSection(MemberObject memberObject) {
         getView().setMemberName(memberObject.getMemberName());
-        getView().setMemberGA(memberObject.getLastMenstrualPeriod());
+        getView().setMemberGA(String.valueOf(memberObject.getGestationAge()));
         getView().setMemberAddress(memberObject.getAddress());
         getView().setMemberChwMemberId(memberObject.getChwMemberId());
     }

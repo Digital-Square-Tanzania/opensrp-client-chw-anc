@@ -26,7 +26,7 @@ import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER
 
 public class BaseAncMemberProfileActivity extends BaseProfileActivity implements AncMemberProfileContract.View {
     protected MemberObject MEMBER_OBJECT;
-    private TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id;
+    protected TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id, textview_record_anc_visit;
 
     public static void startMe(Activity activity, MemberObject memberObject) {
         Intent intent = new Intent(activity, BaseAncMemberProfileActivity.class);
@@ -80,6 +80,9 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         text_view_ga = findViewById(R.id.text_view_ga);
         text_view_address = findViewById(R.id.text_view_address);
         text_view_id = findViewById(R.id.text_view_id);
+        textview_record_anc_visit = findViewById(R.id.textview_record_anc_visit);
+
+        textview_record_anc_visit.setOnClickListener(this);
     }
 
     @Override
@@ -102,12 +105,12 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     @Override
     public void setMemberName(String memberName) {
         text_view_anc_member_name.setText(memberName);
-
     }
 
     @Override
     public void setMemberGA(String memberGA) {
-        text_view_ga.setText(String.valueOf(memberGA));
+        String gest_age = String.format(getString(R.string.gest_age), String.valueOf(memberGA)) + " " + getString(R.string.gest_age_weeks);
+        text_view_ga.setText(gest_age);
     }
 
     @Override
@@ -116,7 +119,8 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     public void setMemberChwMemberId(String memberChwMemberId) {
-        text_view_id.setText(memberChwMemberId);
+        String uniqueId = String.format(getString(R.string.unique_id_text), memberChwMemberId);
+        text_view_id.setText(uniqueId);
     }
 
     @Override

@@ -2,7 +2,9 @@ package org.smartregister.chw.anc.domain;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.joda.time.Period;
+import org.joda.time.format.DateTimeFormat;
 import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.util.Utils;
@@ -34,6 +36,12 @@ public class MemberObject implements Serializable {
     }
 
     public MemberObject(CommonPersonObjectClient pc) {
+        memberName = getAncMemberNameAndAge(
+                pc.getColumnmaps().get(DBConstants.KEY.FIRST_NAME),
+                pc.getColumnmaps().get(DBConstants.KEY.MIDDLE_NAME),
+                pc.getColumnmaps().get(DBConstants.KEY.LAST_NAME),
+                pc.getColumnmaps().get(DBConstants.KEY.DOB));
+
         lastMenstrualPeriod = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LAST_MENSTRUAL_PERIOD, false);
         baseEntityId = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.BASE_ENTITY_ID, false);
         lastContactVisit = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LAST_CONTACT_VISIT, false);
@@ -42,6 +50,13 @@ public class MemberObject implements Serializable {
         lastName = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LAST_NAME, true);
         dob = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.DOB, false);
         dateCreated = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.DATE_CREATED, false);
+        address = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.VILLAGE_TOWN, false);
+        chwMemberId = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.UNIQUE_ID, false);
+
+        familyBaseEntityId = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.RELATIONAL_ID, false);
+        familyHead = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.FAMILY_HEAD, false);
+        primaryCareGiver = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.PRIMARY_CAREGIVER, false);
+        familyName = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.FAMILY_NAME, false);
 
         String visits = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.CONFIRMED_VISITS, false);
         if (StringUtils.isNotBlank(visits)) {
@@ -49,16 +64,16 @@ public class MemberObject implements Serializable {
         }
     }
 
-    public MemberObject(String memberName, String lastMenstrualPeriod, String address, String chwMemberId, String baseEntityId, String familyBaseEntityId, String familyHead, String primaryCareGiver, String familyName) {
-        this.memberName = memberName;
-        this.lastMenstrualPeriod = lastMenstrualPeriod;
-        this.address = address;
-        this.chwMemberId = chwMemberId;
-        this.baseEntityId = baseEntityId;
-        this.familyBaseEntityId = familyBaseEntityId;
-        this.familyHead = familyHead;
-        this.primaryCareGiver = primaryCareGiver;
-        this.familyName = familyName;
+    private String getAncMemberNameAndAge(String firstName, String middleName, String surName, String age) {
+        int integerAge = new Period(new DateTime(age), new DateTime()).getYears();
+        String first_name = firstName.trim();
+        String middle_name = middleName.trim();
+        String sur_name = surName != null ? surName.trim() : "";
+
+        if (StringUtils.isNotBlank(firstName) && StringUtils.isNotBlank(middleName) && StringUtils.isNotBlank(age)) {
+            return (first_name + " " + middle_name + " " + sur_name).trim() + ", " + integerAge;
+        }
+        return "";
     }
 
     public String getMemberName() {
@@ -127,6 +142,10 @@ public class MemberObject implements Serializable {
 
     public int getAge() {
         return new Period(new DateTime(getDob()), new DateTime()).getYears();
+    }
+
+    public int getGestationAge() {
+        return Days.daysBetween(DateTimeFormat.forPattern("dd-MM-yyyy").parseDateTime(lastMenstrualPeriod), new DateTime()).getDays() / 7;
     }
 
     public String getFullName() {

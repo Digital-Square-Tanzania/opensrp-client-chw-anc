@@ -3,7 +3,7 @@ package org.smartregister.chw.anc.interactor;
 import android.support.annotation.VisibleForTesting;
 
 import org.smartregister.chw.anc.AncLibrary;
-import org.smartregister.chw.anc.contract.AncRegisterContract;
+import org.smartregister.chw.anc.contract.BaseAncRegisterContract;
 import org.smartregister.chw.anc.util.AppExecutors;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.anc.util.Util;
@@ -12,7 +12,7 @@ import org.smartregister.repository.AllSharedPreferences;
 
 import timber.log.Timber;
 
-public class BaseAncRegisterInteractor implements AncRegisterContract.Interactor {
+public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Interactor {
 
     private AppExecutors appExecutors;
 
@@ -31,7 +31,7 @@ public class BaseAncRegisterInteractor implements AncRegisterContract.Interactor
     }
 
     @Override
-    public void saveRegistration(final String jsonString, final boolean isEditMode, final AncRegisterContract.InteractorCallBack callBack, final String table) {
+    public void saveRegistration(final String jsonString, final boolean isEditMode, final BaseAncRegisterContract.InteractorCallBack callBack, final String table) {
 
         Runnable runnable = new Runnable() {
             @Override

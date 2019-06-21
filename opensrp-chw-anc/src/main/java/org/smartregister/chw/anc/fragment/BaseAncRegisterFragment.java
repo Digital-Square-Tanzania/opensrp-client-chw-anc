@@ -5,17 +5,15 @@ import android.widget.TextView;
 
 import org.smartregister.chw.anc.activity.BaseAncHomeVisitActivity;
 import org.smartregister.chw.anc.activity.BaseAncMemberProfileActivity;
-import org.smartregister.chw.anc.contract.AncRegisterFragmentContract;
+import org.smartregister.chw.anc.contract.BaseAncRegisterFragmentContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.model.BaseAncRegisterFragmentModel;
 import org.smartregister.chw.anc.presenter.BaseAncRegisterFragmentPresenter;
 import org.smartregister.chw.anc.provider.AncRegisterProvider;
-import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.configurableviews.model.View;
 import org.smartregister.cursoradapter.RecyclerViewPaginatedAdapter;
-import org.smartregister.util.Utils;
 import org.smartregister.view.customcontrols.CustomFontTextView;
 import org.smartregister.view.customcontrols.FontVariant;
 import org.smartregister.view.fragment.BaseRegisterFragment;
@@ -23,7 +21,7 @@ import org.smartregister.view.fragment.BaseRegisterFragment;
 import java.util.HashMap;
 import java.util.Set;
 
-public class BaseAncRegisterFragment extends BaseRegisterFragment implements AncRegisterFragmentContract.View {
+public class BaseAncRegisterFragment extends BaseRegisterFragment implements BaseAncRegisterFragmentContract.View {
     public static final String CLICK_VIEW_NORMAL = "click_view_normal";
     public static final String CLICK_VIEW_DOSAGE_STATUS = "click_view_dosage_status";
 
@@ -75,8 +73,8 @@ public class BaseAncRegisterFragment extends BaseRegisterFragment implements Anc
     }
 
     @Override
-    public AncRegisterFragmentContract.Presenter presenter() {
-        return (AncRegisterFragmentContract.Presenter) presenter;
+    public BaseAncRegisterFragmentContract.Presenter presenter() {
+        return (BaseAncRegisterFragmentContract.Presenter) presenter;
     }
 
     @Override

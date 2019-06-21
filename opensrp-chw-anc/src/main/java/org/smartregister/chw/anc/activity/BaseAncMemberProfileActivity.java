@@ -10,11 +10,15 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import org.smartregister.chw.anc.contract.AncMemberProfileContract;
+import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
+import org.smartregister.chw.anc.custom_views.BaseAncFloatingMenu;
 import org.smartregister.chw.anc.domain.MemberObject;
+import org.smartregister.chw.anc.listener.FloatingMenuListener;
 import org.smartregister.chw.anc.presenter.BaseAncMemberProfilePresenter;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.helper.ImageRenderHelper;
@@ -24,10 +28,12 @@ import timber.log.Timber;
 
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER_PROFILE_OBJECT;
 
-public class BaseAncMemberProfileActivity extends BaseProfileActivity implements AncMemberProfileContract.View {
+public class BaseAncMemberProfileActivity extends BaseProfileActivity implements BaseAncMemberProfileContract.View {
     protected MemberObject MEMBER_OBJECT;
     protected TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id, textview_record_anc_visit;
     protected View view_anc_record;
+
+    private BaseAncFloatingMenu baseAncFloatingMenu;
 
     public static void startMe(Activity activity, MemberObject memberObject) {
         Intent intent = new Intent(activity, BaseAncMemberProfileActivity.class);
@@ -77,6 +83,15 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     protected void setupViews() {
+        baseAncFloatingMenu = new BaseAncFloatingMenu(this);
+        baseAncFloatingMenu.setGravity(Gravity.BOTTOM | Gravity.RIGHT);
+        LinearLayout.LayoutParams linearLayoutParams =
+                new LinearLayout.LayoutParams(
+                        LinearLayout.LayoutParams.MATCH_PARENT,
+                        LinearLayout.LayoutParams.MATCH_PARENT);
+        addContentView(baseAncFloatingMenu, linearLayoutParams);
+        baseAncFloatingMenu.setClickListener(
+                FloatingMenuListener.getInstance(this));
         text_view_anc_member_name = findViewById(R.id.text_view_anc_member_name);
         text_view_ga = findViewById(R.id.text_view_ga);
         text_view_address = findViewById(R.id.text_view_address);
@@ -141,8 +156,8 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     @Override
-    public AncMemberProfileContract.Presenter presenter() {
-        return (AncMemberProfileContract.Presenter) presenter;
+    public BaseAncMemberProfileContract.Presenter presenter() {
+        return (BaseAncMemberProfileContract.Presenter) presenter;
     }
 
 }

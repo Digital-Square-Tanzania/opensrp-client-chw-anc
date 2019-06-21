@@ -43,5 +43,6 @@
     <!-- anc profile -->
     <string name="gest_age">GA: %1$s</string>
     <string name="gest_age_weeks">weeks</string>
+    <string name="call_anc_woman">Call ANC woman</string>
 
 </resources>

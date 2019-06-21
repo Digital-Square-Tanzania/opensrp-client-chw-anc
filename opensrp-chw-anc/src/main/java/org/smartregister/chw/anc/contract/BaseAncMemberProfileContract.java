@@ -5,7 +5,7 @@ import android.content.Context;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.view.contract.BaseProfileContract;
 
-public interface AncMemberProfileContract {
+public interface BaseAncMemberProfileContract {
 
     interface View {
         Context getContext();
@@ -18,13 +18,13 @@ public interface AncMemberProfileContract {
 
         void setMemberChwMemberId(String memberChwMemberId);
 
-        AncMemberProfileContract.Presenter presenter();
+        BaseAncMemberProfileContract.Presenter presenter();
 
     }
 
     interface Presenter extends BaseProfileContract.Presenter {
 
-        AncMemberProfileContract.View getView();
+        BaseAncMemberProfileContract.View getView();
 
         void fetchProfileData();
 
@@ -32,7 +32,7 @@ public interface AncMemberProfileContract {
 
     interface Interactor {
 
-        void refreshProfileView(MemberObject memberObject, boolean isForEdit, AncMemberProfileContract.InteractorCallBack callback);
+        void refreshProfileView(MemberObject memberObject, boolean isForEdit, BaseAncMemberProfileContract.InteractorCallBack callback);
     }
 
     interface InteractorCallBack {

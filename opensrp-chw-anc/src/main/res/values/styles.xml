@@ -1,4 +1,5 @@
 <resources>
+
     <style name="ChwAncTheme.AppBarOverlay" parent="ThemeOverlay.AppCompat.Dark.ActionBar">
         <item name="android:textColorPrimary">@color/white</item>
         <item name="android:textColorSecondary">@color/black</item>
@@ -7,11 +8,13 @@
         <item name="android:windowBackground">@color/white</item>
         <item name="android:colorBackground">@color/white</item>
     </style>
+
     <style name="ChwAncTheme.AppBarOverlay.Light" parent="ChwAncTheme.AppBarOverlay">
         <item name="android:textColorPrimary">@color/customAppThemeBlue</item>
         <item name="android:textColorSecondary">@color/black</item>
         <item name="android:textColor">@color/black</item>
     </style>
+
     <style name="CustomAncFontTextViewStyle" parent="@android:style/Widget.TextView">
         <item name="fontVariant">regular</item>
         <item name="android:textColor">@android:color/black</item>
@@ -19,9 +22,11 @@
         <item name="android:maxLines">1</item>
         <item name="android:ellipsize">end</item>
     </style>
+
     <style name="CustomFontTextViewStyle.ClientList.Anc.Medium" parent="CustomAncFontTextViewStyle">
         <item name="fontVariant">medium</item>
     </style>
+
     <style name="CustomFontTextViewStyle.ListView.Normal.MultipleLines.Extended">
         <item name="android:textSize">16sp</item>
         <item name="fontVariant">regular</item>
@@ -30,5 +35,11 @@
         <item name="android:paddingLeft">5dp</item>
         <item name="android:paddingRight">5dp</item>
         <item name="android:ellipsize">end</item>
+    </style>
+
+    <style name="ChwTheme.Dialog.FullWidth" parent="android:Theme.Holo.Light.Dialog">
+        <item name="android:windowMinWidthMajor">98%</item>
+        <item name="android:windowMinWidthMinor">98%</item>
+        <item name="android:background">@android:color/white</item>
     </style>
 </resources>

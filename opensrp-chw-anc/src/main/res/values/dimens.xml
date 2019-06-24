@@ -64,6 +64,14 @@
     <dimen name="anc_record_visit_padding_left">30dp</dimen>
     <dimen name="anc_record_visit_padding_right">30dp</dimen>
 
+    <dimen name="call_widget_padding_top">10dp</dimen>
+    <dimen name="call_widget_padding_side">15dp</dimen>
+    <dimen name="call_widget_padding_bottom">30dp</dimen>
+
+    <dimen name="call_widget_font1">25sp</dimen>
+    <dimen name="call_widget_font2">20sp</dimen>
+    <dimen name="call_widget_font3">18sp</dimen>
+
 
 
 </resources>

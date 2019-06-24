@@ -227,7 +227,12 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     @Override
     public void close() {
-        finish();
+        displayExitDialog(new Runnable() {
+            @Override
+            public void run() {
+                finish();
+            }
+        });
     }
 
     @Override
@@ -285,11 +290,22 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     @Override
     public void onBackPressed() {
+        displayExitDialog(new Runnable() {
+            @Override
+            public void run() {
+                BaseAncHomeVisitActivity.this.finish();
+            }
+        });
+    }
+
+    protected void displayExitDialog(final Runnable onConfirm) {
         AlertDialog dialog = new AlertDialog.Builder(this, com.vijay.jsonwizard.R.style.AppThemeAlertDialog).setTitle(confirmCloseTitle)
                 .setMessage(confirmCloseMessage).setNegativeButton(com.vijay.jsonwizard.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        BaseAncHomeVisitActivity.this.finish();
+                        if (onConfirm != null) {
+                            onConfirm.run();
+                        }
                     }
                 }).setPositiveButton(com.vijay.jsonwizard.R.string.no, new DialogInterface.OnClickListener() {
                     @Override

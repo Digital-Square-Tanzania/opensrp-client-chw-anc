@@ -31,6 +31,7 @@ import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.anc.presenter.BaseAncHomeVisitPresenter;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.opensrp_chw_anc.R;
+import org.smartregister.util.LangUtils;
 import org.smartregister.view.activity.SecuredActivity;
 
 import java.text.MessageFormat;
@@ -298,5 +299,12 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
                 }).create();
 
         dialog.show();
+    }
+
+    @Override
+    protected void attachBaseContext(android.content.Context base) {
+        // get language from prefs
+        String lang = LangUtils.getLanguage(base.getApplicationContext());
+        super.attachBaseContext(LangUtils.setAppLocale(base, lang));
     }
 }

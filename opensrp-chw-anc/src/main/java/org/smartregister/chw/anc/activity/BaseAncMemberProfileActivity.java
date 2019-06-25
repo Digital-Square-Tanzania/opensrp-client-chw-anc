@@ -13,6 +13,7 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
@@ -35,8 +36,11 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     protected MemberObject MEMBER_OBJECT;
     protected TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id, textview_record_anc_visit;
     protected View view_anc_record;
+
     private String familyHeadName;
     private String familyHeadPhoneNumber;
+
+    protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue;
 
     private BaseAncFloatingMenu baseAncFloatingMenu;
 
@@ -108,7 +112,14 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         textview_record_anc_visit = findViewById(R.id.textview_record_anc_visit);
         view_anc_record = findViewById(R.id.view_anc_record);
 
+        rlLastVisit = findViewById(R.id.rlLastVisit);
+        rlUpcomingServices = findViewById(R.id.rlUpcomingServices);
+        rlFamilyServicesDue = findViewById(R.id.rlFamilyServicesDue);
+
         textview_record_anc_visit.setOnClickListener(this);
+        rlLastVisit.setOnClickListener(this);
+        rlUpcomingServices.setOnClickListener(this);
+        rlFamilyServicesDue.setOnClickListener(this);
     }
 
     @Override
@@ -118,7 +129,13 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     public void onClick(View v) {
-        Timber.v("Empty onClick");
+        if (v.getId() == R.id.rlLastVisit) {
+            this.openMedicalHistory();
+        } else if (v.getId() == R.id.rlUpcomingServices) {
+            this.openUpcomingService();
+        } else if (v.getId() == R.id.rlFamilyServicesDue) {
+            this.openFamilyDueServices();
+        }
     }
 
     @Override
@@ -166,6 +183,21 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     @Override
     public BaseAncMemberProfileContract.Presenter presenter() {
         return (BaseAncMemberProfileContract.Presenter) presenter;
+    }
+
+    @Override
+    public void openMedicalHistory() {
+        BaseAncMedicalHistory.startMe(this, MEMBER_OBJECT);
+    }
+
+    @Override
+    public void openUpcomingService() {
+        // TODO implement
+    }
+
+    @Override
+    public void openFamilyDueServices() {
+        // TODO implement
     }
 
 }

@@ -148,11 +148,12 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
-            android:layout_below="@+id/last_visit_row"
+            android:layout_below="@+id/rlLastVisit"
             android:background="@color/light_grey"
             android:visibility="visible" />
 
         <include layout="@layout/view_chw_anc_record_visit" />
+        <include layout="@layout/content_anc_profile" />
 
     </android.support.design.widget.AppBarLayout>
 </android.support.design.widget.CoordinatorLayout>

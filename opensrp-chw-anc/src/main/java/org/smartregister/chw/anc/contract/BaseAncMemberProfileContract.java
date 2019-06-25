@@ -20,6 +20,11 @@ public interface BaseAncMemberProfileContract {
 
         BaseAncMemberProfileContract.Presenter presenter();
 
+        void openMedicalHistory();
+
+        void openUpcomingService();
+
+        void openFamilyDueServices();
     }
 
     interface Presenter extends BaseProfileContract.Presenter {

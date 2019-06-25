@@ -187,6 +187,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
             }
 
             JsonFormUtils.tagSyncMetadata(Utils.context().allSharedPreferences(), vaccine);
+            getVaccineRepository().add(vaccine); // persist to local db
             tag.setDbKey(vaccine.getId());
         }
     }

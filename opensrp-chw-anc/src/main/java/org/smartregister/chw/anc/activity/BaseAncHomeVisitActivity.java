@@ -31,6 +31,7 @@ import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.anc.presenter.BaseAncHomeVisitPresenter;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.opensrp_chw_anc.R;
+import org.smartregister.util.LangUtils;
 import org.smartregister.view.activity.SecuredActivity;
 
 import java.text.MessageFormat;
@@ -136,7 +137,12 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.close) {
-            close();
+            displayExitDialog(new Runnable() {
+                @Override
+                public void run() {
+                    close();
+                }
+            });
         } else if (v.getId() == R.id.customFontTextViewSubmit) {
             submitVisit();
         }
@@ -284,11 +290,22 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     @Override
     public void onBackPressed() {
+        displayExitDialog(new Runnable() {
+            @Override
+            public void run() {
+                BaseAncHomeVisitActivity.this.finish();
+            }
+        });
+    }
+
+    protected void displayExitDialog(final Runnable onConfirm) {
         AlertDialog dialog = new AlertDialog.Builder(this, com.vijay.jsonwizard.R.style.AppThemeAlertDialog).setTitle(confirmCloseTitle)
                 .setMessage(confirmCloseMessage).setNegativeButton(com.vijay.jsonwizard.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        BaseAncHomeVisitActivity.this.finish();
+                        if (onConfirm != null) {
+                            onConfirm.run();
+                        }
                     }
                 }).setPositiveButton(com.vijay.jsonwizard.R.string.no, new DialogInterface.OnClickListener() {
                     @Override
@@ -298,5 +315,12 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
                 }).create();
 
         dialog.show();
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        // get language from prefs
+        String lang = LangUtils.getLanguage(base.getApplicationContext());
+        super.attachBaseContext(LangUtils.setAppLocale(base, lang));
     }
 }

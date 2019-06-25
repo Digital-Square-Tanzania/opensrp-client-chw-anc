@@ -44,6 +44,7 @@
     <!-- anc profile -->
     <string name="gest_age">GA: %1$s</string>
     <string name="gest_age_weeks">weeks</string>
+
     <string name="call_anc_woman">Call ANC woman</string>
     <string name="anc_call">Call</string>
     <string name="copy_to_clipboard">Copy to clipboard</string>
@@ -51,6 +52,14 @@
     <string name="head_of_family">Head of family</string>
     <string name="anc_woman">ANC woman</string>
 
+    <string name="last_visit_40_days_ago">Last visit %1$s ago</string>
+    <string name="view_medical_history">View medical history</string>
+    <string name="view_upcoming_services">View upcoming services</string>
+    <string name="family_has_nothing_due">Family has nothing due</string>
+    <string name="go_to_family_s_profile">Go to family\'s profile</string>
 
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="back_to">Back to %1$s</string>
 
 </resources>

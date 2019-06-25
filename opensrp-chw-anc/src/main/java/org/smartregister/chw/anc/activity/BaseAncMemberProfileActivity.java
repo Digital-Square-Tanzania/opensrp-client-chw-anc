@@ -11,6 +11,7 @@ import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.smartregister.chw.anc.contract.AncMemberProfileContract;
@@ -28,6 +29,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     protected MemberObject MEMBER_OBJECT;
     protected TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id, textview_record_anc_visit;
     protected View view_anc_record;
+    protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue;
 
     public static void startMe(Activity activity, MemberObject memberObject) {
         Intent intent = new Intent(activity, BaseAncMemberProfileActivity.class);
@@ -84,7 +86,14 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         textview_record_anc_visit = findViewById(R.id.textview_record_anc_visit);
         view_anc_record = findViewById(R.id.view_anc_record);
 
+        rlLastVisit = findViewById(R.id.rlLastVisit);
+        rlUpcomingServices = findViewById(R.id.rlUpcomingServices);
+        rlFamilyServicesDue = findViewById(R.id.rlFamilyServicesDue);
+
         textview_record_anc_visit.setOnClickListener(this);
+        rlLastVisit.setOnClickListener(this);
+        rlUpcomingServices.setOnClickListener(this);
+        rlFamilyServicesDue.setOnClickListener(this);
     }
 
     @Override
@@ -94,7 +103,13 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     public void onClick(View v) {
-        Timber.v("Empty onClick");
+        if (v.getId() == R.id.rlLastVisit) {
+            this.openMedicalHistory();
+        } else if (v.getId() == R.id.rlUpcomingServices) {
+            this.openUpcomingService();
+        } else if (v.getId() == R.id.rlFamilyServicesDue) {
+            this.openFamilyDueServices();
+        }
     }
 
 
@@ -143,6 +158,21 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     @Override
     public AncMemberProfileContract.Presenter presenter() {
         return (AncMemberProfileContract.Presenter) presenter;
+    }
+
+    @Override
+    public void openMedicalHistory() {
+        BaseAncMedicalHistory.startMe(this, MEMBER_OBJECT);
+    }
+
+    @Override
+    public void openUpcomingService() {
+        // TODO implement
+    }
+
+    @Override
+    public void openFamilyDueServices() {
+        // TODO implement
     }
 
 }

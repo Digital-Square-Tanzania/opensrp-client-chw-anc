@@ -6,8 +6,6 @@ public interface BaseAncWomanCallDialogContract {
 
     interface View {
 
-
-
         Dialer getPendingCallRequest();
 
         void setPendingCallRequest(Dialer dialer);
@@ -16,8 +14,8 @@ public interface BaseAncWomanCallDialogContract {
 
         Context getCurrentContext();
     }
-    interface Presenter {
 
+    interface Presenter {
 
         void initalize();
 
@@ -41,6 +39,5 @@ public interface BaseAncWomanCallDialogContract {
     interface Dialer {
         void callMe();
     }
-
 
 }

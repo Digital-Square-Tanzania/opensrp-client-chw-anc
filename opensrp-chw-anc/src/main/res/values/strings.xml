@@ -24,6 +24,7 @@
     <!-- anc home visit -->
     <string name="optional">optional</string>
     <string name="anc_visit">ANC Visit</string>
+    <string name="anc_home_visit">Home Visit</string>
     <string name="dose_not_given">DOSE NOT GIVEN</string>
 
 
@@ -44,5 +45,12 @@
     <string name="gest_age">GA: %1$s</string>
     <string name="gest_age_weeks">weeks</string>
     <string name="call_anc_woman">Call ANC woman</string>
+    <string name="anc_call">Call</string>
+    <string name="copy_to_clipboard">Copy to clipboard</string>
+    <string name="copied_phone_number">PhoneNumber copied to clipboard</string>
+    <string name="head_of_family">Head of family</string>
+    <string name="anc_woman">ANC woman</string>
+
+
 
 </resources>

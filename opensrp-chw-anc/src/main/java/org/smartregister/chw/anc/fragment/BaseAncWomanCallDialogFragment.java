@@ -12,37 +12,32 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.WindowManager;
-import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import org.apache.commons.lang3.StringUtils;
 import org.smartregister.chw.anc.contract.BaseAncWomanCallDialogContract;
 import org.smartregister.chw.anc.listener.BaseAncWomanCallWidgetDialogListener;
 import org.smartregister.chw.anc.presenter.BaseAncCallDialogPresenter;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
+import static org.smartregister.util.Utils.getName;
 
 public class BaseAncWomanCallDialogFragment extends DialogFragment implements BaseAncWomanCallDialogContract.View {
-
 
     public static final String DIALOG_TAG = "BaseAncCallWidgetDialogFragment_DIALOG_TAG";
 
     private View.OnClickListener listener = null;
     private BaseAncWomanCallDialogContract.Dialer mDialer;
-    private String familyBaseEntityId;
-    private LinearLayout llFamilyHead;
-    private TextView tvFamilyHeadTitle;
-    private TextView tvFamilyHeadName;
-    private TextView tvFamilyHeadPhone;
-    private LinearLayout llCareGiver;
-    private TextView tvCareGiverTitle;
-    private TextView tvCareGiverName;
-    private TextView tvCareGiverPhone;
+    private static String ancWomanName, ancWomanPhoneNumber, ancFamillyHeadName, ancFamilyHeadPhone;
 
-    public static BaseAncWomanCallDialogFragment launchDialog(Activity activity,
-                                                              String familyBaseEntityId) {
-        BaseAncWomanCallDialogFragment dialogFragment = BaseAncWomanCallDialogFragment.newInstance(familyBaseEntityId);
+    public static BaseAncWomanCallDialogFragment launchDialog(Activity activity, String womanName, String ancWomanPhone, String familyHeadName, String familyHeadPhone) {
+        BaseAncWomanCallDialogFragment dialogFragment = BaseAncWomanCallDialogFragment.newInstance();
         FragmentTransaction ft = activity.getFragmentManager().beginTransaction();
         Fragment prev = activity.getFragmentManager().findFragmentByTag(DIALOG_TAG);
+        ancWomanPhoneNumber = ancWomanPhone;
+        ancWomanName = womanName;
+        ancFamillyHeadName = familyHeadName;
+        ancFamilyHeadPhone = familyHeadPhone;
         if (prev != null) {
             ft.remove(prev);
         }
@@ -53,22 +48,14 @@ public class BaseAncWomanCallDialogFragment extends DialogFragment implements Ba
         return dialogFragment;
     }
 
-    public static BaseAncWomanCallDialogFragment newInstance(String familyBaseEntityId) {
-        BaseAncWomanCallDialogFragment familyCallDialogFragment = new BaseAncWomanCallDialogFragment();
-        familyCallDialogFragment.setFamilyBaseEntityId(familyBaseEntityId);
-        return familyCallDialogFragment;
-    }
-
-    protected void setFamilyBaseEntityId(String familyBaseEntityId) {
-        this.familyBaseEntityId = familyBaseEntityId;
+    public static BaseAncWomanCallDialogFragment newInstance() {
+        return new BaseAncWomanCallDialogFragment();
     }
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setStyle(DialogFragment.STYLE_NO_TITLE, R.style.ChwTheme_Dialog_FullWidth);
-
-
     }
 
     @Override
@@ -88,19 +75,35 @@ public class BaseAncWomanCallDialogFragment extends DialogFragment implements Ba
 
     private void initUI(ViewGroup rootView) {
 
-        llFamilyHead = rootView.findViewById(R.id.layout_family_head);
-        tvFamilyHeadTitle = rootView.findViewById(R.id.call_head_title);
-        tvFamilyHeadName = rootView.findViewById(R.id.call_head_name);
-        tvFamilyHeadPhone = rootView.findViewById(R.id.call_head_phone);
+        if (StringUtils.isNotBlank(ancWomanPhoneNumber)) {
+            TextView ancWomanNameTextView = rootView.findViewById(R.id.call_anc_woman_name);
+            ancWomanNameTextView.setText(ancWomanName);
 
-        llCareGiver = rootView.findViewById(R.id.layout_caregiver);
-        tvCareGiverTitle = rootView.findViewById(R.id.call_caregiver_title);
-        tvCareGiverName = rootView.findViewById(R.id.call_caregiver_name);
-        tvCareGiverPhone = rootView.findViewById(R.id.call_caregiver_phone);
+            TextView ancCallAncWomanPhone = rootView.findViewById(R.id.call_anc_woman_phone);
+            ancCallAncWomanPhone.setTag(ancWomanPhoneNumber);
+            ancCallAncWomanPhone.setText(getName(getCurrentContext().getString(R.string.anc_call), ancWomanPhoneNumber));
+            ancCallAncWomanPhone.setOnClickListener(listener);
+        } else {
 
-        rootView.findViewById(R.id.close).setOnClickListener(listener);
-        tvFamilyHeadPhone.setOnClickListener(listener);
-        tvCareGiverPhone.setOnClickListener(listener);
+            rootView.findViewById(R.id.layout_anc_woman).setVisibility(android.view.View.GONE);
+        }
+
+        if (StringUtils.isNotBlank(ancFamilyHeadPhone)) {
+            TextView familyHeadName = rootView.findViewById(R.id.anc_call_head_name);
+            familyHeadName.setText(ancFamillyHeadName);
+
+            TextView ancCallHeadPhone = rootView.findViewById(R.id.anc_call_head_phone);
+            ancCallHeadPhone.setTag(ancFamilyHeadPhone);
+            ancCallHeadPhone.setText(getName(getCurrentContext().getString(R.string.anc_call), ancFamilyHeadPhone));
+            ancCallHeadPhone.setOnClickListener(listener);
+
+        } else {
+
+            rootView.findViewById(R.id.anc_layout_family_head).setVisibility(android.view.View.GONE);
+        }
+
+        rootView.findViewById(R.id.anc_call_close).setOnClickListener(listener);
+
     }
 
     private void setUpPosition() {
@@ -111,7 +114,6 @@ public class BaseAncWomanCallDialogFragment extends DialogFragment implements Ba
         p.y = 20;
         getDialog().getWindow().setAttributes(p);
     }
-
 
     @Override
     public Context getCurrentContext() {
@@ -136,6 +138,5 @@ public class BaseAncWomanCallDialogFragment extends DialogFragment implements Ba
     public BaseAncWomanCallDialogContract.Presenter initializePresenter() {
         return new BaseAncCallDialogPresenter(this);
     }
-
 
 }

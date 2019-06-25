@@ -27,6 +27,7 @@ public class DBConstants {
         public static final String CONFIRMED_VISITS = "confirmed_visits";
         public static final String LAST_CONTACT_VISIT = "last_home_visit";
         public static final String DATE_CREATED = "date_created";
+        public static final String PHONE_NUMBER = "phone_number";
 
     }
 }

@@ -131,7 +131,7 @@ public class BaseAncRegisterFragment extends BaseRegisterFragment implements Bas
     }
 
     protected void openProfile(CommonPersonObjectClient client) {
-        BaseAncMemberProfileActivity.startMe(getActivity(), new MemberObject(client));
+        BaseAncMemberProfileActivity.startMe(getActivity(), new MemberObject(client), null, null);
     }
 
     protected void openHomeVisit(CommonPersonObjectClient client) {

@@ -2,6 +2,7 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="org.smartregister.chw.opensrp_chw_anc">
 
+    <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
     <application>
         <activity android:name="org.smartregister.chw.anc.activity.BaseAncMemberProfileActivity"></activity>
         <activity android:name="org.smartregister.chw.anc.activity.BaseAncHomeVisitActivity"/>

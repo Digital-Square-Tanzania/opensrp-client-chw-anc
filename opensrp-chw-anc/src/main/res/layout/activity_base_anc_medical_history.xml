@@ -2,19 +2,19 @@
 
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    android:orientation="vertical"
-    android:background="@color/white"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="@color/white"
+    android:orientation="vertical">
 
     <android.support.v7.widget.Toolbar
         android:id="@+id/collapsing_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:contentInsetEnd="0dp"
-        android:contentInsetLeft="0dp"
-        android:contentInsetRight="0dp"
         android:contentInsetStart="0dp"
+        android:contentInsetLeft="0dp"
+        android:contentInsetEnd="0dp"
+        android:contentInsetRight="0dp"
         android:theme="@style/ThemeOverlay.AppCompat.Dark.ActionBar"
         app:contentInsetEnd="0dp"
         app:contentInsetLeft="0dp"
@@ -24,16 +24,49 @@
         app:layout_collapseMode="pin">
 
         <org.smartregister.view.customcontrols.CustomFontTextView
-            android:id="@+id/toolbar_title"
+            android:id="@+id/tvTitle"
+            style="@style/CustomFontTextViewStyle.ClientList"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:text="@string/back_to"
-            style="@style/CustomFontTextViewStyle.ClientList"
             android:gravity="center_vertical|left"
-            android:textColor="@color/customAppThemeBlue"
-            android:textSize="17sp"
+            android:paddingStart="0dp"
             android:paddingLeft="0dp"
-            android:paddingStart="0dp" />
+            android:text="@string/back_to"
+            android:textColor="@color/customAppThemeBlue"
+            android:textSize="17sp" />
+
     </android.support.v7.widget.Toolbar>
+
+
+    <org.smartregister.view.customcontrols.CustomFontTextView
+        android:id="@+id/medical_history"
+        style="@style/CustomFontTextViewStyle.ClientList.Medium"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/collapsing_toolbar"
+        android:gravity="left"
+        android:paddingLeft="20dp"
+        android:paddingTop="10dp"
+        android:paddingBottom="10dp"
+        android:text="@string/medical_history"
+        android:textColor="@color/black"
+        android:textSize="20sp" />
+
+
+    <android.support.v7.widget.RecyclerView
+        android:id="@+id/recyclerViewMedicalHistory"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/medical_history">
+
+    </android.support.v7.widget.RecyclerView>
+
+    <ProgressBar
+        android:id="@+id/progressBarMedicalHistory"
+        style="@style/Base.Widget.AppCompat.ProgressBar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:visibility="visible" />
 
 </LinearLayout>

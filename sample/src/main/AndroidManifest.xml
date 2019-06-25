@@ -19,7 +19,7 @@
         </activity>
         <activity android:name="com.vijay.jsonwizard.activities.JsonFormActivity" />
         <activity android:name=".activity.AncHomeVisitActivity" />
-        <activity android:name="org.smartregister.chw.anc.activity.BaseAncMedicalHistory" />
+        <activity android:name="org.smartregister.chw.anc.activity.BaseAncMedicalHistoryActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

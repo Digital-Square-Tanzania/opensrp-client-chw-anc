@@ -64,6 +64,6 @@
     <dimen name="anc_record_visit_padding_left">30dp</dimen>
     <dimen name="anc_record_visit_padding_right">30dp</dimen>
 
-
+    <string name="medical_history">Medical History</string>
 
 </resources>

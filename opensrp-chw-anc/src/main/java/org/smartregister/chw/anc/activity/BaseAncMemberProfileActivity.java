@@ -187,7 +187,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     public void openMedicalHistory() {
-        BaseAncMedicalHistory.startMe(this, MEMBER_OBJECT);
+        BaseAncMedicalHistoryActivity.startMe(this, MEMBER_OBJECT);
     }
 
     @Override

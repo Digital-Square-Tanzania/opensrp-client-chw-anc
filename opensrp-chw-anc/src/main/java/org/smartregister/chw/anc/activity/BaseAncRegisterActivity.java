@@ -219,7 +219,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
                 Log.e(TAG, Log.getStackTraceString(e));
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        }else{
+        } else {
             finish();
         }
     }

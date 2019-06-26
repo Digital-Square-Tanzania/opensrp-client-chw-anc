@@ -39,7 +39,6 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
     protected String ACTION;
     protected String TABLE;
 
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -85,7 +84,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
 
     @Override
     public void startFormActivity(JSONObject jsonForm) {
-        Intent intent = new Intent(this, getFamilyFormActivity());
+        Intent intent = new Intent(this, getAncFormActivity());
         intent.putExtra(Constants.JSON_FORM_EXTRA.JSON, jsonForm.toString());
 
         if (getFormConfig() != null) {
@@ -100,7 +99,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
         return null;
     }
 
-    public Class getFamilyFormActivity() {
+    public Class getAncFormActivity() {
         return BaseAncRegisterActivity.class;
     }
 
@@ -219,7 +218,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
                 Log.e(TAG, Log.getStackTraceString(e));
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        }else{
+        } else {
             finish();
         }
     }

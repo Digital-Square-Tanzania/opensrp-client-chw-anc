@@ -4,7 +4,7 @@ import android.util.Log;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
-import org.smartregister.chw.anc.contract.AncRegisterContract;
+import org.smartregister.chw.anc.contract.BaseAncRegisterContract;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.configurableviews.ConfigurableViewsLibrary;
 import org.smartregister.util.Utils;
@@ -12,15 +12,15 @@ import org.smartregister.util.Utils;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
-public class BaseAncRegisterPresenter implements AncRegisterContract.Presenter, AncRegisterContract.InteractorCallBack {
+public class BaseAncRegisterPresenter implements BaseAncRegisterContract.Presenter, BaseAncRegisterContract.InteractorCallBack {
 
     public static final String TAG = BaseAncRegisterPresenter.class.getName();
 
-    protected WeakReference<AncRegisterContract.View> viewReference;
-    protected AncRegisterContract.Interactor interactor;
-    protected AncRegisterContract.Model model;
+    protected WeakReference<BaseAncRegisterContract.View> viewReference;
+    protected BaseAncRegisterContract.Interactor interactor;
+    protected BaseAncRegisterContract.Model model;
 
-    public BaseAncRegisterPresenter(AncRegisterContract.View view, AncRegisterContract.Model model, AncRegisterContract.Interactor interactor) {
+    public BaseAncRegisterPresenter(BaseAncRegisterContract.View view, BaseAncRegisterContract.Model model, BaseAncRegisterContract.Interactor interactor) {
         viewReference = new WeakReference<>(view);
         this.interactor = interactor;
         this.model = model;
@@ -91,7 +91,7 @@ public class BaseAncRegisterPresenter implements AncRegisterContract.Presenter, 
         }
     }
 
-    private AncRegisterContract.View getView() {
+    private BaseAncRegisterContract.View getView() {
         if (viewReference != null)
             return viewReference.get();
         else

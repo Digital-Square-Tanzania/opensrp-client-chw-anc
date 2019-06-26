@@ -33,6 +33,10 @@
     <color name="visit_status_over_due">#D13F3F</color>
     <color name="visit_status_not_yet">@android:color/darker_gray</color>
     <color name="alert_urgent_red">#f04646</color>
+
     <color name="medical_bar">#3B404D</color>
     <color name="medical_text_inner">#212121</color>
+
+    <color name="black_tranparent_50">#80232323</color>
+
 </resources>

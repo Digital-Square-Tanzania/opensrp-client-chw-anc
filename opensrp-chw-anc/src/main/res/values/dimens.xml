@@ -66,4 +66,15 @@
 
     <string name="medical_history">Medical History</string>
 
+    <dimen name="call_widget_padding_top">10dp</dimen>
+    <dimen name="call_widget_padding_side">15dp</dimen>
+    <dimen name="call_widget_padding_bottom">30dp</dimen>
+
+    <dimen name="call_widget_font1">25sp</dimen>
+    <dimen name="call_widget_font2">20sp</dimen>
+    <dimen name="call_widget_font3">18sp</dimen>
+
+    <dimen name="copy_to_clipboard_header_text_size">20sp</dimen>
+    <dimen name="copy_to_clipboard_message_text_size">14sp</dimen>
+
 </resources>

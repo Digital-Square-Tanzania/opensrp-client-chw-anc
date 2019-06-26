@@ -10,11 +10,15 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.view.Gravity;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import org.smartregister.chw.anc.contract.AncMemberProfileContract;
+import org.apache.commons.lang3.StringUtils;
+import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
+import org.smartregister.chw.anc.custom_views.BaseAncFloatingMenu;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.presenter.BaseAncMemberProfilePresenter;
 import org.smartregister.chw.opensrp_chw_anc.R;
@@ -23,17 +27,28 @@ import org.smartregister.view.activity.BaseProfileActivity;
 
 import timber.log.Timber;
 
+import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.FAMILY_HEAD_NAME;
+import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.FAMILY_HEAD_PHONE;
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER_PROFILE_OBJECT;
+import static org.smartregister.util.Utils.getName;
 
-public class BaseAncMemberProfileActivity extends BaseProfileActivity implements AncMemberProfileContract.View {
+public class BaseAncMemberProfileActivity extends BaseProfileActivity implements BaseAncMemberProfileContract.View {
     protected MemberObject MEMBER_OBJECT;
     protected TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id, textview_record_anc_visit;
     protected View view_anc_record;
+
+    private String familyHeadName;
+    private String familyHeadPhoneNumber;
+
     protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue;
 
-    public static void startMe(Activity activity, MemberObject memberObject) {
+    private BaseAncFloatingMenu baseAncFloatingMenu;
+
+    public static void startMe(Activity activity, MemberObject memberObject, String familyHeadName, String familyHeadPhoneNumber) {
         Intent intent = new Intent(activity, BaseAncMemberProfileActivity.class);
         intent.putExtra(MEMBER_PROFILE_OBJECT, memberObject);
+        intent.putExtra(FAMILY_HEAD_NAME, familyHeadName);
+        intent.putExtra(FAMILY_HEAD_PHONE, familyHeadPhoneNumber);
         activity.startActivity(intent);
     }
 
@@ -50,6 +65,8 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
         if (extras != null) {
             MEMBER_OBJECT = (MemberObject) getIntent().getSerializableExtra(MEMBER_PROFILE_OBJECT);
+            familyHeadName = getIntent().getStringExtra(FAMILY_HEAD_NAME);
+            familyHeadPhoneNumber = getIntent().getStringExtra(FAMILY_HEAD_PHONE);
         }
 
         ActionBar actionBar = getSupportActionBar();
@@ -72,13 +89,22 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         imageRenderHelper = new ImageRenderHelper(this);
 
         initializePresenter();
-
         setupViews();
-
     }
 
     @Override
     protected void setupViews() {
+        String ancWomanName = getName(MEMBER_OBJECT.getFirstName(), MEMBER_OBJECT.getMiddleName());
+        ancWomanName = getName(ancWomanName, MEMBER_OBJECT.getMiddleName());
+
+        if (StringUtils.isNotBlank(MEMBER_OBJECT.getPhoneNumber()) || StringUtils.isNotBlank(familyHeadPhoneNumber)) {
+            baseAncFloatingMenu = new BaseAncFloatingMenu(this, ancWomanName, MEMBER_OBJECT.getPhoneNumber(), familyHeadName, familyHeadPhoneNumber);
+            baseAncFloatingMenu.setGravity(Gravity.BOTTOM | Gravity.RIGHT);
+            LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT);
+            addContentView(baseAncFloatingMenu, linearLayoutParams);
+        }
         text_view_anc_member_name = findViewById(R.id.text_view_anc_member_name);
         text_view_ga = findViewById(R.id.text_view_ga);
         text_view_address = findViewById(R.id.text_view_address);
@@ -111,7 +137,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             this.openFamilyDueServices();
         }
     }
-
 
     @Override
     protected void initializePresenter() {
@@ -156,8 +181,8 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     @Override
-    public AncMemberProfileContract.Presenter presenter() {
-        return (AncMemberProfileContract.Presenter) presenter;
+    public BaseAncMemberProfileContract.Presenter presenter() {
+        return (BaseAncMemberProfileContract.Presenter) presenter;
     }
 
     @Override

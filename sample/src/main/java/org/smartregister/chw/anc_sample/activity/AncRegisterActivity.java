@@ -95,10 +95,11 @@ public class AncRegisterActivity extends BaseAncRegisterActivity {
         details.put(DBConstants.KEY.BASE_ENTITY_ID, "3503504");
         details.put(DBConstants.KEY.FAMILY_HEAD, "3503504");
         details.put(DBConstants.KEY.PRIMARY_CAREGIVER, "3503504");
+        details.put(DBConstants.KEY.PHONE_NUMBER, "0934567543");
         CommonPersonObjectClient commonPersonObject = new CommonPersonObjectClient("", details, "Yo");
         commonPersonObject.setColumnmaps(details);
 
         MemberObject memberObject = new MemberObject(commonPersonObject);
-        BaseAncMemberProfileActivity.startMe(this, memberObject);
+        BaseAncMemberProfileActivity.startMe(this, memberObject,"Juma Family Head", "0976345634");
     }
 }

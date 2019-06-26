@@ -29,6 +29,7 @@ public class MemberObject implements Serializable {
     protected String middleName;
     protected String lastName;
     protected String dob;
+    protected String phoneNumber;
     protected int confirmedContacts = 0;
     protected String dateCreated;
 
@@ -57,6 +58,7 @@ public class MemberObject implements Serializable {
         familyHead = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.FAMILY_HEAD, false);
         primaryCareGiver = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.PRIMARY_CAREGIVER, false);
         familyName = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.FAMILY_NAME, false);
+        phoneNumber = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.PHONE_NUMBER, false);
 
         String visits = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.CONFIRMED_VISITS, false);
         if (StringUtils.isNotBlank(visits)) {
@@ -75,6 +77,11 @@ public class MemberObject implements Serializable {
         }
         return "";
     }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
 
     public String getMemberName() {
         return memberName;

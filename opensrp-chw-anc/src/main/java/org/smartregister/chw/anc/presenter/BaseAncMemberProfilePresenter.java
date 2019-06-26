@@ -1,20 +1,20 @@
 package org.smartregister.chw.anc.presenter;
 
-import org.smartregister.chw.anc.contract.AncMemberProfileContract;
+import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.interactor.AncMemberProfileInteractor;
 import org.smartregister.view.contract.BaseProfileContract;
 
 import java.lang.ref.WeakReference;
 
-public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presenter, AncMemberProfileContract.InteractorCallBack, AncMemberProfileContract.Presenter {
+public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presenter, BaseAncMemberProfileContract.InteractorCallBack, BaseAncMemberProfileContract.Presenter {
 
-    protected WeakReference<AncMemberProfileContract.View> view;
-    private AncMemberProfileContract.Interactor interactor;
+    protected WeakReference<BaseAncMemberProfileContract.View> view;
+    private BaseAncMemberProfileContract.Interactor interactor;
 
     private MemberObject memberObject;
 
-    public BaseAncMemberProfilePresenter(AncMemberProfileContract.View view, MemberObject memberObject) {
+    public BaseAncMemberProfilePresenter(BaseAncMemberProfileContract.View view, MemberObject memberObject) {
         this.view = new WeakReference<>(view);
         this.interactor = new AncMemberProfileInteractor();
         this.memberObject = memberObject;
@@ -34,7 +34,7 @@ public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presen
     }
 
     @Override
-    public AncMemberProfileContract.View getView() {
+    public BaseAncMemberProfileContract.View getView() {
         if (view != null) {
             return view.get();
         } else {

@@ -17,9 +17,9 @@ import android.widget.TextView;
 import org.apache.commons.lang3.StringUtils;
 import org.smartregister.chw.anc.contract.BaseAncWomanCallDialogContract;
 import org.smartregister.chw.anc.listener.BaseAncWomanCallWidgetDialogListener;
-import org.smartregister.chw.anc.presenter.BaseAncCallDialogPresenter;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
+import static android.view.View.GONE;
 import static org.smartregister.util.Utils.getName;
 
 public class BaseAncWomanCallDialogFragment extends DialogFragment implements BaseAncWomanCallDialogContract.View {
@@ -68,7 +68,6 @@ public class BaseAncWomanCallDialogFragment extends DialogFragment implements Ba
         }
 
         initUI(dialogView);
-        initializePresenter();
         return dialogView;
     }
 
@@ -84,7 +83,7 @@ public class BaseAncWomanCallDialogFragment extends DialogFragment implements Ba
             ancCallAncWomanPhone.setOnClickListener(listener);
         } else {
 
-            rootView.findViewById(R.id.layout_anc_woman).setVisibility(android.view.View.GONE);
+            rootView.findViewById(R.id.layout_anc_woman).setVisibility(GONE);
         }
 
         if (StringUtils.isNotBlank(ancFamilyHeadPhone)) {
@@ -98,7 +97,7 @@ public class BaseAncWomanCallDialogFragment extends DialogFragment implements Ba
 
         } else {
 
-            rootView.findViewById(R.id.anc_layout_family_head).setVisibility(android.view.View.GONE);
+            rootView.findViewById(R.id.anc_layout_family_head).setVisibility(GONE);
         }
 
         rootView.findViewById(R.id.anc_call_close).setOnClickListener(listener);
@@ -130,12 +129,6 @@ public class BaseAncWomanCallDialogFragment extends DialogFragment implements Ba
 
     @Override
     public void setPendingCallRequest(BaseAncWomanCallDialogContract.Dialer dialer) {
-        mDialer = dialer;
+        BaseAncWomanCallDialogContract.Dialer mDialer = dialer;
     }
-
-    @Override
-    public BaseAncWomanCallDialogContract.Presenter initializePresenter() {
-        return new BaseAncCallDialogPresenter(this);
-    }
-
 }

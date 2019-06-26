@@ -10,16 +10,10 @@ public interface BaseAncWomanCallDialogContract {
 
         void setPendingCallRequest(Dialer dialer);
 
-        Presenter initializePresenter();
 
         Context getCurrentContext();
     }
 
-    interface Presenter {
-
-        void initalize();
-
-    }
 
     interface Model {
 

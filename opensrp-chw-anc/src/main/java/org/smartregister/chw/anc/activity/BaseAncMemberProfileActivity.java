@@ -13,18 +13,28 @@ import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
+import org.ei.drishti.dto.AlertStatus;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.custom_views.BaseAncFloatingMenu;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.presenter.BaseAncMemberProfilePresenter;
 import org.smartregister.chw.anc.util.Util;
+import org.smartregister.chw.anc.util.Utils;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.helper.ImageRenderHelper;
 import org.smartregister.view.activity.BaseProfileActivity;
+
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import timber.log.Timber;
@@ -37,11 +47,14 @@ import static org.smartregister.util.Utils.getName;
 public class BaseAncMemberProfileActivity extends BaseProfileActivity implements BaseAncMemberProfileContract.View {
     protected MemberObject MEMBER_OBJECT;
     protected TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id, textview_record_anc_visit;
-    protected View view_anc_record;
+    protected View view_anc_record, view_last_visit_row, view_most_due_overdue_row, view_family_row;
     protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue;
+    TextView tvLastVisitDate, tvUpComingServices, tvFamilyStatus;
     private String familyHeadName;
     private String familyHeadPhoneNumber;
     private BaseAncFloatingMenu baseAncFloatingMenu;
+    private ProgressBar progressBar;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("DD MMM", Locale.getDefault());
 
     private CircleImageView imageView;
 
@@ -90,13 +103,17 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         }
         imageRenderHelper = new ImageRenderHelper(this);
 
+        progressBar = findViewById(R.id.progress_bar);
+        view_last_visit_row = findViewById(R.id.view_last_visit_row);
+        view_most_due_overdue_row = findViewById(R.id.view_most_due_overdue_row);
+        view_family_row = findViewById(R.id.view_family_row);
+
+        tvLastVisitDate  = findViewById(R.id.textview_last_vist_day);
+        tvUpComingServices = findViewById(R.id.textview_name_due);
+        tvFamilyStatus = findViewById(R.id.textview_family_has);
+
         initializePresenter();
         setupViews();
-    }
-
-    @Override
-    public void setProfileImage(String baseEntityId, String entityType) {
-        imageRenderHelper.refreshProfileImage(baseEntityId, imageView, Util.getMemberProfileImageResourceIDentifier(entityType));
     }
 
     @Override
@@ -150,9 +167,63 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     protected void initializePresenter() {
+        showProgressBar(true);
         registerPresenter();
         fetchProfileData();
+        presenter().refreshProfileBottom();
     }
+
+    @Override
+    public void setProfileImage(String baseEntityId, String entityType) {
+        imageRenderHelper.refreshProfileImage(baseEntityId, imageView, Util.getMemberProfileImageResourceIDentifier(entityType));
+    }
+
+    @Override
+    public void showProgressBar(boolean status) {
+        progressBar.setVisibility(status ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void setLastVisit(Date lastVisitDate) {
+        if(lastVisitDate == null)
+            return;
+
+        view_last_visit_row.setVisibility(View.VISIBLE);
+        rlLastVisit.setVisibility(View.VISIBLE);
+
+        int days = Days.daysBetween(new DateTime(lastVisitDate).toLocalDate(), new DateTime().toLocalDate()).getDays();
+        tvLastVisitDate.setText(getString(R.string.last_visit_40_days_ago, String.valueOf(days)));
+    }
+
+    @Override
+    public void setUpComingServicesStatus(String service, AlertStatus status, Date date) {
+        if(status == AlertStatus.complete)
+            return;
+
+        view_most_due_overdue_row.setVisibility(View.VISIBLE);
+        rlUpcomingServices.setVisibility(View.VISIBLE);
+
+        if(status == AlertStatus.upcoming){
+            tvUpComingServices.setText(Utils.fromHtml(getString(R.string.vaccine_service_upcoming, service, dateFormat.format(date))));
+        }else{
+            tvUpComingServices.setText(Utils.fromHtml(getString(R.string.vaccine_service_due, service, dateFormat.format(date))));
+        }
+    }
+
+    @Override
+    public void setFamilyStatus(AlertStatus status) {
+        view_family_row.setVisibility(View.VISIBLE);
+        rlFamilyServicesDue.setVisibility(View.VISIBLE);
+
+        if(status == AlertStatus.complete){
+            tvFamilyStatus.setText(getString(R.string.family_has_nothing_due));
+        }else if(status == AlertStatus.normal){
+            tvFamilyStatus.setText(getString(R.string.family_has_services_due));
+        }else if(status == AlertStatus.urgent){
+            tvFamilyStatus.setText(Utils.fromHtml(getString(R.string.family_has_service_overdue)));
+        }
+    }
+
 
     @Override
     public void setMemberName(String memberName) {

@@ -2,6 +2,7 @@ package org.smartregister.chw.anc.interactor;
 
 import android.support.annotation.VisibleForTesting;
 
+import org.ei.drishti.dto.AlertStatus;
 import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.util.AppExecutors;
@@ -37,6 +38,24 @@ public class AncMemberProfileInteractor implements BaseAncMemberProfileContract.
                     @Override
                     public void run() {
                         callback.refreshProfileTopSection(memberObject);
+                    }
+                });
+            }
+        };
+        appExecutors.diskIO().execute(runnable);
+    }
+
+    @Override
+    public void refreshProfileInfo(String memberID, final BaseAncMemberProfileContract.InteractorCallBack callback) {
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                appExecutors.mainThread().execute(new Runnable() {
+                    @Override
+                    public void run() {
+                        callback.refreshFamilyStatus(AlertStatus.normal);
+                        callback.refreshLastVisit(new Date());
+                        callback.refreshUpComingServicesStatus("ANC Visit", AlertStatus.normal, new Date());
                     }
                 });
             }

@@ -1,11 +1,13 @@
 package org.smartregister.chw.anc.presenter;
 
+import org.ei.drishti.dto.AlertStatus;
 import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.interactor.AncMemberProfileInteractor;
 import org.smartregister.view.contract.BaseProfileContract;
 
 import java.lang.ref.WeakReference;
+import java.util.Date;
 
 public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presenter, BaseAncMemberProfileContract.InteractorCallBack, BaseAncMemberProfileContract.Presenter {
 
@@ -26,6 +28,11 @@ public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presen
     }
 
     @Override
+    public void refreshProfileBottom() {
+        interactor.refreshProfileInfo(memberObject.getBaseEntityId(), this);
+    }
+
+    @Override
     public void refreshProfileTopSection(MemberObject memberObject) {
         String entityType = memberObject.getBaseEntityId();
         getView().setMemberName(memberObject.getMemberName());
@@ -33,6 +40,28 @@ public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presen
         getView().setMemberAddress(memberObject.getAddress());
         getView().setMemberChwMemberId(memberObject.getChwMemberId());
         getView().setProfileImage(memberObject.getBaseEntityId(), entityType);
+    }
+
+    @Override
+    public void refreshLastVisit(Date lastVisitDate) {
+        if (getView() != null) {
+            getView().setLastVisit(lastVisitDate);
+        }
+    }
+
+    @Override
+    public void refreshUpComingServicesStatus(String service, AlertStatus status, Date date) {
+        if (getView() != null) {
+            getView().setUpComingServicesStatus(service, status, date);
+            getView().showProgressBar(false);
+        }
+    }
+
+    @Override
+    public void refreshFamilyStatus(AlertStatus status) {
+        if (getView() != null) {
+            getView().setFamilyStatus(status);
+        }
     }
 
     @Override

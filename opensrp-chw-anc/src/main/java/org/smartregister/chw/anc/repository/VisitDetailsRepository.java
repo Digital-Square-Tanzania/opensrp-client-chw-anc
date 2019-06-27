@@ -18,7 +18,7 @@ import timber.log.Timber;
 
 public class VisitDetailsRepository extends BaseRepository {
 
-    public static final String VISIT_DETAILS_TABLE = "visit_details_table";
+    public static final String VISIT_DETAILS_TABLE = "visit_details";
     private static final String VISIT_DETAILS_ID = "visit_details_id";
     private static final String VISIT_ID = "visit_id";
     private static final String VISIT_KEY = "visit_key";
@@ -30,14 +30,14 @@ public class VisitDetailsRepository extends BaseRepository {
 
     private static final String CREATE_VISIT_TABLE =
             "CREATE TABLE " + VISIT_DETAILS_TABLE + "("
-                    + VISIT_DETAILS_ID + " VARCHAR NOT NULL, "
-                    + VISIT_ID + " VARCHAR NOT NULL, "
-                    + VISIT_KEY + " VARCHAR NOT NULL, "
-                    + JSON_DETAILS + " VARCHAR NOT NULL, "
-                    + DETAILS + " VARCHAR NOT NULL, "
-                    + PROCESSED + " Integer, "
-                    + UPDATED_AT + " DATETIME, "
-                    + CREATED_AT + " DATETIME NOT NULL)";
+                    + VISIT_DETAILS_ID + " VARCHAR NULL, "
+                    + VISIT_ID + " VARCHAR NULL, "
+                    + VISIT_KEY + " VARCHAR NULL, "
+                    + JSON_DETAILS + " VARCHAR NULL, "
+                    + DETAILS + " VARCHAR NULL, "
+                    + PROCESSED + " Integer NULL, "
+                    + UPDATED_AT + " DATETIME NULL, "
+                    + CREATED_AT + " DATETIME NULL)";
 
     private static final String VISIT_ID_INDEX = "CREATE INDEX " + VISIT_DETAILS_TABLE + "_" + VISIT_ID + "_index ON " + VISIT_DETAILS_TABLE
             + "("
@@ -60,6 +60,7 @@ public class VisitDetailsRepository extends BaseRepository {
         ContentValues values = new ContentValues();
         values.put(VISIT_DETAILS_ID, visitDetail.getVisitDetailsId());
         values.put(VISIT_ID, visitDetail.getVisitId());
+        values.put(VISIT_KEY, visitDetail.getVisitKey());
         values.put(JSON_DETAILS, visitDetail.getJsonDetails());
         values.put(DETAILS, visitDetail.getDetails());
         values.put(PROCESSED, visitDetail.getProcessed() ? 1 : 0);
@@ -74,7 +75,7 @@ public class VisitDetailsRepository extends BaseRepository {
         }
         SQLiteDatabase database = getWritableDatabase();
         // Handle updated home visit details
-        database.insert(CREATE_VISIT_TABLE, null, createValues(visitDetail));
+        database.insert(VISIT_DETAILS_TABLE, null, createValues(visitDetail));
     }
 
     public void completeProcessing(String visitDetailsID) {

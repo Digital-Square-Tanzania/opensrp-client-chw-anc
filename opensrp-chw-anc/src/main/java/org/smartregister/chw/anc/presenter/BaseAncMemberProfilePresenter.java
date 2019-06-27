@@ -27,10 +27,12 @@ public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presen
 
     @Override
     public void refreshProfileTopSection(MemberObject memberObject) {
+        String entityType = memberObject.getBaseEntityId();
         getView().setMemberName(memberObject.getMemberName());
         getView().setMemberGA(String.valueOf(memberObject.getGestationAge()));
         getView().setMemberAddress(memberObject.getAddress());
         getView().setMemberChwMemberId(memberObject.getChwMemberId());
+        getView().setProfileImage(memberObject.getBaseEntityId(), entityType);
     }
 
     @Override

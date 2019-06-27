@@ -2,8 +2,12 @@ package org.smartregister.chw.anc.util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+<<<<<<< HEAD
 import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.domain.VisitDetail;
+=======
+import org.smartregister.chw.opensrp_chw_anc.R;
+>>>>>>> 108cf8d3de7238405061fea9ef0462bc94a1cc7e
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.clientandeventmodel.Obs;
 import org.smartregister.repository.AllSharedPreferences;
@@ -47,6 +51,7 @@ public class Util {
         return getInstance().getClientProcessorForJava();
     }
 
+<<<<<<< HEAD
     public static Visit eventToVisit(Event event) throws JSONException {
         Visit visit = new Visit();
         visit.setVisitId(JsonFormUtils.generateRandomUUIDString());
@@ -77,4 +82,10 @@ public class Util {
         visit.setVisitDetails(details);
         return visit;
     }
+=======
+    public static int getMemberProfileImageResourceIDentifier(String entityType) {
+        return R.mipmap.ic_member;
+    }
+
+>>>>>>> 108cf8d3de7238405061fea9ef0462bc94a1cc7e
 }

@@ -25,6 +25,8 @@ public interface BaseAncMemberProfileContract {
         void openUpcomingService();
 
         void openFamilyDueServices();
+
+        void setProfileImage(String baseEntityId, String entityType);
     }
 
     interface Presenter extends BaseProfileContract.Presenter {

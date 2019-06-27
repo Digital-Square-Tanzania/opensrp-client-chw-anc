@@ -21,16 +21,14 @@ import org.smartregister.chw.anc.model.BaseHomeVisitHistoricAction;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER_PROFILE_OBJECT;
 
 public class BaseAncMedicalHistoryActivity extends AppCompatActivity {
 
     protected MemberObject memberObject;
-    protected Map<String, List<BaseHomeVisitHistoricAction>> actionList = new LinkedHashMap<>();
+    protected List<BaseHomeVisitHistoricAction> actions = new ArrayList<>();
     private TextView tvTitle;
     private RecyclerView.Adapter mAdapter;
     private ProgressBar progressBar;
@@ -88,16 +86,19 @@ public class BaseAncMedicalHistoryActivity extends AppCompatActivity {
         RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
         recyclerView.setLayoutManager(layoutManager);
 
-        mAdapter = new BaseAncMedicalHistoryAdapter(actionList);
+        mAdapter = new BaseAncMedicalHistoryAdapter(actions);
         recyclerView.setAdapter(mAdapter);
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
     }
 
     // TODO remove and replace
     private void getActionList() {
-        actionList.put("LAST VISIT", new ArrayList<BaseHomeVisitHistoricAction>());
-        actionList.put("ANC CARD", new ArrayList<BaseHomeVisitHistoricAction>());
-        actionList.put("ANC HEALTH FACILITY VISITS", new ArrayList<BaseHomeVisitHistoricAction>());
-        actionList.put("TT IMMUNIZATIONS", new ArrayList<BaseHomeVisitHistoricAction>());
+
+        actions.add(new BaseHomeVisitHistoricAction("LAST VISIT", new ArrayList<String>()));
+        actions.add(new BaseHomeVisitHistoricAction("ANC CARD", new ArrayList<String>()));
+        actions.add(new BaseHomeVisitHistoricAction("ANC HEALTH FACILITY VISITS", new ArrayList<String>()));
+        actions.add(new BaseHomeVisitHistoricAction("TT IMMUNIZATIONS", new ArrayList<String>()));
+        actions.add(new BaseHomeVisitHistoricAction("IPTP-SP DOSES", new ArrayList<String>()));
+
     }
 }

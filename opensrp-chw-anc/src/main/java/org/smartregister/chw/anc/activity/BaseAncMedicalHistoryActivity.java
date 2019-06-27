@@ -30,9 +30,9 @@ import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER
 public class BaseAncMedicalHistoryActivity extends AppCompatActivity {
 
     protected MemberObject memberObject;
+    protected Map<String, List<BaseHomeVisitHistoricAction>> actionList = new LinkedHashMap<>();
     private TextView tvTitle;
     private RecyclerView.Adapter mAdapter;
-    protected Map<String, List<BaseHomeVisitHistoricAction>> actionList = new LinkedHashMap<>();
     private ProgressBar progressBar;
 
     public static void startMe(Activity activity, MemberObject memberObject) {

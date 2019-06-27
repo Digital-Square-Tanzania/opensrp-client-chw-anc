@@ -17,7 +17,6 @@ import android.widget.TextView;
 import org.apache.commons.lang3.StringUtils;
 import org.smartregister.chw.anc.contract.BaseAncWomanCallDialogContract;
 import org.smartregister.chw.anc.listener.BaseAncWomanCallWidgetDialogListener;
-import org.smartregister.chw.anc.presenter.BaseAncCallDialogPresenter;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
 import static android.view.View.GONE;
@@ -26,9 +25,9 @@ import static org.smartregister.util.Utils.getName;
 public class BaseAncWomanCallDialogFragment extends DialogFragment implements BaseAncWomanCallDialogContract.View {
 
     public static final String DIALOG_TAG = "BaseAncCallWidgetDialogFragment_DIALOG_TAG";
-
-    private View.OnClickListener listener = null;
     private static String ancWomanName, ancWomanPhoneNumber, ancFamillyHeadName, ancFamilyHeadPhone;
+    private View.OnClickListener listener = null;
+    private BaseAncWomanCallDialogContract.Dialer mDialer;
 
     public static BaseAncWomanCallDialogFragment launchDialog(Activity activity, String womanName, String ancWomanPhone, String familyHeadName, String familyHeadPhone) {
         BaseAncWomanCallDialogFragment dialogFragment = BaseAncWomanCallDialogFragment.newInstance();

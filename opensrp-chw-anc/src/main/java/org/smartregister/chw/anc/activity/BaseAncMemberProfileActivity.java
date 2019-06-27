@@ -38,12 +38,9 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     protected MemberObject MEMBER_OBJECT;
     protected TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id, textview_record_anc_visit;
     protected View view_anc_record;
-
+    protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue;
     private String familyHeadName;
     private String familyHeadPhoneNumber;
-
-    protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue;
-
     private BaseAncFloatingMenu baseAncFloatingMenu;
 
     private CircleImageView imageView;

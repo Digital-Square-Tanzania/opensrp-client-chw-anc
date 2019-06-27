@@ -23,6 +23,7 @@ public class VisitDetailsRepository extends BaseRepository {
     private static final String VISIT_ID = "visit_id";
     private static final String VISIT_KEY = "visit_key";
     private static final String DETAILS = "details";
+    private static final String HUMAN_READABLE = "human_readable_details";
     private static final String JSON_DETAILS = "json_details";
     private static final String PROCESSED = "processed";
     private static final String UPDATED_AT = "updated_at";
@@ -35,6 +36,7 @@ public class VisitDetailsRepository extends BaseRepository {
                     + VISIT_KEY + " VARCHAR NULL, "
                     + JSON_DETAILS + " VARCHAR NULL, "
                     + DETAILS + " VARCHAR NULL, "
+                    + HUMAN_READABLE + " VARCHAR NULL, "
                     + PROCESSED + " Integer NULL, "
                     + UPDATED_AT + " DATETIME NULL, "
                     + CREATED_AT + " DATETIME NULL)";
@@ -63,6 +65,7 @@ public class VisitDetailsRepository extends BaseRepository {
         values.put(VISIT_KEY, visitDetail.getVisitKey());
         values.put(JSON_DETAILS, visitDetail.getJsonDetails());
         values.put(DETAILS, visitDetail.getDetails());
+        values.put(HUMAN_READABLE, visitDetail.getHumanReadable());
         values.put(PROCESSED, visitDetail.getProcessed() ? 1 : 0);
         values.put(UPDATED_AT, visitDetail.getUpdatedAt().getTime());
         values.put(CREATED_AT, visitDetail.getCreatedAt().getTime());

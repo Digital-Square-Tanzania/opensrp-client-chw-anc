@@ -7,6 +7,7 @@ public class VisitDetail {
     private String visitId;
     private String visitKey;
     private String details; //
+    private String humanReadable; //
     private String jsonDetails;
     private Boolean processed;
     private Date updatedAt;
@@ -46,6 +47,14 @@ public class VisitDetail {
 
     public String getJsonDetails() {
         return jsonDetails;
+    }
+
+    public String getHumanReadable() {
+        return humanReadable;
+    }
+
+    public void setHumanReadable(String humanReadable) {
+        this.humanReadable = humanReadable;
     }
 
     public void setJsonDetails(String jsonDetails) {

@@ -2,24 +2,32 @@ package org.smartregister.chw.anc.util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.clientandeventmodel.Obs;
+import org.smartregister.domain.db.EventClient;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.helper.ECSyncHelper;
 
+import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+
+import timber.log.Timber;
 
 import static org.smartregister.chw.anc.AncLibrary.getInstance;
 import static org.smartregister.util.Utils.getAllSharedPreferences;
 
 public class Util {
+
+    private static String[] default_obs = {"start", "end", "deviceid", "subscriberid", "simserial", "phonenumber"};
 
     public static void processEvent(AllSharedPreferences allSharedPreferences, Event baseEvent) throws Exception {
         if (baseEvent != null) {
@@ -48,7 +56,10 @@ public class Util {
         return getInstance().getClientProcessorForJava();
     }
 
+    // executed before processing
     public static Visit eventToVisit(Event event) throws JSONException {
+        List<String> exceptions = Arrays.asList(default_obs);
+
         Visit visit = new Visit();
         visit.setVisitId(JsonFormUtils.generateRandomUUIDString());
         visit.setBaseEntityId(event.getBaseEntityId());
@@ -63,15 +74,75 @@ public class Util {
         Map<String, VisitDetail> details = new HashMap<>();
         if (event.getObs() != null) {
             for (Obs obs : event.getObs()) {
-                VisitDetail detail = new VisitDetail();
-                detail.setVisitDetailsId(JsonFormUtils.generateRandomUUIDString());
-                detail.setVisitId(visit.getVisitId());
-                detail.setVisitKey(obs.getFormSubmissionField());
-                detail.setJsonDetails(new JSONObject(JsonFormUtils.gson.toJson(obs)).toString());
-                detail.setProcessed(false);
-                detail.setCreatedAt(new Date());
-                detail.setUpdatedAt(new Date());
-                details.put(detail.getVisitKey(), detail);
+                if (!exceptions.contains(obs.getFormSubmissionField())) {
+                    VisitDetail detail = new VisitDetail();
+                    detail.setVisitDetailsId(JsonFormUtils.generateRandomUUIDString());
+                    detail.setVisitId(visit.getVisitId());
+                    detail.setVisitKey(obs.getFormSubmissionField());
+                    detail.setDetails(obs.getValues().toString());
+                    detail.setHumanReadable(obs.getHumanReadableValues().toString());
+                    detail.setJsonDetails(new JSONObject(JsonFormUtils.gson.toJson(obs)).toString());
+                    detail.setProcessed(false);
+                    detail.setCreatedAt(new Date());
+                    detail.setUpdatedAt(new Date());
+                    details.put(detail.getVisitKey(), detail);
+                }
+            }
+        }
+
+        visit.setVisitDetails(details);
+        return visit;
+    }
+
+    public static void processAncHomeVisit(EventClient baseEvent) {
+        try {
+            Visit visit = AncLibrary.getInstance().visitRepository().getVisitByFormSubmissionID(baseEvent.getEvent().getFormSubmissionId());
+            if (visit == null) {
+                visit = eventToVisit(baseEvent.getEvent());
+                AncLibrary.getInstance().visitRepository().addVisit(visit);
+                if (visit.getVisitDetails() != null) {
+                    for (Map.Entry<String, VisitDetail> entry : visit.getVisitDetails().entrySet()) {
+                        AncLibrary.getInstance().visitDetailsRepository().addVisitDetails(entry.getValue());
+                    }
+                }
+            }
+        } catch (JSONException e) {
+            Timber.e(e);
+        }
+    }
+
+    // executed by event client processor
+    public static Visit eventToVisit(org.smartregister.domain.db.Event event) throws JSONException {
+        List<String> exceptions = Arrays.asList(default_obs);
+
+        Visit visit = new Visit();
+        visit.setVisitId(org.smartregister.chw.anc.util.JsonFormUtils.generateRandomUUIDString());
+        visit.setBaseEntityId(event.getBaseEntityId());
+        visit.setDate(event.getEventDate().toDate());
+        visit.setVisitType(event.getEventType());
+        visit.setEventId(event.getEventId());
+        visit.setFormSubmissionId(event.getFormSubmissionId());
+        visit.setJson(new JSONObject(org.smartregister.chw.anc.util.JsonFormUtils.gson.toJson(event)).toString());
+        visit.setProcessed(true);
+        visit.setCreatedAt(new Date());
+        visit.setUpdatedAt(new Date());
+
+        Map<String, VisitDetail> details = new HashMap<>();
+        if (event.getObs() != null) {
+            for (org.smartregister.domain.db.Obs obs : event.getObs()) {
+                if (!exceptions.contains(obs.getFormSubmissionField())) {
+                    VisitDetail detail = new VisitDetail();
+                    detail.setVisitDetailsId(org.smartregister.chw.anc.util.JsonFormUtils.generateRandomUUIDString());
+                    detail.setVisitId(visit.getVisitId());
+                    detail.setVisitKey(obs.getFormSubmissionField());
+                    detail.setDetails(obs.getValues().toString());
+                    detail.setHumanReadable(obs.getHumanReadableValues().toString());
+                    //detail.setJsonDetails(new JSONObject(JsonFormUtils.gson.toJson(obs)).toString()); no need to load db with these details
+                    detail.setProcessed(true);
+                    detail.setCreatedAt(new Date());
+                    detail.setUpdatedAt(new Date());
+                    details.put(detail.getVisitKey(), detail);
+                }
             }
         }
 

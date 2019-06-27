@@ -7,6 +7,7 @@ import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.domain.Visit;
+import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.anc.util.AppExecutors;
 import org.smartregister.chw.anc.util.Constants;
@@ -185,6 +186,11 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
             Visit visit = Util.eventToVisit(baseEvent);
             AncLibrary.getInstance().visitRepository().addVisit(visit);
+            if (visit.getVisitDetails() != null) {
+                for (Map.Entry<String, VisitDetail> entry : visit.getVisitDetails().entrySet()) {
+                    AncLibrary.getInstance().visitDetailsRepository().addVisitDetails(entry.getValue());
+                }
+            }
 
             Util.processEvent(allSharedPreferences, baseEvent);
         }

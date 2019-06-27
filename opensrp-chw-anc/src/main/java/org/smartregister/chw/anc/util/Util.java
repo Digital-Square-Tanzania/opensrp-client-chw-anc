@@ -2,7 +2,6 @@ package org.smartregister.chw.anc.util;
 
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.opensrp_chw_anc.R;
@@ -103,15 +102,15 @@ public class Util {
 
     public static void processAncHomeVisit(EventClient baseEvent) {
         try {
-            Visit visit = AncLibrary.getInstance().visitRepository().getVisitByFormSubmissionID(baseEvent.getEvent().getFormSubmissionId());
+            Visit visit = getInstance().visitRepository().getVisitByFormSubmissionID(baseEvent.getEvent().getFormSubmissionId());
             if (visit == null) {
                 visit = eventToVisit(baseEvent.getEvent());
-                AncLibrary.getInstance().visitRepository().addVisit(visit);
+                getInstance().visitRepository().addVisit(visit);
                 if (visit.getVisitDetails() != null) {
                     for (Map.Entry<String, List<VisitDetail>> entry : visit.getVisitDetails().entrySet()) {
                         if (entry.getValue() != null) {
                             for (VisitDetail detail : entry.getValue()) {
-                                AncLibrary.getInstance().visitDetailsRepository().addVisitDetails(detail);
+                                getInstance().visitDetailsRepository().addVisitDetails(detail);
                             }
                         }
                     }

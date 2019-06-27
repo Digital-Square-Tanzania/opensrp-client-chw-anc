@@ -30,17 +30,13 @@ public class BaseAncMedicalHistoryInteractor implements BaseAncMedicalHistoryCon
     }
 
     @Override
-    public void getMemberHistory(String memberID, Context context, final BaseAncMedicalHistoryContract.InteractorCallBack callBack) {
+    public void getMemberHistory(final String memberID, final Context context, final BaseAncMedicalHistoryContract.InteractorCallBack callBack) {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
-                final List<BaseHomeVisitHistory> actions = new ArrayList<>();
-                actions.add(new BaseHomeVisitHistory("LAST VISIT", new ArrayList<String>()));
-                actions.add(new BaseHomeVisitHistory("ANC CARD", new ArrayList<String>()));
-                actions.add(new BaseHomeVisitHistory("ANC HEALTH FACILITY VISITS", new ArrayList<String>()));
-                actions.add(new BaseHomeVisitHistory("TT IMMUNIZATIONS", new ArrayList<String>()));
-                actions.add(new BaseHomeVisitHistory("IPTP-SP DOSES", new ArrayList<String>()));
 
+                List<Visit> visits = getVisists(memberID);
+                final List<BaseHomeVisitHistory> actions = getActionsFromVisits(context, visits);
                 appExecutors.mainThread().execute(new Runnable() {
                     @Override
                     public void run() {
@@ -53,7 +49,7 @@ public class BaseAncMedicalHistoryInteractor implements BaseAncMedicalHistoryCon
         appExecutors.diskIO().execute(runnable);
     }
 
-    protected List<Visit> getVisists(String memberID) {
+    private List<Visit> getVisists(String memberID) {
 
         List<Visit> visits = new ArrayList<>(AncLibrary.getInstance().visitRepository().getVisits(memberID, Constants.EVENT_TYPE.ANC_HOME_VISIT));
 
@@ -68,7 +64,7 @@ public class BaseAncMedicalHistoryInteractor implements BaseAncMedicalHistoryCon
         return visits;
     }
 
-    protected Map<String, List<VisitDetail>> getVisitGroups(List<VisitDetail> detailList) {
+    private Map<String, List<VisitDetail>> getVisitGroups(List<VisitDetail> detailList) {
         Map<String, List<VisitDetail>> visitMap = new HashMap<>();
 
 
@@ -84,5 +80,24 @@ public class BaseAncMedicalHistoryInteractor implements BaseAncMedicalHistoryCon
         }
 
         return visitMap;
+    }
+
+    /**
+     * Sample data
+     *
+     * @param context
+     * @param visits
+     * @return
+     */
+    protected List<BaseHomeVisitHistory> getActionsFromVisits(Context context, List<Visit> visits) {
+
+        final List<BaseHomeVisitHistory> actions = new ArrayList<>();
+        actions.add(new BaseHomeVisitHistory("LAST VISIT", new ArrayList<String>()));
+        actions.add(new BaseHomeVisitHistory("ANC CARD", new ArrayList<String>()));
+        actions.add(new BaseHomeVisitHistory("ANC HEALTH FACILITY VISITS", new ArrayList<String>()));
+        actions.add(new BaseHomeVisitHistory("TT IMMUNIZATIONS", new ArrayList<String>()));
+        actions.add(new BaseHomeVisitHistory("IPTP-SP DOSES", new ArrayList<String>()));
+
+        return actions;
     }
 }

@@ -36,7 +36,7 @@ public class BaseAncMedicalHistoryActivity extends AppCompatActivity implements 
     private TextView tvTitle;
     private RecyclerView.Adapter mAdapter;
     private ProgressBar progressBar;
-    private BaseAncMedicalHistoryContract.Presenter presenter;
+    protected BaseAncMedicalHistoryContract.Presenter presenter;
 
     public static void startMe(Activity activity, MemberObject memberObject) {
         Intent intent = new Intent(activity, BaseAncMedicalHistoryActivity.class);

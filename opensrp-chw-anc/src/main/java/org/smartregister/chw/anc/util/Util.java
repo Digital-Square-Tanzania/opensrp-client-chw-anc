@@ -1,13 +1,19 @@
 package org.smartregister.chw.anc.util;
 
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.smartregister.chw.anc.domain.Visit;
+import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.clientandeventmodel.Event;
+import org.smartregister.clientandeventmodel.Obs;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.helper.ECSyncHelper;
 
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 import static org.smartregister.chw.anc.AncLibrary.getInstance;
 import static org.smartregister.util.Utils.getAllSharedPreferences;
@@ -18,7 +24,13 @@ public class Util {
         if (baseEvent != null) {
             JsonFormUtils.tagEvent(allSharedPreferences, baseEvent);
             JSONObject eventJson = new JSONObject(JsonFormUtils.gson.toJson(baseEvent));
-            getSyncHelper().addEvent(baseEvent.getBaseEntityId(), eventJson);
+            processEvent(baseEvent.getBaseEntityId(), eventJson);
+        }
+    }
+
+    public static void processEvent(String baseEntityID, JSONObject eventJson) throws Exception {
+        if (eventJson != null) {
+            getSyncHelper().addEvent(baseEntityID, eventJson);
 
             long lastSyncTimeStamp = getAllSharedPreferences().fetchLastUpdatedAtDate(0);
             Date lastSyncDate = new Date(lastSyncTimeStamp);
@@ -35,4 +47,34 @@ public class Util {
         return getInstance().getClientProcessorForJava();
     }
 
+    public static Visit eventToVisit(Event event) throws JSONException {
+        Visit visit = new Visit();
+        visit.setVisitId(JsonFormUtils.generateRandomUUIDString());
+        visit.setBaseEntityId(event.getBaseEntityId());
+        visit.setDate(event.getEventDate());
+        visit.setEventId(event.getEventId());
+        visit.setFormSubmissionId(event.getFormSubmissionId());
+        visit.setJson(new JSONObject(JsonFormUtils.gson.toJson(event)).toString());
+        visit.setProcessed(false);
+        visit.setCreatedAt(new Date());
+        visit.setUpdatedAt(new Date());
+
+        Map<String, VisitDetail> details = new HashMap<>();
+        if (event.getObs() != null) {
+            for (Obs obs : event.getObs()) {
+                VisitDetail detail = new VisitDetail();
+                detail.setVisitDetailsId(JsonFormUtils.generateRandomUUIDString());
+                detail.setVisitId(visit.getVisitId());
+                detail.setVisitKey(obs.getFormSubmissionField());
+                detail.setJsonDetails(new JSONObject(JsonFormUtils.gson.toJson(obs)).toString());
+                detail.setProcessed(false);
+                detail.setCreatedAt(new Date());
+                detail.setUpdatedAt(new Date());
+                details.put(detail.getVisitKey(), detail);
+            }
+        }
+
+        visit.setVisitDetails(details);
+        return visit;
+    }
 }

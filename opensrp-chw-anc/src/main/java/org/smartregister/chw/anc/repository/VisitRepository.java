@@ -92,7 +92,7 @@ public class VisitRepository extends BaseRepository {
         }
     }
 
-    public void close(String visitID) {
+    public void completeProcessing(String visitID) {
         try {
             ContentValues values = new ContentValues();
             values.put(PROCESSED, 1);
@@ -133,11 +133,11 @@ public class VisitRepository extends BaseRepository {
         return visits;
     }
 
-    public List<Visit> getAllUnSynced() {
+    public List<Visit> getAllUnSynced(Long last_edit_time) {
         List<Visit> visits = new ArrayList<>();
         Cursor cursor = null;
         try {
-            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, PROCESSED + " = ? ", new String[]{"0"}, null, null, null, null);
+            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, PROCESSED + " = ? AND UPDATED_AT <= ? ", new String[]{"0", last_edit_time.toString()}, null, null, VISIT_DATE + " DESC ", null);
             visits = readVisits(cursor);
         } catch (Exception e) {
             Timber.e(Log.getStackTraceString(e));

@@ -1,6 +1,7 @@
 package org.smartregister.chw.anc.util;
 
 import org.json.JSONObject;
+import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.repository.BaseRepository;
@@ -33,6 +34,10 @@ public class Util {
 
     public static ClientProcessorForJava getClientProcessorForJava() {
         return getInstance().getClientProcessorForJava();
+    }
+
+    public static int getMemberProfileImageResourceIDentifier(String entityType) {
+        return R.mipmap.ic_member;
     }
 
 }

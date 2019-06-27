@@ -21,10 +21,12 @@ import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.custom_views.BaseAncFloatingMenu;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.presenter.BaseAncMemberProfilePresenter;
+import org.smartregister.chw.anc.util.Util;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.helper.ImageRenderHelper;
 import org.smartregister.view.activity.BaseProfileActivity;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import timber.log.Timber;
 
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.FAMILY_HEAD_NAME;
@@ -43,6 +45,9 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue;
 
     private BaseAncFloatingMenu baseAncFloatingMenu;
+
+    private CircleImageView imageView;
+
 
     public static void startMe(Activity activity, MemberObject memberObject, String familyHeadName, String familyHeadPhoneNumber) {
         Intent intent = new Intent(activity, BaseAncMemberProfileActivity.class);
@@ -93,6 +98,11 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     @Override
+    public void setProfileImage(String baseEntityId, String entityType) {
+        imageRenderHelper.refreshProfileImage(baseEntityId, imageView, Util.getMemberProfileImageResourceIDentifier(entityType));
+    }
+
+    @Override
     protected void setupViews() {
         String ancWomanName = getName(MEMBER_OBJECT.getFirstName(), MEMBER_OBJECT.getMiddleName());
         ancWomanName = getName(ancWomanName, MEMBER_OBJECT.getMiddleName());
@@ -120,6 +130,9 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         rlLastVisit.setOnClickListener(this);
         rlUpcomingServices.setOnClickListener(this);
         rlFamilyServicesDue.setOnClickListener(this);
+
+        imageView = findViewById(R.id.imageview_profile);
+        imageView.setBorderWidth(2);
     }
 
     @Override

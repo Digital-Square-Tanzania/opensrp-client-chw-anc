@@ -2,17 +2,17 @@ package org.smartregister.chw.anc.model;
 
 import java.util.List;
 
-public class BaseHomeVisitHistoricAction {
+public class BaseHomeVisitHistory {
 
     private String Title = "";
     private List<String> details = null;
 
-    public BaseHomeVisitHistoricAction(String title, List<String> details) {
+    public BaseHomeVisitHistory(String title, List<String> details) {
         Title = title;
         this.details = details;
     }
 
-    public BaseHomeVisitHistoricAction() {
+    public BaseHomeVisitHistory() {
     }
 
     public String getTitle() {

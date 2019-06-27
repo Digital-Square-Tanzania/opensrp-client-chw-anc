@@ -14,6 +14,7 @@ import org.smartregister.repository.BaseRepository;
 import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.helper.ECSyncHelper;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
@@ -71,7 +72,7 @@ public class Util {
         visit.setCreatedAt(new Date());
         visit.setUpdatedAt(new Date());
 
-        Map<String, VisitDetail> details = new HashMap<>();
+        Map<String, List<VisitDetail>> details = new HashMap<>();
         if (event.getObs() != null) {
             for (Obs obs : event.getObs()) {
                 if (!exceptions.contains(obs.getFormSubmissionField())) {
@@ -85,7 +86,13 @@ public class Util {
                     detail.setProcessed(false);
                     detail.setCreatedAt(new Date());
                     detail.setUpdatedAt(new Date());
-                    details.put(detail.getVisitKey(), detail);
+
+                    List<VisitDetail> currentList = details.get(detail.getVisitKey());
+                    if (currentList == null)
+                        currentList = new ArrayList<>();
+
+                    currentList.add(detail);
+                    details.put(detail.getVisitKey(), currentList);
                 }
             }
         }
@@ -101,8 +108,12 @@ public class Util {
                 visit = eventToVisit(baseEvent.getEvent());
                 AncLibrary.getInstance().visitRepository().addVisit(visit);
                 if (visit.getVisitDetails() != null) {
-                    for (Map.Entry<String, VisitDetail> entry : visit.getVisitDetails().entrySet()) {
-                        AncLibrary.getInstance().visitDetailsRepository().addVisitDetails(entry.getValue());
+                    for (Map.Entry<String, List<VisitDetail>> entry : visit.getVisitDetails().entrySet()) {
+                        if (entry.getValue() != null) {
+                            for (VisitDetail detail : entry.getValue()) {
+                                AncLibrary.getInstance().visitDetailsRepository().addVisitDetails(detail);
+                            }
+                        }
                     }
                 }
             }
@@ -127,7 +138,7 @@ public class Util {
         visit.setCreatedAt(new Date());
         visit.setUpdatedAt(new Date());
 
-        Map<String, VisitDetail> details = new HashMap<>();
+        Map<String, List<VisitDetail>> details = new HashMap<>();
         if (event.getObs() != null) {
             for (org.smartregister.domain.db.Obs obs : event.getObs()) {
                 if (!exceptions.contains(obs.getFormSubmissionField())) {
@@ -137,11 +148,16 @@ public class Util {
                     detail.setVisitKey(obs.getFormSubmissionField());
                     detail.setDetails(obs.getValues().toString());
                     detail.setHumanReadable(obs.getHumanReadableValues().toString());
-                    //detail.setJsonDetails(new JSONObject(JsonFormUtils.gson.toJson(obs)).toString()); no need to load db with these details
                     detail.setProcessed(true);
                     detail.setCreatedAt(new Date());
                     detail.setUpdatedAt(new Date());
-                    details.put(detail.getVisitKey(), detail);
+
+                    List<VisitDetail> currentList = details.get(detail.getVisitKey());
+                    if (currentList == null)
+                        currentList = new ArrayList<>();
+
+                    currentList.add(detail);
+                    details.put(detail.getVisitKey(), currentList);
                 }
             }
         }

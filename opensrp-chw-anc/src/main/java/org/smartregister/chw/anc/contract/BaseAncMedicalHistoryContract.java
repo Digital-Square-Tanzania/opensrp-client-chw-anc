@@ -1,6 +1,8 @@
 package org.smartregister.chw.anc.contract;
 
-import org.smartregister.chw.anc.domain.Visit;
+import android.content.Context;
+
+import org.smartregister.chw.anc.model.BaseHomeVisitHistory;
 
 import java.util.List;
 
@@ -12,23 +14,27 @@ public interface BaseAncMedicalHistoryContract {
 
         Presenter getPresenter();
 
+        void onDataReceived(List<BaseHomeVisitHistory> historyList);
+
+        Context getViewContext();
     }
 
-    interface Presenter{
+    interface Presenter {
 
         void initialize();
 
-        void onDataFetched(List<Visit> visits);
-
-    }
-
-    interface Model {
-
+        View getView();
     }
 
     interface Interactor {
 
-        void getMemberHistory(String memberID, Presenter presenter);
+        void getMemberHistory(String memberID, Context context, InteractorCallBack callBack);
+
+    }
+
+    interface InteractorCallBack {
+
+        void onDataFetched(List<BaseHomeVisitHistory> historyList);
 
     }
 

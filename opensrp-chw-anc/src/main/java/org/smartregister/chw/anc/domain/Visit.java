@@ -2,6 +2,7 @@ package org.smartregister.chw.anc.domain;
 
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class Visit {
@@ -15,7 +16,7 @@ public class Visit {
     private String json;
     private Boolean processed;
     private Date createdAt;
-    private Map<String, VisitDetail> visitDetails = new HashMap<>();
+    private Map<String, List<VisitDetail>> visitDetails = new HashMap<>();
 
     public String getVisitId() {
         return visitId;
@@ -97,11 +98,11 @@ public class Visit {
         this.createdAt = createdAt;
     }
 
-    public Map<String, VisitDetail> getVisitDetails() {
+    public Map<String, List<VisitDetail>> getVisitDetails() {
         return visitDetails;
     }
 
-    public void setVisitDetails(Map<String, VisitDetail> visitDetails) {
+    public void setVisitDetails(Map<String, List<VisitDetail>> visitDetails) {
         this.visitDetails = visitDetails;
     }
 }

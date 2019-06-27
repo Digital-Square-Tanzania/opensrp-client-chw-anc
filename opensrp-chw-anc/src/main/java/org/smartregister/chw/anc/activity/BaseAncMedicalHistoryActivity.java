@@ -1,6 +1,7 @@
 package org.smartregister.chw.anc.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
@@ -16,8 +17,11 @@ import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import org.smartregister.chw.anc.adapter.BaseAncMedicalHistoryAdapter;
+import org.smartregister.chw.anc.contract.BaseAncMedicalHistoryContract;
 import org.smartregister.chw.anc.domain.MemberObject;
-import org.smartregister.chw.anc.model.BaseHomeVisitHistoricAction;
+import org.smartregister.chw.anc.interactor.BaseAncMedicalHistoryInteractor;
+import org.smartregister.chw.anc.model.BaseHomeVisitHistory;
+import org.smartregister.chw.anc.presenter.BaseAncMedicalHistoryPresenter;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
 import java.util.ArrayList;
@@ -25,13 +29,14 @@ import java.util.List;
 
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER_PROFILE_OBJECT;
 
-public class BaseAncMedicalHistoryActivity extends AppCompatActivity {
+public class BaseAncMedicalHistoryActivity extends AppCompatActivity implements BaseAncMedicalHistoryContract.View {
 
     protected MemberObject memberObject;
-    protected List<BaseHomeVisitHistoricAction> actions = new ArrayList<>();
+    protected List<BaseHomeVisitHistory> actions = new ArrayList<>();
     private TextView tvTitle;
     private RecyclerView.Adapter mAdapter;
     private ProgressBar progressBar;
+    private BaseAncMedicalHistoryContract.Presenter presenter;
 
     public static void startMe(Activity activity, MemberObject memberObject) {
         Intent intent = new Intent(activity, BaseAncMedicalHistoryActivity.class);
@@ -47,9 +52,9 @@ public class BaseAncMedicalHistoryActivity extends AppCompatActivity {
         if (extras != null) {
             memberObject = (MemberObject) getIntent().getSerializableExtra(MEMBER_PROFILE_OBJECT);
         }
-        getActionList();
         setUpActionBar();
         setUpView();
+        initializePresenter();
     }
 
     private void setUpActionBar() {
@@ -91,14 +96,28 @@ public class BaseAncMedicalHistoryActivity extends AppCompatActivity {
         recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
     }
 
-    // TODO remove and replace
-    private void getActionList() {
+    @Override
+    public void initializePresenter() {
+        presenter = new BaseAncMedicalHistoryPresenter(new BaseAncMedicalHistoryInteractor(), this, memberObject.getBaseEntityId());
+    }
 
-        actions.add(new BaseHomeVisitHistoricAction("LAST VISIT", new ArrayList<String>()));
-        actions.add(new BaseHomeVisitHistoricAction("ANC CARD", new ArrayList<String>()));
-        actions.add(new BaseHomeVisitHistoricAction("ANC HEALTH FACILITY VISITS", new ArrayList<String>()));
-        actions.add(new BaseHomeVisitHistoricAction("TT IMMUNIZATIONS", new ArrayList<String>()));
-        actions.add(new BaseHomeVisitHistoricAction("IPTP-SP DOSES", new ArrayList<String>()));
+    @Override
+    public BaseAncMedicalHistoryContract.Presenter getPresenter() {
+        return presenter;
+    }
 
+    @Override
+    public void onDataReceived(List<BaseHomeVisitHistory> historyList) {
+        if (actions == null) {
+            actions = historyList;
+        } else {
+            actions.clear();
+            actions.addAll(historyList);
+        }
+    }
+
+    @Override
+    public Context getViewContext() {
+        return getApplicationContext();
     }
 }

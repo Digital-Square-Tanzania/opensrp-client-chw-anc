@@ -8,17 +8,17 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import org.smartregister.chw.anc.model.BaseHomeVisitHistoricAction;
+import org.smartregister.chw.anc.model.BaseHomeVisitHistory;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
 import java.util.List;
 
 public class BaseAncMedicalHistoryAdapter extends RecyclerView.Adapter<BaseAncMedicalHistoryAdapter.MyViewHolder> {
 
-    protected List<BaseHomeVisitHistoricAction> actionList;
+    protected List<BaseHomeVisitHistory> actionList;
 
 
-    public BaseAncMedicalHistoryAdapter(List<BaseHomeVisitHistoricAction> actionList) {
+    public BaseAncMedicalHistoryAdapter(List<BaseHomeVisitHistory> actionList) {
         this.actionList = actionList;
     }
 
@@ -32,7 +32,7 @@ public class BaseAncMedicalHistoryAdapter extends RecyclerView.Adapter<BaseAncMe
 
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int i) {
-        BaseHomeVisitHistoricAction action = actionList.get(i);
+        BaseHomeVisitHistory action = actionList.get(i);
 
         holder.titleText.setText(Html.fromHtml(action.getTitle()));
 

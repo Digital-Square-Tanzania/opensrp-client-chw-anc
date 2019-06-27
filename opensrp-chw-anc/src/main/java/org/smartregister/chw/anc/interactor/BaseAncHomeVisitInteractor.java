@@ -187,8 +187,12 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
             Visit visit = Util.eventToVisit(baseEvent);
             AncLibrary.getInstance().visitRepository().addVisit(visit);
             if (visit.getVisitDetails() != null) {
-                for (Map.Entry<String, VisitDetail> entry : visit.getVisitDetails().entrySet()) {
-                    AncLibrary.getInstance().visitDetailsRepository().addVisitDetails(entry.getValue());
+                for (Map.Entry<String, List<VisitDetail>> entry : visit.getVisitDetails().entrySet()) {
+                    if (entry.getValue() != null) {
+                        for (VisitDetail d : entry.getValue()) {
+                            AncLibrary.getInstance().visitDetailsRepository().addVisitDetails(d);
+                        }
+                    }
                 }
             }
 

@@ -18,7 +18,7 @@ import timber.log.Timber;
 
 public class VisitRepository extends BaseRepository {
 
-    public static final String VISIT_TABLE = "visit_table";
+    public static final String VISIT_TABLE = "visits";
     private static final String VISIT_ID = "visit_id";
     private static final String VISIT_TYPE = "visit_type";
     private static final String BASE_ENTITY_ID = "base_entity_id";
@@ -33,15 +33,15 @@ public class VisitRepository extends BaseRepository {
 
     private static final String CREATE_VISIT_TABLE =
             "CREATE TABLE " + VISIT_TABLE + "("
-                    + VISIT_ID + " VARCHAR NOT NULL, "
-                    + VISIT_TYPE + " VARCHAR NOT NULL, "
-                    + BASE_ENTITY_ID + " VARCHAR NOT NULL, "
-                    + VISIT_DATE + " VARCHAR NOT NULL, "
-                    + VISIT_JSON + " VARCHAR NOT NULL, "
-                    + FORM_SUBMISSION_ID + " VARCHAR NOT NULL, "
-                    + PROCESSED + " Integer, "
-                    + UPDATED_AT + " DATETIME, "
-                    + CREATED_AT + " DATETIME NOT NULL)";
+                    + VISIT_ID + " VARCHAR NULL, "
+                    + VISIT_TYPE + " VARCHAR NULL, "
+                    + BASE_ENTITY_ID + " VARCHAR NULL, "
+                    + VISIT_DATE + " VARCHAR NULL, "
+                    + VISIT_JSON + " VARCHAR NULL, "
+                    + FORM_SUBMISSION_ID + " VARCHAR NULL, "
+                    + PROCESSED + " Integer NULL, "
+                    + UPDATED_AT + " DATETIME NULL, "
+                    + CREATED_AT + " DATETIME NULL)";
 
     private static final String BASE_ENTITY_ID_INDEX = "CREATE INDEX " + VISIT_TABLE + "_" + BASE_ENTITY_ID + "_index ON " + VISIT_TABLE
             + "("
@@ -92,7 +92,7 @@ public class VisitRepository extends BaseRepository {
         }
     }
 
-    public void close(String visitID) {
+    public void completeProcessing(String visitID) {
         try {
             ContentValues values = new ContentValues();
             values.put(PROCESSED, 1);
@@ -133,11 +133,11 @@ public class VisitRepository extends BaseRepository {
         return visits;
     }
 
-    public List<Visit> getAllUnSynced() {
+    public List<Visit> getAllUnSynced(Long last_edit_time) {
         List<Visit> visits = new ArrayList<>();
         Cursor cursor = null;
         try {
-            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, PROCESSED + " = ? ", new String[]{"0"}, null, null, null, null);
+            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, PROCESSED + " = ? AND UPDATED_AT <= ? ", new String[]{"0", last_edit_time.toString()}, null, null, VISIT_DATE + " DESC ", null);
             visits = readVisits(cursor);
         } catch (Exception e) {
             Timber.e(Log.getStackTraceString(e));
@@ -153,7 +153,7 @@ public class VisitRepository extends BaseRepository {
         List<Visit> visits = new ArrayList<>();
         Cursor cursor = null;
         try {
-            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, BASE_ENTITY_ID + " = ? " + VISIT_TYPE + " = ? ", new String[]{baseEntityID, visitType}, null, null, VISIT_DATE + " DESC ", null);
+            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, BASE_ENTITY_ID + " = ? AND " + VISIT_TYPE + " = ? ", new String[]{baseEntityID, visitType}, null, null, VISIT_DATE + " DESC ", null);
             visits = readVisits(cursor);
         } catch (Exception e) {
             Timber.e(Log.getStackTraceString(e));
@@ -165,11 +165,27 @@ public class VisitRepository extends BaseRepository {
         return visits;
     }
 
+    public Visit getVisitByFormSubmissionID(String formSubmissionID) {
+        List<Visit> visits = new ArrayList<>();
+        Cursor cursor = null;
+        try {
+            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, FORM_SUBMISSION_ID + " = ? ", new String[]{formSubmissionID}, null, null, VISIT_DATE + " DESC ", "1");
+            visits = readVisits(cursor);
+        } catch (Exception e) {
+            Timber.e(Log.getStackTraceString(e));
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return (visits.size() > 0) ? visits.get(0) : null;
+    }
+
     public Visit getLatestVisit(String baseEntityID, String visitType) {
         List<Visit> visits = new ArrayList<>();
         Cursor cursor = null;
         try {
-            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, BASE_ENTITY_ID + " = ? " + VISIT_TYPE + " = ? ", new String[]{baseEntityID, visitType}, null, null, VISIT_DATE + " DESC ", "1");
+            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, BASE_ENTITY_ID + " = ? AND " + VISIT_TYPE + " = ? ", new String[]{baseEntityID, visitType}, null, null, VISIT_DATE + " DESC ", "1");
             visits = readVisits(cursor);
         } catch (Exception e) {
             Timber.e(Log.getStackTraceString(e));

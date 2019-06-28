@@ -1,39 +1,41 @@
 package org.smartregister.chw.anc.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.smartregister.chw.anc.adapter.BaseAncMedicalHistoryAdapter;
+import org.smartregister.chw.anc.contract.BaseAncMedicalHistoryContract;
 import org.smartregister.chw.anc.domain.MemberObject;
-import org.smartregister.chw.anc.model.BaseHomeVisitHistoricAction;
+import org.smartregister.chw.anc.domain.Visit;
+import org.smartregister.chw.anc.interactor.BaseAncMedicalHistoryInteractor;
+import org.smartregister.chw.anc.model.BaseHomeVisitHistory;
+import org.smartregister.chw.anc.presenter.BaseAncMedicalHistoryPresenter;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
 import java.util.ArrayList;
-import java.util.LinkedHashMap;
 import java.util.List;
-import java.util.Map;
 
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER_PROFILE_OBJECT;
 
-public class BaseAncMedicalHistoryActivity extends AppCompatActivity {
+public class BaseAncMedicalHistoryActivity extends AppCompatActivity implements BaseAncMedicalHistoryContract.View {
 
     protected MemberObject memberObject;
-    protected Map<String, List<BaseHomeVisitHistoricAction>> actionList = new LinkedHashMap<>();
+    protected List<BaseHomeVisitHistory> actions = new ArrayList<>();
     private TextView tvTitle;
-    private RecyclerView.Adapter mAdapter;
+    private LinearLayout linearLayout;
     private ProgressBar progressBar;
+    protected BaseAncMedicalHistoryContract.Presenter presenter;
 
     public static void startMe(Activity activity, MemberObject memberObject) {
         Intent intent = new Intent(activity, BaseAncMedicalHistoryActivity.class);
@@ -49,9 +51,9 @@ public class BaseAncMedicalHistoryActivity extends AppCompatActivity {
         if (extras != null) {
             memberObject = (MemberObject) getIntent().getSerializableExtra(MEMBER_PROFILE_OBJECT);
         }
-        getActionList();
         setUpActionBar();
         setUpView();
+        initializePresenter();
     }
 
     private void setUpActionBar() {
@@ -76,28 +78,43 @@ public class BaseAncMedicalHistoryActivity extends AppCompatActivity {
     }
 
     public void setUpView() {
-        RecyclerView recyclerView = findViewById(R.id.recyclerViewMedicalHistory);
-        recyclerView.setHasFixedSize(false);
+        linearLayout = findViewById(R.id.linearLayoutMedicalHistory);
         progressBar = findViewById(R.id.progressBarMedicalHistory);
-        progressBar.setVisibility(View.GONE);
-
 
         tvTitle = findViewById(R.id.tvTitle);
         tvTitle.setText(getString(R.string.back_to, memberObject.getFullName()));
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-
-        mAdapter = new BaseAncMedicalHistoryAdapter(actionList);
-        recyclerView.setAdapter(mAdapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
     }
 
-    // TODO remove and replace
-    private void getActionList() {
-        actionList.put("LAST VISIT", new ArrayList<BaseHomeVisitHistoricAction>());
-        actionList.put("ANC CARD", new ArrayList<BaseHomeVisitHistoricAction>());
-        actionList.put("ANC HEALTH FACILITY VISITS", new ArrayList<BaseHomeVisitHistoricAction>());
-        actionList.put("TT IMMUNIZATIONS", new ArrayList<BaseHomeVisitHistoricAction>());
+    @Override
+    public void initializePresenter() {
+        presenter = new BaseAncMedicalHistoryPresenter(new BaseAncMedicalHistoryInteractor(), this, memberObject.getBaseEntityId());
+    }
+
+    @Override
+    public BaseAncMedicalHistoryContract.Presenter getPresenter() {
+        return presenter;
+    }
+
+    @Override
+    public void onDataReceived(List<Visit> visits) {
+        View view = renderView(visits);
+        linearLayout.addView(view, 0);
+    }
+
+    @Override
+    public Context getViewContext() {
+        return getApplicationContext();
+    }
+
+    @Override
+    public View renderView(List<Visit> visits) {
+        LayoutInflater inflater = getLayoutInflater();
+        return inflater.inflate(R.layout.medical_history_details, null);
+    }
+
+    @Override
+    public void displayLoadingState(boolean state) {
+        progressBar.setVisibility(state ? View.VISIBLE : View.GONE);
     }
 }

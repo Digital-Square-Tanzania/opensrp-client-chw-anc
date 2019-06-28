@@ -18,33 +18,28 @@ import timber.log.Timber;
 
 public class VisitDetailsRepository extends BaseRepository {
 
-    public static final String VISIT_DETAILS_TABLE = "visit_details_table";
+    public static final String VISIT_DETAILS_TABLE = "visit_details";
     private static final String VISIT_DETAILS_ID = "visit_details_id";
     private static final String VISIT_ID = "visit_id";
-    private static final String SERVICE_GROUP = "service_group";
-    private static final String SERVICE_TYPE = "service_type";
-    private static final String SERVICE = "service";
-    private static final String EXTERNAL_SERVICE_ID = "external_visit_id";
-    private static final String DETAILS = "form_submission_id";
+    private static final String VISIT_KEY = "visit_key";
+    private static final String DETAILS = "details";
+    private static final String HUMAN_READABLE = "human_readable_details";
     private static final String JSON_DETAILS = "json_details";
     private static final String PROCESSED = "processed";
     private static final String UPDATED_AT = "updated_at";
     private static final String CREATED_AT = "created_at";
 
-
     private static final String CREATE_VISIT_TABLE =
             "CREATE TABLE " + VISIT_DETAILS_TABLE + "("
-                    + VISIT_DETAILS_ID + " VARCHAR NOT NULL, "
-                    + VISIT_ID + " VARCHAR NOT NULL, "
-                    + SERVICE_GROUP + " VARCHAR NOT NULL, "
-                    + SERVICE_TYPE + " VARCHAR NOT NULL, "
-                    + SERVICE + " VARCHAR NOT NULL, "
-                    + EXTERNAL_SERVICE_ID + " VARCHAR NOT NULL, "
-                    + JSON_DETAILS + " VARCHAR NOT NULL, "
-                    + DETAILS + " VARCHAR NOT NULL, "
-                    + PROCESSED + " Integer, "
-                    + UPDATED_AT + " DATETIME, "
-                    + CREATED_AT + " DATETIME NOT NULL)";
+                    + VISIT_DETAILS_ID + " VARCHAR NULL, "
+                    + VISIT_ID + " VARCHAR NULL, "
+                    + VISIT_KEY + " VARCHAR NULL, "
+                    + JSON_DETAILS + " VARCHAR NULL, "
+                    + DETAILS + " VARCHAR NULL, "
+                    + HUMAN_READABLE + " VARCHAR NULL, "
+                    + PROCESSED + " Integer NULL, "
+                    + UPDATED_AT + " DATETIME NULL, "
+                    + CREATED_AT + " DATETIME NULL)";
 
     private static final String VISIT_ID_INDEX = "CREATE INDEX " + VISIT_DETAILS_TABLE + "_" + VISIT_ID + "_index ON " + VISIT_DETAILS_TABLE
             + "("
@@ -52,7 +47,7 @@ public class VisitDetailsRepository extends BaseRepository {
             + ");";
 
 
-    private String[] VISIT_DETAILS_COLUMNS = {VISIT_ID, VISIT_DETAILS_ID, SERVICE_GROUP, SERVICE_TYPE, SERVICE, EXTERNAL_SERVICE_ID, JSON_DETAILS, DETAILS, PROCESSED, UPDATED_AT, CREATED_AT};
+    private String[] VISIT_DETAILS_COLUMNS = {VISIT_ID, VISIT_KEY, VISIT_DETAILS_ID, JSON_DETAILS, DETAILS, PROCESSED, UPDATED_AT, CREATED_AT};
 
     public VisitDetailsRepository(Repository repository) {
         super(repository);
@@ -67,12 +62,10 @@ public class VisitDetailsRepository extends BaseRepository {
         ContentValues values = new ContentValues();
         values.put(VISIT_DETAILS_ID, visitDetail.getVisitDetailsId());
         values.put(VISIT_ID, visitDetail.getVisitId());
-        values.put(SERVICE_GROUP, visitDetail.getServiceGroup());
-        values.put(SERVICE_TYPE, visitDetail.getServiceType());
-        values.put(SERVICE, visitDetail.getService());
-        values.put(EXTERNAL_SERVICE_ID, visitDetail.getExternalVisitID());
+        values.put(VISIT_KEY, visitDetail.getVisitKey());
         values.put(JSON_DETAILS, visitDetail.getJsonDetails());
         values.put(DETAILS, visitDetail.getDetails());
+        values.put(HUMAN_READABLE, visitDetail.getHumanReadable());
         values.put(PROCESSED, visitDetail.getProcessed() ? 1 : 0);
         values.put(UPDATED_AT, visitDetail.getUpdatedAt().getTime());
         values.put(CREATED_AT, visitDetail.getCreatedAt().getTime());
@@ -85,10 +78,10 @@ public class VisitDetailsRepository extends BaseRepository {
         }
         SQLiteDatabase database = getWritableDatabase();
         // Handle updated home visit details
-        database.insert(CREATE_VISIT_TABLE, null, createValues(visitDetail));
+        database.insert(VISIT_DETAILS_TABLE, null, createValues(visitDetail));
     }
 
-    public void close(String visitDetailsID) {
+    public void completeProcessing(String visitDetailsID) {
         try {
             ContentValues values = new ContentValues();
             values.put(PROCESSED, 1);
@@ -125,10 +118,7 @@ public class VisitDetailsRepository extends BaseRepository {
                     VisitDetail visitDetail = new VisitDetail();
                     visitDetail.setVisitId(cursor.getString(cursor.getColumnIndex(VISIT_ID)));
                     visitDetail.setVisitDetailsId(cursor.getString(cursor.getColumnIndex(VISIT_DETAILS_ID)));
-                    visitDetail.setServiceGroup(cursor.getString(cursor.getColumnIndex(SERVICE_GROUP)));
-                    visitDetail.setService(cursor.getString(cursor.getColumnIndex(SERVICE)));
-                    visitDetail.setServiceType(cursor.getString(cursor.getColumnIndex(SERVICE_TYPE)));
-                    visitDetail.setExternalVisitID(cursor.getString(cursor.getColumnIndex(EXTERNAL_SERVICE_ID)));
+                    visitDetail.setVisitKey(cursor.getString(cursor.getColumnIndex(VISIT_KEY)));
                     visitDetail.setJsonDetails(cursor.getString(cursor.getColumnIndex(JSON_DETAILS)));
                     visitDetail.setDetails(cursor.getString(cursor.getColumnIndex(DETAILS)));
                     visitDetail.setProcessed(cursor.getInt(cursor.getColumnIndex(PROCESSED)) == 1);
@@ -146,20 +136,5 @@ public class VisitDetailsRepository extends BaseRepository {
         }
         return visitDetailList;
     }
-    /*
 
-    private static final String CREATE_VISIT_TABLE =
-            "CREATE TABLE " + VISIT_DETAILS_TABLE + "("
-                    + VISIT_DETAILS_ID + " VARCHAR NOT NULL, "
-                    + VISIT_ID + " VARCHAR NOT NULL, "
-                    + SERVICE_GROUP + " VARCHAR NOT NULL, "
-                    + SERVICE_TYPE + " VARCHAR NOT NULL, "
-                    + SERVICE + " VARCHAR NOT NULL, "
-                    + EXTERNAL_SERVICE_ID + " VARCHAR NOT NULL, "
-                    + JSON_DETAILS + " VARCHAR NOT NULL, "
-                    + DETAILS + " VARCHAR NOT NULL, "
-                    + PROCESSED + " Integer, "
-                    + UPDATED_AT + " DATETIME, "
-                    + CREATED_AT + " DATETIME NOT NULL)";
-     */
 }

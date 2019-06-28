@@ -5,11 +5,9 @@ import java.util.Date;
 public class VisitDetail {
     private String visitDetailsId;
     private String visitId;
-    private String serviceGroup; // vaccine , recurring , contact , etc
-    private String serviceType; // IPTp-sp
-    private String service; // IPTp-sp1
-    private String externalVisitID; // reference to the external table / service if the service is created in a separate table
+    private String visitKey;
     private String details; //
+    private String humanReadable; //
     private String jsonDetails;
     private Boolean processed;
     private Date updatedAt;
@@ -31,36 +29,12 @@ public class VisitDetail {
         this.visitId = visitId;
     }
 
-    public String getServiceGroup() {
-        return serviceGroup;
+    public String getVisitKey() {
+        return visitKey;
     }
 
-    public void setServiceGroup(String serviceGroup) {
-        this.serviceGroup = serviceGroup;
-    }
-
-    public String getServiceType() {
-        return serviceType;
-    }
-
-    public void setServiceType(String serviceType) {
-        this.serviceType = serviceType;
-    }
-
-    public String getService() {
-        return service;
-    }
-
-    public void setService(String service) {
-        this.service = service;
-    }
-
-    public String getExternalVisitID() {
-        return externalVisitID;
-    }
-
-    public void setExternalVisitID(String externalVisitID) {
-        this.externalVisitID = externalVisitID;
+    public void setVisitKey(String visitKey) {
+        this.visitKey = visitKey;
     }
 
     public String getDetails() {
@@ -73,6 +47,14 @@ public class VisitDetail {
 
     public String getJsonDetails() {
         return jsonDetails;
+    }
+
+    public String getHumanReadable() {
+        return humanReadable;
+    }
+
+    public void setHumanReadable(String humanReadable) {
+        this.humanReadable = humanReadable;
     }
 
     public void setJsonDetails(String jsonDetails) {

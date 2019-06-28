@@ -2,8 +2,11 @@ package org.smartregister.chw.anc.contract;
 
 import android.content.Context;
 
+import org.ei.drishti.dto.AlertStatus;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.view.contract.BaseProfileContract;
+
+import java.util.Date;
 
 public interface BaseAncMemberProfileContract {
 
@@ -31,6 +34,14 @@ public interface BaseAncMemberProfileContract {
         void setVisitNotDoneThisMonth();
 
         void updateVisitNotDone(long value);
+
+        void showProgressBar(boolean status);
+
+        void setLastVisit(Date lastVisitDate);
+
+        void setUpComingServicesStatus(String service, AlertStatus status, Date date);
+
+        void setFamilyStatus(AlertStatus status);
     }
 
     interface Presenter extends BaseProfileContract.Presenter {
@@ -39,6 +50,7 @@ public interface BaseAncMemberProfileContract {
 
         void fetchProfileData();
 
+        void refreshProfileBottom();
     }
 
     interface Interactor {
@@ -47,12 +59,19 @@ public interface BaseAncMemberProfileContract {
 
         void updateVisitNotDone(long value, BaseAncMemberProfileContract.InteractorCallBack callback);
 
+        void refreshProfileInfo(String memberID, BaseAncMemberProfileContract.InteractorCallBack callback);
+
     }
 
     interface InteractorCallBack {
 
         void refreshProfileTopSection(MemberObject memberObject);
 
+        void refreshLastVisit(Date lastVisitDate);
+
+        void refreshUpComingServicesStatus(String service, AlertStatus status, Date date);
+
+        void refreshFamilyStatus(AlertStatus status);
     }
 
 

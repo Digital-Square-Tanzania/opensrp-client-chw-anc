@@ -1,24 +1,22 @@
 package org.smartregister.chw.anc.domain;
 
-import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 public class Visit {
     private String visitId;
     private String visitType;
     private String baseEntityId;
     private Date date;
-    private String anmId;
-    private String locationId;
-    private String syncStatus;
     private Date updatedAt;
     private String eventId;
     private String formSubmissionId;
     private String json;
     private Boolean processed;
     private Date createdAt;
-    private List<VisitDetail> visitDetails = new ArrayList<>();
+    private Map<String, List<VisitDetail>> visitDetails = new HashMap<>();
 
     public String getVisitId() {
         return visitId;
@@ -50,30 +48,6 @@ public class Visit {
 
     public void setDate(Date date) {
         this.date = date;
-    }
-
-    public String getAnmId() {
-        return anmId;
-    }
-
-    public void setAnmId(String anmId) {
-        this.anmId = anmId;
-    }
-
-    public String getLocationId() {
-        return locationId;
-    }
-
-    public void setLocationId(String locationId) {
-        this.locationId = locationId;
-    }
-
-    public String getSyncStatus() {
-        return syncStatus;
-    }
-
-    public void setSyncStatus(String syncStatus) {
-        this.syncStatus = syncStatus;
     }
 
     public Date getUpdatedAt() {
@@ -124,11 +98,11 @@ public class Visit {
         this.createdAt = createdAt;
     }
 
-    public List<VisitDetail> getVisitDetails() {
+    public Map<String, List<VisitDetail>> getVisitDetails() {
         return visitDetails;
     }
 
-    public void setVisitDetails(List<VisitDetail> visitDetails) {
+    public void setVisitDetails(Map<String, List<VisitDetail>> visitDetails) {
         this.visitDetails = visitDetails;
     }
 }

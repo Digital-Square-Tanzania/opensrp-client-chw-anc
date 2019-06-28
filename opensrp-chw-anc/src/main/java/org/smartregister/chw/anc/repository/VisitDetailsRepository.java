@@ -47,7 +47,7 @@ public class VisitDetailsRepository extends BaseRepository {
             + ");";
 
 
-    private String[] VISIT_DETAILS_COLUMNS = {VISIT_ID, VISIT_KEY, VISIT_DETAILS_ID, JSON_DETAILS, DETAILS, PROCESSED, UPDATED_AT, CREATED_AT};
+    private String[] VISIT_DETAILS_COLUMNS = {VISIT_ID, VISIT_KEY, VISIT_DETAILS_ID, HUMAN_READABLE, JSON_DETAILS, DETAILS, PROCESSED, UPDATED_AT, CREATED_AT};
 
     public VisitDetailsRepository(Repository repository) {
         super(repository);
@@ -121,6 +121,7 @@ public class VisitDetailsRepository extends BaseRepository {
                     visitDetail.setVisitKey(cursor.getString(cursor.getColumnIndex(VISIT_KEY)));
                     visitDetail.setJsonDetails(cursor.getString(cursor.getColumnIndex(JSON_DETAILS)));
                     visitDetail.setDetails(cursor.getString(cursor.getColumnIndex(DETAILS)));
+                    visitDetail.setHumanReadable(cursor.getString(cursor.getColumnIndex(HUMAN_READABLE)));
                     visitDetail.setProcessed(cursor.getInt(cursor.getColumnIndex(PROCESSED)) == 1);
                     visitDetail.setCreatedAt(new Date(Long.parseLong(cursor.getString(cursor.getColumnIndex(CREATED_AT)))));
                     visitDetail.setUpdatedAt(new Date(Long.parseLong(cursor.getString(cursor.getColumnIndex(UPDATED_AT)))));

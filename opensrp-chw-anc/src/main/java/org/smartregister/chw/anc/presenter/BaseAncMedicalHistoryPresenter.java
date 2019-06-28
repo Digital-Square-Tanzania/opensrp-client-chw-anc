@@ -2,7 +2,6 @@ package org.smartregister.chw.anc.presenter;
 
 import org.smartregister.chw.anc.contract.BaseAncMedicalHistoryContract;
 import org.smartregister.chw.anc.domain.Visit;
-import org.smartregister.chw.anc.model.BaseHomeVisitHistory;
 
 import java.lang.ref.WeakReference;
 import java.util.List;

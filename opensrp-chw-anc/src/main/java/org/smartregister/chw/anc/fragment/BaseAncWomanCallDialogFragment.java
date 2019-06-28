@@ -27,7 +27,6 @@ public class BaseAncWomanCallDialogFragment extends DialogFragment implements Ba
     public static final String DIALOG_TAG = "BaseAncCallWidgetDialogFragment_DIALOG_TAG";
     private static String ancWomanName, ancWomanPhoneNumber, ancFamillyHeadName, ancFamilyHeadPhone;
     private View.OnClickListener listener = null;
-    private BaseAncWomanCallDialogContract.Dialer mDialer;
 
     public static BaseAncWomanCallDialogFragment launchDialog(Activity activity, String womanName, String ancWomanPhone, String familyHeadName, String familyHeadPhone) {
         BaseAncWomanCallDialogFragment dialogFragment = BaseAncWomanCallDialogFragment.newInstance();
@@ -129,6 +128,7 @@ public class BaseAncWomanCallDialogFragment extends DialogFragment implements Ba
 
     @Override
     public void setPendingCallRequest(BaseAncWomanCallDialogContract.Dialer dialer) {
-        BaseAncWomanCallDialogContract.Dialer mDialer = dialer;
+//        Implement pending call request
+//        BaseAncWomanCallDialogContract.Dialer mDialer = dialer;
     }
 }

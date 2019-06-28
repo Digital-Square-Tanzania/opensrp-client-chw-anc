@@ -49,16 +49,16 @@ public class VisitDetail {
         return jsonDetails;
     }
 
+    public void setJsonDetails(String jsonDetails) {
+        this.jsonDetails = jsonDetails;
+    }
+
     public String getHumanReadable() {
         return humanReadable;
     }
 
     public void setHumanReadable(String humanReadable) {
         this.humanReadable = humanReadable;
-    }
-
-    public void setJsonDetails(String jsonDetails) {
-        this.jsonDetails = jsonDetails;
     }
 
     public Boolean getProcessed() {

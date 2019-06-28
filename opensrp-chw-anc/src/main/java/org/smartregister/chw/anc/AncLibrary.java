@@ -51,6 +51,18 @@ public class AncLibrary {
         return instance;
     }
 
+    /**
+     * Use this method when testing.
+     * It should replace org.smartregister.Context#setInstance(org.smartregister.Context, org.smartregister.repository.Repository) which has been removed
+     *
+     * @param context
+     */
+    public static void reset(Context context, Repository repository, int applicationVersion, int databaseVersion) {
+        if (context != null) {
+            instance = new AncLibrary(context, repository, applicationVersion, databaseVersion);
+        }
+    }
+
     public VisitRepository visitRepository() {
         if (visitRepository == null) {
             visitRepository = new VisitRepository(getRepository());
@@ -63,18 +75,6 @@ public class AncLibrary {
             visitDetailsRepository = new VisitDetailsRepository(getRepository());
         }
         return visitDetailsRepository;
-    }
-
-    /**
-     * Use this method when testing.
-     * It should replace org.smartregister.Context#setInstance(org.smartregister.Context, org.smartregister.repository.Repository) which has been removed
-     *
-     * @param context
-     */
-    public static void reset(Context context, Repository repository, int applicationVersion, int databaseVersion) {
-        if (context != null) {
-            instance = new AncLibrary(context, repository, applicationVersion, databaseVersion);
-        }
     }
 
     public Context context() {

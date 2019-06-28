@@ -1,9 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:id="@+id/record_anc_visit"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/white"
+<<<<<<< HEAD
     android:id="@+id/record_visit"
+=======
+>>>>>>> 47a5af8c587cfe4e3078b46993956b0ac6988e7d
     android:orientation="vertical"
     android:paddingTop="10dp">
 
@@ -21,8 +25,13 @@
             style="@style/CustomFontTextViewStyle.ListView.Normal.MultipleLines"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+<<<<<<< HEAD
             android:layout_alignParentLeft="true"
             android:layout_weight="1"
+=======
+            android:layout_centerInParent="true"
+            android:layout_centerHorizontal="true"
+>>>>>>> 47a5af8c587cfe4e3078b46993956b0ac6988e7d
             android:background="@drawable/record_btn_anc_selector"
             android:gravity="center_horizontal"
             android:paddingLeft="30dp"

@@ -28,9 +28,6 @@ public class VisitRepository extends BaseRepository {
     private static final String PROCESSED = "processed";
     private static final String UPDATED_AT = "updated_at";
     private static final String CREATED_AT = "created_at";
-
-    private String[] VISIT_COLUMNS = {VISIT_ID, VISIT_TYPE, BASE_ENTITY_ID, VISIT_DATE, VISIT_JSON, FORM_SUBMISSION_ID, PROCESSED, UPDATED_AT, CREATED_AT};
-
     private static final String CREATE_VISIT_TABLE =
             "CREATE TABLE " + VISIT_TABLE + "("
                     + VISIT_ID + " VARCHAR NULL, "
@@ -42,13 +39,13 @@ public class VisitRepository extends BaseRepository {
                     + PROCESSED + " Integer NULL, "
                     + UPDATED_AT + " DATETIME NULL, "
                     + CREATED_AT + " DATETIME NULL)";
-
     private static final String BASE_ENTITY_ID_INDEX = "CREATE INDEX " + VISIT_TABLE + "_" + BASE_ENTITY_ID + "_index ON " + VISIT_TABLE
             + "("
             + BASE_ENTITY_ID + " COLLATE NOCASE , "
             + VISIT_TYPE + " COLLATE NOCASE , "
             + VISIT_DATE + " COLLATE NOCASE"
             + ");";
+    private String[] VISIT_COLUMNS = {VISIT_ID, VISIT_TYPE, BASE_ENTITY_ID, VISIT_DATE, VISIT_JSON, FORM_SUBMISSION_ID, PROCESSED, UPDATED_AT, CREATED_AT};
 
 
     public VisitRepository(Repository repository) {

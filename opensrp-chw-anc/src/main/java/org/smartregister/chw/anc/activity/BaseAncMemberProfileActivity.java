@@ -309,7 +309,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     public Context getContext() {
-        return null;
+        return getApplicationContext();
     }
 
     @Override
@@ -324,7 +324,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     public void openUpcomingService() {
-        // TODO implement
+        BaseAncUpcomingServicesActivity.startMe(this, MEMBER_OBJECT);
     }
 
     @Override

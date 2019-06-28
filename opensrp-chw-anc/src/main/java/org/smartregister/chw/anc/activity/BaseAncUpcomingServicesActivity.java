@@ -1,43 +1,47 @@
 package org.smartregister.chw.anc.activity;
 
 import android.app.Activity;
-import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.DividerItemDecoration;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.smartregister.chw.anc.contract.BaseAncMedicalHistoryContract;
+import org.smartregister.chw.anc.adapter.BaseUpcomingServiceAdapter;
+import org.smartregister.chw.anc.contract.BaseAncUpcomingServicesContract;
 import org.smartregister.chw.anc.domain.MemberObject;
-import org.smartregister.chw.anc.domain.Visit;
-import org.smartregister.chw.anc.interactor.BaseAncMedicalHistoryInteractor;
-import org.smartregister.chw.anc.presenter.BaseAncMedicalHistoryPresenter;
+import org.smartregister.chw.anc.interactor.BaseAncUpcomingServicesInteractor;
+import org.smartregister.chw.anc.model.BaseUpcomingService;
+import org.smartregister.chw.anc.presenter.BaseAncUpcomingServicesPresenter;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.view.activity.SecuredActivity;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import timber.log.Timber;
 
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER_PROFILE_OBJECT;
 
-public class BaseAncMedicalHistoryActivity extends SecuredActivity implements BaseAncMedicalHistoryContract.View {
+public class BaseAncUpcomingServicesActivity extends SecuredActivity implements BaseAncUpcomingServicesContract.View {
 
     protected MemberObject memberObject;
-    protected BaseAncMedicalHistoryContract.Presenter presenter;
+    protected BaseAncUpcomingServicesContract.Presenter presenter;
+    protected List<BaseUpcomingService> serviceList = new ArrayList<>();
     private TextView tvTitle;
-    private LinearLayout linearLayout;
     private ProgressBar progressBar;
+    private RecyclerView.Adapter mAdapter;
+
 
     public static void startMe(Activity activity, MemberObject memberObject) {
-        Intent intent = new Intent(activity, BaseAncMedicalHistoryActivity.class);
+        Intent intent = new Intent(activity, BaseAncUpcomingServicesActivity.class);
         intent.putExtra(MEMBER_PROFILE_OBJECT, memberObject);
         activity.startActivity(intent);
     }
@@ -45,7 +49,7 @@ public class BaseAncMedicalHistoryActivity extends SecuredActivity implements Ba
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_base_anc_medical_history);
+        setContentView(R.layout.activity_base_anc_upcoming_services);
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             memberObject = (MemberObject) getIntent().getSerializableExtra(MEMBER_PROFILE_OBJECT);
@@ -86,42 +90,43 @@ public class BaseAncMedicalHistoryActivity extends SecuredActivity implements Ba
     }
 
     public void setUpView() {
-        linearLayout = findViewById(R.id.linearLayoutMedicalHistory);
-        progressBar = findViewById(R.id.progressBarMedicalHistory);
+        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView.setHasFixedSize(false);
+        progressBar = findViewById(R.id.progressBarUpcomingServices);
 
         tvTitle = findViewById(R.id.tvTitle);
         tvTitle.setText(getString(R.string.back_to, memberObject.getFullName()));
+
+
+        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
+        recyclerView.setLayoutManager(layoutManager);
+
+        mAdapter = new BaseUpcomingServiceAdapter(this, serviceList);
+        recyclerView.setAdapter(mAdapter);
+        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
     }
 
     @Override
     public void initializePresenter() {
-        presenter = new BaseAncMedicalHistoryPresenter(new BaseAncMedicalHistoryInteractor(), this, memberObject.getBaseEntityId());
+        presenter = new BaseAncUpcomingServicesPresenter(memberObject, new BaseAncUpcomingServicesInteractor(), this);
     }
 
     @Override
-    public BaseAncMedicalHistoryContract.Presenter getPresenter() {
+    public BaseAncUpcomingServicesContract.Presenter getPresenter() {
         return presenter;
-    }
-
-    @Override
-    public void onDataReceived(List<Visit> visits) {
-        View view = renderView(visits);
-        linearLayout.addView(view, 0);
-    }
-
-    @Override
-    public Context getViewContext() {
-        return getApplicationContext();
-    }
-
-    @Override
-    public View renderView(List<Visit> visits) {
-        LayoutInflater inflater = getLayoutInflater();
-        return inflater.inflate(R.layout.medical_history_details, null);
     }
 
     @Override
     public void displayLoadingState(boolean state) {
         progressBar.setVisibility(state ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void refreshServices(List<BaseUpcomingService> serviceList) {
+        this.serviceList.clear();
+        this.serviceList.addAll(serviceList);
+
+        mAdapter = new BaseUpcomingServiceAdapter(this, serviceList);
+        mAdapter.notifyDataSetChanged();
     }
 }

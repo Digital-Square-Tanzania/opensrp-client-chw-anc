@@ -1,6 +1,7 @@
 package org.smartregister.chw.anc.presenter;
 
 import org.smartregister.chw.anc.contract.BaseAncMedicalHistoryContract;
+import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.model.BaseHomeVisitHistory;
 
 import java.lang.ref.WeakReference;
@@ -38,9 +39,9 @@ public class BaseAncMedicalHistoryPresenter implements BaseAncMedicalHistoryCont
     }
 
     @Override
-    public void onDataFetched(List<BaseHomeVisitHistory> historyList) {
+    public void onDataFetched(List<Visit> visits) {
         if (getView() != null) {
-            getView().onDataReceived(historyList);
+            getView().onDataReceived(visits);
         }
     }
 }

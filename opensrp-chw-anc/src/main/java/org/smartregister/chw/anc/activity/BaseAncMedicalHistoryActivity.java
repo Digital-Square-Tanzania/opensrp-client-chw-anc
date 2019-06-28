@@ -8,17 +8,16 @@ import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.DividerItemDecoration;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.smartregister.chw.anc.adapter.BaseAncMedicalHistoryAdapter;
 import org.smartregister.chw.anc.contract.BaseAncMedicalHistoryContract;
 import org.smartregister.chw.anc.domain.MemberObject;
+import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.interactor.BaseAncMedicalHistoryInteractor;
 import org.smartregister.chw.anc.model.BaseHomeVisitHistory;
 import org.smartregister.chw.anc.presenter.BaseAncMedicalHistoryPresenter;
@@ -34,7 +33,7 @@ public class BaseAncMedicalHistoryActivity extends AppCompatActivity implements 
     protected MemberObject memberObject;
     protected List<BaseHomeVisitHistory> actions = new ArrayList<>();
     private TextView tvTitle;
-    private RecyclerView.Adapter mAdapter;
+    private LinearLayout linearLayout;
     private ProgressBar progressBar;
     protected BaseAncMedicalHistoryContract.Presenter presenter;
 
@@ -79,21 +78,12 @@ public class BaseAncMedicalHistoryActivity extends AppCompatActivity implements 
     }
 
     public void setUpView() {
-        RecyclerView recyclerView = findViewById(R.id.recyclerViewMedicalHistory);
-        recyclerView.setHasFixedSize(false);
+        linearLayout = findViewById(R.id.linearLayoutMedicalHistory);
         progressBar = findViewById(R.id.progressBarMedicalHistory);
-        progressBar.setVisibility(View.GONE);
-
 
         tvTitle = findViewById(R.id.tvTitle);
         tvTitle.setText(getString(R.string.back_to, memberObject.getFullName()));
 
-        RecyclerView.LayoutManager layoutManager = new LinearLayoutManager(this);
-        recyclerView.setLayoutManager(layoutManager);
-
-        mAdapter = new BaseAncMedicalHistoryAdapter(actions);
-        recyclerView.setAdapter(mAdapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
     }
 
     @Override
@@ -107,17 +97,24 @@ public class BaseAncMedicalHistoryActivity extends AppCompatActivity implements 
     }
 
     @Override
-    public void onDataReceived(List<BaseHomeVisitHistory> historyList) {
-        if (actions == null) {
-            actions = historyList;
-        } else {
-            actions.clear();
-            actions.addAll(historyList);
-        }
+    public void onDataReceived(List<Visit> visits) {
+        View view = renderView(visits);
+        linearLayout.addView(view, 0);
     }
 
     @Override
     public Context getViewContext() {
         return getApplicationContext();
+    }
+
+    @Override
+    public View renderView(List<Visit> visits) {
+        LayoutInflater inflater = getLayoutInflater();
+        return inflater.inflate(R.layout.medical_history_details, null);
+    }
+
+    @Override
+    public void displayLoadingState(boolean state) {
+        progressBar.setVisibility(state ? View.VISIBLE : View.GONE);
     }
 }

@@ -2,7 +2,7 @@ package org.smartregister.chw.anc.contract;
 
 import android.content.Context;
 
-import org.smartregister.chw.anc.model.BaseHomeVisitHistory;
+import org.smartregister.chw.anc.domain.Visit;
 
 import java.util.List;
 
@@ -14,9 +14,13 @@ public interface BaseAncMedicalHistoryContract {
 
         Presenter getPresenter();
 
-        void onDataReceived(List<BaseHomeVisitHistory> historyList);
+        void onDataReceived(List<Visit> visits);
 
         Context getViewContext();
+
+        android.view.View renderView(List<Visit> visits);
+
+        void displayLoadingState(boolean state);
     }
 
     interface Presenter {
@@ -34,7 +38,7 @@ public interface BaseAncMedicalHistoryContract {
 
     interface InteractorCallBack {
 
-        void onDataFetched(List<BaseHomeVisitHistory> historyList);
+        void onDataFetched(List<Visit> visits);
 
     }
 

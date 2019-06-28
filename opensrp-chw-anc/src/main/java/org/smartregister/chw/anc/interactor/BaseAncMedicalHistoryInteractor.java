@@ -7,7 +7,6 @@ import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.contract.BaseAncMedicalHistoryContract;
 import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.domain.VisitDetail;
-import org.smartregister.chw.anc.model.BaseHomeVisitHistory;
 import org.smartregister.chw.anc.util.AppExecutors;
 import org.smartregister.chw.anc.util.Constants;
 
@@ -35,12 +34,12 @@ public class BaseAncMedicalHistoryInteractor implements BaseAncMedicalHistoryCon
             @Override
             public void run() {
 
-                List<Visit> visits = getVisists(memberID);
-                final List<BaseHomeVisitHistory> actions = getActionsFromVisits(context, visits);
+                final List<Visit> visits = getVisits(memberID);
+                ;
                 appExecutors.mainThread().execute(new Runnable() {
                     @Override
                     public void run() {
-                        callBack.onDataFetched(actions);
+                        callBack.onDataFetched(visits);
                     }
                 });
             }
@@ -49,7 +48,7 @@ public class BaseAncMedicalHistoryInteractor implements BaseAncMedicalHistoryCon
         appExecutors.diskIO().execute(runnable);
     }
 
-    private List<Visit> getVisists(String memberID) {
+    private List<Visit> getVisits(String memberID) {
 
         List<Visit> visits = new ArrayList<>(AncLibrary.getInstance().visitRepository().getVisits(memberID, Constants.EVENT_TYPE.ANC_HOME_VISIT));
 
@@ -82,22 +81,4 @@ public class BaseAncMedicalHistoryInteractor implements BaseAncMedicalHistoryCon
         return visitMap;
     }
 
-    /**
-     * Sample data
-     *
-     * @param context
-     * @param visits
-     * @return
-     */
-    protected List<BaseHomeVisitHistory> getActionsFromVisits(Context context, List<Visit> visits) {
-
-        final List<BaseHomeVisitHistory> actions = new ArrayList<>();
-        actions.add(new BaseHomeVisitHistory("LAST VISIT", new ArrayList<String>()));
-        actions.add(new BaseHomeVisitHistory("ANC CARD", new ArrayList<String>()));
-        actions.add(new BaseHomeVisitHistory("ANC HEALTH FACILITY VISITS", new ArrayList<String>()));
-        actions.add(new BaseHomeVisitHistory("TT IMMUNIZATIONS", new ArrayList<String>()));
-        actions.add(new BaseHomeVisitHistory("IPTP-SP DOSES", new ArrayList<String>()));
-
-        return actions;
-    }
 }

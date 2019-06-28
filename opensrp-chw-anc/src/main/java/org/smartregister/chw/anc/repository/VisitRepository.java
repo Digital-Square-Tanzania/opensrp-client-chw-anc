@@ -153,7 +153,7 @@ public class VisitRepository extends BaseRepository {
         List<Visit> visits = new ArrayList<>();
         Cursor cursor = null;
         try {
-            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, BASE_ENTITY_ID + " = ? " + VISIT_TYPE + " = ? ", new String[]{baseEntityID, visitType}, null, null, VISIT_DATE + " DESC ", null);
+            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, BASE_ENTITY_ID + " = ? AND " + VISIT_TYPE + " = ? ", new String[]{baseEntityID, visitType}, null, null, VISIT_DATE + " DESC ", null);
             visits = readVisits(cursor);
         } catch (Exception e) {
             Timber.e(Log.getStackTraceString(e));
@@ -185,7 +185,7 @@ public class VisitRepository extends BaseRepository {
         List<Visit> visits = new ArrayList<>();
         Cursor cursor = null;
         try {
-            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, BASE_ENTITY_ID + " = ? " + VISIT_TYPE + " = ? ", new String[]{baseEntityID, visitType}, null, null, VISIT_DATE + " DESC ", "1");
+            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, BASE_ENTITY_ID + " = ? AND " + VISIT_TYPE + " = ? ", new String[]{baseEntityID, visitType}, null, null, VISIT_DATE + " DESC ", "1");
             visits = readVisits(cursor);
         } catch (Exception e) {
             Timber.e(Log.getStackTraceString(e));

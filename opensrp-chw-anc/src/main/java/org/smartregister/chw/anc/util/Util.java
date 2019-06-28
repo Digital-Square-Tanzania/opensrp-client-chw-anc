@@ -64,6 +64,7 @@ public class Util {
         visit.setVisitId(JsonFormUtils.generateRandomUUIDString());
         visit.setBaseEntityId(event.getBaseEntityId());
         visit.setDate(event.getEventDate());
+        visit.setVisitType(event.getEventType());
         visit.setEventId(event.getEventId());
         visit.setFormSubmissionId(event.getFormSubmissionId());
         visit.setJson(new JSONObject(JsonFormUtils.gson.toJson(event)).toString());

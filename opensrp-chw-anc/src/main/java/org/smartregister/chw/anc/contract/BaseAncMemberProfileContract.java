@@ -27,6 +27,10 @@ public interface BaseAncMemberProfileContract {
         void openFamilyDueServices();
 
         void setProfileImage(String baseEntityId, String entityType);
+
+        void setVisitNotDoneThisMonth();
+
+        void updateVisitNotDone(long value);
     }
 
     interface Presenter extends BaseProfileContract.Presenter {
@@ -40,6 +44,9 @@ public interface BaseAncMemberProfileContract {
     interface Interactor {
 
         void refreshProfileView(MemberObject memberObject, boolean isForEdit, BaseAncMemberProfileContract.InteractorCallBack callback);
+
+        void updateVisitNotDone(long value, BaseAncMemberProfileContract.InteractorCallBack callback);
+
     }
 
     interface InteractorCallBack {

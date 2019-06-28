@@ -45,4 +45,11 @@ public class AncMemberProfileInteractor implements BaseAncMemberProfileContract.
     }
 
 
+    @Override
+    public void updateVisitNotDone(long value, BaseAncMemberProfileContract.InteractorCallBack callback) {
+
+//       Implement
+    }
+
+
 }

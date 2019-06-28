@@ -12,6 +12,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
 import android.view.Gravity;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
@@ -36,12 +37,15 @@ import static org.smartregister.util.Utils.getName;
 
 public class BaseAncMemberProfileActivity extends BaseProfileActivity implements BaseAncMemberProfileContract.View {
     protected MemberObject MEMBER_OBJECT;
-    protected TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id, textview_record_anc_visit;
+    protected TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id, textview_record_anc_visit, textViewAncVisitNot, textViewNotVisitMonth, textViewUndo;
+    private LinearLayout layoutRecordView;
     protected View view_anc_record;
-    protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue;
+    protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue, layoutRecordButtonDone, layoutNotRecordView;
     private String familyHeadName;
     private String familyHeadPhoneNumber;
     private BaseAncFloatingMenu baseAncFloatingMenu;
+    private ImageView imageViewCross;
+
 
     private CircleImageView imageView;
 
@@ -118,18 +122,63 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         text_view_id = findViewById(R.id.text_view_id);
         textview_record_anc_visit = findViewById(R.id.textview_record_anc_visit);
         view_anc_record = findViewById(R.id.view_anc_record);
+        layoutRecordView = findViewById(R.id.record_visit_bar);
+        textViewNotVisitMonth = findViewById(R.id.textview_not_visit_this_month);
+
 
         rlLastVisit = findViewById(R.id.rlLastVisit);
         rlUpcomingServices = findViewById(R.id.rlUpcomingServices);
+
         rlFamilyServicesDue = findViewById(R.id.rlFamilyServicesDue);
+        textViewAncVisitNot = findViewById(R.id.textview_anc_visit_not);
+        layoutRecordButtonDone = findViewById(R.id.record_visit_done_bar);
+        textViewUndo = findViewById(R.id.textview_undo);
+        imageViewCross = findViewById(R.id.cross_image);
+        layoutNotRecordView = findViewById(R.id.record_visit_status_bar);
+
 
         textview_record_anc_visit.setOnClickListener(this);
         rlLastVisit.setOnClickListener(this);
         rlUpcomingServices.setOnClickListener(this);
         rlFamilyServicesDue.setOnClickListener(this);
 
+        textViewAncVisitNot.setOnClickListener(this);
+        textViewUndo.setOnClickListener(this);
+        imageViewCross.setOnClickListener(this);
+        layoutRecordButtonDone.setOnClickListener(this);
+
+
         imageView = findViewById(R.id.imageview_profile);
         imageView.setBorderWidth(2);
+
+
+
+    }
+
+    @Override
+    public void setVisitNotDoneThisMonth() {
+        openVisitMonthView();
+        textViewNotVisitMonth.setText(getString(R.string.not_visiting_this_month));
+        textViewUndo.setText(getString(R.string.undo));
+        textViewUndo.setVisibility(View.VISIBLE);
+        imageViewCross.setImageResource(R.drawable.activityrow_notvisited);
+    }
+
+    @Override
+    public void updateVisitNotDone(long value) {
+        textViewUndo.setVisibility(View.GONE);
+
+        layoutNotRecordView.setVisibility(View.GONE);
+        layoutRecordButtonDone.setVisibility(View.VISIBLE);
+        layoutRecordView.setVisibility(View.VISIBLE);
+    }
+
+
+    public void openVisitMonthView() {
+        layoutNotRecordView.setVisibility(View.VISIBLE);
+        layoutRecordButtonDone.setVisibility(View.GONE);
+        layoutRecordView.setVisibility(View.GONE);
+
     }
 
     @Override
@@ -145,7 +194,12 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             this.openUpcomingService();
         } else if (v.getId() == R.id.rlFamilyServicesDue) {
             this.openFamilyDueServices();
+        } else if (v.getId() == R.id.textview_anc_visit_not) {
+            presenter().getView().setVisitNotDoneThisMonth();
+        } else if (v.getId() == R.id.textview_undo) {
+            presenter().getView().updateVisitNotDone(0);
         }
+
     }
 
     @Override

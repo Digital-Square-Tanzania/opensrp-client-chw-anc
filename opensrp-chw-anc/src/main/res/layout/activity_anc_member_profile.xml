@@ -152,6 +152,7 @@
             android:visibility="visible" />
 
         <include layout="@layout/view_chw_anc_record_visit" />
+
         <include layout="@layout/content_anc_profile" />
 
     </android.support.design.widget.AppBarLayout>

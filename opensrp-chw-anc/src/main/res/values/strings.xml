@@ -64,5 +64,6 @@
     <string name="vaccine_service_due"><![CDATA[%1$s <font color=#000000>due (%2$s)</font></b>]]></string>
 
     <string name="back_to">Back to %1$s\'s profile</string>
+    <string name="days_overdue">%1$s days overdue</string>
 
 </resources>

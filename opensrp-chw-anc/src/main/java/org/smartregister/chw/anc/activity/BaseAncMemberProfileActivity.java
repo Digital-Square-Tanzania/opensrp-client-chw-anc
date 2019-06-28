@@ -21,7 +21,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.ei.drishti.dto.AlertStatus;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
-import org.joda.time.LocalDate;
 import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.custom_views.BaseAncFloatingMenu;
 import org.smartregister.chw.anc.domain.MemberObject;
@@ -108,7 +107,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         view_most_due_overdue_row = findViewById(R.id.view_most_due_overdue_row);
         view_family_row = findViewById(R.id.view_family_row);
 
-        tvLastVisitDate  = findViewById(R.id.textview_last_vist_day);
+        tvLastVisitDate = findViewById(R.id.textview_last_vist_day);
         tvUpComingServices = findViewById(R.id.textview_name_due);
         tvFamilyStatus = findViewById(R.id.textview_family_has);
 
@@ -185,7 +184,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     public void setLastVisit(Date lastVisitDate) {
-        if(lastVisitDate == null)
+        if (lastVisitDate == null)
             return;
 
         view_last_visit_row.setVisibility(View.VISIBLE);
@@ -197,15 +196,15 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     public void setUpComingServicesStatus(String service, AlertStatus status, Date date) {
-        if(status == AlertStatus.complete)
+        if (status == AlertStatus.complete)
             return;
 
         view_most_due_overdue_row.setVisibility(View.VISIBLE);
         rlUpcomingServices.setVisibility(View.VISIBLE);
 
-        if(status == AlertStatus.upcoming){
+        if (status == AlertStatus.upcoming) {
             tvUpComingServices.setText(Utils.fromHtml(getString(R.string.vaccine_service_upcoming, service, dateFormat.format(date))));
-        }else{
+        } else {
             tvUpComingServices.setText(Utils.fromHtml(getString(R.string.vaccine_service_due, service, dateFormat.format(date))));
         }
     }
@@ -215,11 +214,11 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         view_family_row.setVisibility(View.VISIBLE);
         rlFamilyServicesDue.setVisibility(View.VISIBLE);
 
-        if(status == AlertStatus.complete){
+        if (status == AlertStatus.complete) {
             tvFamilyStatus.setText(getString(R.string.family_has_nothing_due));
-        }else if(status == AlertStatus.normal){
+        } else if (status == AlertStatus.normal) {
             tvFamilyStatus.setText(getString(R.string.family_has_services_due));
-        }else if(status == AlertStatus.urgent){
+        } else if (status == AlertStatus.urgent) {
             tvFamilyStatus.setText(Utils.fromHtml(getString(R.string.family_has_service_overdue)));
         }
     }
@@ -258,7 +257,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     public Context getContext() {
-        return null;
+        return getApplicationContext();
     }
 
     @Override
@@ -273,7 +272,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     public void openUpcomingService() {
-        // TODO implement
+        BaseAncUpcomingServicesActivity.startMe(this, MEMBER_OBJECT);
     }
 
     @Override

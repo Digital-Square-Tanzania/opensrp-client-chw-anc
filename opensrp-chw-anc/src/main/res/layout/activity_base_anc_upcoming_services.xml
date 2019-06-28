@@ -38,7 +38,7 @@
 
 
     <org.smartregister.view.customcontrols.CustomFontTextView
-        android:id="@+id/medical_history"
+        android:id="@+id/upcoming_services"
         style="@style/CustomFontTextViewStyle.ClientList.Medium"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
@@ -47,36 +47,27 @@
         android:paddingLeft="20dp"
         android:paddingTop="10dp"
         android:paddingBottom="10dp"
-        android:text="@string/medical_history"
+        android:text="@string/upcoming_services"
         android:textColor="@color/black"
         android:textSize="20sp" />
 
-
-    <android.support.v4.widget.NestedScrollView
+    <RelativeLayout
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
-        android:background="@color/white">
+        android:layout_below="@+id/app_bar">
 
-        <RelativeLayout
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/recyclerView"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content">
+            android:layout_height="wrap_content" />
 
-            <LinearLayout
-                android:id="@+id/linearLayoutMedicalHistory"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:orientation="vertical" />
-
-            <ProgressBar
-                android:id="@+id/progressBarMedicalHistory"
-                style="@style/Base.Widget.AppCompat.ProgressBar"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:visibility="visible" />
-
-        </RelativeLayout>
-
-    </android.support.v4.widget.NestedScrollView>
+        <ProgressBar
+            android:id="@+id/progressBarUpcomingServices"
+            style="@style/Base.Widget.AppCompat.ProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:visibility="visible" />
+    </RelativeLayout>
 
 </LinearLayout>

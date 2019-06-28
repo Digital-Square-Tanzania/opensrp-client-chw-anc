@@ -3,8 +3,10 @@
     package="org.smartregister.chw.opensrp_chw_anc">
 
     <uses-permission android:name="android.permission.READ_PHONE_NUMBERS" />
+
     <application>
-        <activity android:name="org.smartregister.chw.anc.activity.BaseAncMedicalHistoryActivity"></activity>
+        <activity android:name="org.smartregister.chw.anc.activity.BaseAncUpcomingServicesActivity"></activity>
+        <activity android:name="org.smartregister.chw.anc.activity.BaseAncMedicalHistoryActivity" />
         <activity android:name="org.smartregister.chw.anc.activity.BaseAncMemberProfileActivity" />
         <activity android:name="org.smartregister.chw.anc.activity.BaseAncHomeVisitActivity" />
     </application>

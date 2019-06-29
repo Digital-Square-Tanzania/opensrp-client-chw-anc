@@ -25,6 +25,7 @@ import org.joda.time.Days;
 import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.custom_views.BaseAncFloatingMenu;
 import org.smartregister.chw.anc.domain.MemberObject;
+import org.smartregister.chw.anc.interactor.BaseAncMemberProfileInteractor;
 import org.smartregister.chw.anc.presenter.BaseAncMemberProfilePresenter;
 import org.smartregister.chw.anc.util.Util;
 import org.smartregister.chw.anc.util.Utils;
@@ -70,7 +71,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     protected void registerPresenter() {
-        presenter = new BaseAncMemberProfilePresenter(this, MEMBER_OBJECT);
+        presenter = new BaseAncMemberProfilePresenter(this, new BaseAncMemberProfileInteractor(), MEMBER_OBJECT);
     }
 
     @Override

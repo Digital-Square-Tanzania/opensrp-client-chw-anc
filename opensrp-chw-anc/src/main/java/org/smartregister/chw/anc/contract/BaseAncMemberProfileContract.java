@@ -59,7 +59,7 @@ public interface BaseAncMemberProfileContract {
 
         void updateVisitNotDone(long value, BaseAncMemberProfileContract.InteractorCallBack callback);
 
-        void refreshProfileInfo(String memberID, BaseAncMemberProfileContract.InteractorCallBack callback);
+        void refreshProfileInfo(MemberObject memberObject, BaseAncMemberProfileContract.InteractorCallBack callback);
 
     }
 

@@ -57,7 +57,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     protected View view_anc_record, view_last_visit_row, view_most_due_overdue_row, view_family_row;
     private TextView tvLastVisitDate, tvUpComingServices, tvFamilyStatus;
     private ProgressBar progressBar;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("DD MMM", Locale.getDefault());
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
 
     private CircleImageView imageView;
 

@@ -200,7 +200,7 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
 
     @Override
     public Context getMyContext() {
-        return getActivity().getApplicationContext();
+        return getActivity();
     }
 
     public String getQuestion() {

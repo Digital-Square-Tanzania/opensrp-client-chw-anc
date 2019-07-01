@@ -5,7 +5,6 @@ import android.app.DialogFragment;
 import android.app.Fragment;
 import android.app.FragmentTransaction;
 import android.content.Context;
-import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
 import android.view.LayoutInflater;
@@ -114,11 +113,7 @@ public class BaseAncWomanCallDialogFragment extends DialogFragment implements Ba
 
     @Override
     public Context getCurrentContext() {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            return getContext();
-        } else {
-            return getActivity().getApplicationContext();
-        }
+        return getActivity();
     }
 
     @Override

@@ -3,7 +3,6 @@ package org.smartregister.chw.anc.presenter;
 import org.ei.drishti.dto.AlertStatus;
 import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.domain.MemberObject;
-import org.smartregister.chw.anc.interactor.AncMemberProfileInteractor;
 import org.smartregister.view.contract.BaseProfileContract;
 
 import java.lang.ref.WeakReference;
@@ -12,13 +11,13 @@ import java.util.Date;
 public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presenter, BaseAncMemberProfileContract.InteractorCallBack, BaseAncMemberProfileContract.Presenter {
 
     protected WeakReference<BaseAncMemberProfileContract.View> view;
-    private BaseAncMemberProfileContract.Interactor interactor;
+    protected BaseAncMemberProfileContract.Interactor interactor;
 
     private MemberObject memberObject;
 
-    public BaseAncMemberProfilePresenter(BaseAncMemberProfileContract.View view, MemberObject memberObject) {
+    public BaseAncMemberProfilePresenter(BaseAncMemberProfileContract.View view, BaseAncMemberProfileContract.Interactor interactor, MemberObject memberObject) {
         this.view = new WeakReference<>(view);
-        this.interactor = new AncMemberProfileInteractor();
+        this.interactor = interactor;
         this.memberObject = memberObject;
     }
 
@@ -29,7 +28,7 @@ public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presen
 
     @Override
     public void refreshProfileBottom() {
-        interactor.refreshProfileInfo(memberObject.getBaseEntityId(), this);
+        interactor.refreshProfileInfo(memberObject, this);
     }
 
     @Override

@@ -13,7 +13,7 @@ import java.util.Map;
 
 public interface BaseAncHomeVisitContract {
 
-    interface View {
+    interface View extends VisitView {
 
         BaseAncHomeVisitContract.Presenter presenter();
 
@@ -43,6 +43,15 @@ public interface BaseAncHomeVisitContract {
          */
         void submitVisit();
 
+        void initializeActions(LinkedHashMap<String, BaseAncHomeVisitAction> map);
+
+        Context getContext();
+
+        void displayToast(String message);
+    }
+
+    interface VisitView {
+
         /**
          * Results action when a dialog is opened and returns a payload
          *
@@ -50,11 +59,6 @@ public interface BaseAncHomeVisitContract {
          */
         void onDialogOptionUpdated(String jsonString);
 
-        void initializeActions(LinkedHashMap<String, BaseAncHomeVisitAction> map);
-
-        Context getContext();
-
-        void displayToast(String message);
     }
 
     interface Presenter {

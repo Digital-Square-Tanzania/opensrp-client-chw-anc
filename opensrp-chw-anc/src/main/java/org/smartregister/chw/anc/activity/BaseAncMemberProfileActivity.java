@@ -25,6 +25,7 @@ import org.joda.time.Days;
 import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.custom_views.BaseAncFloatingMenu;
 import org.smartregister.chw.anc.domain.MemberObject;
+import org.smartregister.chw.anc.interactor.BaseAncMemberProfileInteractor;
 import org.smartregister.chw.anc.presenter.BaseAncMemberProfilePresenter;
 import org.smartregister.chw.anc.util.Util;
 import org.smartregister.chw.anc.util.Utils;
@@ -56,7 +57,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     protected View view_anc_record, view_last_visit_row, view_most_due_overdue_row, view_family_row;
     private TextView tvLastVisitDate, tvUpComingServices, tvFamilyStatus;
     private ProgressBar progressBar;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat("DD MMM", Locale.getDefault());
+    private SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
 
     private CircleImageView imageView;
 
@@ -70,7 +71,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     protected void registerPresenter() {
-        presenter = new BaseAncMemberProfilePresenter(this, MEMBER_OBJECT);
+        presenter = new BaseAncMemberProfilePresenter(this, new BaseAncMemberProfileInteractor(), MEMBER_OBJECT);
     }
 
     @Override

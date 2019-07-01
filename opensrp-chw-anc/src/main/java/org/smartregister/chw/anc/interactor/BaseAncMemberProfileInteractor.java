@@ -11,17 +11,17 @@ import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-public class AncMemberProfileInteractor implements BaseAncMemberProfileContract.Interactor {
-    public static final String TAG = AncMemberProfileInteractor.class.getName();
-    private AppExecutors appExecutors;
+public class BaseAncMemberProfileInteractor implements BaseAncMemberProfileContract.Interactor {
+    public static final String TAG = BaseAncMemberProfileInteractor.class.getName();
+    protected AppExecutors appExecutors;
     private Map<String, Date> vaccineList = new LinkedHashMap<>();
 
     @VisibleForTesting
-    AncMemberProfileInteractor(AppExecutors appExecutors) {
+    BaseAncMemberProfileInteractor(AppExecutors appExecutors) {
         this.appExecutors = appExecutors;
     }
 
-    public AncMemberProfileInteractor() {
+    public BaseAncMemberProfileInteractor() {
         this(new AppExecutors());
     }
 
@@ -46,7 +46,7 @@ public class AncMemberProfileInteractor implements BaseAncMemberProfileContract.
     }
 
     @Override
-    public void refreshProfileInfo(String memberID, final BaseAncMemberProfileContract.InteractorCallBack callback) {
+    public void refreshProfileInfo(MemberObject memberObject, final BaseAncMemberProfileContract.InteractorCallBack callback) {
         Runnable runnable = new Runnable() {
             @Override
             public void run() {

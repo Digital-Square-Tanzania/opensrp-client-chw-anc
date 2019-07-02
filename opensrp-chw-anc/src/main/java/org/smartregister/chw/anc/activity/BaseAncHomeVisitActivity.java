@@ -40,6 +40,7 @@ import java.util.Map;
 
 import timber.log.Timber;
 
+import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.EDIT_MODE;
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER_PROFILE_OBJECT;
 
 public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAncHomeVisitContract.View, View.OnClickListener {
@@ -48,6 +49,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     protected Map<String, BaseAncHomeVisitAction> actionList = new LinkedHashMap<>();
     protected BaseAncHomeVisitContract.Presenter presenter;
     protected MemberObject memberObject;
+    private Boolean isEditMode = false;
     private RecyclerView.Adapter mAdapter;
     private ProgressBar progressBar;
     private TextView tvSubmit;
@@ -56,9 +58,10 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     private String confirmCloseTitle;
     private String confirmCloseMessage;
 
-    public static void startMe(Activity activity, MemberObject memberObject) {
+    public static void startMe(Activity activity, MemberObject memberObject, Boolean isEditMode) {
         Intent intent = new Intent(activity, BaseAncHomeVisitActivity.class);
         intent.putExtra(MEMBER_PROFILE_OBJECT, memberObject);
+        intent.putExtra(EDIT_MODE, isEditMode);
         activity.startActivity(intent);
     }
 
@@ -69,6 +72,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             memberObject = (MemberObject) getIntent().getSerializableExtra(MEMBER_PROFILE_OBJECT);
+            isEditMode = getIntent().getBooleanExtra(EDIT_MODE, false);
         }
 
         confirmCloseTitle = getString(R.string.confirm_form_close);
@@ -122,6 +126,11 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     @Override
     public void displayToast(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public Boolean getEditMode() {
+        return isEditMode;
     }
 
     @Override

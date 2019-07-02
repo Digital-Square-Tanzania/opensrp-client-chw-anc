@@ -48,6 +48,8 @@ public interface BaseAncHomeVisitContract {
         Context getContext();
 
         void displayToast(String message);
+
+        Boolean getEditMode();
     }
 
     interface VisitView {

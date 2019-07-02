@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.View;
 import android.widget.ImageView;
@@ -27,6 +28,7 @@ import org.smartregister.chw.anc.custom_views.BaseAncFloatingMenu;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.interactor.BaseAncMemberProfileInteractor;
 import org.smartregister.chw.anc.presenter.BaseAncMemberProfilePresenter;
+import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.chw.anc.util.Util;
 import org.smartregister.chw.anc.util.Utils;
 import org.smartregister.chw.opensrp_chw_anc.R;
@@ -34,6 +36,7 @@ import org.smartregister.helper.ImageRenderHelper;
 import org.smartregister.view.activity.BaseProfileActivity;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -48,7 +51,7 @@ import static org.smartregister.util.Utils.getName;
 
 public class BaseAncMemberProfileActivity extends BaseProfileActivity implements BaseAncMemberProfileContract.View {
     protected MemberObject MEMBER_OBJECT;
-    protected TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id, textview_record_anc_visit, textViewAncVisitNot, textViewNotVisitMonth, textViewUndo;
+    protected TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id, textview_record_anc_visit, textViewAncVisitNot, textViewNotVisitMonth, textViewUndo, tvEdit;
     private LinearLayout layoutRecordView;
     protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue, layoutRecordButtonDone, layoutNotRecordView;
     private String familyHeadName;
@@ -141,6 +144,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         view_anc_record = findViewById(R.id.view_record);
         layoutRecordView = findViewById(R.id.record_visit_bar);
         textViewNotVisitMonth = findViewById(R.id.textview_not_visit_this_month);
+        tvEdit = findViewById(R.id.textview_edit);
 
 
         rlLastVisit = findViewById(R.id.rlLastVisit);
@@ -168,34 +172,54 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         imageView = findViewById(R.id.imageview_profile);
         imageView.setBorderWidth(2);
 
-        String date = getInstance().visitRepository().notVisitingDate(MEMBER_OBJECT.getBaseEntityId());
+        displayView();
+    }
 
-        if (date != null && Utils.isDateWithin1MonthRange(getInstance().visitRepository().notVisitingDate(MEMBER_OBJECT.getBaseEntityId()))) {
-            openVisitMonthView();
-            textViewNotVisitMonth.setText(getString(R.string.not_visiting_this_month));
-            textViewUndo.setText(getString(R.string.undo));
-            textViewUndo.setVisibility(View.VISIBLE);
-            imageViewCross.setImageResource(R.drawable.activityrow_notvisited);
+    private void displayView() {
+        String date = getInstance().visitRepository().getLastInteractedWithAndVisitNotDone(MEMBER_OBJECT.getBaseEntityId(), DBConstants.KEY.VISIT_NOT_DONE);
+        String lastInteractedWith = getInstance().visitRepository().getLastInteractedWithAndVisitNotDone(MEMBER_OBJECT.getBaseEntityId(), DBConstants.KEY.LAST_INTERACTED_WITH);
+        if (date != null && Utils.isDateWithin1MonthRange(date)) {
+            setVisitViews();
+        } else if (Utils.isTimeWithin24HoursRange(lastInteractedWith)) {
+            setUpEditViews(true, lastInteractedWith);
         }
     }
 
-    @Override
-    public void setVisitNotDoneThisMonth() {
+    private void setUpEditViews(boolean enable, String time) {
+        openVisitMonthView();
+        if (enable) {
+            Long longDate = Long.valueOf(time);
+
+            Calendar cal = Calendar.getInstance();
+            int offset = cal.getTimeZone().getOffset(cal.getTimeInMillis());
+            Date date = new Date(longDate - (long) offset);
+            String monthString = (String) DateFormat.format("MMM", date);
+
+            tvEdit.setVisibility(View.VISIBLE);
+            textViewNotVisitMonth.setText(getContext().getString(R.string.anc_visit_done, monthString));
+            imageViewCross.setImageResource(R.drawable.activityrow_visited);
+            textViewUndo.setVisibility(View.GONE);
+        } else
+            tvEdit.setVisibility(View.GONE);
+    }
+
+    private void setVisitViews() {
         openVisitMonthView();
         textViewNotVisitMonth.setText(getString(R.string.not_visiting_this_month));
         textViewUndo.setText(getString(R.string.undo));
         textViewUndo.setVisibility(View.VISIBLE);
         imageViewCross.setImageResource(R.drawable.activityrow_notvisited);
+    }
 
+    @Override
+    public void setVisitNotDoneThisMonth() {
+        setVisitViews();
         getInstance().visitRepository().setNotVisitingDate(Utils.getTodayDate(), MEMBER_OBJECT.getBaseEntityId());
-
-
     }
 
     @Override
     public void updateVisitNotDone(long value) {
         textViewUndo.setVisibility(View.GONE);
-
         layoutNotRecordView.setVisibility(View.GONE);
         layoutRecordButtonDone.setVisibility(View.VISIBLE);
         layoutRecordView.setVisibility(View.VISIBLE);
@@ -227,11 +251,8 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         } else if (v.getId() == R.id.textview_anc_visit_not) {
             presenter().getView().setVisitNotDoneThisMonth();
         } else if (v.getId() == R.id.textview_undo) {
-
-
             presenter().getView().updateVisitNotDone(0);
         }
-
     }
 
     @Override

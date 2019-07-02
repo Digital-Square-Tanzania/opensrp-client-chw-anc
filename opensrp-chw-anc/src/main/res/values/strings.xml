@@ -65,5 +65,6 @@
 
     <string name="back_to">Back to %1$s\'s profile</string>
     <string name="days_overdue">%1$s days overdue</string>
+    <string name="anc_visit_done">%1$s visit done</string>
 
 </resources>

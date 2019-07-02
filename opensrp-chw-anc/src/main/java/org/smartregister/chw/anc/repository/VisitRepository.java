@@ -206,7 +206,7 @@ public class VisitRepository extends BaseRepository {
         }
     }
 
-    public String notVisitingDate(String baseEntityID) {
+    public String getLastInteractedWithAndVisitNotDone(String baseEntityID, String dateColumn) {
         SQLiteDatabase database = getReadableDatabase();
         net.sqlcipher.Cursor cursor = null;
         try {
@@ -216,12 +216,12 @@ public class VisitRepository extends BaseRepository {
             String selection = BASE_ENTITY_ID + " = ? " + COLLATE_NOCASE;
             String[] selectionArgs = new String[]{baseEntityID};
 
-            String[] columns = {DBConstants.KEY.VISIT_NOT_DONE};
+            String[] columns = {dateColumn};
 
             cursor = database.query(Constants.TABLES.ANC_MEMBERS, columns, selection, selectionArgs, null, null, null);
 
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
-                String date = cursor.getString(cursor.getColumnIndex(DBConstants.KEY.VISIT_NOT_DONE));
+                String date = cursor.getString(cursor.getColumnIndex(dateColumn));
                 return date;
             }
         } catch (Exception e) {

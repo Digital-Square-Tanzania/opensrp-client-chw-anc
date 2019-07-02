@@ -40,6 +40,7 @@ import java.util.Locale;
 import de.hdodenhof.circleimageview.CircleImageView;
 import timber.log.Timber;
 
+import static org.smartregister.chw.anc.AncLibrary.getInstance;
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.FAMILY_HEAD_NAME;
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.FAMILY_HEAD_PHONE;
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER_PROFILE_OBJECT;
@@ -136,8 +137,8 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         text_view_ga = findViewById(R.id.text_view_ga);
         text_view_address = findViewById(R.id.text_view_address);
         text_view_id = findViewById(R.id.text_view_id);
-        textview_record_anc_visit = findViewById(R.id.textview_record_anc_visit);
-        view_anc_record = findViewById(R.id.view_anc_record);
+        textview_record_anc_visit = findViewById(R.id.textview_record_visit);
+        view_anc_record = findViewById(R.id.view_record);
         layoutRecordView = findViewById(R.id.record_visit_bar);
         textViewNotVisitMonth = findViewById(R.id.textview_not_visit_this_month);
 
@@ -167,7 +168,15 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         imageView = findViewById(R.id.imageview_profile);
         imageView.setBorderWidth(2);
 
+        String date = getInstance().visitRepository().notVisitingDate(MEMBER_OBJECT.getBaseEntityId());
 
+        if (date != null && Utils.isDateWithin1MonthRange(getInstance().visitRepository().notVisitingDate(MEMBER_OBJECT.getBaseEntityId()))) {
+            openVisitMonthView();
+            textViewNotVisitMonth.setText(getString(R.string.not_visiting_this_month));
+            textViewUndo.setText(getString(R.string.undo));
+            textViewUndo.setVisibility(View.VISIBLE);
+            imageViewCross.setImageResource(R.drawable.activityrow_notvisited);
+        }
     }
 
     @Override
@@ -177,6 +186,10 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         textViewUndo.setText(getString(R.string.undo));
         textViewUndo.setVisibility(View.VISIBLE);
         imageViewCross.setImageResource(R.drawable.activityrow_notvisited);
+
+        getInstance().visitRepository().setNotVisitingDate(Utils.getTodayDate(), MEMBER_OBJECT.getBaseEntityId());
+
+
     }
 
     @Override
@@ -186,6 +199,8 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         layoutNotRecordView.setVisibility(View.GONE);
         layoutRecordButtonDone.setVisibility(View.VISIBLE);
         layoutRecordView.setVisibility(View.VISIBLE);
+
+        getInstance().visitRepository().setNotVisitingDate(null, MEMBER_OBJECT.getBaseEntityId());
     }
 
 
@@ -212,6 +227,8 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         } else if (v.getId() == R.id.textview_anc_visit_not) {
             presenter().getView().setVisitNotDoneThisMonth();
         } else if (v.getId() == R.id.textview_undo) {
+
+
             presenter().getView().updateVisitNotDone(0);
         }
 

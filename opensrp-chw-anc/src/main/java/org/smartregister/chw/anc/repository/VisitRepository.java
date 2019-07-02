@@ -7,6 +7,8 @@ import android.util.Log;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.smartregister.chw.anc.domain.Visit;
+import org.smartregister.chw.anc.util.Constants;
+import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.Repository;
 
@@ -193,4 +195,44 @@ public class VisitRepository extends BaseRepository {
         }
         return (visits.size() > 0) ? visits.get(0) : null;
     }
+
+    public void setNotVisitingDate(String date, String baseID) {
+        try {
+            ContentValues values = new ContentValues();
+            values.put(DBConstants.KEY.VISIT_NOT_DONE, date);
+            getWritableDatabase().update(Constants.TABLES.ANC_MEMBERS, values, DBConstants.KEY.BASE_ENTITY_ID + " = ?", new String[]{baseID});
+        } catch (Exception e) {
+            Timber.e(Log.getStackTraceString(e));
+        }
+    }
+
+    public String notVisitingDate(String baseEntityID) {
+        SQLiteDatabase database = getReadableDatabase();
+        net.sqlcipher.Cursor cursor = null;
+        try {
+            if (database == null) {
+                return null;
+            }
+            String selection = BASE_ENTITY_ID + " = ? " + COLLATE_NOCASE;
+            String[] selectionArgs = new String[]{baseEntityID};
+
+            String[] columns = {DBConstants.KEY.VISIT_NOT_DONE};
+
+            cursor = database.query(Constants.TABLES.ANC_MEMBERS, columns, selection, selectionArgs, null, null, null);
+
+            if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
+                String date = cursor.getString(cursor.getColumnIndex(DBConstants.KEY.VISIT_NOT_DONE));
+                return date;
+            }
+        } catch (Exception e) {
+
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return null;
+
+    }
+
 }

@@ -36,6 +36,7 @@ import org.smartregister.util.PermissionUtils;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -175,5 +176,34 @@ public class Utils {
         } else {
             return Html.fromHtml(text);
         }
+    }
+
+    public static String getTodayDate() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = new Date(System.currentTimeMillis());
+        return formatter.format(date);
+    }
+
+    public static boolean isDateWithin1MonthRange(String dateToValidate) {
+
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+        sdf.setLenient(false);
+        try {
+
+            Date date = sdf.parse(dateToValidate);
+            Calendar currentDateAfter1Months = Calendar.getInstance();
+            currentDateAfter1Months.add(Calendar.MONTH, 1);
+
+            if (date.before(currentDateAfter1Months.getTime())) {
+                return true;
+            } else {
+                return false;
+            }
+
+        } catch (ParseException e) {
+            e.printStackTrace();
+            return false;
+        }
+
     }
 }

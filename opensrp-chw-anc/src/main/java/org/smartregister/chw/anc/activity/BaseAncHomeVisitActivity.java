@@ -165,7 +165,6 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         if (StringUtils.isNotBlank(ancHomeVisitAction.getJsonPayload())) {
             try {
                 JSONObject jsonObject = new JSONObject(ancHomeVisitAction.getJsonPayload());
-                ancHomeVisitAction.setProcessedJsonPayload(null);
                 startFormActivity(jsonObject);
             } catch (Exception e) {
                 Timber.e(e);

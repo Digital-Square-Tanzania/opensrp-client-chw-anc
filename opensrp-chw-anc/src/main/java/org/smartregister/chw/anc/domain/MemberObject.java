@@ -25,6 +25,7 @@ public class MemberObject implements Serializable {
     protected String primaryCareGiver;
     protected String familyName;
     protected String lastContactVisit;
+    protected String lastInteractedWith;
     protected String firstName;
     protected String middleName;
     protected String lastName;
@@ -163,5 +164,8 @@ public class MemberObject implements Serializable {
 
     public String getFullName() {
         return getName(getName(getFirstName(), getMiddleName()), getLastName());
+    }
+    public String getLastInteractedWith() {
+        return lastInteractedWith;
     }
 }

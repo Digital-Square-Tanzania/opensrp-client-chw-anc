@@ -68,12 +68,12 @@ public class MemberObject implements Serializable {
 
     private String getAncMemberNameAndAge(String firstName, String middleName, String surName, String age) {
         int integerAge = new Period(new DateTime(age), new DateTime()).getYears();
-        String first_name = firstName.trim();
-        String middle_name = middleName.trim();
-        String sur_name = surName != null ? surName.trim() : "";
+
+        String name = Utils.getName(firstName, middleName);
+        name = Utils.getName(name, surName);
 
         if (StringUtils.isNotBlank(firstName) && StringUtils.isNotBlank(middleName) && StringUtils.isNotBlank(age)) {
-            return (first_name + " " + middle_name + " " + sur_name).trim() + ", " + integerAge;
+            return name + ", " + integerAge;
         }
         return "";
     }

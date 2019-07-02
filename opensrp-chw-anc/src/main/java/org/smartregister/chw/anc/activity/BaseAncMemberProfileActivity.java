@@ -18,6 +18,7 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ei.drishti.dto.AlertStatus;
@@ -162,6 +163,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         rlLastVisit.setOnClickListener(this);
         rlUpcomingServices.setOnClickListener(this);
         rlFamilyServicesDue.setOnClickListener(this);
+        tvEdit.setOnClickListener(this);
 
         textViewAncVisitNot.setOnClickListener(this);
         textViewUndo.setOnClickListener(this);
@@ -252,6 +254,8 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             presenter().getView().setVisitNotDoneThisMonth();
         } else if (v.getId() == R.id.textview_undo) {
             presenter().getView().updateVisitNotDone(0);
+        } else if (v.getId() == R.id.textview_edit) {
+            Toast.makeText(this, "Text view Edit", Toast.LENGTH_SHORT).show();
         }
     }
 

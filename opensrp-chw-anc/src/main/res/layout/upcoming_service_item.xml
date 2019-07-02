@@ -2,18 +2,16 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:orientation="vertical"
-    android:padding="10dp">
+    android:orientation="vertical">
 
     <View
         android:layout_width="fill_parent"
-        android:layout_height="1dp"
-        android:background="@color/search_bar_background_black" />
+        android:layout_height="1px"
+        android:background="@color/light_grey" />
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginTop="20dp"
         android:orientation="horizontal">
 
         <org.smartregister.view.customcontrols.CustomFontTextView
@@ -21,38 +19,34 @@
             style="@style/CustomFontTextViewStyle.ListView.Normal.MultipleLines"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:padding="10dp"
             android:text="Due Date"
             android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
         <org.smartregister.view.customcontrols.CustomFontTextView
             android:id="@+id/overdue_state"
             style="@style/CustomFontTextViewStyle.ListView.Normal.MultipleLines"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:paddingLeft="10dp"
-            android:paddingRight="10dp"
+            android:padding="10dp"
             android:text="Overdue"
             android:textColor="@color/vaccine_red_bg_end"
-            android:textSize="16sp" />
+            android:textSize="18sp"
+            android:textStyle="bold" />
 
     </LinearLayout>
-
 
     <org.smartregister.view.customcontrols.CustomFontTextView
         android:id="@+id/name"
         style="@style/CustomFontTextViewStyle.ListView.Normal.MultipleLines"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:paddingLeft="10dp"
-        android:paddingRight="10dp"
-        android:paddingBottom="10dp"
+        android:padding="10dp"
         android:text="Name"
         android:textAppearance="@style/TextAppearance.AppCompat.Medium"
         android:textColor="@color/black"
-        android:textSize="14sp" />
+        android:textSize="16sp" />
 
 </LinearLayout>

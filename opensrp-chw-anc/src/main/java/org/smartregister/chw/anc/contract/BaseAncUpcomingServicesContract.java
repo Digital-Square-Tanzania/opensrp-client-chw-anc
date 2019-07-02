@@ -1,5 +1,8 @@
 package org.smartregister.chw.anc.contract;
 
+import android.content.Context;
+
+import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.model.BaseUpcomingService;
 
 import java.util.List;
@@ -15,6 +18,8 @@ public interface BaseAncUpcomingServicesContract {
         void displayLoadingState(boolean state);
 
         void refreshServices(List<BaseUpcomingService> serviceList);
+
+        Context getContext();
     }
 
     interface Presenter {
@@ -26,7 +31,7 @@ public interface BaseAncUpcomingServicesContract {
 
     interface Interactor {
 
-        void getUpComingServices(String memberID, InteractorCallBack callBack);
+        void getUpComingServices(MemberObject memberObject, Context context, InteractorCallBack callBack);
 
     }
 

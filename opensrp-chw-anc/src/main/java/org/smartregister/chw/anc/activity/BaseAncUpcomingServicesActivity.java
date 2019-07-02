@@ -1,12 +1,12 @@
 package org.smartregister.chw.anc.activity;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.Intent;
 import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
@@ -38,6 +38,7 @@ public class BaseAncUpcomingServicesActivity extends SecuredActivity implements 
     private TextView tvTitle;
     private ProgressBar progressBar;
     private RecyclerView.Adapter mAdapter;
+    private RecyclerView recyclerView;
 
 
     public static void startMe(Activity activity, MemberObject memberObject) {
@@ -90,7 +91,7 @@ public class BaseAncUpcomingServicesActivity extends SecuredActivity implements 
     }
 
     public void setUpView() {
-        RecyclerView recyclerView = findViewById(R.id.recyclerView);
+        recyclerView = findViewById(R.id.recyclerView);
         recyclerView.setHasFixedSize(false);
         progressBar = findViewById(R.id.progressBarUpcomingServices);
 
@@ -103,7 +104,6 @@ public class BaseAncUpcomingServicesActivity extends SecuredActivity implements 
 
         mAdapter = new BaseUpcomingServiceAdapter(this, serviceList);
         recyclerView.setAdapter(mAdapter);
-        recyclerView.addItemDecoration(new DividerItemDecoration(recyclerView.getContext(), DividerItemDecoration.VERTICAL));
     }
 
     @Override
@@ -126,7 +126,12 @@ public class BaseAncUpcomingServicesActivity extends SecuredActivity implements 
         this.serviceList.clear();
         this.serviceList.addAll(serviceList);
 
-        mAdapter = new BaseUpcomingServiceAdapter(this, serviceList);
         mAdapter.notifyDataSetChanged();
+        recyclerView.setAdapter(mAdapter);
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
     }
 }

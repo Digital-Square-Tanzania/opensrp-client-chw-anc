@@ -33,6 +33,7 @@ public class MemberObject implements Serializable {
     protected String phoneNumber;
     protected int confirmedContacts = 0;
     protected String dateCreated;
+    protected String hasAncCard;
 
     public MemberObject() {
     }
@@ -60,6 +61,7 @@ public class MemberObject implements Serializable {
         primaryCareGiver = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.PRIMARY_CAREGIVER, false);
         familyName = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.FAMILY_NAME, false);
         phoneNumber = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.PHONE_NUMBER, false);
+        hasAncCard = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.HAS_ANC_CARD, false);
 
         String visits = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.CONFIRMED_VISITS, false);
         if (StringUtils.isNotBlank(visits)) {
@@ -138,6 +140,10 @@ public class MemberObject implements Serializable {
 
     public String getDob() {
         return dob;
+    }
+
+    public String getHasAncCard() {
+        return hasAncCard;
     }
 
     public int getConfirmedContacts() {

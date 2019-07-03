@@ -25,7 +25,7 @@ public class BaseAncUpcomingServicesPresenter implements BaseAncUpcomingServices
     public void initialize() {
         if (getView() != null) {
             getView().displayLoadingState(true);
-            interactor.getUpComingServices(memberObject.getBaseEntityId(), this);
+            interactor.getUpComingServices(memberObject, getView().getContext(), this);
         }
     }
 

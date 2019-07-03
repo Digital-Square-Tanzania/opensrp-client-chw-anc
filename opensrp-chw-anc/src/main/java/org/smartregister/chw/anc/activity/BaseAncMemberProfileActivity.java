@@ -126,9 +126,13 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     protected void setupViews() {
-        String ancWomanName = getName(MEMBER_OBJECT.getFirstName(), MEMBER_OBJECT.getMiddleName());
-        ancWomanName = getName(ancWomanName, MEMBER_OBJECT.getMiddleName());
-
+        String ancWomanName;
+        if (StringUtils.isNotBlank(MEMBER_OBJECT.getMiddleName())) {
+            ancWomanName = getName(MEMBER_OBJECT.getFirstName(), MEMBER_OBJECT.getMiddleName());
+            ancWomanName = getName(ancWomanName, MEMBER_OBJECT.getMiddleName());
+        } else {
+            ancWomanName = getName(MEMBER_OBJECT.getFirstName(), MEMBER_OBJECT.getLastName());
+        }
         if (StringUtils.isNotBlank(MEMBER_OBJECT.getPhoneNumber()) || StringUtils.isNotBlank(familyHeadPhoneNumber)) {
             baseAncFloatingMenu = new BaseAncFloatingMenu(this, ancWomanName, MEMBER_OBJECT.getPhoneNumber(), familyHeadName, familyHeadPhoneNumber);
             baseAncFloatingMenu.setGravity(Gravity.BOTTOM | Gravity.RIGHT);
@@ -321,6 +325,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     public void setMemberName(String memberName) {
+        String name = memberName;
         text_view_anc_member_name.setText(memberName);
     }
 

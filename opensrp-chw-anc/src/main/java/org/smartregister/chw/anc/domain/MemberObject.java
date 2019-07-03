@@ -75,7 +75,7 @@ public class MemberObject implements Serializable {
         String name = Utils.getName(firstName, middleName);
         name = Utils.getName(name, surName);
 
-        if (StringUtils.isNotBlank(firstName) && StringUtils.isNotBlank(middleName) && StringUtils.isNotBlank(age)) {
+        if (StringUtils.isNotBlank(firstName) && StringUtils.isNotBlank(age)) {
             return name + ", " + integerAge;
         }
         return "";
@@ -165,6 +165,7 @@ public class MemberObject implements Serializable {
     public String getFullName() {
         return getName(getName(getFirstName(), getMiddleName()), getLastName());
     }
+
     public String getLastInteractedWith() {
         return lastInteractedWith;
     }

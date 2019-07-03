@@ -184,9 +184,10 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     private void displayView() {
         String date = getInstance().visitRepository().getLastInteractedWithAndVisitNotDone(MEMBER_OBJECT.getBaseEntityId(), DBConstants.KEY.VISIT_NOT_DONE);
         String lastInteractedWith = getInstance().visitRepository().getLastInteractedWithAndVisitNotDone(MEMBER_OBJECT.getBaseEntityId(), DBConstants.KEY.LAST_INTERACTED_WITH);
+        String lastAnVisitDate = getInstance().visitRepository().getLastInteractedWithAndVisitNotDone(MEMBER_OBJECT.getBaseEntityId(), DBConstants.KEY.LAST_HOME_VISIT);
         if (date != null && Utils.isDateWithin1MonthRange(date)) {
             setVisitViews();
-        } else if (Utils.isTimeWithin24HoursRange(lastInteractedWith)) {
+        } else if (Utils.isTimeWithin24HoursRange(lastInteractedWith) && lastAnVisitDate != null) {
             setUpEditViews(true, lastInteractedWith);
         }
     }

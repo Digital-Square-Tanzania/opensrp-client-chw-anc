@@ -210,11 +210,7 @@ public class Utils {
                 Calendar currentDateAfter1Months = Calendar.getInstance();
                 currentDateAfter1Months.add(Calendar.MONTH, 1);
 
-                if (date.before(currentDateAfter1Months.getTime())) {
-                    return true;
-                } else {
-                    return false;
-                }
+                return (date.before(currentDateAfter1Months.getTime()));
 
             } catch (ParseException e) {
                 e.printStackTrace();

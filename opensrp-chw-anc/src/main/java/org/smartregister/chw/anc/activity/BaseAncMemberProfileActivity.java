@@ -267,8 +267,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             presenter().getView().setVisitNotDoneThisMonth();
         } else if (v.getId() == R.id.textview_undo) {
             presenter().getView().updateVisitNotDone(0);
-        } else if (v.getId() == R.id.textview_edit) {
-            Toast.makeText(this, "Text view Edit", Toast.LENGTH_SHORT).show();
         }
     }
 

@@ -55,8 +55,10 @@ public class BaseAncRegisterPresenter implements BaseAncRegisterContract.Present
 
     @Override
     public void onRegistrationSaved(boolean isEdit) {
-        if (getView() != null)
+        if (getView() != null) {
+            getView().onRegistrationSaved(isEdit);
             getView().hideProgressDialog();
+        }
     }
 
     @Override

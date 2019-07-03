@@ -13,6 +13,8 @@ public interface BaseAncRegisterContract {
 
         Form getFormConfig();
 
+        void onRegistrationSaved(boolean isEdit);
+
     }
 
     interface Presenter extends BaseRegisterContract.Presenter {

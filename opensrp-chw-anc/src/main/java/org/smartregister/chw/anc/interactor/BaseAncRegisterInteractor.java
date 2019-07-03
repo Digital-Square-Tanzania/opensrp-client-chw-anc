@@ -14,7 +14,7 @@ import timber.log.Timber;
 
 public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Interactor {
 
-    private AppExecutors appExecutors;
+    protected AppExecutors appExecutors;
 
     @VisibleForTesting
     BaseAncRegisterInteractor(AppExecutors appExecutors) {

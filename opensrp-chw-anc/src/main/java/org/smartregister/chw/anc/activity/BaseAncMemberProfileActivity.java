@@ -53,14 +53,14 @@ import static org.smartregister.util.Utils.getName;
 public class BaseAncMemberProfileActivity extends BaseProfileActivity implements BaseAncMemberProfileContract.View {
     protected MemberObject MEMBER_OBJECT;
     protected TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id, textview_record_anc_visit, textViewAncVisitNot, textViewNotVisitMonth, textViewUndo, tvEdit;
-    private LinearLayout layoutRecordView;
+    private LinearLayout layoutRecordView, record_visit_done_bar;
     protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue, layoutRecordButtonDone, layoutNotRecordView;
     private String familyHeadName;
     private String familyHeadPhoneNumber;
     private BaseAncFloatingMenu baseAncFloatingMenu;
     private ImageView imageViewCross;
     protected View view_anc_record, view_last_visit_row, view_most_due_overdue_row, view_family_row;
-    private TextView tvLastVisitDate, tvUpComingServices, tvFamilyStatus;
+    private TextView tvLastVisitDate, tvUpComingServices, tvFamilyStatus, textview_record_reccuring_visit;
     private ProgressBar progressBar;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
 
@@ -119,6 +119,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         tvLastVisitDate = findViewById(R.id.textview_last_vist_day);
         tvUpComingServices = findViewById(R.id.textview_name_due);
         tvFamilyStatus = findViewById(R.id.textview_family_has);
+        record_visit_done_bar = findViewById(R.id.record_reccuringvisit_done_bar);
 
         initializePresenter();
         setupViews();
@@ -161,6 +162,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         textViewUndo = findViewById(R.id.textview_undo);
         imageViewCross = findViewById(R.id.cross_image);
         layoutNotRecordView = findViewById(R.id.record_visit_status_bar);
+        textview_record_reccuring_visit = findViewById(R.id.textview_record_reccuring_visit);
 
 
         textview_record_anc_visit.setOnClickListener(this);
@@ -173,6 +175,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         textViewUndo.setOnClickListener(this);
         imageViewCross.setOnClickListener(this);
         layoutRecordButtonDone.setOnClickListener(this);
+        textview_record_reccuring_visit.setOnClickListener(this);
 
 
         imageView = findViewById(R.id.imageview_profile);
@@ -188,23 +191,28 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         if (date != null && Utils.isDateWithin1MonthRange(date)) {
             setVisitViews();
         } else if (Utils.isTimeWithin24HoursRange(lastInteractedWith) && lastAnVisitDate != null) {
-            setUpEditViews(true, lastInteractedWith);
+            setUpEditViews(true, true, lastInteractedWith);
+        } else if (!Utils.isTimeWithin24HoursRange(lastInteractedWith) && lastAnVisitDate != null) {
+            setUpEditViews(true, false, null);
         }
     }
 
-    private void setUpEditViews(boolean enable, String time) {
+    private void setUpEditViews(boolean enable, boolean within24Hours, String time) {
         openVisitMonthView();
         if (enable) {
-            Long longDate = Long.valueOf(time);
-
-            Calendar cal = Calendar.getInstance();
-            int offset = cal.getTimeZone().getOffset(cal.getTimeInMillis());
-            Date date = new Date(longDate - (long) offset);
-            String monthString = (String) DateFormat.format("MMMM", date);
-
-            tvEdit.setVisibility(View.VISIBLE);
-            textViewNotVisitMonth.setText(getContext().getString(R.string.anc_visit_done, monthString));
-            imageViewCross.setImageResource(R.drawable.activityrow_visited);
+            if (within24Hours) {
+                Long longDate = Long.valueOf(time);
+                Calendar cal = Calendar.getInstance();
+                int offset = cal.getTimeZone().getOffset(cal.getTimeInMillis());
+                Date date = new Date(longDate - (long) offset);
+                String monthString = (String) DateFormat.format("MMMM", date);
+                tvEdit.setVisibility(View.VISIBLE);
+                textViewNotVisitMonth.setText(getContext().getString(R.string.anc_visit_done, monthString));
+                imageViewCross.setImageResource(R.drawable.activityrow_visited);
+            } else {
+                record_visit_done_bar.setVisibility(View.VISIBLE);
+                layoutNotRecordView.setVisibility(View.GONE);
+            }
             textViewUndo.setVisibility(View.GONE);
         } else
             tvEdit.setVisibility(View.GONE);

@@ -1,0 +1,71 @@
+<resources>
+    <string name="app_name">OpenSRP ASC CPN</string>
+
+    <string name="error_unable_to_start_form">Une erreur est survenue en lancant le formulaire</string>
+    <string name="error_unable_save_home_visit">Une erreur est survenu en enregistrant la visite au domicil</string>
+    <string name="anc">Clients CPN</string>
+
+    <!-- menu -->
+    <string name="add_member">Ajouter membre</string>
+    <string name="sort">Trier</string>
+    <string name="home">Acceuil</string>
+    <string name="add_family">Ajouter famille</string>
+    <string name="scan_qr">Scanner code QR</string>
+    <string name="job_aids">Aides au travail</string>
+
+    <!-- register details -->
+    <string name="age">Âge</string>
+    <string name="weeks">Semaines</string>
+    <string name="gestation_age_initial">AG</string>
+
+    <!-- other -->
+    <string name="saving_dialog_title">Enregistration en cours</string>
+
+    <!-- anc home visit -->
+    <string name="optional">Optionnellle</string>
+    <string name="anc_visit">Visite CPN</string>
+    <string name="anc_home_visit">Visite à Domicile</string>
+    <string name="dose_not_given">DOSE NON DONNÉ</string>
+
+
+    <string name="return_to_family_members">Retourner au membres de famille</string>
+    <string name="return_to_all_anc_women">Retourner à tous clients CPN</string>
+    <string name="record_anc_visit">Enregistrer visite CPN</string>
+    <string name="visit_not_done_btn_child_profile">Visite non fait</string>
+    <string name="not_visiting_this_month">Visite n\'aura pas lieu ce mois</string>
+    <string name="undo">DÉFAIRE</string>
+    <string name="edit">REVISER</string>
+
+    <string name="unique_id_text">ID: %1$s</string>
+
+    <string name="confirm_form_close">Confirmer fermeture du formulaire</string>
+    <string name="confirm_form_close_explanation">Êtes-vous certain de vouloir retourner? Tous les donées que vous avez entré dans ce formulaire seront éffacées.</string>
+
+    <!-- anc profile -->
+    <string name="gest_age">AG: %1$s</string>
+    <string name="gest_age_weeks">semaines</string>
+
+    <string name="call_anc_woman">Appel femme CPN</string>
+    <string name="anc_call">Appel</string>
+    <string name="copy_to_clipboard">Copier dans le presse-papier</string>
+    <string name="copied_phone_number">PhoneNumber copié dans le presse-papier</string>
+    <string name="head_of_family">Chef de famille</string>
+    <string name="anc_woman">Femme CPN</string>
+
+    <string name="last_visit_40_days_ago">Dernière visite il y a %1$s</string>
+    <string name="view_medical_history">Voir historique médical</string>
+    <string name="view_upcoming_services">Voir les prochains services</string>
+    <string name="family_has_nothing_due">La famille n\'a pas de service attendu</string>
+    <string name="go_to_family_s_profile">Aller au profil de la famille</string>
+    <string name="family_has_services_due">Famille a des services attendu</string>
+    <string name="family_has_service_overdue"><![CDATA[La famille a <font color=#FF0000>services en retard</font></b>]]></string>
+    <string name="vaccine_service_upcoming"><![CDATA[%1$s <font color=#7f7f7f>prochain (%2$s)</font></b>]]></string>
+    <string name="vaccine_service_overdue"><![CDATA[%1$s <font color=#f04646>en retard (%2$s)</font></b>]]></string>
+    <string name="vaccine_service_due"><![CDATA[%1$s <font color=#000000>attendu (%2$s)</font></b>]]></string>
+
+    <string name="back_to">Retour à profil de %1$s</string>
+    <string name="days_overdue">%1$s jours en retard</string>
+    <string name="anc_visit_done">%1$s visite fait</string>
+    <string name="less_than_twenty_four">moins de 24 hr</string>
+
+</resources>

@@ -199,7 +199,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             Calendar cal = Calendar.getInstance();
             int offset = cal.getTimeZone().getOffset(cal.getTimeInMillis());
             Date date = new Date(longDate - (long) offset);
-            String monthString = (String) DateFormat.format("MMM", date);
+            String monthString = (String) DateFormat.format("MMMM", date);
 
             tvEdit.setVisibility(View.VISIBLE);
             textViewNotVisitMonth.setText(getContext().getString(R.string.anc_visit_done, monthString));

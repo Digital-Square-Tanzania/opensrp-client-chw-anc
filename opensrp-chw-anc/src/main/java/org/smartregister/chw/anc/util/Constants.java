@@ -42,6 +42,9 @@ public interface Constants {
     }
 
     interface ANC_MEMBER_OBJECTS {
+        String EDIT_MODE = "editMode";
         String MEMBER_PROFILE_OBJECT = "MemberObject";
+        String FAMILY_HEAD_NAME = "familyHeadName";
+        String FAMILY_HEAD_PHONE = "familyHeadPhoneNumber";
     }
 }

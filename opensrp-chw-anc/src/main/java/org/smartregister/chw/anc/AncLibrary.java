@@ -1,6 +1,8 @@
 package org.smartregister.chw.anc;
 
 import org.smartregister.Context;
+import org.smartregister.chw.anc.repository.VisitDetailsRepository;
+import org.smartregister.chw.anc.repository.VisitRepository;
 import org.smartregister.repository.Repository;
 import org.smartregister.repository.UniqueIdRepository;
 import org.smartregister.sync.ClientProcessorForJava;
@@ -22,6 +24,9 @@ public class AncLibrary {
 
     private ClientProcessorForJava clientProcessorForJava;
     private Compressor compressor;
+
+    private VisitRepository visitRepository;
+    private VisitDetailsRepository visitDetailsRepository;
 
     private AncLibrary(Context contextArg, Repository repositoryArg, int applicationVersion, int databaseVersion) {
         this.context = contextArg;
@@ -56,6 +61,20 @@ public class AncLibrary {
         if (context != null) {
             instance = new AncLibrary(context, repository, applicationVersion, databaseVersion);
         }
+    }
+
+    public VisitRepository visitRepository() {
+        if (visitRepository == null) {
+            visitRepository = new VisitRepository(getRepository());
+        }
+        return visitRepository;
+    }
+
+    public VisitDetailsRepository visitDetailsRepository() {
+        if (visitDetailsRepository == null) {
+            visitDetailsRepository = new VisitDetailsRepository(getRepository());
+        }
+        return visitDetailsRepository;
     }
 
     public Context context() {

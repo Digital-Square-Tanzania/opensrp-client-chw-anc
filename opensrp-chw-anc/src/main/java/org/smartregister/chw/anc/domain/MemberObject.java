@@ -25,12 +25,15 @@ public class MemberObject implements Serializable {
     protected String primaryCareGiver;
     protected String familyName;
     protected String lastContactVisit;
+    protected String lastInteractedWith;
     protected String firstName;
     protected String middleName;
     protected String lastName;
     protected String dob;
+    protected String phoneNumber;
     protected int confirmedContacts = 0;
     protected String dateCreated;
+    protected String hasAncCard;
 
     public MemberObject() {
     }
@@ -57,6 +60,8 @@ public class MemberObject implements Serializable {
         familyHead = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.FAMILY_HEAD, false);
         primaryCareGiver = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.PRIMARY_CAREGIVER, false);
         familyName = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.FAMILY_NAME, false);
+        phoneNumber = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.PHONE_NUMBER, false);
+        hasAncCard = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.HAS_ANC_CARD, false);
 
         String visits = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.CONFIRMED_VISITS, false);
         if (StringUtils.isNotBlank(visits)) {
@@ -66,15 +71,20 @@ public class MemberObject implements Serializable {
 
     private String getAncMemberNameAndAge(String firstName, String middleName, String surName, String age) {
         int integerAge = new Period(new DateTime(age), new DateTime()).getYears();
-        String first_name = firstName.trim();
-        String middle_name = middleName.trim();
-        String sur_name = surName != null ? surName.trim() : "";
 
-        if (StringUtils.isNotBlank(firstName) && StringUtils.isNotBlank(middleName) && StringUtils.isNotBlank(age)) {
-            return (first_name + " " + middle_name + " " + sur_name).trim() + ", " + integerAge;
+        String name = getName(firstName, middleName);
+        name = getName(name, surName);
+
+        if (StringUtils.isNotBlank(firstName) && StringUtils.isNotBlank(age)) {
+            return name + ", " + integerAge;
         }
         return "";
     }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
 
     public String getMemberName() {
         return memberName;
@@ -132,6 +142,10 @@ public class MemberObject implements Serializable {
         return dob;
     }
 
+    public String getHasAncCard() {
+        return hasAncCard;
+    }
+
     public int getConfirmedContacts() {
         return confirmedContacts;
     }
@@ -150,5 +164,9 @@ public class MemberObject implements Serializable {
 
     public String getFullName() {
         return getName(getName(getFirstName(), getMiddleName()), getLastName());
+    }
+
+    public String getLastInteractedWith() {
+        return lastInteractedWith;
     }
 }

@@ -31,6 +31,7 @@ import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.anc.presenter.BaseAncHomeVisitPresenter;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.opensrp_chw_anc.R;
+import org.smartregister.util.LangUtils;
 import org.smartregister.view.activity.SecuredActivity;
 
 import java.text.MessageFormat;
@@ -39,6 +40,7 @@ import java.util.Map;
 
 import timber.log.Timber;
 
+import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.EDIT_MODE;
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER_PROFILE_OBJECT;
 
 public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAncHomeVisitContract.View, View.OnClickListener {
@@ -47,6 +49,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     protected Map<String, BaseAncHomeVisitAction> actionList = new LinkedHashMap<>();
     protected BaseAncHomeVisitContract.Presenter presenter;
     protected MemberObject memberObject;
+    private Boolean isEditMode = false;
     private RecyclerView.Adapter mAdapter;
     private ProgressBar progressBar;
     private TextView tvSubmit;
@@ -55,9 +58,10 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     private String confirmCloseTitle;
     private String confirmCloseMessage;
 
-    public static void startMe(Activity activity, MemberObject memberObject) {
+    public static void startMe(Activity activity, MemberObject memberObject, Boolean isEditMode) {
         Intent intent = new Intent(activity, BaseAncHomeVisitActivity.class);
         intent.putExtra(MEMBER_PROFILE_OBJECT, memberObject);
+        intent.putExtra(EDIT_MODE, isEditMode);
         activity.startActivity(intent);
     }
 
@@ -68,6 +72,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         Bundle extras = getIntent().getExtras();
         if (extras != null) {
             memberObject = (MemberObject) getIntent().getSerializableExtra(MEMBER_PROFILE_OBJECT);
+            isEditMode = getIntent().getBooleanExtra(EDIT_MODE, false);
         }
 
         confirmCloseTitle = getString(R.string.confirm_form_close);
@@ -115,12 +120,17 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     @Override
     public Context getContext() {
-        return getApplicationContext();
+        return this;
     }
 
     @Override
     public void displayToast(String message) {
         Toast.makeText(getContext(), message, Toast.LENGTH_SHORT).show();
+    }
+
+    @Override
+    public Boolean getEditMode() {
+        return isEditMode;
     }
 
     @Override
@@ -136,7 +146,12 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.close) {
-            close();
+            displayExitDialog(new Runnable() {
+                @Override
+                public void run() {
+                    close();
+                }
+            });
         } else if (v.getId() == R.id.customFontTextViewSubmit) {
             submitVisit();
         }
@@ -284,11 +299,22 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     @Override
     public void onBackPressed() {
+        displayExitDialog(new Runnable() {
+            @Override
+            public void run() {
+                BaseAncHomeVisitActivity.this.finish();
+            }
+        });
+    }
+
+    protected void displayExitDialog(final Runnable onConfirm) {
         AlertDialog dialog = new AlertDialog.Builder(this, com.vijay.jsonwizard.R.style.AppThemeAlertDialog).setTitle(confirmCloseTitle)
                 .setMessage(confirmCloseMessage).setNegativeButton(com.vijay.jsonwizard.R.string.yes, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        BaseAncHomeVisitActivity.this.finish();
+                        if (onConfirm != null) {
+                            onConfirm.run();
+                        }
                     }
                 }).setPositiveButton(com.vijay.jsonwizard.R.string.no, new DialogInterface.OnClickListener() {
                     @Override
@@ -298,5 +324,12 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
                 }).create();
 
         dialog.show();
+    }
+
+    @Override
+    protected void attachBaseContext(Context base) {
+        // get language from prefs
+        String lang = LangUtils.getLanguage(base.getApplicationContext());
+        super.attachBaseContext(LangUtils.setAppLocale(base, lang));
     }
 }

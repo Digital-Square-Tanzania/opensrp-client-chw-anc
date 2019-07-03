@@ -5,7 +5,7 @@ import android.util.Log;
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.smartregister.chw.anc.AncLibrary;
-import org.smartregister.chw.anc.contract.AncRegisterFragmentContract;
+import org.smartregister.chw.anc.contract.BaseAncRegisterFragmentContract;
 import org.smartregister.chw.anc.util.ConfigHelper;
 import org.smartregister.configurableviews.ConfigurableViewsLibrary;
 import org.smartregister.configurableviews.model.Field;
@@ -20,7 +20,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
 
-public class BaseAncRegisterFragmentModel implements AncRegisterFragmentContract.Model {
+public class BaseAncRegisterFragmentModel implements BaseAncRegisterFragmentContract.Model {
 
     @Override
     public RegisterConfiguration defaultRegisterConfiguration() {

@@ -72,6 +72,7 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
 
     private void populatePatientColumn(CommonPersonObjectClient pc, SmartRegisterClient client, final RegisterViewHolder viewHolder) {
 
+
         String fname = getName(
                 Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.FIRST_NAME, true),
                 Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.MIDDLE_NAME, true)
@@ -132,7 +133,7 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
             CommonPersonObject commonPersonObject = commonRepository.findByBaseEntityId(pc.entityId());
             if (commonPersonObject != null) {
                 viewHolder.dueButton.setVisibility(View.VISIBLE);
-                viewHolder.dueButton.setText("Home Visit");
+                viewHolder.dueButton.setText(context.getString(R.string.anc_home_visit));
                 viewHolder.dueButton.setAllCaps(true);
             } else {
                 viewHolder.dueButton.setVisibility(View.GONE);

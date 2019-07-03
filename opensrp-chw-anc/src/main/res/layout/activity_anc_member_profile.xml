@@ -61,7 +61,6 @@
                     android:layout_height="@dimen/client_profile_pic_height"
                     android:layout_gravity="center_horizontal"
                     app:civ_border_color="#FFFFFFFF"
-                    android:src="@drawable/rowavatar_member"
                     app:civ_border_width="0dp" />
 
                 <org.smartregister.view.customcontrols.CustomFontTextView
@@ -148,11 +147,20 @@
         <View
             android:layout_width="match_parent"
             android:layout_height="1px"
+            android:layout_below="@+id/rlLastVisit"
+            android:background="@color/light_grey"
+            android:visibility="visible" />
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1px"
             android:layout_below="@+id/last_visit_row"
             android:background="@color/light_grey"
             android:visibility="visible" />
 
         <include layout="@layout/view_chw_anc_record_visit" />
+
+        <include layout="@layout/content_anc_profile" />
 
     </android.support.design.widget.AppBarLayout>
 </android.support.design.widget.CoordinatorLayout>

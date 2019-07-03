@@ -1,7 +1,7 @@
 package org.smartregister.chw.anc.presenter;
 
 import org.apache.commons.lang3.StringUtils;
-import org.smartregister.chw.anc.contract.AncRegisterFragmentContract;
+import org.smartregister.chw.anc.contract.BaseAncRegisterFragmentContract;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.configurableviews.model.Field;
@@ -14,18 +14,18 @@ import java.util.List;
 import java.util.Set;
 import java.util.TreeSet;
 
-public class BaseAncRegisterFragmentPresenter implements AncRegisterFragmentContract.Presenter {
+public class BaseAncRegisterFragmentPresenter implements BaseAncRegisterFragmentContract.Presenter {
 
-    protected WeakReference<AncRegisterFragmentContract.View> viewReference;
+    protected WeakReference<BaseAncRegisterFragmentContract.View> viewReference;
 
-    protected AncRegisterFragmentContract.Model model;
+    protected BaseAncRegisterFragmentContract.Model model;
 
     protected RegisterConfiguration config;
 
     protected Set<View> visibleColumns = new TreeSet<>();
     protected String viewConfigurationIdentifier;
 
-    public BaseAncRegisterFragmentPresenter(AncRegisterFragmentContract.View view, AncRegisterFragmentContract.Model model, String viewConfigurationIdentifier) {
+    public BaseAncRegisterFragmentPresenter(BaseAncRegisterFragmentContract.View view, BaseAncRegisterFragmentContract.Model model, String viewConfigurationIdentifier) {
         this.viewReference = new WeakReference<>(view);
         this.model = model;
         this.viewConfigurationIdentifier = viewConfigurationIdentifier;
@@ -93,7 +93,7 @@ public class BaseAncRegisterFragmentPresenter implements AncRegisterFragmentCont
         getView().filterandSortInInitializeQueries();
     }
 
-    protected AncRegisterFragmentContract.View getView() {
+    protected BaseAncRegisterFragmentContract.View getView() {
         if (viewReference != null)
             return viewReference.get();
         else

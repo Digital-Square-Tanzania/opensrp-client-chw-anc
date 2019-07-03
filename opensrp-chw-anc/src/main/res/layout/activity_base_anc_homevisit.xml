@@ -17,10 +17,10 @@
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:paddingLeft="@dimen/home_visit_header_margin_left"
             android:paddingTop="@dimen/home_visit_header_margin_top"
-            android:paddingBottom="@dimen/home_visit_header_margin_bottom"
             android:paddingRight="@dimen/home_visit_header_margin_right"
-            android:paddingLeft="@dimen/home_visit_header_margin_left">
+            android:paddingBottom="@dimen/home_visit_header_margin_bottom">
 
             <ImageView
                 android:id="@+id/close"

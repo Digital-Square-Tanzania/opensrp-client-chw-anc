@@ -43,7 +43,7 @@ import static org.smartregister.util.JsonFormUtils.fields;
 
 public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnClickListener, BaseAncHomeVisitFragmentContract.View {
 
-    private BaseAncHomeVisitContract.View homeVisitView;
+    private BaseAncHomeVisitContract.VisitView homeVisitView;
     private String title;
     private String question;
     private QuestionType questionType;
@@ -68,7 +68,7 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     private DatePicker datePicker;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
 
-    public static BaseAncHomeVisitFragment getInstance(BaseAncHomeVisitContract.View view, String form_name, JSONObject jsonObject, String count) {
+    public static BaseAncHomeVisitFragment getInstance(BaseAncHomeVisitContract.VisitView view, String form_name, JSONObject jsonObject, String count) {
         BaseAncHomeVisitFragment fragment = new BaseAncHomeVisitFragment();
         fragment.setHomeVisitView(view);
         fragment.setJsonObject(jsonObject);
@@ -200,7 +200,7 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
 
     @Override
     public Context getMyContext() {
-        return getActivity().getApplicationContext();
+        return getActivity();
     }
 
     public String getQuestion() {
@@ -214,11 +214,11 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
         }
     }
 
-    public BaseAncHomeVisitContract.View getHomeVisitView() {
+    public BaseAncHomeVisitContract.VisitView getHomeVisitView() {
         return homeVisitView;
     }
 
-    public void setHomeVisitView(BaseAncHomeVisitContract.View homeVisitView) {
+    public void setHomeVisitView(BaseAncHomeVisitContract.VisitView homeVisitView) {
         this.homeVisitView = homeVisitView;
     }
 

@@ -6,6 +6,7 @@ import android.util.Log;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.smartregister.AllConstants;
+import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc_sample.BuildConfig;
 import org.smartregister.chw.anc_sample.application.SampleApplication;
 import org.smartregister.configurableviews.repository.ConfigurableViewsRepository;
@@ -40,6 +41,10 @@ public class SampleRepository extends Repository {
 
         UniqueIdRepository.createTable(database);
         SettingsRepository.onUpgrade(database);
+
+
+        AncLibrary.getInstance().visitRepository().createTable(database);
+        AncLibrary.getInstance().visitDetailsRepository().createTable(database);
 
         onUpgrade(database, 1, BuildConfig.DATABASE_VERSION);
     }

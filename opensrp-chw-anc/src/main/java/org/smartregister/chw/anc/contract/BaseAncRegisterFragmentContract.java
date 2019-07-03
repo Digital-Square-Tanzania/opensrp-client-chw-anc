@@ -10,7 +10,7 @@ import org.smartregister.view.contract.BaseRegisterFragmentContract;
 import java.util.List;
 import java.util.Set;
 
-public interface AncRegisterFragmentContract {
+public interface BaseAncRegisterFragmentContract {
 
 
     interface View extends BaseRegisterFragmentContract.View {

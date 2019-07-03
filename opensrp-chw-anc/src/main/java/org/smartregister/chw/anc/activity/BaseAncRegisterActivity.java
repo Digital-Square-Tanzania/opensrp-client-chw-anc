@@ -15,10 +15,10 @@ import com.vijay.jsonwizard.domain.Form;
 import org.json.JSONObject;
 import org.smartregister.AllConstants;
 import org.smartregister.Context;
-import org.smartregister.chw.anc.contract.AncRegisterContract;
+import org.smartregister.chw.anc.contract.BaseAncRegisterContract;
 import org.smartregister.chw.anc.fragment.BaseAncRegisterFragment;
 import org.smartregister.chw.anc.interactor.BaseAncRegisterInteractor;
-import org.smartregister.chw.anc.listener.AncBottomNavigationListener;
+import org.smartregister.chw.anc.listener.BaseAncBottomNavigationListener;
 import org.smartregister.chw.anc.model.BaseAncRegisterModel;
 import org.smartregister.chw.anc.presenter.BaseAncRegisterPresenter;
 import org.smartregister.chw.anc.util.Constants;
@@ -33,12 +33,11 @@ import java.util.List;
 
 import static org.smartregister.chw.anc.util.Constants.EVENT_TYPE.UPDATE_EVENT_CONDITION;
 
-public class BaseAncRegisterActivity extends BaseRegisterActivity implements AncRegisterContract.View {
+public class BaseAncRegisterActivity extends BaseRegisterActivity implements BaseAncRegisterContract.View {
     public static final String TAG = BaseAncRegisterActivity.class.getCanonicalName();
     protected String BASE_ENTITY_ID;
     protected String ACTION;
     protected String TABLE;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -85,7 +84,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Anc
 
     @Override
     public void startFormActivity(JSONObject jsonForm) {
-        Intent intent = new Intent(this, getFamilyFormActivity());
+        Intent intent = new Intent(this, getAncFormActivity());
         intent.putExtra(Constants.JSON_FORM_EXTRA.JSON, jsonForm.toString());
 
         if (getFormConfig() != null) {
@@ -100,7 +99,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Anc
         return null;
     }
 
-    public Class getFamilyFormActivity() {
+    public Class getAncFormActivity() {
         return BaseAncRegisterActivity.class;
     }
 
@@ -176,7 +175,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Anc
     }
 
     public BottomNavigationListener getBottomNavigation(Activity activity) {
-        return new AncBottomNavigationListener(activity);
+        return new BaseAncBottomNavigationListener(activity);
     }
 
     @Override
@@ -195,8 +194,8 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Anc
     }
 
     @Override
-    public AncRegisterContract.Presenter presenter() {
-        return (AncRegisterContract.Presenter) presenter;
+    public BaseAncRegisterContract.Presenter presenter() {
+        return (BaseAncRegisterContract.Presenter) presenter;
     }
 
     @Override
@@ -219,7 +218,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Anc
                 Log.e(TAG, Log.getStackTraceString(e));
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        }else{
+        } else {
             finish();
         }
     }

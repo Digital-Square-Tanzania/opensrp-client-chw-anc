@@ -8,10 +8,10 @@ import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.listener.BottomNavigationListener;
 import org.smartregister.view.activity.BaseRegisterActivity;
 
-public class AncBottomNavigationListener extends BottomNavigationListener {
+public class BaseAncBottomNavigationListener extends BottomNavigationListener {
     private Activity context;
 
-    public AncBottomNavigationListener(Activity context) {
+    public BaseAncBottomNavigationListener(Activity context) {
         super(context);
         this.context = context;
     }

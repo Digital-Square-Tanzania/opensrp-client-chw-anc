@@ -1,22 +1,42 @@
 package org.smartregister.chw.anc.util;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.telephony.TelephonyManager;
+import android.text.Html;
+import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.smartregister.chw.anc.AncLibrary;
+import org.smartregister.chw.anc.contract.BaseAncWomanCallDialogContract;
+import org.smartregister.chw.opensrp_chw_anc.R;
+import org.smartregister.util.PermissionUtils;
 
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -107,4 +127,96 @@ public class Utils {
         return AncLibrary.getInstance().context();
     }
 
+    public static boolean launchDialer(final Activity activity, final BaseAncWomanCallDialogContract.View callView, final String phoneNumber) {
+
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+
+            // set a pending call execution request
+            if (callView != null) {
+                callView.setPendingCallRequest(new BaseAncWomanCallDialogContract.Dialer() {
+                    @Override
+                    public void callMe() {
+                        Utils.launchDialer(activity, callView, phoneNumber);
+                    }
+                });
+            }
+
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_PHONE_STATE}, PermissionUtils.PHONE_STATE_PERMISSION_REQUEST_CODE);
+
+            return false;
+        } else {
+
+            if (((TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE)).getLine1Number()
+                    == null) {
+
+                Log.i(TAG, "No dial application so we launch copy to clipboard...");
+
+                ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(activity.getText(R.string.copied_phone_number), phoneNumber);
+                clipboard.setPrimaryClip(clip);
+
+                CopyToClipboardDialog copyToClipboardDialog = new CopyToClipboardDialog(activity, R.style.copy_clipboard_dialog);
+                copyToClipboardDialog.setContent(phoneNumber);
+                copyToClipboardDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                copyToClipboardDialog.show();
+                // no phone
+                Toast.makeText(activity, activity.getText(R.string.copied_phone_number), Toast.LENGTH_SHORT).show();
+
+            } else {
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null));
+                activity.startActivity(intent);
+            }
+            return true;
+        }
+    }
+
+    public static Spanned fromHtml(String text) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            return Html.fromHtml(text);
+        }
+    }
+
+    public static String getTodayDate() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = new Date(System.currentTimeMillis());
+        return formatter.format(date);
+    }
+
+
+    public static boolean isTimeWithin24HoursRange(String time) {
+        if (time != null) {
+            Long longDate = Long.valueOf(time);
+
+            Calendar cal = Calendar.getInstance();
+            int offset = cal.getTimeZone().getOffset(cal.getTimeInMillis());
+            Date date = new Date(longDate - (long) offset);
+
+            long day = 24 * 60 * 60 * 1000;
+            return date.getTime() > System.currentTimeMillis() - day;
+        }
+        return false;
+
+    }
+
+    public static boolean isDateWithin1MonthRange(String dateToValidate) {
+        if (dateToValidate != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
+            sdf.setLenient(false);
+            try {
+
+                Date date = sdf.parse(dateToValidate);
+                Calendar currentDateAfter1Months = Calendar.getInstance();
+                currentDateAfter1Months.add(Calendar.MONTH, 1);
+
+                return (date.before(currentDateAfter1Months.getTime()));
+
+            } catch (ParseException e) {
+                e.printStackTrace();
+                return false;
+            }
+        }
+        return false;
+    }
 }

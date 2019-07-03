@@ -154,20 +154,6 @@ public class BaseAncHomeVisitAction {
         }
     }
 
-    public enum Status {COMPLETED, PARTIALLY_COMPLETED, PENDING}
-
-    public enum ScheduleStatus {DUE, OVERDUE}
-
-    public interface AncHomeVisitActionHelper {
-        Status evaluateStatusOnPayload();
-    }
-
-    public static class ValidationException extends Exception {
-        public ValidationException(String message) {
-            super(message);
-        }
-    }
-
     public void setOnPayLoadReceived(Runnable onPayLoadReceived) {
         this.onPayLoadReceived = onPayLoadReceived;
     }
@@ -186,5 +172,19 @@ public class BaseAncHomeVisitAction {
 
     public void setServiceWrapper(ServiceWrapper serviceWrapper) {
         this.serviceWrapper = serviceWrapper;
+    }
+
+    public enum Status {COMPLETED, PARTIALLY_COMPLETED, PENDING}
+
+    public enum ScheduleStatus {DUE, OVERDUE}
+
+    public interface AncHomeVisitActionHelper {
+        Status evaluateStatusOnPayload();
+    }
+
+    public static class ValidationException extends Exception {
+        public ValidationException(String message) {
+            super(message);
+        }
     }
 }

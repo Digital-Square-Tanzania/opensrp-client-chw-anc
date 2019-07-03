@@ -24,6 +24,7 @@
     <!-- anc home visit -->
     <string name="optional">optional</string>
     <string name="anc_visit">ANC Visit</string>
+    <string name="anc_home_visit">Home Visit</string>
     <string name="dose_not_given">DOSE NOT GIVEN</string>
 
 
@@ -43,5 +44,28 @@
     <!-- anc profile -->
     <string name="gest_age">GA: %1$s</string>
     <string name="gest_age_weeks">weeks</string>
+
+    <string name="call_anc_woman">Call ANC woman</string>
+    <string name="anc_call">Call</string>
+    <string name="copy_to_clipboard">Copy to clipboard</string>
+    <string name="copied_phone_number">PhoneNumber copied to clipboard</string>
+    <string name="head_of_family">Head of family</string>
+    <string name="anc_woman">ANC woman</string>
+
+    <string name="last_visit_40_days_ago">Last visit %1$s ago</string>
+    <string name="view_medical_history">View medical history</string>
+    <string name="view_upcoming_services">View upcoming services</string>
+    <string name="family_has_nothing_due">Family has nothing due</string>
+    <string name="go_to_family_s_profile">Go to family\'s profile</string>
+    <string name="family_has_services_due">Family has services due</string>
+    <string name="family_has_service_overdue"><![CDATA[Family has <font color=#FF0000>services overdue</font></b>]]></string>
+    <string name="vaccine_service_upcoming"><![CDATA[%1$s <font color=#7f7f7f>upcoming (%2$s)</font></b>]]></string>
+    <string name="vaccine_service_overdue"><![CDATA[%1$s <font color=#f04646>overdue (%2$s)</font></b>]]></string>
+    <string name="vaccine_service_due"><![CDATA[%1$s <font color=#000000>due (%2$s)</font></b>]]></string>
+
+    <string name="back_to">Back to %1$s\'s profile</string>
+    <string name="days_overdue">%1$s days overdue</string>
+    <string name="anc_visit_done">%1$s visit done</string>
+    <string name="less_than_twenty_four">less than 24 hrs</string>
 
 </resources>

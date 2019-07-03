@@ -291,7 +291,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         rlLastVisit.setVisibility(View.VISIBLE);
 
         int days = Days.daysBetween(new DateTime(lastVisitDate).toLocalDate(), new DateTime().toLocalDate()).getDays();
-        tvLastVisitDate.setText(getString(R.string.last_visit_40_days_ago, String.valueOf(days)));
+        tvLastVisitDate.setText(getString(R.string.last_visit_40_days_ago, (days <= 1) ? getString(R.string.less_than_twenty_four) : String.valueOf(days)));
     }
 
     @Override
@@ -326,7 +326,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     public void setMemberName(String memberName) {
-        String name = memberName;
         text_view_anc_member_name.setText(memberName);
     }
 

@@ -1,9 +1,18 @@
 package org.smartregister.chw.anc.model;
 
+import android.content.Context;
+
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
+import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
+import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.immunization.domain.ServiceWrapper;
 import org.smartregister.immunization.domain.VaccineWrapper;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This action list allows users to either load a form or link it to a separate fragment.
@@ -14,7 +23,7 @@ public class BaseAncHomeVisitAction {
     private String subTitle;
     private Status actionStatus = Status.PENDING;
     private ScheduleStatus scheduleStatus = ScheduleStatus.DUE;
-    private boolean optional;
+    private boolean optional = true;
     private BaseAncHomeVisitFragment destinationFragment;
     private String formName;
     private String jsonPayload;
@@ -22,18 +31,72 @@ public class BaseAncHomeVisitAction {
     private AncHomeVisitActionHelper ancHomeVisitActionHelper;
     private VaccineWrapper vaccineWrapper;
     private ServiceWrapper serviceWrapper;
+    private Map<String, List<VisitDetail>> details = new HashMap<>();
+    private Context context;
 
-    // event based behaviors
-    private Runnable onPayLoadReceived;
+    private BaseAncHomeVisitAction() {
+    }
 
-    public BaseAncHomeVisitAction(String title, String subTitle, boolean optional, BaseAncHomeVisitFragment destinationFragment, String formName) throws ValidationException {
-        this.title = title;
-        this.subTitle = subTitle;
-        this.optional = optional;
-        this.destinationFragment = destinationFragment;
-        this.formName = formName;
+    public static class Builder {
+        private BaseAncHomeVisitAction action;
 
-        validateMe();
+        public Builder(Context context, String title) {
+            action = new BaseAncHomeVisitAction();
+            action.context = context;
+            action.title = title;
+        }
+
+        private Builder withSubitle(String subTitle) {
+            action.subTitle = subTitle;
+            return this;
+        }
+
+        private Builder setOptional(boolean optional) {
+            action.optional = optional;
+            return this;
+        }
+
+        private Builder setDestinationFragment(BaseAncHomeVisitFragment destinationFragment) {
+            action.destinationFragment = destinationFragment;
+            return this;
+        }
+
+        private Builder setFormName(String formName) {
+            action.formName = formName;
+            return this;
+        }
+
+        private Builder setDetails(Map<String, List<VisitDetail>> details) {
+            action.details = details;
+            return this;
+        }
+
+        public BaseAncHomeVisitAction build() throws ValidationException {
+            action.validateMe();
+            action.initialize();
+            return action;
+        }
+    }
+
+    private void initialize() {
+        try {
+            if (StringUtils.isBlank(jsonPayload) && StringUtils.isNotBlank(formName)) {
+                JSONObject jsonObject = JsonFormUtils.getFormAsJson(formName);
+
+                // update the form details
+                if (details.size() > 0) {
+                    JsonFormUtils.populateForm(jsonObject, details);
+                }
+
+                jsonPayload = jsonObject.toString();
+
+                if (ancHomeVisitActionHelper != null) {
+                    ancHomeVisitActionHelper.onJsonFormLoaded(jsonPayload, context, details);
+                }
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -92,8 +155,13 @@ public class BaseAncHomeVisitAction {
     public void setJsonPayload(String jsonPayload) {
         this.jsonPayload = jsonPayload;
         evaluateStatus();
-        if (onPayLoadReceived != null) {
-            onPayLoadReceived.run();
+        if (ancHomeVisitActionHelper != null) {
+            ancHomeVisitActionHelper.onPayloadReceived(jsonPayload);
+
+            String sub_title = ancHomeVisitActionHelper.evaluateSubTitle();
+            if (sub_title != null) {
+                setSubTitle(sub_title);
+            }
         }
     }
 
@@ -154,10 +222,6 @@ public class BaseAncHomeVisitAction {
         }
     }
 
-    public void setOnPayLoadReceived(Runnable onPayLoadReceived) {
-        this.onPayLoadReceived = onPayLoadReceived;
-    }
-
     public VaccineWrapper getVaccineWrapper() {
         return (getActionStatus() == Status.COMPLETED) ? vaccineWrapper : null;
     }
@@ -179,6 +243,30 @@ public class BaseAncHomeVisitAction {
     public enum ScheduleStatus {DUE, OVERDUE}
 
     public interface AncHomeVisitActionHelper {
+
+        /**
+         * Inject values to the json form before rendering
+         * Only called once afte the form has been read from the assets folder
+         */
+        void onJsonFormLoaded(String jsonString, Context context, Map<String, List<VisitDetail>> details);
+
+        /**
+         * Is executed immediately a json payload is received
+         *
+         * @param jsonPayload
+         */
+        void onPayloadReceived(String jsonPayload);
+
+        /**
+         * executed after the payload is received
+         */
+        String evaluateSubTitle();
+
+        /**
+         * Evaluated after payload is received
+         *
+         * @return
+         */
         Status evaluateStatusOnPayload();
     }
 

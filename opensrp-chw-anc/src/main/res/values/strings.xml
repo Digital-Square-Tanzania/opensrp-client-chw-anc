@@ -67,5 +67,7 @@
     <string name="days_overdue">%1$s days overdue</string>
     <string name="anc_visit_done">%1$s visit done</string>
     <string name="less_than_twenty_four">less than 24 hrs</string>
+    <string name="primary_care_giver">Primary Caregiver</string>
+    <string name="family_head">Family Head</string>
 
 </resources>

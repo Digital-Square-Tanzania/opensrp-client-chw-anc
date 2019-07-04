@@ -18,7 +18,6 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ei.drishti.dto.AlertStatus;
@@ -134,6 +133,14 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         } else {
             ancWomanName = getName(MEMBER_OBJECT.getFirstName(), MEMBER_OBJECT.getLastName());
         }
+
+        if (StringUtils.isNotBlank(MEMBER_OBJECT.getFamilyHead()) && MEMBER_OBJECT.getFamilyHead().equals(MEMBER_OBJECT.getBaseEntityId())) {
+            findViewById(R.id.family_anc_head).setVisibility(View.VISIBLE);
+        }
+        if (StringUtils.isNotBlank(MEMBER_OBJECT.getPrimaryCareGiver()) && MEMBER_OBJECT.getPrimaryCareGiver().equals(MEMBER_OBJECT.getBaseEntityId())) {
+            findViewById(R.id.primary_anc_caregiver).setVisibility(View.VISIBLE);
+        }
+
         if (StringUtils.isNotBlank(MEMBER_OBJECT.getPhoneNumber()) || StringUtils.isNotBlank(familyHeadPhoneNumber)) {
             baseAncFloatingMenu = new BaseAncFloatingMenu(this, ancWomanName, MEMBER_OBJECT.getPhoneNumber(), familyHeadName, familyHeadPhoneNumber);
             baseAncFloatingMenu.setGravity(Gravity.BOTTOM | Gravity.RIGHT);

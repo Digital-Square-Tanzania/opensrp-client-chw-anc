@@ -213,7 +213,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
                 int offset = cal.getTimeZone().getOffset(cal.getTimeInMillis());
                 Date date = new Date(longDate - (long) offset);
                 String monthString = (String) DateFormat.format("MMMM", date);
-                tvEdit.setVisibility(View.VISIBLE);
+                //tvEdit.setVisibility(View.VISIBLE);
                 textViewNotVisitMonth.setText(getContext().getString(R.string.anc_visit_done, monthString));
                 imageViewCross.setImageResource(R.drawable.activityrow_visited);
             } else {

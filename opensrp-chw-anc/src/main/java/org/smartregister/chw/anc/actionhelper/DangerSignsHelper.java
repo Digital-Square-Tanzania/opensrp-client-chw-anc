@@ -24,6 +24,11 @@ public class DangerSignsHelper implements BaseAncHomeVisitAction.AncHomeVisitAct
     }
 
     @Override
+    public String getPreProcessed() {
+        return null;
+    }
+
+    @Override
     public void onPayloadReceived(String jsonPayload) {
         try {
             JSONObject jsonObject = new JSONObject(jsonPayload);

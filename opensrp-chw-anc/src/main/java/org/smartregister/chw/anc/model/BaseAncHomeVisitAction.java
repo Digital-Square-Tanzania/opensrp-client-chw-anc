@@ -46,28 +46,33 @@ public class BaseAncHomeVisitAction {
             action.title = title;
         }
 
-        private Builder withSubitle(String subTitle) {
+        public Builder withSubtitle(String subTitle) {
             action.subTitle = subTitle;
             return this;
         }
 
-        private Builder setOptional(boolean optional) {
+        public Builder withOptional(boolean optional) {
             action.optional = optional;
             return this;
         }
 
-        private Builder setDestinationFragment(BaseAncHomeVisitFragment destinationFragment) {
+        public Builder withDestinationFragment(BaseAncHomeVisitFragment destinationFragment) {
             action.destinationFragment = destinationFragment;
             return this;
         }
 
-        private Builder setFormName(String formName) {
+        public Builder withFormName(String formName) {
             action.formName = formName;
             return this;
         }
 
-        private Builder setDetails(Map<String, List<VisitDetail>> details) {
+        public Builder withDetails(Map<String, List<VisitDetail>> details) {
             action.details = details;
+            return this;
+        }
+
+        public Builder withHelper(AncHomeVisitActionHelper ancHomeVisitActionHelper) {
+            action.ancHomeVisitActionHelper = ancHomeVisitActionHelper;
             return this;
         }
 
@@ -92,6 +97,10 @@ public class BaseAncHomeVisitAction {
 
                 if (ancHomeVisitActionHelper != null) {
                     ancHomeVisitActionHelper.onJsonFormLoaded(jsonPayload, context, details);
+                    String pre_processed = ancHomeVisitActionHelper.getPreProcessed();
+                    if (StringUtils.isNotBlank(pre_processed)) {
+                        this.jsonPayload = pre_processed;
+                    }
                 }
             }
         } catch (Exception e) {
@@ -154,7 +163,6 @@ public class BaseAncHomeVisitAction {
 
     public void setJsonPayload(String jsonPayload) {
         this.jsonPayload = jsonPayload;
-        evaluateStatus();
         if (ancHomeVisitActionHelper != null) {
             ancHomeVisitActionHelper.onPayloadReceived(jsonPayload);
 
@@ -162,6 +170,8 @@ public class BaseAncHomeVisitAction {
             if (sub_title != null) {
                 setSubTitle(sub_title);
             }
+
+            evaluateStatus();
         }
     }
 
@@ -249,6 +259,12 @@ public class BaseAncHomeVisitAction {
          * Only called once afte the form has been read from the assets folder
          */
         void onJsonFormLoaded(String jsonString, Context context, Map<String, List<VisitDetail>> details);
+
+        /**
+         * executed after form is loaded.
+         * Returns a string or null
+         */
+        String getPreProcessed();
 
         /**
          * Is executed immediately a json payload is received

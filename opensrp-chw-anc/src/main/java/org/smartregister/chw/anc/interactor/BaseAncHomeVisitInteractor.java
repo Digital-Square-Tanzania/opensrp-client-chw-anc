@@ -4,6 +4,7 @@ import android.support.annotation.VisibleForTesting;
 
 import org.apache.commons.lang3.StringUtils;
 import org.smartregister.chw.anc.AncLibrary;
+import org.smartregister.chw.anc.actionhelper.DangerSignsHelper;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.domain.Visit;
@@ -105,9 +106,14 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
                 final LinkedHashMap<String, BaseAncHomeVisitAction> actionList = new LinkedHashMap<>();
 
                 try {
-
-                    actionList.put("Sample Action", new BaseAncHomeVisitAction("Sample Action", "Override class org.smartregister.chw.anc.interactor.BaseAncHomeVisitInteractor", false,
-                            null, "anc"));
+                    BaseAncHomeVisitAction ba =
+                            new BaseAncHomeVisitAction.Builder(view.getContext(), "Sample Action")
+                                    .withSubtitle("")
+                                    .withOptional(false)
+                                    .withFormName("anc")
+                                    .withHelper(new DangerSignsHelper())
+                                    .build();
+                    actionList.put("Sample Action", ba);
 
                 } catch (BaseAncHomeVisitAction.ValidationException e) {
                     Timber.e(e);

@@ -77,7 +77,7 @@ public class AncRegisterActivity extends BaseAncRegisterActivity {
         commonPersonObject.setColumnmaps(details);
 
         MemberObject memberObject = new MemberObject(commonPersonObject);
-        AncHomeVisitActivity.startMe(this, memberObject);
+        AncHomeVisitActivity.startMe(this, memberObject, false);
     }
 
     private void openProfilePage() {

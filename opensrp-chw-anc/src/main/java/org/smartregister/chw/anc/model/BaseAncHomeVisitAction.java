@@ -76,6 +76,21 @@ public class BaseAncHomeVisitAction {
             return this;
         }
 
+        public Builder withScheduleStatus(ScheduleStatus scheduleStatus) {
+            action.scheduleStatus = scheduleStatus;
+            return this;
+        }
+
+        public Builder withVaccineWrapper(VaccineWrapper vaccineWrapper) {
+            action.vaccineWrapper = vaccineWrapper;
+            return this;
+        }
+
+        public Builder withServiceWrapper(ServiceWrapper serviceWrapper) {
+            action.serviceWrapper = serviceWrapper;
+            return this;
+        }
+
         public BaseAncHomeVisitAction build() throws ValidationException {
             action.validateMe();
             action.initialize();
@@ -94,14 +109,25 @@ public class BaseAncHomeVisitAction {
                 }
 
                 jsonPayload = jsonObject.toString();
+            }
 
-                if (ancHomeVisitActionHelper != null) {
-                    ancHomeVisitActionHelper.onJsonFormLoaded(jsonPayload, context, details);
-                    String pre_processed = ancHomeVisitActionHelper.getPreProcessed();
-                    if (StringUtils.isNotBlank(pre_processed)) {
-                        this.jsonPayload = pre_processed;
-                    }
+            if (ancHomeVisitActionHelper != null) {
+                ancHomeVisitActionHelper.onJsonFormLoaded(jsonPayload, context, details);
+                String pre_processed = ancHomeVisitActionHelper.getPreProcessed();
+                if (StringUtils.isNotBlank(pre_processed)) {
+                    this.jsonPayload = pre_processed;
                 }
+
+                String sub_title = ancHomeVisitActionHelper.getPreProcessedSubTitle();
+                if (StringUtils.isNotBlank(sub_title)) {
+                    this.subTitle = sub_title;
+                }
+
+                ScheduleStatus status = ancHomeVisitActionHelper.getPreProcessedStatus();
+                if (status != null) {
+                    this.scheduleStatus = status;
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace();
@@ -163,6 +189,11 @@ public class BaseAncHomeVisitAction {
 
     public void setJsonPayload(String jsonPayload) {
         this.jsonPayload = jsonPayload;
+        if (StringUtils.isNotBlank(jsonPayload)) {
+            this.setScheduleStatus(ScheduleStatus.DUE);
+        }
+
+        // helper processing
         if (ancHomeVisitActionHelper != null) {
             ancHomeVisitActionHelper.onPayloadReceived(jsonPayload);
 
@@ -171,8 +202,16 @@ public class BaseAncHomeVisitAction {
                 setSubTitle(sub_title);
             }
 
-            evaluateStatus();
+            String post_process = ancHomeVisitActionHelper.postProcess(jsonPayload);
+            if (post_process != null) {
+                this.jsonPayload = ancHomeVisitActionHelper.postProcess(jsonPayload);
+            }
+
+
+            ancHomeVisitActionHelper.onPayloadReceived(this);
         }
+
+        evaluateStatus();
     }
 
 
@@ -273,6 +312,26 @@ public class BaseAncHomeVisitAction {
          */
         void onPayloadReceived(String jsonPayload);
 
+
+        /**
+         * executed after form is loaded on start
+         * add functionality to evaluate the state of the view immediately the form is processed
+         */
+        ScheduleStatus getPreProcessedStatus();
+
+        /**
+         * executed after form is loaded on start
+         * add functionality to evaluate the subtitle information immediately the form is processed
+         */
+        String getPreProcessedSubTitle();
+
+        /**
+         * add details to process the received payload
+         *
+         * @param jsonPayload
+         */
+        String postProcess(String jsonPayload);
+
         /**
          * executed after the payload is received
          */
@@ -284,6 +343,11 @@ public class BaseAncHomeVisitAction {
          * @return
          */
         Status evaluateStatusOnPayload();
+
+        /**
+         * Custom processing after payload is received
+         */
+        void onPayloadReceived(BaseAncHomeVisitAction ancHomeVisitAction);
     }
 
     public static class ValidationException extends Exception {

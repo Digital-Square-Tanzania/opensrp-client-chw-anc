@@ -13,6 +13,8 @@ import java.text.MessageFormat;
 import java.util.List;
 import java.util.Map;
 
+import timber.log.Timber;
+
 public class DangerSignsHelper implements BaseAncHomeVisitAction.AncHomeVisitActionHelper {
     private String signs_present;
     private String counseling;
@@ -40,6 +42,21 @@ public class DangerSignsHelper implements BaseAncHomeVisitAction.AncHomeVisitAct
     }
 
     @Override
+    public BaseAncHomeVisitAction.ScheduleStatus getPreProcessedStatus() {
+        return BaseAncHomeVisitAction.ScheduleStatus.DUE;
+    }
+
+    @Override
+    public String getPreProcessedSubTitle() {
+        return null;
+    }
+
+    @Override
+    public String postProcess(String jsonPayload) {
+        return null;
+    }
+
+    @Override
     public String evaluateSubTitle() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(MessageFormat.format("{0}: {1}", context.getString(R.string.anc_home_visit_danger_signs), signs_present));
@@ -64,6 +81,11 @@ public class DangerSignsHelper implements BaseAncHomeVisitAction.AncHomeVisitAct
         } else {
             return BaseAncHomeVisitAction.Status.PENDING;
         }
+    }
+
+    @Override
+    public void onPayloadReceived(BaseAncHomeVisitAction ancHomeVisitAction) {
+        Timber.d("onPayloadReceived");
     }
 
 }

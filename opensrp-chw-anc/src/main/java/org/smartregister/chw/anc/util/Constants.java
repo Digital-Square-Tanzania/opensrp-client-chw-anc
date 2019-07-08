@@ -14,6 +14,7 @@ public interface Constants {
     interface EVENT_TYPE {
         String ANC_REGISTRATION = "Anc Registration";
         String ANC_HOME_VISIT = "ANC Home Visit";
+        String ANC_HOME_VISIT_NOT_DONE = "ANC Home Visit Not Done";
         String UPDATE_EVENT_CONDITION = "Update";
     }
 

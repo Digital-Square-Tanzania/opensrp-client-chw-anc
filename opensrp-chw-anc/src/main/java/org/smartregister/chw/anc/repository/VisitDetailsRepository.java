@@ -146,4 +146,8 @@ public class VisitDetailsRepository extends BaseRepository {
         return visitDetailList;
     }
 
+    public void deleteVisitDetails(String visitID){
+        SQLiteDatabase database = getWritableDatabase();
+        database.delete(VISIT_DETAILS_TABLE, VISIT_ID + " = ? ", new String[]{visitID});
+    }
 }

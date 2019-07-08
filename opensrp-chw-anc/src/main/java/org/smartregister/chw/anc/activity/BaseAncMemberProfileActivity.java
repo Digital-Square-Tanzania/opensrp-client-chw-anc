@@ -23,12 +23,14 @@ import org.apache.commons.lang3.StringUtils;
 import org.ei.drishti.dto.AlertStatus;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.custom_views.BaseAncFloatingMenu;
 import org.smartregister.chw.anc.domain.MemberObject;
+import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.interactor.BaseAncMemberProfileInteractor;
 import org.smartregister.chw.anc.presenter.BaseAncMemberProfilePresenter;
-import org.smartregister.chw.anc.util.DBConstants;
+import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.Util;
 import org.smartregister.chw.anc.util.Utils;
 import org.smartregister.chw.opensrp_chw_anc.R;
@@ -192,28 +194,33 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     private void displayView() {
-        String date = getInstance().visitRepository().getLastInteractedWithAndVisitNotDone(MEMBER_OBJECT.getBaseEntityId(), DBConstants.KEY.VISIT_NOT_DONE);
-        String lastInteractedWith = getInstance().visitRepository().getLastInteractedWithAndVisitNotDone(MEMBER_OBJECT.getBaseEntityId(), DBConstants.KEY.LAST_INTERACTED_WITH);
-        String lastAnVisitDate = getInstance().visitRepository().getLastInteractedWithAndVisitNotDone(MEMBER_OBJECT.getBaseEntityId(), DBConstants.KEY.LAST_HOME_VISIT);
-        if (date != null && Utils.isDateWithin1MonthRange(date)) {
+
+        Visit lastNotDoneVisit = getInstance().visitRepository().getLatestVisit(MEMBER_OBJECT.getBaseEntityId(), Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE);
+        if (lastNotDoneVisit != null
+                && (new DateTime(lastNotDoneVisit.getDate()).getMonthOfYear() == new DateTime().getMonthOfYear())
+                && (new DateTime(lastNotDoneVisit.getDate()).getYear() == new DateTime().getYear())
+        ) {
             setVisitViews();
-        } else if (Utils.isTimeWithin24HoursRange(lastInteractedWith) && lastAnVisitDate != null) {
-            setUpEditViews(true, true, lastInteractedWith);
-        } else if (!Utils.isTimeWithin24HoursRange(lastInteractedWith) && lastAnVisitDate != null) {
-            setUpEditViews(true, false, null);
         }
+
+        Visit lastVisit = getInstance().visitRepository().getLatestVisit(MEMBER_OBJECT.getBaseEntityId(), Constants.EVENT_TYPE.ANC_HOME_VISIT);
+        if (lastVisit != null) {
+            boolean within24Hours = Days.daysBetween(new LocalDate(lastVisit.getDate()), new LocalDate()).getDays() < 1;
+            setUpEditViews(true, within24Hours, lastVisit.getDate().getTime());
+            return;
+        }
+
     }
 
-    private void setUpEditViews(boolean enable, boolean within24Hours, String time) {
+    private void setUpEditViews(boolean enable, boolean within24Hours, Long longDate) {
         openVisitMonthView();
         if (enable) {
             if (within24Hours) {
-                Long longDate = Long.valueOf(time);
                 Calendar cal = Calendar.getInstance();
                 int offset = cal.getTimeZone().getOffset(cal.getTimeInMillis());
                 Date date = new Date(longDate - (long) offset);
                 String monthString = (String) DateFormat.format("MMMM", date);
-                //tvEdit.setVisibility(View.VISIBLE);
+                tvEdit.setVisibility(View.VISIBLE);
                 textViewNotVisitMonth.setText(getContext().getString(R.string.anc_visit_done, monthString));
                 imageViewCross.setImageResource(R.drawable.activityrow_visited);
             } else {

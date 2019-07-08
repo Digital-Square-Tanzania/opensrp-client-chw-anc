@@ -216,12 +216,8 @@ public class VisitRepository extends BaseRepository {
             if (database == null) {
                 return null;
             }
-            String selection = BASE_ENTITY_ID + " = ? " + COLLATE_NOCASE;
-            String[] selectionArgs = new String[]{baseEntityID};
 
-            String[] columns = {dateColumn};
-
-            cursor = database.query(Constants.TABLES.ANC_MEMBERS, columns, selection, selectionArgs, null, null, null);
+            cursor = database.query(Constants.TABLES.ANC_MEMBERS, new String[]{dateColumn}, BASE_ENTITY_ID + " = ? " + COLLATE_NOCASE, new String[]{baseEntityID}, null, null, null);
 
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
                 String date = cursor.getString(cursor.getColumnIndex(dateColumn));

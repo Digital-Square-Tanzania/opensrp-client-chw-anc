@@ -184,39 +184,4 @@ public class Utils {
         return formatter.format(date);
     }
 
-
-    public static boolean isTimeWithin24HoursRange(String time) {
-        if (time != null) {
-            Long longDate = Long.valueOf(time);
-
-            Calendar cal = Calendar.getInstance();
-            int offset = cal.getTimeZone().getOffset(cal.getTimeInMillis());
-            Date date = new Date(longDate - (long) offset);
-
-            long day = 24 * 60 * 60 * 1000;
-            return date.getTime() > System.currentTimeMillis() - day;
-        }
-        return false;
-
-    }
-
-    public static boolean isDateWithin1MonthRange(String dateToValidate) {
-        if (dateToValidate != null) {
-            SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy");
-            sdf.setLenient(false);
-            try {
-
-                Date date = sdf.parse(dateToValidate);
-                Calendar currentDateAfter1Months = Calendar.getInstance();
-                currentDateAfter1Months.add(Calendar.MONTH, 1);
-
-                return (date.before(currentDateAfter1Months.getTime()));
-
-            } catch (ParseException e) {
-                e.printStackTrace();
-                return false;
-            }
-        }
-        return false;
-    }
 }

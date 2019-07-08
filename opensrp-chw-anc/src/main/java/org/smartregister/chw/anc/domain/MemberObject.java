@@ -10,6 +10,7 @@ import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.util.Utils;
 
 import java.io.Serializable;
+import java.util.Date;
 
 import static org.smartregister.util.Utils.getName;
 
@@ -39,12 +40,6 @@ public class MemberObject implements Serializable {
     }
 
     public MemberObject(CommonPersonObjectClient pc) {
-        memberName = getAncMemberNameAndAge(
-                pc.getColumnmaps().get(DBConstants.KEY.FIRST_NAME),
-                pc.getColumnmaps().get(DBConstants.KEY.MIDDLE_NAME),
-                pc.getColumnmaps().get(DBConstants.KEY.LAST_NAME),
-                pc.getColumnmaps().get(DBConstants.KEY.DOB));
-
         lastMenstrualPeriod = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LAST_MENSTRUAL_PERIOD, false);
         baseEntityId = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.BASE_ENTITY_ID, false);
         lastContactVisit = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LAST_CONTACT_VISIT, false);
@@ -62,6 +57,11 @@ public class MemberObject implements Serializable {
         familyName = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.FAMILY_NAME, false);
         phoneNumber = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.PHONE_NUMBER, false);
         hasAncCard = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.HAS_ANC_CARD, false);
+        memberName = getAncMemberNameAndAge(
+                firstName == null ? "" : firstName,
+                middleName == null ? "" : middleName,
+                lastName == null ? "" : lastName,
+                dob == null ? "" : dob);
 
         String visits = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.CONFIRMED_VISITS, false);
         if (StringUtils.isNotBlank(visits)) {

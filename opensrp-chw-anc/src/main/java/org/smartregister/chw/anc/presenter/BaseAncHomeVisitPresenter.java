@@ -55,7 +55,7 @@ public class BaseAncHomeVisitPresenter implements BaseAncHomeVisitContract.Prese
     @Override
     public void submitVisit() {
         if (view.get() != null) {
-            interactor.submitVisit(memberObject.getBaseEntityId(), view.get().getAncHomeVisitActions(), this);
+            interactor.submitVisit(view.get().getEditMode(), memberObject.getBaseEntityId(), view.get().getAncHomeVisitActions(), this);
         }
     }
 

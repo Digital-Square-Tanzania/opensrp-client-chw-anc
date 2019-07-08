@@ -81,7 +81,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
     }
 
     @Override
-    public void submitVisit(final String memberID, final Map<String, BaseAncHomeVisitAction> map, final BaseAncHomeVisitContract.InteractorCallBack callBack) {
+    public void submitVisit(final boolean editMode, final String memberID, final Map<String, BaseAncHomeVisitAction> map, final BaseAncHomeVisitContract.InteractorCallBack callBack) {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -109,7 +109,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
                         }
                     }
 
-                    saveVisit(memberID, getEncounterType(), jsons, vaccineWrapperMap, serviceWrapperMap);
+                    saveVisit(editMode, memberID, getEncounterType(), jsons, vaccineWrapperMap, serviceWrapperMap);
 
                 } catch (Exception e) {
                     Timber.e(e);
@@ -129,7 +129,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         appExecutors.diskIO().execute(runnable);
     }
 
-    private void saveVisit(String memberID, String encounterType,
+    private void saveVisit(boolean editMode, String memberID, String encounterType,
                            final Map<String, String> jsonString,
                            Map<String, VaccineWrapper> vaccineWrapperMap,
                            Map<String, ServiceWrapper> serviceWrapperMap
@@ -142,9 +142,17 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
             baseEvent.setFormSubmissionId(JsonFormUtils.generateRandomUUIDString());
             JsonFormUtils.tagEvent(allSharedPreferences, baseEvent);
 
-            Visit visit = Util.eventToVisit(baseEvent);
+            String visitID = (editMode) ?
+                    AncLibrary.getInstance().visitRepository().getLatestVisit(memberID, Constants.EVENT_TYPE.ANC_HOME_VISIT).getVisitId() :
+                    JsonFormUtils.generateRandomUUIDString();
+
+            Visit visit = Util.eventToVisit(baseEvent, visitID);
             visit.setPreProcessedJson(new Gson().toJson(baseEvent));
             AncLibrary.getInstance().visitRepository().addVisit(visit);
+
+            // reset visit details
+            AncLibrary.getInstance().visitDetailsRepository().deleteVisitDetails(visit.getVisitId());
+
             if (visit.getVisitDetails() != null) {
                 for (Map.Entry<String, List<VisitDetail>> entry : visit.getVisitDetails().entrySet()) {
                     if (entry.getValue() != null) {

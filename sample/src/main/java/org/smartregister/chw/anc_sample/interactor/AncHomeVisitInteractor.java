@@ -1,18 +1,16 @@
 package org.smartregister.chw.anc_sample.interactor;
 
-import com.vijay.jsonwizard.constants.JsonFormConstants;
+import android.content.Context;
 
-import org.json.JSONObject;
+import org.smartregister.chw.anc.actionhelper.DangerSignsHelper;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.domain.MemberObject;
-import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
 import org.smartregister.chw.anc.interactor.BaseAncHomeVisitInteractor;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
+import org.smartregister.chw.anc_sample.R;
 import org.smartregister.chw.anc_sample.utils.Constants;
 
 import java.util.LinkedHashMap;
-
-import timber.log.Timber;
 
 public class AncHomeVisitInteractor extends BaseAncHomeVisitInteractor {
 
@@ -25,41 +23,13 @@ public class AncHomeVisitInteractor extends BaseAncHomeVisitInteractor {
 
                 try {
 
-                    // sample form opening action
-                    final BaseAncHomeVisitAction ds = new BaseAncHomeVisitAction("Danger Signs", "", false, null, Constants.FORMS.ANC_REGISTRATION);
-                    actionList.put("Danger Signs", ds);
-
-                    // sample action using json form configured payload
-                    final BaseAncHomeVisitAction anc = new BaseAncHomeVisitAction("ANC Card Received", "Due 06 May 2019", true,
-                            BaseAncHomeVisitFragment.getInstance(view, Constants.HOME_VISIT_FORMS.ANC_CARD_FORM, null, null), null);
-                    anc.setAncHomeVisitActionHelper(new BaseAncHomeVisitAction.AncHomeVisitActionHelper() {
-                        @Override
-                        public BaseAncHomeVisitAction.Status evaluateStatusOnPayload() {
-                            if (anc.getJsonPayload() != null) {
-                                try {
-                                    JSONObject jsonObject = new JSONObject(anc.getJsonPayload());
-                                    String value = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0).getString(JsonFormConstants.VALUE);
-
-                                    if (value.equalsIgnoreCase("Yes")) {
-                                        return BaseAncHomeVisitAction.Status.COMPLETED;
-                                    } else if (value.equalsIgnoreCase("No")) {
-                                        return BaseAncHomeVisitAction.Status.PARTIALLY_COMPLETED;
-                                    } else {
-                                        return BaseAncHomeVisitAction.Status.PENDING;
-                                    }
-                                } catch (Exception e) {
-                                    Timber.e(e);
-                                }
-                            }
-                            return anc.computedStatus();
-                        }
-                    });
-                    anc.setScheduleStatus(BaseAncHomeVisitAction.ScheduleStatus.OVERDUE);
-                    actionList.put("ANC Card Received", anc);
-
-
-                    actionList.put("TT Immunization 1", new BaseAncHomeVisitAction("TT Immunization 1", "", false,
-                            BaseAncHomeVisitFragment.getInstance(view, Constants.HOME_VISIT_FORMS.IMMUNIZATION, null, "1"), null));
+                    Context context = view.getContext();
+                    BaseAncHomeVisitAction danger_signs = new BaseAncHomeVisitAction.Builder(context, context.getString(R.string.anc_home_visit_danger_signs))
+                            .withOptional(false)
+                            .withFormName(Constants.HOME_VISIT_FORMS.DANGER_SIGNS)
+                            .withHelper(new DangerSignsHelper())
+                            .build();
+                    actionList.put(context.getString(R.string.anc_home_visit_danger_signs), danger_signs);
 
                 } catch (BaseAncHomeVisitAction.ValidationException e) {
                     e.printStackTrace();

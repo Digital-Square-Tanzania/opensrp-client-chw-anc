@@ -26,6 +26,7 @@ public class VisitRepository extends BaseRepository {
     private static final String BASE_ENTITY_ID = "base_entity_id";
     private static final String VISIT_DATE = "visit_date";
     private static final String VISIT_JSON = "visit_json";
+    private static final String PRE_PROCESSED = "pre_processed";
     private static final String FORM_SUBMISSION_ID = "form_submission_id";
     private static final String PROCESSED = "processed";
     private static final String UPDATED_AT = "updated_at";
@@ -37,6 +38,7 @@ public class VisitRepository extends BaseRepository {
                     + BASE_ENTITY_ID + " VARCHAR NULL, "
                     + VISIT_DATE + " VARCHAR NULL, "
                     + VISIT_JSON + " VARCHAR NULL, "
+                    + PRE_PROCESSED + " VARCHAR NULL, "
                     + FORM_SUBMISSION_ID + " VARCHAR NULL, "
                     + PROCESSED + " Integer NULL, "
                     + UPDATED_AT + " DATETIME NULL, "
@@ -47,7 +49,7 @@ public class VisitRepository extends BaseRepository {
             + VISIT_TYPE + " COLLATE NOCASE , "
             + VISIT_DATE + " COLLATE NOCASE"
             + ");";
-    private String[] VISIT_COLUMNS = {VISIT_ID, VISIT_TYPE, BASE_ENTITY_ID, VISIT_DATE, VISIT_JSON, FORM_SUBMISSION_ID, PROCESSED, UPDATED_AT, CREATED_AT};
+    private String[] VISIT_COLUMNS = {VISIT_ID, VISIT_TYPE, BASE_ENTITY_ID, VISIT_DATE, VISIT_JSON, PRE_PROCESSED, FORM_SUBMISSION_ID, PROCESSED, UPDATED_AT, CREATED_AT};
 
 
     public VisitRepository(Repository repository) {
@@ -66,6 +68,7 @@ public class VisitRepository extends BaseRepository {
         values.put(BASE_ENTITY_ID, visit.getBaseEntityId());
         values.put(VISIT_DATE, visit.getDate() != null ? visit.getDate().getTime() : null);
         values.put(VISIT_JSON, visit.getJson());
+        values.put(PRE_PROCESSED, visit.getPreProcessedJson());
         values.put(FORM_SUBMISSION_ID, visit.getFormSubmissionId());
         values.put(PROCESSED, visit.getProcessed());
         values.put(UPDATED_AT, visit.getUpdatedAt().getTime());
@@ -213,12 +216,8 @@ public class VisitRepository extends BaseRepository {
             if (database == null) {
                 return null;
             }
-            String selection = BASE_ENTITY_ID + " = ? " + COLLATE_NOCASE;
-            String[] selectionArgs = new String[]{baseEntityID};
 
-            String[] columns = {dateColumn};
-
-            cursor = database.query(Constants.TABLES.ANC_MEMBERS, columns, selection, selectionArgs, null, null, null);
+            cursor = database.query(Constants.TABLES.ANC_MEMBERS, new String[]{dateColumn}, BASE_ENTITY_ID + " = ? " + COLLATE_NOCASE, new String[]{baseEntityID}, null, null, null);
 
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
                 String date = cursor.getString(cursor.getColumnIndex(dateColumn));

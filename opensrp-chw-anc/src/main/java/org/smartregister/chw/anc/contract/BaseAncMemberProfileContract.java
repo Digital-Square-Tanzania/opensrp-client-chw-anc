@@ -74,5 +74,4 @@ public interface BaseAncMemberProfileContract {
         void refreshFamilyStatus(AlertStatus status);
     }
 
-
 }

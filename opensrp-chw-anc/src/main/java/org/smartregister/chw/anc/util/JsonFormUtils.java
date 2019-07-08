@@ -1,11 +1,14 @@
 package org.smartregister.chw.anc.util;
 
+import com.vijay.jsonwizard.constants.JsonFormConstants;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.AncLibrary;
+import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.domain.tag.FormTag;
 import org.smartregister.immunization.domain.ServiceRecord;
@@ -151,5 +154,95 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         serviceRecord.setTeam(allSharedPreferences.fetchDefaultTeam(providerId));
         serviceRecord.setTeamId(allSharedPreferences.fetchDefaultTeamId(providerId));
         return serviceRecord;
+    }
+
+
+    /**
+     * Returns a value from json form field
+     *
+     * @param jsonObject native forms jsonObject
+     * @param key        field object key
+     * @return value
+     */
+    public static String getValue(JSONObject jsonObject, String key) {
+        try {
+            JSONArray jsonArray = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
+            int x = 0;
+            while (jsonArray.length() > x) {
+                JSONObject jo = jsonArray.getJSONObject(x);
+                if (jo.getString(JsonFormConstants.KEY).equalsIgnoreCase(key)) {
+                    return jo.getString(JsonFormConstants.VALUE);
+                }
+                x++;
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+        return "";
+    }
+
+    public static String getFirstObjectKey(JSONObject jsonObject) {
+        try {
+            JSONArray jsonArray = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
+            if (jsonArray.length() > 0) {
+                return jsonArray.getJSONObject(0).getString(JsonFormConstants.KEY);
+
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+        return "";
+    }
+
+
+    /**
+     * Returns a value from a native forms checkbox field and returns an comma separated string
+     *
+     * @param jsonObject native forms jsonObject
+     * @param key        field object key
+     * @return value
+     */
+    public static String getCheckBoxValue(JSONObject jsonObject, String key) {
+        try {
+            JSONArray jsonArray = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
+
+            JSONObject jo = null;
+            int x = 0;
+            while (jsonArray.length() > x) {
+                jo = jsonArray.getJSONObject(x);
+                if (jo.getString(JsonFormConstants.KEY).equalsIgnoreCase(key)) {
+                    break;
+                }
+                x++;
+            }
+
+            StringBuilder resBuilder = new StringBuilder();
+            if (jo != null) {
+                // read all the checkboxes
+                JSONArray jaOptions = jo.getJSONArray(JsonFormConstants.OPTIONS_FIELD_NAME);
+                int optionSize = jaOptions.length();
+                int y = 0;
+                while (optionSize > y) {
+                    JSONObject options = jaOptions.getJSONObject(y);
+                    if (options.getBoolean(JsonFormConstants.VALUE)) {
+                        resBuilder.append(options.getString(JsonFormConstants.TEXT)).append(", ");
+                    }
+                    y++;
+                }
+
+                String res = resBuilder.toString();
+                res = res.substring(0, res.length() - 2);
+                return res;
+            }
+
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+        return "";
+    }
+
+
+    public static void populateForm(JSONObject jsonObject, Map<String, List<VisitDetail>> details) {
+        Timber.v("populateForm");
     }
 }

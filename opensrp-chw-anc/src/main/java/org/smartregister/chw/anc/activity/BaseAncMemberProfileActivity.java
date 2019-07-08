@@ -18,18 +18,19 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
 import org.ei.drishti.dto.AlertStatus;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.joda.time.LocalDate;
 import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.custom_views.BaseAncFloatingMenu;
 import org.smartregister.chw.anc.domain.MemberObject;
+import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.interactor.BaseAncMemberProfileInteractor;
 import org.smartregister.chw.anc.presenter.BaseAncMemberProfilePresenter;
-import org.smartregister.chw.anc.util.DBConstants;
+import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.Util;
 import org.smartregister.chw.anc.util.Utils;
 import org.smartregister.chw.opensrp_chw_anc.R;
@@ -53,14 +54,16 @@ import static org.smartregister.util.Utils.getName;
 public class BaseAncMemberProfileActivity extends BaseProfileActivity implements BaseAncMemberProfileContract.View {
     protected MemberObject MEMBER_OBJECT;
     protected TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id, textview_record_anc_visit, textViewAncVisitNot, textViewNotVisitMonth, textViewUndo, tvEdit;
-    private LinearLayout layoutRecordView;
+    private LinearLayout layoutRecordView, record_visit_done_bar;
     protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue, layoutRecordButtonDone, layoutNotRecordView;
     private String familyHeadName;
     private String familyHeadPhoneNumber;
     private BaseAncFloatingMenu baseAncFloatingMenu;
     private ImageView imageViewCross;
     protected View view_anc_record, view_last_visit_row, view_most_due_overdue_row, view_family_row;
-    private TextView tvLastVisitDate, tvUpComingServices, tvFamilyStatus;
+    private TextView tvLastVisitDate;
+    private TextView tvUpComingServices;
+    private TextView tvFamilyStatus;
     private ProgressBar progressBar;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
 
@@ -119,6 +122,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         tvLastVisitDate = findViewById(R.id.textview_last_vist_day);
         tvUpComingServices = findViewById(R.id.textview_name_due);
         tvFamilyStatus = findViewById(R.id.textview_family_has);
+        record_visit_done_bar = findViewById(R.id.record_reccuringvisit_done_bar);
 
         initializePresenter();
         setupViews();
@@ -133,6 +137,14 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         } else {
             ancWomanName = getName(MEMBER_OBJECT.getFirstName(), MEMBER_OBJECT.getLastName());
         }
+
+        if (StringUtils.isNotBlank(MEMBER_OBJECT.getFamilyHead()) && MEMBER_OBJECT.getFamilyHead().equals(MEMBER_OBJECT.getBaseEntityId())) {
+            findViewById(R.id.family_anc_head).setVisibility(View.VISIBLE);
+        }
+        if (StringUtils.isNotBlank(MEMBER_OBJECT.getPrimaryCareGiver()) && MEMBER_OBJECT.getPrimaryCareGiver().equals(MEMBER_OBJECT.getBaseEntityId())) {
+            findViewById(R.id.primary_anc_caregiver).setVisibility(View.VISIBLE);
+        }
+
         if (StringUtils.isNotBlank(MEMBER_OBJECT.getPhoneNumber()) || StringUtils.isNotBlank(familyHeadPhoneNumber)) {
             baseAncFloatingMenu = new BaseAncFloatingMenu(this, ancWomanName, MEMBER_OBJECT.getPhoneNumber(), familyHeadName, familyHeadPhoneNumber);
             baseAncFloatingMenu.setGravity(Gravity.BOTTOM | Gravity.RIGHT);
@@ -161,6 +173,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         textViewUndo = findViewById(R.id.textview_undo);
         imageViewCross = findViewById(R.id.cross_image);
         layoutNotRecordView = findViewById(R.id.record_visit_status_bar);
+        TextView textview_record_reccuring_visit = findViewById(R.id.textview_record_reccuring_visit);
 
 
         textview_record_anc_visit.setOnClickListener(this);
@@ -173,6 +186,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         textViewUndo.setOnClickListener(this);
         imageViewCross.setOnClickListener(this);
         layoutRecordButtonDone.setOnClickListener(this);
+        textview_record_reccuring_visit.setOnClickListener(this);
 
 
         imageView = findViewById(R.id.imageview_profile);
@@ -182,28 +196,39 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     private void displayView() {
-        String date = getInstance().visitRepository().getLastInteractedWithAndVisitNotDone(MEMBER_OBJECT.getBaseEntityId(), DBConstants.KEY.VISIT_NOT_DONE);
-        String lastInteractedWith = getInstance().visitRepository().getLastInteractedWithAndVisitNotDone(MEMBER_OBJECT.getBaseEntityId(), DBConstants.KEY.LAST_INTERACTED_WITH);
-        if (date != null && Utils.isDateWithin1MonthRange(date)) {
+
+        Visit lastNotDoneVisit = getInstance().visitRepository().getLatestVisit(MEMBER_OBJECT.getBaseEntityId(), Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE);
+        if (lastNotDoneVisit != null
+                && (new DateTime(lastNotDoneVisit.getDate()).getMonthOfYear() == new DateTime().getMonthOfYear())
+                && (new DateTime(lastNotDoneVisit.getDate()).getYear() == new DateTime().getYear())
+        ) {
             setVisitViews();
-        } else if (Utils.isTimeWithin24HoursRange(lastInteractedWith)) {
-            setUpEditViews(true, lastInteractedWith);
         }
+
+        Visit lastVisit = getInstance().visitRepository().getLatestVisit(MEMBER_OBJECT.getBaseEntityId(), Constants.EVENT_TYPE.ANC_HOME_VISIT);
+        if (lastVisit != null) {
+            boolean within24Hours = Days.daysBetween(new LocalDate(lastVisit.getDate()), new LocalDate()).getDays() < 1;
+            setUpEditViews(true, within24Hours, lastVisit.getDate().getTime());
+            return;
+        }
+
     }
 
-    private void setUpEditViews(boolean enable, String time) {
+    private void setUpEditViews(boolean enable, boolean within24Hours, Long longDate) {
         openVisitMonthView();
         if (enable) {
-            Long longDate = Long.valueOf(time);
-
-            Calendar cal = Calendar.getInstance();
-            int offset = cal.getTimeZone().getOffset(cal.getTimeInMillis());
-            Date date = new Date(longDate - (long) offset);
-            String monthString = (String) DateFormat.format("MMMM", date);
-
-            tvEdit.setVisibility(View.VISIBLE);
-            textViewNotVisitMonth.setText(getContext().getString(R.string.anc_visit_done, monthString));
-            imageViewCross.setImageResource(R.drawable.activityrow_visited);
+            if (within24Hours) {
+                Calendar cal = Calendar.getInstance();
+                int offset = cal.getTimeZone().getOffset(cal.getTimeInMillis());
+                Date date = new Date(longDate - (long) offset);
+                String monthString = (String) DateFormat.format("MMMM", date);
+                tvEdit.setVisibility(View.VISIBLE);
+                textViewNotVisitMonth.setText(getContext().getString(R.string.anc_visit_done, monthString));
+                imageViewCross.setImageResource(R.drawable.activityrow_visited);
+            } else {
+                record_visit_done_bar.setVisibility(View.VISIBLE);
+                layoutNotRecordView.setVisibility(View.GONE);
+            }
             textViewUndo.setVisibility(View.GONE);
         } else
             tvEdit.setVisibility(View.GONE);
@@ -258,8 +283,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             presenter().getView().setVisitNotDoneThisMonth();
         } else if (v.getId() == R.id.textview_undo) {
             presenter().getView().updateVisitNotDone(0);
-        } else if (v.getId() == R.id.textview_edit) {
-            Toast.makeText(this, "Text view Edit", Toast.LENGTH_SHORT).show();
         }
     }
 

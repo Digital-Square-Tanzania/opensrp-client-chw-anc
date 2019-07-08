@@ -31,6 +31,8 @@ import org.smartregister.view.fragment.BaseRegisterFragment;
 import java.util.Arrays;
 import java.util.List;
 
+import timber.log.Timber;
+
 import static org.smartregister.chw.anc.util.Constants.EVENT_TYPE.UPDATE_EVENT_CONDITION;
 
 public class BaseAncRegisterActivity extends BaseRegisterActivity implements BaseAncRegisterContract.View {
@@ -97,6 +99,11 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
     @Override
     public Form getFormConfig() {
         return null;
+    }
+
+    @Override
+    public void onRegistrationSaved(boolean isEdit) {
+        Timber.v("onRegistrationSaved");
     }
 
     public Class getAncFormActivity() {
@@ -208,7 +215,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
 
                 JSONObject form = new JSONObject(jsonString);
                 String encounter_type = form.getString(Constants.JSON_FORM_EXTRA.ENCOUNTER_TYPE);
-                // process child registration
+                // process anc registration
                 if (!encounter_type.startsWith(UPDATE_EVENT_CONDITION)) {
                     presenter().saveForm(form.toString(), false, TABLE);
                 } else {

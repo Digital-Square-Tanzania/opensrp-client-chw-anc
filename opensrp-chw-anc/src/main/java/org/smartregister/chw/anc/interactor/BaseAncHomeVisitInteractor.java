@@ -2,8 +2,12 @@ package org.smartregister.chw.anc.interactor;
 
 import android.support.annotation.VisibleForTesting;
 
+import com.google.gson.Gson;
+
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
 import org.smartregister.chw.anc.AncLibrary;
+import org.smartregister.chw.anc.actionhelper.DangerSignsHelper;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.domain.Visit;
@@ -13,17 +17,10 @@ import org.smartregister.chw.anc.util.AppExecutors;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.anc.util.Util;
-import org.smartregister.chw.anc.util.Utils;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.clientandeventmodel.Obs;
-import org.smartregister.commonregistry.CommonRepository;
-import org.smartregister.immunization.ImmunizationLibrary;
-import org.smartregister.immunization.domain.ServiceRecord;
 import org.smartregister.immunization.domain.ServiceWrapper;
-import org.smartregister.immunization.domain.Vaccine;
 import org.smartregister.immunization.domain.VaccineWrapper;
-import org.smartregister.immunization.repository.RecurringServiceRecordRepository;
-import org.smartregister.immunization.repository.VaccineRepository;
 import org.smartregister.repository.AllSharedPreferences;
 
 import java.text.SimpleDateFormat;
@@ -50,47 +47,6 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         this(new AppExecutors());
     }
 
-    protected static void saveServices(List<ServiceWrapper> tags, String baseEntityId) {
-        for (ServiceWrapper tag : tags) {
-            if (tag.getUpdatedVaccineDate() == null) {
-                return;
-            }
-
-            RecurringServiceRecordRepository recurringServiceRecordRepository = ImmunizationLibrary.getInstance().recurringServiceRecordRepository();
-
-            ServiceRecord serviceRecord = new ServiceRecord();
-            if (tag.getDbKey() != null) {
-                serviceRecord = recurringServiceRecordRepository.find(tag.getDbKey());
-                if (serviceRecord == null) {
-                    serviceRecord = new ServiceRecord();
-                    serviceRecord.setDate(tag.getUpdatedVaccineDate().toDate());
-
-                    serviceRecord.setBaseEntityId(baseEntityId);
-                    serviceRecord.setRecurringServiceId(tag.getTypeId());
-                    serviceRecord.setDate(tag.getUpdatedVaccineDate().toDate());
-                    serviceRecord.setValue(tag.getValue());
-
-                    JsonFormUtils.tagSyncMetadata(Utils.context().allSharedPreferences(), serviceRecord);
-                } else {
-                    serviceRecord.setDate(tag.getUpdatedVaccineDate().toDate());
-                    serviceRecord.setValue(tag.getValue());
-                }
-
-            } else {
-                serviceRecord.setDate(tag.getUpdatedVaccineDate().toDate());
-
-                serviceRecord.setBaseEntityId(baseEntityId);
-                serviceRecord.setRecurringServiceId(tag.getTypeId());
-                serviceRecord.setDate(tag.getUpdatedVaccineDate().toDate());
-                serviceRecord.setValue(tag.getValue());
-
-                JsonFormUtils.tagSyncMetadata(Utils.context().allSharedPreferences(), serviceRecord);
-            }
-
-            recurringServiceRecordRepository.add(serviceRecord);
-            tag.setDbKey(serviceRecord.getId());
-        }
-    }
 
     @Override
     public void saveRegistration(String jsonString, boolean isEditMode, BaseAncHomeVisitContract.InteractorCallBack callBack) {
@@ -105,9 +61,14 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
                 final LinkedHashMap<String, BaseAncHomeVisitAction> actionList = new LinkedHashMap<>();
 
                 try {
-
-                    actionList.put("Sample Action", new BaseAncHomeVisitAction("Sample Action", "Override class org.smartregister.chw.anc.interactor.BaseAncHomeVisitInteractor", false,
-                            null, "anc"));
+                    BaseAncHomeVisitAction ba =
+                            new BaseAncHomeVisitAction.Builder(view.getContext(), "Sample Action")
+                                    .withSubtitle("")
+                                    .withOptional(false)
+                                    .withFormName("anc")
+                                    .withHelper(new DangerSignsHelper())
+                                    .build();
+                    actionList.put("Sample Action", ba);
 
                 } catch (BaseAncHomeVisitAction.ValidationException e) {
                     Timber.e(e);
@@ -126,7 +87,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
     }
 
     @Override
-    public void submitVisit(final String memberID, final Map<String, BaseAncHomeVisitAction> map, final BaseAncHomeVisitContract.InteractorCallBack callBack) {
+    public void submitVisit(final boolean editMode, final String memberID, final Map<String, BaseAncHomeVisitAction> map, final BaseAncHomeVisitContract.InteractorCallBack callBack) {
         final Runnable runnable = new Runnable() {
             @Override
             public void run() {
@@ -136,26 +97,25 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
 
                     Map<String, String> jsons = new HashMap<>();
-                    List<VaccineWrapper> vaccineWrappers = new ArrayList<>();
-                    List<ServiceWrapper> serviceWrappers = new ArrayList<>();
+                    Map<String, VaccineWrapper> vaccineWrapperMap = new HashMap<>();
+                    Map<String, ServiceWrapper> serviceWrapperMap = new HashMap<>();
 
                     // aggregate forms to be processed
                     for (Map.Entry<String, BaseAncHomeVisitAction> entry : map.entrySet()) {
                         String json = entry.getValue().getJsonPayload();
                         if (StringUtils.isNotBlank(json)) {
                             jsons.put(entry.getKey(), json);
-                        }
-                        if (entry.getValue().getVaccineWrapper() != null) {
-                            vaccineWrappers.add(entry.getValue().getVaccineWrapper());
-                        }
-                        if (entry.getValue().getServiceWrapper() != null) {
-                            serviceWrappers.add(entry.getValue().getServiceWrapper());
+                            JSONObject jsonObject = new JSONObject(json);
+                            if (entry.getValue().getVaccineWrapper() != null) {
+                                vaccineWrapperMap.put(JsonFormUtils.getFirstObjectKey(jsonObject), entry.getValue().getVaccineWrapper());
+                            }
+                            if (entry.getValue().getServiceWrapper() != null) {
+                                serviceWrapperMap.put(JsonFormUtils.getFirstObjectKey(jsonObject), entry.getValue().getServiceWrapper());
+                            }
                         }
                     }
 
-                    saveVisit(memberID, getEncounterType(), jsons);
-                    saveVaccines(vaccineWrappers, memberID);
-                    saveServices(serviceWrappers, memberID);
+                    saveVisit(editMode, memberID, getEncounterType(), jsons, vaccineWrapperMap, serviceWrapperMap);
 
                 } catch (Exception e) {
                     Timber.e(e);
@@ -175,7 +135,11 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         appExecutors.diskIO().execute(runnable);
     }
 
-    private void saveVisit(String memberID, String encounterType, final Map<String, String> jsonString) throws Exception {
+    private void saveVisit(boolean editMode, String memberID, String encounterType,
+                           final Map<String, String> jsonString,
+                           Map<String, VaccineWrapper> vaccineWrapperMap,
+                           Map<String, ServiceWrapper> serviceWrapperMap
+    ) throws Exception {
 
         AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
         Event baseEvent = JsonFormUtils.processAncJsonForm(allSharedPreferences, memberID, encounterType, jsonString);
@@ -184,19 +148,41 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
             baseEvent.setFormSubmissionId(JsonFormUtils.generateRandomUUIDString());
             JsonFormUtils.tagEvent(allSharedPreferences, baseEvent);
 
-            Visit visit = Util.eventToVisit(baseEvent);
+            String visitID = (editMode) ?
+                    AncLibrary.getInstance().visitRepository().getLatestVisit(memberID, Constants.EVENT_TYPE.ANC_HOME_VISIT).getVisitId() :
+                    JsonFormUtils.generateRandomUUIDString();
+
+            Visit visit = Util.eventToVisit(baseEvent, visitID);
+            visit.setPreProcessedJson(new Gson().toJson(baseEvent));
             AncLibrary.getInstance().visitRepository().addVisit(visit);
+
+            // reset visit details
+            AncLibrary.getInstance().visitDetailsRepository().deleteVisitDetails(visit.getVisitId());
+
             if (visit.getVisitDetails() != null) {
                 for (Map.Entry<String, List<VisitDetail>> entry : visit.getVisitDetails().entrySet()) {
                     if (entry.getValue() != null) {
                         for (VisitDetail d : entry.getValue()) {
+
+                            VaccineWrapper vaccineWrapper = vaccineWrapperMap.get(d.getVisitKey());
+                            if (vaccineWrapper != null) {
+                                String json = new Gson().toJson(vaccineWrapper);
+                                d.setPreProcessedJson(json);
+                                d.setPreProcessedType("vaccine");
+                            }
+
+                            ServiceWrapper serviceWrapper = serviceWrapperMap.get(d.getVisitKey());
+                            if (serviceWrapper != null) {
+                                String json = new Gson().toJson(serviceWrapper);
+                                d.setPreProcessedJson(json);
+                                d.setPreProcessedType("service");
+                            }
+
                             AncLibrary.getInstance().visitDetailsRepository().addVisitDetails(d);
                         }
                     }
                 }
             }
-
-            Util.processEvent(allSharedPreferences, baseEvent);
         }
     }
 
@@ -215,45 +201,8 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         }
     }
 
-    public String getTableName() {
-        return Constants.TABLES.FAMILY_MEMBER;
-    }
-
-    public CommonRepository getCommonRepository(String tableName) {
-        return AncLibrary.getInstance().context().commonrepository(tableName);
-    }
-
     protected String getEncounterType() {
         return Constants.EVENT_TYPE.ANC_HOME_VISIT;
     }
 
-    protected void saveVaccines(List<VaccineWrapper> tags, String baseEntityID) {
-        for (VaccineWrapper tag : tags) {
-            if (tag.getUpdatedVaccineDate() == null) {
-                return;
-            }
-            Vaccine vaccine = new Vaccine();
-            if (tag.getDbKey() != null) {
-                vaccine = getVaccineRepository().find(tag.getDbKey());
-            }
-            vaccine.setBaseEntityId(baseEntityID);
-            vaccine.setName(tag.getName());
-            vaccine.setDate(tag.getUpdatedVaccineDate().toDate());
-
-            String lastChar = vaccine.getName().substring(vaccine.getName().length() - 1);
-            if (StringUtils.isNumeric(lastChar)) {
-                vaccine.setCalculation(Integer.valueOf(lastChar));
-            } else {
-                vaccine.setCalculation(-1);
-            }
-
-            JsonFormUtils.tagSyncMetadata(Utils.context().allSharedPreferences(), vaccine);
-            getVaccineRepository().add(vaccine); // persist to local db
-            tag.setDbKey(vaccine.getId());
-        }
-    }
-
-    protected VaccineRepository getVaccineRepository() {
-        return ImmunizationLibrary.getInstance().vaccineRepository();
-    }
 }

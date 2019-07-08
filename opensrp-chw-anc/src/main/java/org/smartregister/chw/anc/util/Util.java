@@ -56,12 +56,12 @@ public class Util {
         return getInstance().getClientProcessorForJava();
     }
 
-    // executed before processing
-    public static Visit eventToVisit(Event event) throws JSONException {
+
+    public static Visit eventToVisit(Event event, String visitID) throws JSONException {
         List<String> exceptions = Arrays.asList(default_obs);
 
         Visit visit = new Visit();
-        visit.setVisitId(JsonFormUtils.generateRandomUUIDString());
+        visit.setVisitId(visitID);
         visit.setBaseEntityId(event.getBaseEntityId());
         visit.setDate(event.getEventDate());
         visit.setVisitType(event.getEventType());
@@ -99,6 +99,11 @@ public class Util {
 
         visit.setVisitDetails(details);
         return visit;
+    }
+
+    // executed before processing
+    public static Visit eventToVisit(Event event) throws JSONException {
+        return eventToVisit(event, JsonFormUtils.generateRandomUUIDString());
     }
 
     public static void processAncHomeVisit(EventClient baseEvent) {

@@ -9,6 +9,8 @@ public class VisitDetail {
     private String details; //
     private String humanReadable; //
     private String jsonDetails;
+    private String preProcessedJson;
+    private String preProcessedType;
     private Boolean processed;
     private Date updatedAt;
     private Date createdAt;
@@ -51,6 +53,22 @@ public class VisitDetail {
 
     public void setJsonDetails(String jsonDetails) {
         this.jsonDetails = jsonDetails;
+    }
+
+    public String getPreProcessedJson() {
+        return preProcessedJson;
+    }
+
+    public void setPreProcessedJson(String preProcessedJson) {
+        this.preProcessedJson = preProcessedJson;
+    }
+
+    public String getPreProcessedType() {
+        return preProcessedType;
+    }
+
+    public void setPreProcessedType(String preProcessedType) {
+        this.preProcessedType = preProcessedType;
     }
 
     public String getHumanReadable() {

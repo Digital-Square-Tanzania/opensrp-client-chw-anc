@@ -99,6 +99,11 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
         return null;
     }
 
+    @Override
+    public void onRegistrationSaved(boolean isEdit) {
+
+    }
+
     public Class getAncFormActivity() {
         return BaseAncRegisterActivity.class;
     }
@@ -208,7 +213,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
 
                 JSONObject form = new JSONObject(jsonString);
                 String encounter_type = form.getString(Constants.JSON_FORM_EXTRA.ENCOUNTER_TYPE);
-                // process child registration
+                // process anc registration
                 if (!encounter_type.startsWith(UPDATE_EVENT_CONDITION)) {
                     presenter().saveForm(form.toString(), false, TABLE);
                 } else {

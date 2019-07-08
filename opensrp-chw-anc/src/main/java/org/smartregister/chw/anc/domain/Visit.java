@@ -13,6 +13,7 @@ public class Visit {
     private Date updatedAt;
     private String eventId;
     private String formSubmissionId;
+    private String preProcessedJson;
     private String json;
     private Boolean processed;
     private Date createdAt;
@@ -72,6 +73,14 @@ public class Visit {
 
     public void setFormSubmissionId(String formSubmissionId) {
         this.formSubmissionId = formSubmissionId;
+    }
+
+    public String getPreProcessedJson() {
+        return preProcessedJson;
+    }
+
+    public void setPreProcessedJson(String preProcessedJson) {
+        this.preProcessedJson = preProcessedJson;
     }
 
     public String getJson() {

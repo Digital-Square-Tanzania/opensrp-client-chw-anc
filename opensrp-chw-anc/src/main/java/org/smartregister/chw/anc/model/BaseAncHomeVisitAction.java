@@ -1,9 +1,18 @@
 package org.smartregister.chw.anc.model;
 
+import android.content.Context;
+
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONObject;
+import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
+import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.immunization.domain.ServiceWrapper;
 import org.smartregister.immunization.domain.VaccineWrapper;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * This action list allows users to either load a form or link it to a separate fragment.
@@ -12,8 +21,8 @@ public class BaseAncHomeVisitAction {
 
     private String title;
     private String subTitle;
-    private Status actionStatus = Status.PENDING;
-    private ScheduleStatus scheduleStatus = ScheduleStatus.DUE;
+    private Status actionStatus;
+    private ScheduleStatus scheduleStatus;
     private boolean optional;
     private BaseAncHomeVisitFragment destinationFragment;
     private String formName;
@@ -22,18 +31,130 @@ public class BaseAncHomeVisitAction {
     private AncHomeVisitActionHelper ancHomeVisitActionHelper;
     private VaccineWrapper vaccineWrapper;
     private ServiceWrapper serviceWrapper;
+    private Map<String, List<VisitDetail>> details;
+    private Context context;
 
-    // event based behaviors
-    private Runnable onPayLoadReceived;
-
-    public BaseAncHomeVisitAction(String title, String subTitle, boolean optional, BaseAncHomeVisitFragment destinationFragment, String formName) throws ValidationException {
-        this.title = title;
-        this.subTitle = subTitle;
-        this.optional = optional;
-        this.destinationFragment = destinationFragment;
-        this.formName = formName;
+    private BaseAncHomeVisitAction(Builder builder) throws ValidationException {
+        this.title = builder.title;
+        this.subTitle = builder.subTitle;
+        this.actionStatus = builder.actionStatus;
+        this.scheduleStatus = builder.scheduleStatus;
+        this.optional = builder.optional;
+        this.destinationFragment = builder.destinationFragment;
+        this.formName = builder.formName;
+        this.ancHomeVisitActionHelper = builder.ancHomeVisitActionHelper;
+        this.vaccineWrapper = builder.vaccineWrapper;
+        this.serviceWrapper = builder.serviceWrapper;
+        this.details = builder.details;
+        this.context = builder.context;
 
         validateMe();
+        initialize();
+    }
+
+    public static class Builder {
+        private String title;
+        private String subTitle;
+        private Status actionStatus = Status.PENDING;
+        private ScheduleStatus scheduleStatus = ScheduleStatus.DUE;
+        private boolean optional = true;
+        private BaseAncHomeVisitFragment destinationFragment;
+        private String formName;
+        private AncHomeVisitActionHelper ancHomeVisitActionHelper;
+        private VaccineWrapper vaccineWrapper;
+        private ServiceWrapper serviceWrapper;
+        private Map<String, List<VisitDetail>> details = new HashMap<>();
+        private Context context;
+
+        public Builder(Context context, String title) {
+            this.context = context;
+            this.title = title;
+        }
+
+        public Builder withSubtitle(String subTitle) {
+            this.subTitle = subTitle;
+            return this;
+        }
+
+        public Builder withOptional(boolean optional) {
+            this.optional = optional;
+            return this;
+        }
+
+        public Builder withDestinationFragment(BaseAncHomeVisitFragment destinationFragment) {
+            this.destinationFragment = destinationFragment;
+            return this;
+        }
+
+        public Builder withFormName(String formName) {
+            this.formName = formName;
+            return this;
+        }
+
+        public Builder withDetails(Map<String, List<VisitDetail>> details) {
+            this.details = details;
+            return this;
+        }
+
+        public Builder withHelper(AncHomeVisitActionHelper ancHomeVisitActionHelper) {
+            this.ancHomeVisitActionHelper = ancHomeVisitActionHelper;
+            return this;
+        }
+
+        public Builder withScheduleStatus(ScheduleStatus scheduleStatus) {
+            this.scheduleStatus = scheduleStatus;
+            return this;
+        }
+
+        public Builder withVaccineWrapper(VaccineWrapper vaccineWrapper) {
+            this.vaccineWrapper = vaccineWrapper;
+            return this;
+        }
+
+        public Builder withServiceWrapper(ServiceWrapper serviceWrapper) {
+            this.serviceWrapper = serviceWrapper;
+            return this;
+        }
+
+        public BaseAncHomeVisitAction build() throws ValidationException {
+            return new BaseAncHomeVisitAction(this);
+        }
+    }
+
+    private void initialize() {
+        try {
+            if (StringUtils.isBlank(jsonPayload) && StringUtils.isNotBlank(formName)) {
+                JSONObject jsonObject = JsonFormUtils.getFormAsJson(formName);
+
+                // update the form details
+                if (details.size() > 0) {
+                    JsonFormUtils.populateForm(jsonObject, details);
+                }
+
+                jsonPayload = jsonObject.toString();
+            }
+
+            if (ancHomeVisitActionHelper != null) {
+                ancHomeVisitActionHelper.onJsonFormLoaded(jsonPayload, context, details);
+                String pre_processed = ancHomeVisitActionHelper.getPreProcessed();
+                if (StringUtils.isNotBlank(pre_processed)) {
+                    this.jsonPayload = pre_processed;
+                }
+
+                String sub_title = ancHomeVisitActionHelper.getPreProcessedSubTitle();
+                if (StringUtils.isNotBlank(sub_title)) {
+                    this.subTitle = sub_title;
+                }
+
+                ScheduleStatus status = ancHomeVisitActionHelper.getPreProcessedStatus();
+                if (status != null) {
+                    this.scheduleStatus = status;
+                }
+
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -91,10 +212,29 @@ public class BaseAncHomeVisitAction {
 
     public void setJsonPayload(String jsonPayload) {
         this.jsonPayload = jsonPayload;
-        evaluateStatus();
-        if (onPayLoadReceived != null) {
-            onPayLoadReceived.run();
+        if (StringUtils.isNotBlank(jsonPayload)) {
+            this.setScheduleStatus(ScheduleStatus.DUE);
         }
+
+        // helper processing
+        if (ancHomeVisitActionHelper != null) {
+            ancHomeVisitActionHelper.onPayloadReceived(jsonPayload);
+
+            String sub_title = ancHomeVisitActionHelper.evaluateSubTitle();
+            if (sub_title != null) {
+                setSubTitle(sub_title);
+            }
+
+            String post_process = ancHomeVisitActionHelper.postProcess(jsonPayload);
+            if (post_process != null) {
+                this.jsonPayload = ancHomeVisitActionHelper.postProcess(jsonPayload);
+            }
+
+
+            ancHomeVisitActionHelper.onPayloadReceived(this);
+        }
+
+        evaluateStatus();
     }
 
 
@@ -154,10 +294,6 @@ public class BaseAncHomeVisitAction {
         }
     }
 
-    public void setOnPayLoadReceived(Runnable onPayLoadReceived) {
-        this.onPayLoadReceived = onPayLoadReceived;
-    }
-
     public VaccineWrapper getVaccineWrapper() {
         return (getActionStatus() == Status.COMPLETED) ? vaccineWrapper : null;
     }
@@ -179,7 +315,62 @@ public class BaseAncHomeVisitAction {
     public enum ScheduleStatus {DUE, OVERDUE}
 
     public interface AncHomeVisitActionHelper {
+
+        /**
+         * Inject values to the json form before rendering
+         * Only called once afte the form has been read from the assets folder
+         */
+        void onJsonFormLoaded(String jsonString, Context context, Map<String, List<VisitDetail>> details);
+
+        /**
+         * executed after form is loaded.
+         * Returns a string or null
+         */
+        String getPreProcessed();
+
+        /**
+         * Is executed immediately a json payload is received
+         *
+         * @param jsonPayload
+         */
+        void onPayloadReceived(String jsonPayload);
+
+
+        /**
+         * executed after form is loaded on start
+         * add functionality to evaluate the state of the view immediately the form is processed
+         */
+        ScheduleStatus getPreProcessedStatus();
+
+        /**
+         * executed after form is loaded on start
+         * add functionality to evaluate the subtitle information immediately the form is processed
+         */
+        String getPreProcessedSubTitle();
+
+        /**
+         * add details to process the received payload
+         *
+         * @param jsonPayload
+         */
+        String postProcess(String jsonPayload);
+
+        /**
+         * executed after the payload is received
+         */
+        String evaluateSubTitle();
+
+        /**
+         * Evaluated after payload is received
+         *
+         * @return
+         */
         Status evaluateStatusOnPayload();
+
+        /**
+         * Custom processing after payload is received
+         */
+        void onPayloadReceived(BaseAncHomeVisitAction ancHomeVisitAction);
     }
 
     public static class ValidationException extends Exception {

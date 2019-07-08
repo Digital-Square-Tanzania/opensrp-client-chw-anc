@@ -68,4 +68,10 @@
     <string name="anc_visit_done">%1$s visite fait</string>
     <string name="less_than_twenty_four">moins de 24 hr</string>
 
+    <string name="primary_care_giver">Gardienne</string>
+    <string name="family_head">Chef de famille</string>
+
+    <string name="anc_home_visit_danger_signs">Signes de danger</string>
+    <string name="danger_signs_counselling">Conseils sur les signes de danger</string>
+    <string name="not_done">N\'a pas été fait</string>
 </resources>

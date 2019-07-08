@@ -94,7 +94,7 @@ public interface BaseAncHomeVisitContract {
 
         void calculateActions(View view, MemberObject memberObject, BaseAncHomeVisitContract.InteractorCallBack callBack);
 
-        void submitVisit(String memberID, Map<String, BaseAncHomeVisitAction> map, InteractorCallBack callBack);
+        void submitVisit(boolean editMode, String memberID, Map<String, BaseAncHomeVisitAction> map, InteractorCallBack callBack);
     }
 
     interface InteractorCallBack {

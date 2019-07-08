@@ -184,7 +184,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     public static String getFirstObjectKey(JSONObject jsonObject) {
         try {
             JSONArray jsonArray = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
-            if(jsonArray.length() > 0){
+            if (jsonArray.length() > 0) {
                 return jsonArray.getJSONObject(0).getString(JsonFormConstants.KEY);
 
             }
@@ -243,6 +243,6 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
 
 
     public static void populateForm(JSONObject jsonObject, Map<String, List<VisitDetail>> details) {
-
+        Timber.v("populateForm");
     }
 }

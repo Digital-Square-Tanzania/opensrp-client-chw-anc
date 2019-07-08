@@ -10,7 +10,6 @@ import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.util.Utils;
 
 import java.io.Serializable;
-import java.util.Date;
 
 import static org.smartregister.util.Utils.getName;
 

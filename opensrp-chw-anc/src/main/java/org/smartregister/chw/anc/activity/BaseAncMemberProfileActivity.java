@@ -61,7 +61,9 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     private BaseAncFloatingMenu baseAncFloatingMenu;
     private ImageView imageViewCross;
     protected View view_anc_record, view_last_visit_row, view_most_due_overdue_row, view_family_row;
-    private TextView tvLastVisitDate, tvUpComingServices, tvFamilyStatus, textview_record_reccuring_visit;
+    private TextView tvLastVisitDate;
+    private TextView tvUpComingServices;
+    private TextView tvFamilyStatus;
     private ProgressBar progressBar;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
 
@@ -171,7 +173,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         textViewUndo = findViewById(R.id.textview_undo);
         imageViewCross = findViewById(R.id.cross_image);
         layoutNotRecordView = findViewById(R.id.record_visit_status_bar);
-        textview_record_reccuring_visit = findViewById(R.id.textview_record_reccuring_visit);
+        TextView textview_record_reccuring_visit = findViewById(R.id.textview_record_reccuring_visit);
 
 
         textview_record_anc_visit.setOnClickListener(this);

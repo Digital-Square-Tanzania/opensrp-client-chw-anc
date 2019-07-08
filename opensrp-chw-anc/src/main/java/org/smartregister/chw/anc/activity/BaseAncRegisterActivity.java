@@ -31,6 +31,8 @@ import org.smartregister.view.fragment.BaseRegisterFragment;
 import java.util.Arrays;
 import java.util.List;
 
+import timber.log.Timber;
+
 import static org.smartregister.chw.anc.util.Constants.EVENT_TYPE.UPDATE_EVENT_CONDITION;
 
 public class BaseAncRegisterActivity extends BaseRegisterActivity implements BaseAncRegisterContract.View {
@@ -101,7 +103,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
 
     @Override
     public void onRegistrationSaved(boolean isEdit) {
-
+        Timber.v("onRegistrationSaved");
     }
 
     public Class getAncFormActivity() {

@@ -21,9 +21,9 @@ public class BaseAncHomeVisitAction {
 
     private String title;
     private String subTitle;
-    private Status actionStatus = Status.PENDING;
-    private ScheduleStatus scheduleStatus = ScheduleStatus.DUE;
-    private boolean optional = true;
+    private Status actionStatus;
+    private ScheduleStatus scheduleStatus;
+    private boolean optional;
     private BaseAncHomeVisitFragment destinationFragment;
     private String formName;
     private String jsonPayload;
@@ -31,70 +31,93 @@ public class BaseAncHomeVisitAction {
     private AncHomeVisitActionHelper ancHomeVisitActionHelper;
     private VaccineWrapper vaccineWrapper;
     private ServiceWrapper serviceWrapper;
-    private Map<String, List<VisitDetail>> details = new HashMap<>();
+    private Map<String, List<VisitDetail>> details;
     private Context context;
 
-    private BaseAncHomeVisitAction() {
+    private BaseAncHomeVisitAction(Builder builder) throws ValidationException {
+        this.title = builder.title;
+        this.subTitle = builder.subTitle;
+        this.actionStatus = builder.actionStatus;
+        this.scheduleStatus = builder.scheduleStatus;
+        this.optional = builder.optional;
+        this.destinationFragment = builder.destinationFragment;
+        this.formName = builder.formName;
+        this.ancHomeVisitActionHelper = builder.ancHomeVisitActionHelper;
+        this.vaccineWrapper = builder.vaccineWrapper;
+        this.serviceWrapper = builder.serviceWrapper;
+        this.details = builder.details;
+        this.context = builder.context;
+
+        validateMe();
+        initialize();
     }
 
     public static class Builder {
-        private BaseAncHomeVisitAction action;
+        private String title;
+        private String subTitle;
+        private Status actionStatus = Status.PENDING;
+        private ScheduleStatus scheduleStatus = ScheduleStatus.DUE;
+        private boolean optional = true;
+        private BaseAncHomeVisitFragment destinationFragment;
+        private String formName;
+        private AncHomeVisitActionHelper ancHomeVisitActionHelper;
+        private VaccineWrapper vaccineWrapper;
+        private ServiceWrapper serviceWrapper;
+        private Map<String, List<VisitDetail>> details = new HashMap<>();
+        private Context context;
 
         public Builder(Context context, String title) {
-            action = new BaseAncHomeVisitAction();
-            action.context = context;
-            action.title = title;
+            this.context = context;
+            this.title = title;
         }
 
         public Builder withSubtitle(String subTitle) {
-            action.subTitle = subTitle;
+            this.subTitle = subTitle;
             return this;
         }
 
         public Builder withOptional(boolean optional) {
-            action.optional = optional;
+            this.optional = optional;
             return this;
         }
 
         public Builder withDestinationFragment(BaseAncHomeVisitFragment destinationFragment) {
-            action.destinationFragment = destinationFragment;
+            this.destinationFragment = destinationFragment;
             return this;
         }
 
         public Builder withFormName(String formName) {
-            action.formName = formName;
+            this.formName = formName;
             return this;
         }
 
         public Builder withDetails(Map<String, List<VisitDetail>> details) {
-            action.details = details;
+            this.details = details;
             return this;
         }
 
         public Builder withHelper(AncHomeVisitActionHelper ancHomeVisitActionHelper) {
-            action.ancHomeVisitActionHelper = ancHomeVisitActionHelper;
+            this.ancHomeVisitActionHelper = ancHomeVisitActionHelper;
             return this;
         }
 
         public Builder withScheduleStatus(ScheduleStatus scheduleStatus) {
-            action.scheduleStatus = scheduleStatus;
+            this.scheduleStatus = scheduleStatus;
             return this;
         }
 
         public Builder withVaccineWrapper(VaccineWrapper vaccineWrapper) {
-            action.vaccineWrapper = vaccineWrapper;
+            this.vaccineWrapper = vaccineWrapper;
             return this;
         }
 
         public Builder withServiceWrapper(ServiceWrapper serviceWrapper) {
-            action.serviceWrapper = serviceWrapper;
+            this.serviceWrapper = serviceWrapper;
             return this;
         }
 
         public BaseAncHomeVisitAction build() throws ValidationException {
-            action.validateMe();
-            action.initialize();
-            return action;
+            return new BaseAncHomeVisitAction(this);
         }
     }
 

@@ -25,6 +25,8 @@ public class VisitDetailsRepository extends BaseRepository {
     private static final String DETAILS = "details";
     private static final String HUMAN_READABLE = "human_readable_details";
     private static final String JSON_DETAILS = "json_details";
+    private static final String PRE_PROCESSED_JSON = "preprocessed_details";
+    private static final String PRE_PROCESSED_TYPE = "preprocessed_type";
     private static final String PROCESSED = "processed";
     private static final String UPDATED_AT = "updated_at";
     private static final String CREATED_AT = "created_at";
@@ -35,6 +37,8 @@ public class VisitDetailsRepository extends BaseRepository {
                     + VISIT_ID + " VARCHAR NULL, "
                     + VISIT_KEY + " VARCHAR NULL, "
                     + JSON_DETAILS + " VARCHAR NULL, "
+                    + PRE_PROCESSED_JSON + " VARCHAR NULL, "
+                    + PRE_PROCESSED_TYPE + " VARCHAR NULL, "
                     + DETAILS + " VARCHAR NULL, "
                     + HUMAN_READABLE + " VARCHAR NULL, "
                     + PROCESSED + " Integer NULL, "
@@ -47,7 +51,7 @@ public class VisitDetailsRepository extends BaseRepository {
             + ");";
 
 
-    private String[] VISIT_DETAILS_COLUMNS = {VISIT_ID, VISIT_KEY, VISIT_DETAILS_ID, HUMAN_READABLE, JSON_DETAILS, DETAILS, PROCESSED, UPDATED_AT, CREATED_AT};
+    private String[] VISIT_DETAILS_COLUMNS = {VISIT_ID, VISIT_KEY, VISIT_DETAILS_ID, HUMAN_READABLE, JSON_DETAILS, PRE_PROCESSED_JSON, PRE_PROCESSED_TYPE, DETAILS, PROCESSED, UPDATED_AT, CREATED_AT};
 
     public VisitDetailsRepository(Repository repository) {
         super(repository);
@@ -64,6 +68,8 @@ public class VisitDetailsRepository extends BaseRepository {
         values.put(VISIT_ID, visitDetail.getVisitId());
         values.put(VISIT_KEY, visitDetail.getVisitKey());
         values.put(JSON_DETAILS, visitDetail.getJsonDetails());
+        values.put(PRE_PROCESSED_JSON, visitDetail.getPreProcessedJson());
+        values.put(PRE_PROCESSED_TYPE, visitDetail.getPreProcessedType());
         values.put(DETAILS, visitDetail.getDetails());
         values.put(HUMAN_READABLE, visitDetail.getHumanReadable());
         values.put(PROCESSED, visitDetail.getProcessed() ? 1 : 0);
@@ -120,6 +126,8 @@ public class VisitDetailsRepository extends BaseRepository {
                     visitDetail.setVisitDetailsId(cursor.getString(cursor.getColumnIndex(VISIT_DETAILS_ID)));
                     visitDetail.setVisitKey(cursor.getString(cursor.getColumnIndex(VISIT_KEY)));
                     visitDetail.setJsonDetails(cursor.getString(cursor.getColumnIndex(JSON_DETAILS)));
+                    visitDetail.setPreProcessedJson(cursor.getString(cursor.getColumnIndex(PRE_PROCESSED_JSON)));
+                    visitDetail.setPreProcessedType(cursor.getString(cursor.getColumnIndex(PRE_PROCESSED_TYPE)));
                     visitDetail.setDetails(cursor.getString(cursor.getColumnIndex(DETAILS)));
                     visitDetail.setHumanReadable(cursor.getString(cursor.getColumnIndex(HUMAN_READABLE)));
                     visitDetail.setProcessed(cursor.getInt(cursor.getColumnIndex(PROCESSED)) == 1);

@@ -1,5 +1,7 @@
 package org.smartregister.chw.anc.util;
 
+import com.vijay.jsonwizard.constants.JsonFormConstants;
+
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
 import org.json.JSONArray;
@@ -151,5 +153,17 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         serviceRecord.setTeam(allSharedPreferences.fetchDefaultTeam(providerId));
         serviceRecord.setTeamId(allSharedPreferences.fetchDefaultTeamId(providerId));
         return serviceRecord;
+    }
+
+    public static String getFirstObjectKey(JSONObject jsonObject) {
+        try {
+            JSONArray jsonArray = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
+            if(jsonArray.length() > 0){
+                return jsonArray.getJSONObject(0).getString(JsonFormConstants.KEY);
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+        return "";
     }
 }

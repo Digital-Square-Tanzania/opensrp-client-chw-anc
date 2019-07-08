@@ -16,7 +16,7 @@
     <color name="family_actionbar">#30383C</color>
     <color name="family_navigation">#596468</color>
 
-    <color name="other_member_profile_bg">#FAFAFA</color>
+    <color name="anc_member_profile_bg">#FAFAFA</color>
     <color name="due_profile_blue">#218CC5</color>
 
     <!-- home visit -->
@@ -38,5 +38,6 @@
     <color name="medical_text_inner">#212121</color>
 
     <color name="black_tranparent_50">#80232323</color>
+
 
 </resources>

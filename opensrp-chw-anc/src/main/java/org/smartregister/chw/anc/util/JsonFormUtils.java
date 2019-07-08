@@ -156,6 +156,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         return serviceRecord;
     }
 
+
     /**
      * Returns a value from json form field
      *
@@ -179,6 +180,20 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         }
         return "";
     }
+
+    public static String getFirstObjectKey(JSONObject jsonObject) {
+        try {
+            JSONArray jsonArray = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
+            if(jsonArray.length() > 0){
+                return jsonArray.getJSONObject(0).getString(JsonFormConstants.KEY);
+
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+        return "";
+    }
+
 
     /**
      * Returns a value from a native forms checkbox field and returns an comma separated string

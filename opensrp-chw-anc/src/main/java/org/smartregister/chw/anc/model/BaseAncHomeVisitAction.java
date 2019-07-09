@@ -160,6 +160,9 @@ public class BaseAncHomeVisitAction {
                 destinationFragment.setJsonObject(jsob);
             }
 
+            if(details != null && details.size() > 0){
+                setJsonPayload(this.jsonPayload); // force reload
+            }
         } catch (Exception e) {
             e.printStackTrace();
         }

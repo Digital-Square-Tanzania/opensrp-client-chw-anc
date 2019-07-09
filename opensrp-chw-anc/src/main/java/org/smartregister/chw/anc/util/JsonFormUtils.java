@@ -291,18 +291,21 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         JSONArray values = new JSONArray();
         if (jo.getString(JsonFormConstants.TYPE).equalsIgnoreCase(JsonFormConstants.CHECK_BOX)) {
             JSONArray options = jo.getJSONArray(JsonFormConstants.OPTIONS_FIELD_NAME);
-            HashMap<String, String> valueMap = new HashMap<>();
+            HashMap<String, NameID> valueMap = new HashMap<>();
+
             int x = options.length() - 1;
             while (x >= 0) {
                 JSONObject object = options.getJSONObject(x);
-                valueMap.put(object.getString(JsonFormConstants.TEXT), object.getString(JsonFormConstants.KEY));
+                valueMap.put(object.getString(JsonFormConstants.TEXT), new NameID(object.getString(JsonFormConstants.KEY), x));
                 x--;
             }
 
             for (VisitDetail d : visitDetails) {
                 String val = getValue(d);
-                if (StringUtils.isNotBlank(val)) {
-                    values.put(valueMap.get(val));
+                NameID nid = valueMap.get(val);
+                if (nid != null) {
+                    values.put(nid.name);
+                    options.getJSONObject(nid.position).put(JsonFormConstants.VALUE, true);
                 }
             }
         } else {
@@ -321,5 +324,15 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
             return "";
 
         return dirtyString.substring(1, dirtyString.length() - 1);
+    }
+
+    private static class NameID{
+        private String name;
+        private int position;
+
+        public NameID(String name, int position) {
+            this.name = name;
+            this.position = position;
+        }
     }
 }

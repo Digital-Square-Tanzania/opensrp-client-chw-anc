@@ -152,12 +152,16 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
                     AncLibrary.getInstance().visitRepository().getLatestVisit(memberID, Constants.EVENT_TYPE.ANC_HOME_VISIT).getVisitId() :
                     JsonFormUtils.generateRandomUUIDString();
 
+
+            // reset database
+            if(editMode){
+                AncLibrary.getInstance().visitRepository().deleteVisit(visitID);
+                AncLibrary.getInstance().visitDetailsRepository().deleteVisitDetails(visitID);
+            }
+
             Visit visit = Util.eventToVisit(baseEvent, visitID);
             visit.setPreProcessedJson(new Gson().toJson(baseEvent));
             AncLibrary.getInstance().visitRepository().addVisit(visit);
-
-            // reset visit details
-            AncLibrary.getInstance().visitDetailsRepository().deleteVisitDetails(visit.getVisitId());
 
             if (visit.getVisitDetails() != null) {
                 for (Map.Entry<String, List<VisitDetail>> entry : visit.getVisitDetails().entrySet()) {

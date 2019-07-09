@@ -24,7 +24,6 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitFragmentContract;
-import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitFragmentModel;
 import org.smartregister.chw.anc.presenter.BaseAncHomeVisitFragmentPresenter;
 import org.smartregister.chw.anc.util.JsonFormUtils;
@@ -36,9 +35,7 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.List;
 import java.util.Locale;
-import java.util.Map;
 
 import timber.log.Timber;
 

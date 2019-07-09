@@ -26,7 +26,7 @@ public class VisitUtils {
         return visits;
     }
 
-    private static Map<String, List<VisitDetail>> getVisitGroups(List<VisitDetail> detailList) {
+    public static Map<String, List<VisitDetail>> getVisitGroups(List<VisitDetail> detailList) {
         Map<String, List<VisitDetail>> visitMap = new HashMap<>();
 
         for (VisitDetail visitDetail : detailList) {

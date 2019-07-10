@@ -33,7 +33,7 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
 
     @NotNull
     @Override
-    public BaseAncHomeVisitAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent,
+    public BaseAncHomeVisitAdapter.MyViewHolder onCreateViewHolder(@NotNull ViewGroup parent,
                                                                    int viewType) {
         View v = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.anc_home_visit_item, parent, false);

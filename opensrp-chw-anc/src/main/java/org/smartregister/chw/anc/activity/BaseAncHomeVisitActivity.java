@@ -268,6 +268,11 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     }
 
     @Override
+    public Context getMyContext() {
+        return this;
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constants.REQUEST_CODE_GET_JSON) {
             if (resultCode == Activity.RESULT_OK) {

@@ -98,6 +98,7 @@ public class VisitRepository extends BaseRepository {
         try {
             ContentValues values = new ContentValues();
             values.put(PROCESSED, 1);
+            values.put(PRE_PROCESSED, "");
             getWritableDatabase().update(VISIT_TABLE, values, VISIT_ID + " = ?", new String[]{visitID});
         } catch (Exception e) {
             Timber.e(Log.getStackTraceString(e));
@@ -115,6 +116,7 @@ public class VisitRepository extends BaseRepository {
                     Visit visit = new Visit();
                     visit.setVisitId(cursor.getString(cursor.getColumnIndex(VISIT_ID)));
                     visit.setVisitType(cursor.getString(cursor.getColumnIndex(VISIT_TYPE)));
+                    visit.setPreProcessedJson(cursor.getString(cursor.getColumnIndex(PRE_PROCESSED)));
                     visit.setBaseEntityId(cursor.getString(cursor.getColumnIndex(BASE_ENTITY_ID)));
                     visit.setDate(new Date(Long.parseLong(cursor.getString(cursor.getColumnIndex(VISIT_DATE)))));
                     visit.setJson(cursor.getString(cursor.getColumnIndex(VISIT_JSON)));

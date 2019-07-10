@@ -24,6 +24,7 @@ import org.json.JSONArray;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitFragmentContract;
+import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitFragmentModel;
 import org.smartregister.chw.anc.presenter.BaseAncHomeVisitFragmentPresenter;
 import org.smartregister.chw.anc.util.JsonFormUtils;
@@ -35,7 +36,9 @@ import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -68,7 +71,19 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     private DatePicker datePicker;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
 
-    public static BaseAncHomeVisitFragment getInstance(BaseAncHomeVisitContract.VisitView view, String form_name, JSONObject jsonObject, String count) {
+    public static BaseAncHomeVisitFragment getInstance(final BaseAncHomeVisitContract.VisitView view, String form_name, JSONObject jsonObject, Map<String, List<VisitDetail>> details, String count) {
+        if (StringUtils.isNotBlank(form_name) && jsonObject == null) {
+            try {
+                jsonObject = JsonFormUtils.getFormAsJson(form_name);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+
+        if (details != null && details.size() > 0) {
+            JsonFormUtils.populateForm(jsonObject, details);
+        }
+
         BaseAncHomeVisitFragment fragment = new BaseAncHomeVisitFragment();
         fragment.setHomeVisitView(view);
         fragment.setJsonObject(jsonObject);
@@ -315,11 +330,11 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
         if (getQuestionType() == QuestionType.BOOLEAN) {
             if (radioButtonNo != null && radioButtonYes != null) {
                 if (value.equalsIgnoreCase("Yes")) {
-                    radioButtonYes.setSelected(true);
-                    radioButtonNo.setSelected(false);
+                    radioButtonYes.setChecked(true);
+                    radioButtonNo.setChecked(false);
                 } else {
-                    radioButtonYes.setSelected(false);
-                    radioButtonNo.setSelected(true);
+                    radioButtonYes.setChecked(false);
+                    radioButtonNo.setChecked(true);
                 }
             }
         } else if (getQuestionType() == QuestionType.DATE_SELECTOR) {

@@ -40,19 +40,17 @@ public class HomeVisitIntent extends IntentService {
     private VisitRepository visitRepository;
     private VisitDetailsRepository visitDetailsRepository;
 
-    public HomeVisitIntent(String name) {
-        super(name);
+    public HomeVisitIntent() {
+        super("HomeVisitService");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-
         try {
             processVisits();
         } catch (Exception e) {
             Timber.e(e);
         }
-
     }
 
     @Override
@@ -62,9 +60,14 @@ public class HomeVisitIntent extends IntentService {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void processVisits() throws Exception {
+    /**
+     * Process all the visit older than 24 hours
+     *
+     * @throws Exception
+     */
+    protected void processVisits() throws Exception {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR_OF_DAY, -12);
+        calendar.add(Calendar.HOUR_OF_DAY, -24);
 
         List<Visit> visits = visitRepository.getAllUnSynced(calendar.getTime().getTime());
         for (Visit v : visits) {

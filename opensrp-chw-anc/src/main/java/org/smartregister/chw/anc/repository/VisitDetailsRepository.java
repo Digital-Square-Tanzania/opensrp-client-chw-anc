@@ -91,6 +91,8 @@ public class VisitDetailsRepository extends BaseRepository {
         try {
             ContentValues values = new ContentValues();
             values.put(PROCESSED, 1);
+            values.put(PRE_PROCESSED_JSON, "");
+            values.put(PRE_PROCESSED_TYPE, "");
             getWritableDatabase().update(VISIT_DETAILS_TABLE, values, VISIT_DETAILS_ID + " = ?", new String[]{visitDetailsID});
         } catch (Exception e) {
             Timber.e(Log.getStackTraceString(e));

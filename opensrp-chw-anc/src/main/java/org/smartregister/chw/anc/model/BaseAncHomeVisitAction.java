@@ -152,17 +152,14 @@ public class BaseAncHomeVisitAction {
                 }
             }
 
-            if(destinationFragment != null
-                    && destinationFragment.getJsonObject() != null
-                    && details != null && details.size() > 0){
-                JSONObject jsob = destinationFragment.getJsonObject();
-                JsonFormUtils.populateForm(jsob, details);
-                destinationFragment.setJsonObject(jsob);
+            if(details != null && details.size() > 0){
+                if(destinationFragment != null){
+                    setJsonPayload(destinationFragment.getJsonObject().toString()); // force reload
+                }else{
+                    setJsonPayload(this.jsonPayload); // force reload
+                }
             }
 
-            if(details != null && details.size() > 0){
-                setJsonPayload(this.jsonPayload); // force reload
-            }
         } catch (Exception e) {
             e.printStackTrace();
         }

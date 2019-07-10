@@ -71,8 +71,9 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     private DatePicker datePicker;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
 
-    public static BaseAncHomeVisitFragment getInstance(final BaseAncHomeVisitContract.VisitView view, String form_name, JSONObject jsonObject, Map<String, List<VisitDetail>> details, String count) {
-        if (StringUtils.isNotBlank(form_name) && jsonObject == null) {
+    public static BaseAncHomeVisitFragment getInstance(final BaseAncHomeVisitContract.VisitView view, String form_name, JSONObject json, Map<String, List<VisitDetail>> details, String count) {
+        JSONObject jsonObject = json;
+        if (StringUtils.isNotBlank(form_name) && json == null) {
             try {
                 jsonObject = JsonFormUtils.getFormAsJson(form_name);
             } catch (Exception e) {
@@ -332,7 +333,7 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
                 if (value.equalsIgnoreCase("Yes")) {
                     radioButtonYes.setChecked(true);
                     radioButtonNo.setChecked(false);
-                } else {
+                } else if (value.equalsIgnoreCase("No")) {
                     radioButtonYes.setChecked(false);
                     radioButtonNo.setChecked(true);
                 }

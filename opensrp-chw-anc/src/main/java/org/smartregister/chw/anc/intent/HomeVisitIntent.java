@@ -3,7 +3,9 @@ package org.smartregister.chw.anc.intent;
 import android.app.IntentService;
 import android.content.Intent;
 
+import com.fatboyindustrial.gsonjodatime.Converters;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.smartregister.chw.anc.AncLibrary;
@@ -71,7 +73,10 @@ public class HomeVisitIntent extends IntentService {
 
         List<Visit> visits = visitRepository.getAllUnSynced(calendar.getTime().getTime());
         for (Visit v : visits) {
-            if (v.getProcessed()) {
+            if (!v.getProcessed()) {
+
+                // process details
+                processVisitDetails(v.getVisitId(), v.getBaseEntityId());
 
                 // persist to db
                 Event baseEvent = new Gson().fromJson(v.getPreProcessedJson(), Event.class);
@@ -79,8 +84,6 @@ public class HomeVisitIntent extends IntentService {
                 Util.processEvent(allSharedPreferences, baseEvent);
 
                 visitRepository.completeProcessing(v.getVisitId());
-                // process details
-                processVisitDetails(v.getVisitId(), v.getBaseEntityId());
             }
         }
     }
@@ -99,14 +102,15 @@ public class HomeVisitIntent extends IntentService {
                             vaccineWrappers.add(new Gson().fromJson(visitDetail.getPreProcessedJson(), VaccineWrapper.class));
                             break;
                         case "service":
-                            serviceWrappers.add(new Gson().fromJson(visitDetail.getPreProcessedJson(), ServiceWrapper.class));
+                            Gson gson = Converters.registerDateTime(new GsonBuilder()).create();
+                            serviceWrappers.add(gson.fromJson(visitDetail.getPreProcessedJson(), ServiceWrapper.class));
                             break;
                         default:
                             break;
                     }
                 }
-                visitDetailsRepository.completeProcessing(visitDetail.getVisitId());
             }
+            visitDetailsRepository.completeProcessing(visitDetail.getVisitId());
         }
 
         if (vaccineWrappers.size() > 0)
@@ -114,6 +118,7 @@ public class HomeVisitIntent extends IntentService {
 
         if (serviceWrappers.size() > 0)
             saveServices(serviceWrappers, baseEntityID);
+
     }
 
     protected void saveVaccines(List<VaccineWrapper> tags, String baseEntityID) {

@@ -2,7 +2,9 @@ package org.smartregister.chw.anc.interactor;
 
 import android.support.annotation.VisibleForTesting;
 
+import com.fatboyindustrial.gsonjodatime.Converters;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -154,7 +156,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
 
             // reset database
-            if(editMode){
+            if (editMode) {
                 AncLibrary.getInstance().visitRepository().deleteVisit(visitID);
                 AncLibrary.getInstance().visitDetailsRepository().deleteVisitDetails(visitID);
             }
@@ -177,7 +179,8 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
                             ServiceWrapper serviceWrapper = serviceWrapperMap.get(d.getVisitKey());
                             if (serviceWrapper != null) {
-                                String json = new Gson().toJson(serviceWrapper);
+                                Gson gson = Converters.registerDateTime(new GsonBuilder()).create();
+                                String json = gson.toJson(serviceWrapper);
                                 d.setPreProcessedJson(json);
                                 d.setPreProcessedType("service");
                             }

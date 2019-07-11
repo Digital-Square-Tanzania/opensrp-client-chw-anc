@@ -1,5 +1,11 @@
 package org.smartregister.chw.anc.util;
 
+import android.content.Context;
+
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.domain.Visit;
@@ -173,6 +179,14 @@ public class Util {
 
     public static int getMemberProfileImageResourceIDentifier(String entityType) {
         return R.mipmap.ic_member;
+    }
+
+    public static String gestationAgeString(String lmp, Context context, boolean full) {
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
+        int ga = Days.daysBetween(formatter.parseDateTime(lmp), new DateTime()).getDays() / 7;
+        if (full)
+            return String.format(context.getString(R.string.gest_age), String.valueOf(ga)) + " " + context.getString(R.string.gest_age_weeks);
+        return String.valueOf(ga);
     }
 
 }

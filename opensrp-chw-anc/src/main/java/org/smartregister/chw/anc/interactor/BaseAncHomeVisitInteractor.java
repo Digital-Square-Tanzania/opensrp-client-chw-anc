@@ -166,20 +166,21 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
             AncLibrary.getInstance().visitRepository().addVisit(visit);
 
             if (visit.getVisitDetails() != null) {
+                Gson gson = Converters.registerDateTime(new GsonBuilder()).create();
+
                 for (Map.Entry<String, List<VisitDetail>> entry : visit.getVisitDetails().entrySet()) {
                     if (entry.getValue() != null) {
                         for (VisitDetail d : entry.getValue()) {
 
                             VaccineWrapper vaccineWrapper = vaccineWrapperMap.get(d.getVisitKey());
                             if (vaccineWrapper != null) {
-                                String json = new Gson().toJson(vaccineWrapper);
+                                String json = gson.toJson(vaccineWrapper);
                                 d.setPreProcessedJson(json);
                                 d.setPreProcessedType("vaccine");
                             }
 
                             ServiceWrapper serviceWrapper = serviceWrapperMap.get(d.getVisitKey());
                             if (serviceWrapper != null) {
-                                Gson gson = Converters.registerDateTime(new GsonBuilder()).create();
                                 String json = gson.toJson(serviceWrapper);
                                 d.setPreProcessedJson(json);
                                 d.setPreProcessedType("service");

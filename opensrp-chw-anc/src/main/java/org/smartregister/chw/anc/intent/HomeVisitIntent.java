@@ -93,24 +93,24 @@ public class HomeVisitIntent extends IntentService {
         List<VaccineWrapper> vaccineWrappers = new ArrayList<>();
         List<ServiceWrapper> serviceWrappers = new ArrayList<>();
 
+        Gson gson = Converters.registerDateTime(new GsonBuilder()).create();
         for (VisitDetail visitDetail : visitDetailList) {
             if (!visitDetail.getProcessed()) {
 
                 if (StringUtils.isNotBlank(visitDetail.getPreProcessedType()) && StringUtils.isNotBlank(visitDetail.getPreProcessedJson())) {
                     switch (visitDetail.getPreProcessedType()) {
                         case "vaccine":
-                            vaccineWrappers.add(new Gson().fromJson(visitDetail.getPreProcessedJson(), VaccineWrapper.class));
+                            vaccineWrappers.add(gson.fromJson(visitDetail.getPreProcessedJson(), VaccineWrapper.class));
                             break;
                         case "service":
-                            Gson gson = Converters.registerDateTime(new GsonBuilder()).create();
                             serviceWrappers.add(gson.fromJson(visitDetail.getPreProcessedJson(), ServiceWrapper.class));
                             break;
                         default:
                             break;
                     }
                 }
+                visitDetailsRepository.completeProcessing(visitDetail.getVisitDetailsId());
             }
-            visitDetailsRepository.completeProcessing(visitDetail.getVisitId());
         }
 
         if (vaccineWrappers.size() > 0)

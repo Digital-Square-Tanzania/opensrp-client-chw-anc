@@ -16,7 +16,7 @@ import java.util.List;
 public class BaseAncMedicalHistoryPresenterTest extends BaseUnitTest {
 
     @Mock
-    BaseAncMedicalHistoryContract.Interactor interactor;
+    private BaseAncMedicalHistoryContract.Interactor interactor;
 
     @Mock
     private BaseAncMedicalHistoryContract.View view;

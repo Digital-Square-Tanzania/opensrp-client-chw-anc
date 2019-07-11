@@ -8,6 +8,8 @@ import org.smartregister.receiver.SyncStatusBroadcastReceiver;
 import org.smartregister.repository.Repository;
 import org.smartregister.view.activity.DrishtiApplication;
 
+import timber.log.Timber;
+
 public class SampleDefaultApplication extends DrishtiApplication {
 
     @Override
@@ -35,6 +37,7 @@ public class SampleDefaultApplication extends DrishtiApplication {
 
     @Override
     public void logoutCurrentUser() {
+        Timber.v("logoutCurrentUser");
     }
 
     public static synchronized SampleDefaultApplication getInstance() {

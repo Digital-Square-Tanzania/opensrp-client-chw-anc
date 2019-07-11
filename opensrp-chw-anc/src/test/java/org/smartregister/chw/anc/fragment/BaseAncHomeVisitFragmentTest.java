@@ -21,13 +21,11 @@ public class BaseAncHomeVisitFragmentTest extends BaseUnitTest {
 
     private Context context = RuntimeEnvironment.application;
 
-    private AppCompatActivity activity;
-
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         fragment = new BaseAncHomeVisitFragment();
-        activity = Robolectric.buildActivity(AppCompatActivity.class).create().get();
+        AppCompatActivity activity = Robolectric.buildActivity(AppCompatActivity.class).create().get();
         activity.setContentView(R.layout.activity_base_anc_homevisit);
         fragment.show(activity.getFragmentManager(), "HOMEVISIT");
     }

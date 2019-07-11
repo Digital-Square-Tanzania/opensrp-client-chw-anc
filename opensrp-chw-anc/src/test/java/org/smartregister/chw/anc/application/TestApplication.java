@@ -4,7 +4,7 @@ import org.smartregister.chw.opensrp_chw_anc.R;
 
 import timber.log.Timber;
 
-public class TestApplication extends SampleApplication {
+public class TestApplication extends SampleDefaultApplication {
     @Override
     public void onCreate() {
         super.onCreate();

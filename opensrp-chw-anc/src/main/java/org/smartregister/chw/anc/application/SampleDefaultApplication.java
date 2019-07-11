@@ -3,18 +3,12 @@ package org.smartregister.chw.anc.application;
 import org.smartregister.Context;
 import org.smartregister.CoreLibrary;
 import org.smartregister.chw.anc.AncLibrary;
-import org.smartregister.commonregistry.CommonFtsObject;
 import org.smartregister.configurableviews.ConfigurableViewsLibrary;
 import org.smartregister.receiver.SyncStatusBroadcastReceiver;
 import org.smartregister.repository.Repository;
-import org.smartregister.repository.UniqueIdRepository;
 import org.smartregister.view.activity.DrishtiApplication;
 
-public class SampleApplication extends DrishtiApplication {
-    private static final String TAG = SampleApplication.class.getCanonicalName();
-
-    private static CommonFtsObject commonFtsObject;
-    private UniqueIdRepository uniqueIdRepository;
+public class SampleDefaultApplication extends DrishtiApplication {
 
     @Override
     public void onCreate() {
@@ -43,8 +37,8 @@ public class SampleApplication extends DrishtiApplication {
     public void logoutCurrentUser() {
     }
 
-    public static synchronized SampleApplication getInstance() {
-        return (SampleApplication) mInstance;
+    public static synchronized SampleDefaultApplication getInstance() {
+        return (SampleDefaultApplication) mInstance;
     }
 
     @Override

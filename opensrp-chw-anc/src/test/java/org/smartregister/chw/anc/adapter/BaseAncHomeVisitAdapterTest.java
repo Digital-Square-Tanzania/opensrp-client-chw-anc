@@ -3,9 +3,11 @@ package org.smartregister.chw.anc.adapter;
 import android.content.Context;
 import android.view.View;
 
+import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
+import org.mockito.MockitoAnnotations;
 import org.powermock.reflect.Whitebox;
 import org.robolectric.RuntimeEnvironment;
 import org.smartregister.chw.anc.BaseUnitTest;
@@ -29,6 +31,11 @@ public class BaseAncHomeVisitAdapterTest extends BaseUnitTest {
     private LinkedHashMap<String, BaseAncHomeVisitAction> myDataset;
 
     private Context context = RuntimeEnvironment.application;
+
+    @Before
+    public void setUp() {
+        MockitoAnnotations.initMocks(this);
+    }
 
     @Test
     public void testGetCircleColorComplete() throws Exception {
@@ -69,6 +76,14 @@ public class BaseAncHomeVisitAdapterTest extends BaseUnitTest {
         Whitebox.invokeMethod(ancHomeVisitAdapter, "bindClickListener", view, ancHomeVisitAction);
 
         verify(view).setOnClickListener(any(View.OnClickListener.class));
+    }
+
+    @Test
+    public void testGetItemCount() {
+        Mockito.doReturn(10).when(myDataset).size();
+        BaseAncHomeVisitAdapter ancHomeVisitAdapter = new BaseAncHomeVisitAdapter(context, view, myDataset);
+
+        assertEquals(10, ancHomeVisitAdapter.getItemCount());
     }
 
 }

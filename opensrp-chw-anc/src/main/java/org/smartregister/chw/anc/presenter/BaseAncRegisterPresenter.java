@@ -12,6 +12,8 @@ import org.smartregister.util.Utils;
 import java.lang.ref.WeakReference;
 import java.util.List;
 
+import timber.log.Timber;
+
 public class BaseAncRegisterPresenter implements BaseAncRegisterContract.Presenter, BaseAncRegisterContract.InteractorCallBack {
 
     public static final String TAG = BaseAncRegisterPresenter.class.getName();
@@ -49,7 +51,7 @@ public class BaseAncRegisterPresenter implements BaseAncRegisterContract.Present
             getView().showProgressDialog(R.string.saving_dialog_title);
             interactor.saveRegistration(jsonString, isEditMode, this, table);
         } catch (Exception e) {
-            Log.e(TAG, Log.getStackTraceString(e));
+            Timber.e(Log.getStackTraceString(e));
         }
     }
 

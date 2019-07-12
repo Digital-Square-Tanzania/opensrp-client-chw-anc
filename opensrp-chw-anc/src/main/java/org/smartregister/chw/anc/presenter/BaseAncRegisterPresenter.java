@@ -1,6 +1,6 @@
 package org.smartregister.chw.anc.presenter;
 
-import android.util.Log;
+
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -51,7 +51,7 @@ public class BaseAncRegisterPresenter implements BaseAncRegisterContract.Present
             getView().showProgressDialog(R.string.saving_dialog_title);
             interactor.saveRegistration(jsonString, isEditMode, this, table);
         } catch (Exception e) {
-            Timber.e(Log.getStackTraceString(e));
+            Timber.e(e);
         }
     }
 

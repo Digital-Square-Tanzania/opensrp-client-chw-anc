@@ -1,6 +1,6 @@
 package org.smartregister.chw.anc.model;
 
-import android.util.Log;
+
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
@@ -19,6 +19,8 @@ import org.smartregister.domain.ResponseStatus;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
+
+import timber.log.Timber;
 
 public class BaseAncRegisterFragmentModel implements BaseAncRegisterFragmentContract.Model {
 
@@ -92,7 +94,7 @@ public class BaseAncRegisterFragmentModel implements BaseAncRegisterFragmentCont
                 return new JSONArray(response.payload());
             }
         } catch (Exception e) {
-            Log.e(getClass().getName(), "", e);
+            Timber.e(e);
         }
         return null;
     }

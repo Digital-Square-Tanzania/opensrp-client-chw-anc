@@ -1,6 +1,6 @@
 package org.smartregister.chw.anc_sample.application;
 
-import android.util.Log;
+
 
 import com.evernote.android.job.JobManager;
 

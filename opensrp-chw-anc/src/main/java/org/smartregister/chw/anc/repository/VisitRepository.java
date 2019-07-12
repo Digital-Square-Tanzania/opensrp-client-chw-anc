@@ -2,7 +2,7 @@ package org.smartregister.chw.anc.repository;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.util.Log;
+
 
 import net.sqlcipher.database.SQLiteDatabase;
 
@@ -90,7 +90,7 @@ public class VisitRepository extends BaseRepository {
             getWritableDatabase().delete(VISIT_TABLE, VISIT_ID + "= ?", new String[]{visitID});
             getWritableDatabase().delete(VisitDetailsRepository.VISIT_DETAILS_TABLE, VISIT_ID + "= ?", new String[]{visitID});
         } catch (Exception e) {
-            Timber.e(Log.getStackTraceString(e));
+            Timber.e(e);
         }
     }
 
@@ -101,7 +101,7 @@ public class VisitRepository extends BaseRepository {
             values.put(PRE_PROCESSED, "");
             getWritableDatabase().update(VISIT_TABLE, values, VISIT_ID + " = ?", new String[]{visitID});
         } catch (Exception e) {
-            Timber.e(Log.getStackTraceString(e));
+            Timber.e(e);
         }
     }
 
@@ -144,7 +144,7 @@ public class VisitRepository extends BaseRepository {
             cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, PROCESSED + " = ? AND UPDATED_AT <= ? ", new String[]{"0", last_edit_time.toString()}, null, null, VISIT_DATE + " DESC ", null);
             visits = readVisits(cursor);
         } catch (Exception e) {
-            Timber.e(Log.getStackTraceString(e));
+            Timber.e(e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -160,7 +160,7 @@ public class VisitRepository extends BaseRepository {
             cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, BASE_ENTITY_ID + " = ? AND " + VISIT_TYPE + " = ? ", new String[]{baseEntityID, visitType}, null, null, VISIT_DATE + " DESC ", null);
             visits = readVisits(cursor);
         } catch (Exception e) {
-            Timber.e(Log.getStackTraceString(e));
+            Timber.e(e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -176,7 +176,7 @@ public class VisitRepository extends BaseRepository {
             cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, FORM_SUBMISSION_ID + " = ? ", new String[]{formSubmissionID}, null, null, VISIT_DATE + " DESC ", "1");
             visits = readVisits(cursor);
         } catch (Exception e) {
-            Timber.e(Log.getStackTraceString(e));
+            Timber.e(e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -192,7 +192,7 @@ public class VisitRepository extends BaseRepository {
             cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, BASE_ENTITY_ID + " = ? AND " + VISIT_TYPE + " = ? ", new String[]{baseEntityID, visitType}, null, null, VISIT_DATE + " DESC ", "1");
             visits = readVisits(cursor);
         } catch (Exception e) {
-            Timber.e(Log.getStackTraceString(e));
+            Timber.e(e);
         } finally {
             if (cursor != null) {
                 cursor.close();
@@ -207,7 +207,7 @@ public class VisitRepository extends BaseRepository {
             values.put(DBConstants.KEY.VISIT_NOT_DONE, date);
             getWritableDatabase().update(Constants.TABLES.ANC_MEMBERS, values, DBConstants.KEY.BASE_ENTITY_ID + " = ?", new String[]{baseID});
         } catch (Exception e) {
-            Timber.e(Log.getStackTraceString(e));
+            Timber.e(e);
         }
     }
 

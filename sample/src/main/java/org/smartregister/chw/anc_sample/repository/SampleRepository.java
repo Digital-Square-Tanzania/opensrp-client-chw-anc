@@ -1,7 +1,6 @@
 package org.smartregister.chw.anc_sample.repository;
 
 import android.content.Context;
-import android.util.Log;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
@@ -14,6 +13,8 @@ import org.smartregister.repository.EventClientRepository;
 import org.smartregister.repository.Repository;
 import org.smartregister.repository.SettingsRepository;
 import org.smartregister.repository.UniqueIdRepository;
+
+import timber.log.Timber;
 
 /**
  * Created by keyman on 28/07/2017.
@@ -51,7 +52,7 @@ public class SampleRepository extends Repository {
 
     @Override
     public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
-        Log.w(SampleRepository.class.getName(),
+        Timber.w(SampleRepository.class.getName(),
                 "Upgrading database from version " + oldVersion + " to "
                         + newVersion + ", which will destroy all old data");
 
@@ -90,7 +91,7 @@ public class SampleRepository extends Repository {
             }
             return readableDatabase;
         } catch (Exception e) {
-            Log.e(TAG, "Database Error. " + e.getMessage());
+            Timber.e("Database Error. " + e.getMessage());
             return null;
         }
 

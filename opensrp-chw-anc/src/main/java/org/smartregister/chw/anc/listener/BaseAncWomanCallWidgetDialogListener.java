@@ -1,11 +1,13 @@
 package org.smartregister.chw.anc.listener;
 
-import android.util.Log;
+
 import android.view.View;
 
 import org.smartregister.chw.anc.fragment.BaseAncWomanCallDialogFragment;
 import org.smartregister.chw.anc.util.Utils;
 import org.smartregister.chw.opensrp_chw_anc.R;
+
+import timber.log.Timber;
 
 public class BaseAncWomanCallWidgetDialogListener implements View.OnClickListener {
 
@@ -28,7 +30,7 @@ public class BaseAncWomanCallWidgetDialogListener implements View.OnClickListene
                 Utils.launchDialer(callDialogFragment.getActivity(), callDialogFragment, phoneNumber);
                 callDialogFragment.dismiss();
             } catch (Exception e) {
-                Log.e(TAG, e.toString());
+                Timber.e(e);
             }
         } else if (i == R.id.call_anc_woman_phone) {
             try {
@@ -36,7 +38,7 @@ public class BaseAncWomanCallWidgetDialogListener implements View.OnClickListene
                 Utils.launchDialer(callDialogFragment.getActivity(), callDialogFragment, phoneNumber);
                 callDialogFragment.dismiss();
             } catch (Exception e) {
-                Log.e(TAG, e.toString());
+                Timber.e(e);
             }
         }
     }

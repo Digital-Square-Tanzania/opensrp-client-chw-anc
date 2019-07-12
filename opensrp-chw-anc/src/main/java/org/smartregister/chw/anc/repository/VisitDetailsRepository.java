@@ -2,7 +2,7 @@ package org.smartregister.chw.anc.repository;
 
 import android.content.ContentValues;
 import android.database.Cursor;
-import android.util.Log;
+
 
 import net.sqlcipher.database.SQLiteDatabase;
 
@@ -95,7 +95,7 @@ public class VisitDetailsRepository extends BaseRepository {
             values.put(PRE_PROCESSED_TYPE, "");
             getWritableDatabase().update(VISIT_DETAILS_TABLE, values, VISIT_DETAILS_ID + " = ?", new String[]{visitDetailsID});
         } catch (Exception e) {
-            Timber.e(Log.getStackTraceString(e));
+            Timber.e(e);
         }
     }
 
@@ -106,7 +106,7 @@ public class VisitDetailsRepository extends BaseRepository {
             cursor = getReadableDatabase().query(VISIT_DETAILS_TABLE, VISIT_DETAILS_COLUMNS, VISIT_ID + " = ? ", new String[]{visitID}, null, null, null, null);
             visitDetails = readVisitDetails(cursor);
         } catch (Exception e) {
-            Timber.e(Log.getStackTraceString(e));
+            Timber.e(e);
         } finally {
             if (cursor != null) {
                 cursor.close();

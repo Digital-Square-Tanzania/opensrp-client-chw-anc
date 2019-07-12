@@ -11,8 +11,6 @@ import timber.log.Timber;
 
 public class BaseAncWomanCallWidgetDialogListener implements View.OnClickListener {
 
-    private static String TAG = BaseAncWomanCallWidgetDialogListener.class.getCanonicalName();
-
     private BaseAncWomanCallDialogFragment callDialogFragment;
 
     public BaseAncWomanCallWidgetDialogListener(BaseAncWomanCallDialogFragment dialogFragment) {

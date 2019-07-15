@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.MenuRes;
 import android.support.design.bottomnavigation.LabelVisibilityMode;
 import android.support.v4.app.Fragment;
-
 import android.widget.Toast;
 
 import com.vijay.jsonwizard.constants.JsonFormConstants;
@@ -36,7 +35,7 @@ import timber.log.Timber;
 import static org.smartregister.chw.anc.util.Constants.EVENT_TYPE.UPDATE_EVENT_CONDITION;
 
 public class BaseAncRegisterActivity extends BaseRegisterActivity implements BaseAncRegisterContract.View {
-    public static final String TAG = BaseAncRegisterActivity.class.getCanonicalName();
+
     protected String BASE_ENTITY_ID;
     protected String ACTION;
     protected String TABLE;

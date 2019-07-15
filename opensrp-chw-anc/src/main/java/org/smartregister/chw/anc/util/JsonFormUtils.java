@@ -261,10 +261,10 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
                     List<VisitDetail> detailList = details.get(jo.getString(JsonFormConstants.KEY));
 
                     if (detailList != null) {
-                        if (detailList.size() == 1) {
-                            jo.put(JsonFormConstants.VALUE, getValue(detailList.get(0)));
-                        } else if (detailList.size() > 1) {
+                        if (jo.getString(JsonFormConstants.TYPE).equalsIgnoreCase(JsonFormConstants.CHECK_BOX)) {
                             jo.put(JsonFormConstants.VALUE, getValue(jo, detailList));
+                        }else{
+                            jo.put(JsonFormConstants.VALUE, getValue(detailList.get(0)));
                         }
                     }
 

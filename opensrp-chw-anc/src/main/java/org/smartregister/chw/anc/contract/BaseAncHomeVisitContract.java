@@ -61,6 +61,7 @@ public interface BaseAncHomeVisitContract {
          */
         void onDialogOptionUpdated(String jsonString);
 
+        Context getMyContext();
     }
 
     interface Presenter {

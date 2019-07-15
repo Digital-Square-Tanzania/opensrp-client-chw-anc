@@ -127,7 +127,7 @@ public class BaseAncHomeVisitAction {
                 JSONObject jsonObject = JsonFormUtils.getFormAsJson(formName);
 
                 // update the form details
-                if (details.size() > 0) {
+                if (details != null && details.size() > 0) {
                     JsonFormUtils.populateForm(jsonObject, details);
                 }
 
@@ -150,8 +150,16 @@ public class BaseAncHomeVisitAction {
                 if (status != null) {
                     this.scheduleStatus = status;
                 }
-
             }
+
+            if(details != null && details.size() > 0){
+                if(destinationFragment != null){
+                    setJsonPayload(destinationFragment.getJsonObject().toString()); // force reload
+                }else{
+                    setJsonPayload(this.jsonPayload); // force reload
+                }
+            }
+
         } catch (Exception e) {
             e.printStackTrace();
         }

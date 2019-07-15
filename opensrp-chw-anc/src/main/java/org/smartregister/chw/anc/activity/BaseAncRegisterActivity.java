@@ -6,7 +6,6 @@ import android.os.Bundle;
 import android.support.annotation.MenuRes;
 import android.support.design.bottomnavigation.LabelVisibilityMode;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.widget.Toast;
 
 import com.vijay.jsonwizard.constants.JsonFormConstants;
@@ -36,7 +35,7 @@ import timber.log.Timber;
 import static org.smartregister.chw.anc.util.Constants.EVENT_TYPE.UPDATE_EVENT_CONDITION;
 
 public class BaseAncRegisterActivity extends BaseRegisterActivity implements BaseAncRegisterContract.View {
-    public static final String TAG = BaseAncRegisterActivity.class.getCanonicalName();
+
     protected String BASE_ENTITY_ID;
     protected String ACTION;
     protected String TABLE;
@@ -75,7 +74,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
                 presenter().startForm(formName, entityId, metaData, getLocationID());
             }
         } catch (Exception e) {
-            Log.e(TAG, Log.getStackTraceString(e));
+            Timber.e(e);
             displayToast(getString(R.string.error_unable_to_start_form));
         }
     }
@@ -124,14 +123,14 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
             try {
                 String jsonString = data.getStringExtra(Constants.JSON_FORM_EXTRA.JSON);
                 String table = data.getStringExtra(Constants.ACTIVITY_PAYLOAD.TABLE_NAME);
-                Log.d("JSONResult", jsonString);
+                Timber.d("JSONResult", jsonString);
 
                 JSONObject form = new JSONObject(jsonString);
                 if (form.getString(Constants.ENCOUNTER_TYPE).equals(getRegisterEventType())) {
                     presenter().saveForm(jsonString, false, table);
                 }
             } catch (Exception e) {
-                Log.e(TAG, Log.getStackTraceString(e));
+                Timber.e(e);
             }
 
         }
@@ -211,7 +210,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
 //            process the form
             try {
                 String jsonString = data.getStringExtra(Constants.JSON_FORM_EXTRA.JSON);
-                Log.d("JSONResult", jsonString);
+                Timber.d("JSONResult", jsonString);
 
                 JSONObject form = new JSONObject(jsonString);
                 String encounter_type = form.getString(Constants.JSON_FORM_EXTRA.ENCOUNTER_TYPE);
@@ -222,7 +221,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
                     presenter().saveForm(form.toString(), true, TABLE);
                 }
             } catch (Exception e) {
-                Log.e(TAG, Log.getStackTraceString(e));
+                Timber.e(e);
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
         } else {

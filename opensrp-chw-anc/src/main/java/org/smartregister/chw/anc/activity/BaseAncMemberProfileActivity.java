@@ -23,7 +23,6 @@ import org.apache.commons.lang3.StringUtils;
 import org.ei.drishti.dto.AlertStatus;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
-import org.joda.time.LocalDate;
 import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.custom_views.BaseAncFloatingMenu;
 import org.smartregister.chw.anc.domain.MemberObject;
@@ -207,7 +206,9 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
         Visit lastVisit = getInstance().visitRepository().getLatestVisit(MEMBER_OBJECT.getBaseEntityId(), Constants.EVENT_TYPE.ANC_HOME_VISIT);
         if (lastVisit != null) {
-            boolean within24Hours = Days.daysBetween(new LocalDate(lastVisit.getDate()), new LocalDate()).getDays() < 1;
+            boolean within24Hours =
+                    (Days.daysBetween(new DateTime(lastVisit.getCreatedAt()), new DateTime()).getDays() < 1) &&
+                            (Days.daysBetween(new DateTime(lastVisit.getDate()), new DateTime()).getDays() <= 1);
             setUpEditViews(true, within24Hours, lastVisit.getDate().getTime());
             return;
         }

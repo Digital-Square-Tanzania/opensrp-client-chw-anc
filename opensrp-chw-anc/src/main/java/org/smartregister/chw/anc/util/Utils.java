@@ -22,7 +22,7 @@ import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-import android.util.Log;
+
 import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
@@ -39,6 +39,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+
+import timber.log.Timber;
 
 public class Utils {
 
@@ -112,7 +114,7 @@ public class Utils {
                 Days days = Days.daysBetween(duration.withTimeAtStartOfDay(), DateTime.now().withTimeAtStartOfDay());
                 return days.getDays();
             } catch (Exception e) {
-                Log.e(TAG, e.toString(), e);
+                Timber.e(e);
             }
         }
         return null;
@@ -149,7 +151,7 @@ public class Utils {
             if (((TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE)).getLine1Number()
                     == null) {
 
-                Log.i(TAG, "No dial application so we launch copy to clipboard...");
+                Timber.i("No dial application so we launch copy to clipboard...");
 
                 ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
                 ClipData clip = ClipData.newPlainText(activity.getText(R.string.copied_phone_number), phoneNumber);

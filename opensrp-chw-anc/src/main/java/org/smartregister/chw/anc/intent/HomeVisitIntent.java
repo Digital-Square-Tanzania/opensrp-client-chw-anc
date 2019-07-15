@@ -3,7 +3,9 @@ package org.smartregister.chw.anc.intent;
 import android.app.IntentService;
 import android.content.Intent;
 
+import com.fatboyindustrial.gsonjodatime.Converters;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.smartregister.chw.anc.AncLibrary;
@@ -40,19 +42,17 @@ public class HomeVisitIntent extends IntentService {
     private VisitRepository visitRepository;
     private VisitDetailsRepository visitDetailsRepository;
 
-    public HomeVisitIntent(String name) {
-        super(name);
+    public HomeVisitIntent() {
+        super("HomeVisitService");
     }
 
     @Override
     protected void onHandleIntent(Intent intent) {
-
         try {
             processVisits();
         } catch (Exception e) {
             Timber.e(e);
         }
-
     }
 
     @Override
@@ -62,13 +62,21 @@ public class HomeVisitIntent extends IntentService {
         return super.onStartCommand(intent, flags, startId);
     }
 
-    private void processVisits() throws Exception {
+    /**
+     * Process all the visit older than 24 hours
+     *
+     * @throws Exception
+     */
+    protected void processVisits() throws Exception {
         Calendar calendar = Calendar.getInstance();
-        calendar.add(Calendar.HOUR_OF_DAY, -12);
+        calendar.add(Calendar.HOUR_OF_DAY, -24);
 
         List<Visit> visits = visitRepository.getAllUnSynced(calendar.getTime().getTime());
         for (Visit v : visits) {
-            if (v.getProcessed()) {
+            if (!v.getProcessed()) {
+
+                // process details
+                processVisitDetails(v.getVisitId(), v.getBaseEntityId());
 
                 // persist to db
                 Event baseEvent = new Gson().fromJson(v.getPreProcessedJson(), Event.class);
@@ -76,8 +84,6 @@ public class HomeVisitIntent extends IntentService {
                 Util.processEvent(allSharedPreferences, baseEvent);
 
                 visitRepository.completeProcessing(v.getVisitId());
-                // process details
-                processVisitDetails(v.getVisitId(), v.getBaseEntityId());
             }
         }
     }
@@ -87,22 +93,23 @@ public class HomeVisitIntent extends IntentService {
         List<VaccineWrapper> vaccineWrappers = new ArrayList<>();
         List<ServiceWrapper> serviceWrappers = new ArrayList<>();
 
+        Gson gson = Converters.registerDateTime(new GsonBuilder()).create();
         for (VisitDetail visitDetail : visitDetailList) {
             if (!visitDetail.getProcessed()) {
 
                 if (StringUtils.isNotBlank(visitDetail.getPreProcessedType()) && StringUtils.isNotBlank(visitDetail.getPreProcessedJson())) {
                     switch (visitDetail.getPreProcessedType()) {
                         case "vaccine":
-                            vaccineWrappers.add(new Gson().fromJson(visitDetail.getPreProcessedJson(), VaccineWrapper.class));
+                            vaccineWrappers.add(gson.fromJson(visitDetail.getPreProcessedJson(), VaccineWrapper.class));
                             break;
                         case "service":
-                            serviceWrappers.add(new Gson().fromJson(visitDetail.getPreProcessedJson(), ServiceWrapper.class));
+                            serviceWrappers.add(gson.fromJson(visitDetail.getPreProcessedJson(), ServiceWrapper.class));
                             break;
                         default:
                             break;
                     }
                 }
-                visitDetailsRepository.completeProcessing(visitDetail.getVisitId());
+                visitDetailsRepository.completeProcessing(visitDetail.getVisitDetailsId());
             }
         }
 
@@ -111,6 +118,7 @@ public class HomeVisitIntent extends IntentService {
 
         if (serviceWrappers.size() > 0)
             saveServices(serviceWrappers, baseEntityID);
+
     }
 
     protected void saveVaccines(List<VaccineWrapper> tags, String baseEntityID) {

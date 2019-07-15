@@ -9,7 +9,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-import android.util.Log;
+
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -268,6 +268,11 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     }
 
     @Override
+    public Context getMyContext() {
+        return this;
+    }
+
+    @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == Constants.REQUEST_CODE_GET_JSON) {
             if (resultCode == Activity.RESULT_OK) {
@@ -278,7 +283,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
                         ancHomeVisitAction.setJsonPayload(jsonString);
                     }
                 } catch (Exception e) {
-                    Timber.e(Log.getStackTraceString(e));
+                    Timber.e(e);
                     Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
                 }
             } else {
@@ -319,7 +324,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
                 }).setPositiveButton(com.vijay.jsonwizard.R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Log.d(TAG, "No button on dialog in " + JsonFormActivity.class.getCanonicalName());
+                        Timber.d( "No button on dialog in " + JsonFormActivity.class.getCanonicalName());
                     }
                 }).create();
 

@@ -2,7 +2,9 @@ package org.smartregister.chw.anc.interactor;
 
 import android.support.annotation.VisibleForTesting;
 
+import com.fatboyindustrial.gsonjodatime.Converters;
 import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
@@ -152,28 +154,34 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
                     AncLibrary.getInstance().visitRepository().getLatestVisit(memberID, Constants.EVENT_TYPE.ANC_HOME_VISIT).getVisitId() :
                     JsonFormUtils.generateRandomUUIDString();
 
+
+            // reset database
+            if (editMode) {
+                AncLibrary.getInstance().visitRepository().deleteVisit(visitID);
+                AncLibrary.getInstance().visitDetailsRepository().deleteVisitDetails(visitID);
+            }
+
             Visit visit = Util.eventToVisit(baseEvent, visitID);
             visit.setPreProcessedJson(new Gson().toJson(baseEvent));
             AncLibrary.getInstance().visitRepository().addVisit(visit);
 
-            // reset visit details
-            AncLibrary.getInstance().visitDetailsRepository().deleteVisitDetails(visit.getVisitId());
-
             if (visit.getVisitDetails() != null) {
+                Gson gson = Converters.registerDateTime(new GsonBuilder()).create();
+
                 for (Map.Entry<String, List<VisitDetail>> entry : visit.getVisitDetails().entrySet()) {
                     if (entry.getValue() != null) {
                         for (VisitDetail d : entry.getValue()) {
 
                             VaccineWrapper vaccineWrapper = vaccineWrapperMap.get(d.getVisitKey());
                             if (vaccineWrapper != null) {
-                                String json = new Gson().toJson(vaccineWrapper);
+                                String json = gson.toJson(vaccineWrapper);
                                 d.setPreProcessedJson(json);
                                 d.setPreProcessedType("vaccine");
                             }
 
                             ServiceWrapper serviceWrapper = serviceWrapperMap.get(d.getVisitKey());
                             if (serviceWrapper != null) {
-                                String json = new Gson().toJson(serviceWrapper);
+                                String json = gson.toJson(serviceWrapper);
                                 d.setPreProcessedJson(json);
                                 d.setPreProcessedType("service");
                             }

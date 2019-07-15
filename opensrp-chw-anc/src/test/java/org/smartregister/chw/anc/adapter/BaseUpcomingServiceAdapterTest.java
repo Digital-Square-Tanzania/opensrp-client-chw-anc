@@ -23,7 +23,7 @@ import static org.junit.Assert.assertEquals;
 public class BaseUpcomingServiceAdapterTest extends BaseUnitTest {
 
     @Mock
-    BaseUpcomingServiceAdapter.MyViewHolder holder;
+    private BaseUpcomingServiceAdapter.MyViewHolder holder;
 
     private Context context = RuntimeEnvironment.application;
 

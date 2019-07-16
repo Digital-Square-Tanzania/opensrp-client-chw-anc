@@ -29,23 +29,19 @@ public class Util {
 
     private static String[] default_obs = {"start", "end", "deviceid", "subscriberid", "simserial", "phonenumber"};
 
-    public static void processEvent(AllSharedPreferences allSharedPreferences, Event baseEvent) throws Exception {
+    public static void addEvent(AllSharedPreferences allSharedPreferences, Event baseEvent) throws Exception {
         if (baseEvent != null) {
             JsonFormUtils.tagEvent(allSharedPreferences, baseEvent);
             JSONObject eventJson = new JSONObject(JsonFormUtils.gson.toJson(baseEvent));
-            processEvent(baseEvent.getBaseEntityId(), eventJson);
+            getSyncHelper().addEvent(baseEvent.getBaseEntityId(), eventJson);
         }
     }
 
-    public static void processEvent(String baseEntityID, JSONObject eventJson) throws Exception {
-        if (eventJson != null) {
-            getSyncHelper().addEvent(baseEntityID, eventJson);
-
-            long lastSyncTimeStamp = getAllSharedPreferences().fetchLastUpdatedAtDate(0);
-            Date lastSyncDate = new Date(lastSyncTimeStamp);
-            getClientProcessorForJava().processClient(getSyncHelper().getEvents(lastSyncDate, BaseRepository.TYPE_Unsynced));
-            getAllSharedPreferences().saveLastUpdatedAtDate(lastSyncDate.getTime());
-        }
+    public static void startClientProcessing() throws Exception {
+        long lastSyncTimeStamp = getAllSharedPreferences().fetchLastUpdatedAtDate(0);
+        Date lastSyncDate = new Date(lastSyncTimeStamp);
+        getClientProcessorForJava().processClient(getSyncHelper().getEvents(lastSyncDate, BaseRepository.TYPE_Unsynced));
+        getAllSharedPreferences().saveLastUpdatedAtDate(lastSyncDate.getTime());
     }
 
     public static ECSyncHelper getSyncHelper() {

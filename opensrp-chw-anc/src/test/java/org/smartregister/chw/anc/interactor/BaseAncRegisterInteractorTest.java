@@ -1,4 +1,6 @@
 package org.smartregister.chw.anc.interactor;
 
-public class BaseAncRegisterInteractorTest {
+import org.smartregister.chw.anc.BaseUnitTest;
+
+public class BaseAncRegisterInteractorTest extends BaseUnitTest {
 }

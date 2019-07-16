@@ -81,11 +81,14 @@ public class HomeVisitIntent extends IntentService {
                 // persist to db
                 Event baseEvent = new Gson().fromJson(v.getPreProcessedJson(), Event.class);
                 AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
-                Util.processEvent(allSharedPreferences, baseEvent);
+                Util.addEvent(allSharedPreferences, baseEvent);
 
                 visitRepository.completeProcessing(v.getVisitId());
             }
         }
+
+        // process after all events are saved
+        Util.startClientProcessing();
     }
 
     private void processVisitDetails(String visitID, String baseEntityID) {

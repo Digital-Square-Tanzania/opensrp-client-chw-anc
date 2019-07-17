@@ -1,4 +1,4 @@
-package org.smartregister.chw.anc_sample;
+package org.smartregister.chw.pnc;
 
 import org.junit.Test;
 

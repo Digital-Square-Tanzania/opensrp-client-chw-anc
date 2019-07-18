@@ -19,19 +19,25 @@ import org.smartregister.repository.BaseRepository;
 import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.helper.ECSyncHelper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import timber.log.Timber;
 
 import static org.smartregister.chw.anc.AncLibrary.getInstance;
+import static org.smartregister.chw.anc.util.JsonFormUtils.cleanString;
 import static org.smartregister.util.Utils.getAllSharedPreferences;
 
 public class Util {
+
+    private static SimpleDateFormat source_sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+    private static SimpleDateFormat dest_sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
 
     private static String[] default_obs = {"start", "end", "deviceid", "subscriberid", "simserial", "phonenumber"};
 
@@ -49,7 +55,7 @@ public class Util {
 
             long lastSyncTimeStamp = getAllSharedPreferences().fetchLastUpdatedAtDate(0);
             Date lastSyncDate = new Date(lastSyncTimeStamp);
-            getClientProcessorForJava().processClient(getSyncHelper().getEvents(lastSyncDate, BaseRepository.TYPE_Unsynced));
+            getClientProcessorForJava().processClient(getSyncHelper().getEvents(lastSyncDate, BaseRepository.TYPE_Unprocessed));
             getAllSharedPreferences().saveLastUpdatedAtDate(lastSyncDate.getTime());
         }
     }
@@ -86,8 +92,16 @@ public class Util {
                     detail.setVisitDetailsId(JsonFormUtils.generateRandomUUIDString());
                     detail.setVisitId(visit.getVisitId());
                     detail.setVisitKey(obs.getFormSubmissionField());
-                    detail.setDetails(obs.getValues().toString());
-                    detail.setHumanReadable(obs.getHumanReadableValues().toString());
+
+                    if (detail.getVisitKey().contains("date")) {
+                        // parse the
+                        detail.setDetails(getFormattedDate(source_sdf, dest_sdf, cleanString(obs.getValues().toString())));
+                        detail.setHumanReadable(getFormattedDate(source_sdf, dest_sdf, cleanString(obs.getHumanReadableValues().toString())));
+                    } else {
+                        detail.setDetails(cleanString(obs.getValues().toString()));
+                        detail.setHumanReadable(cleanString(obs.getHumanReadableValues().toString()));
+                    }
+
                     detail.setJsonDetails(new JSONObject(JsonFormUtils.gson.toJson(obs)).toString());
                     detail.setProcessed(false);
                     detail.setCreatedAt(new Date());
@@ -105,6 +119,16 @@ public class Util {
 
         visit.setVisitDetails(details);
         return visit;
+    }
+
+    public static String getFormattedDate(SimpleDateFormat source_sdf, SimpleDateFormat dest_sdf, String value) {
+        try {
+            Date date = source_sdf.parse(value);
+            return dest_sdf.format(date);
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+        return value;
     }
 
     // executed before processing
@@ -157,8 +181,16 @@ public class Util {
                     detail.setVisitDetailsId(org.smartregister.chw.anc.util.JsonFormUtils.generateRandomUUIDString());
                     detail.setVisitId(visit.getVisitId());
                     detail.setVisitKey(obs.getFormSubmissionField());
-                    detail.setDetails(obs.getValues().toString());
-                    detail.setHumanReadable(obs.getHumanReadableValues().toString());
+
+                    if (detail.getVisitKey().contains("date")) {
+                        // parse the
+                        detail.setDetails(getFormattedDate(source_sdf, dest_sdf, cleanString(obs.getValues().toString())));
+                        detail.setHumanReadable(getFormattedDate(source_sdf, dest_sdf, cleanString(obs.getHumanReadableValues().toString())));
+                    } else {
+                        detail.setDetails(cleanString(obs.getValues().toString()));
+                        detail.setHumanReadable(cleanString(obs.getHumanReadableValues().toString()));
+                    }
+
                     detail.setProcessed(true);
                     detail.setCreatedAt(new Date());
                     detail.setUpdatedAt(new Date());

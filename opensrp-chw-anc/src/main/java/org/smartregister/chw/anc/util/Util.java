@@ -2,6 +2,8 @@ package org.smartregister.chw.anc.util;
 
 import android.content.Context;
 
+import net.sqlcipher.database.SQLiteDatabase;
+
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
@@ -137,16 +139,28 @@ public class Util {
     }
 
     public static void processAncHomeVisit(EventClient baseEvent) {
+        processAncHomeVisit(baseEvent, null);
+    }
+
+    public static void processAncHomeVisit(EventClient baseEvent, SQLiteDatabase database) {
         try {
             Visit visit = getInstance().visitRepository().getVisitByFormSubmissionID(baseEvent.getEvent().getFormSubmissionId());
             if (visit == null) {
                 visit = eventToVisit(baseEvent.getEvent());
-                getInstance().visitRepository().addVisit(visit);
+                if (database != null) {
+                    getInstance().visitRepository().addVisit(visit, database);
+                } else {
+                    getInstance().visitRepository().addVisit(visit);
+                }
                 if (visit.getVisitDetails() != null) {
                     for (Map.Entry<String, List<VisitDetail>> entry : visit.getVisitDetails().entrySet()) {
                         if (entry.getValue() != null) {
                             for (VisitDetail detail : entry.getValue()) {
-                                getInstance().visitDetailsRepository().addVisitDetails(detail);
+                                if (database != null) {
+                                    getInstance().visitDetailsRepository().addVisitDetails(detail, database);
+                                } else {
+                                    getInstance().visitDetailsRepository().addVisitDetails(detail);
+                                }
                             }
                         }
                     }

@@ -3,7 +3,6 @@ package org.smartregister.chw.anc.repository;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.smartregister.chw.anc.domain.Visit;
@@ -77,10 +76,13 @@ public class VisitRepository extends BaseRepository {
     }
 
     public void addVisit(Visit visit) {
+        addVisit(visit, getWritableDatabase());
+    }
+
+    public void addVisit(Visit visit, SQLiteDatabase database) {
         if (visit == null) {
             return;
         }
-        SQLiteDatabase database = getWritableDatabase();
         // Handle updated home visit details
         database.insert(VISIT_TABLE, null, createValues(visit));
     }

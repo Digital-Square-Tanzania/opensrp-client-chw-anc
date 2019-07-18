@@ -1,4 +1,6 @@
 package org.smartregister.chw.anc.provider;
 
-public class AncRegisterProviderTest {
+import org.smartregister.chw.anc.BaseUnitTest;
+
+public class AncRegisterProviderTest extends BaseUnitTest {
 }

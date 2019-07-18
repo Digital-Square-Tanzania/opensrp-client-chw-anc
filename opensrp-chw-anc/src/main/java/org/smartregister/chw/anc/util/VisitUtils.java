@@ -13,17 +13,25 @@ public class VisitUtils {
 
     public static List<Visit> getVisits(String memberID) {
 
-        List<Visit> visits = new ArrayList<>(AncLibrary.getInstance().visitRepository().getVisits(memberID, Constants.EVENT_TYPE.ANC_HOME_VISIT));
+        List<Visit> visits = getVisitsOnly(memberID);
 
         int x = 0;
         while (visits.size() > x) {
             Visit visit = visits.get(x);
-            List<VisitDetail> detailList = AncLibrary.getInstance().visitDetailsRepository().getVisits(visit.getVisitId());
+            List<VisitDetail> detailList = getVisitDetailsOnly(visit.getVisitId());
             visits.get(x).setVisitDetails(getVisitGroups(detailList));
             x++;
         }
 
         return visits;
+    }
+
+    public static List<Visit> getVisitsOnly(String memberID) {
+        return new ArrayList<>(AncLibrary.getInstance().visitRepository().getVisits(memberID, Constants.EVENT_TYPE.ANC_HOME_VISIT));
+    }
+
+    public static List<VisitDetail> getVisitDetailsOnly(String visitID) {
+        return AncLibrary.getInstance().visitDetailsRepository().getVisits(visitID);
     }
 
     public static Map<String, List<VisitDetail>> getVisitGroups(List<VisitDetail> detailList) {

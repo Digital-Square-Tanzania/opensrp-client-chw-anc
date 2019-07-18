@@ -13,6 +13,8 @@ import org.smartregister.chw.anc.domain.VisitDetail;
 import java.util.ArrayList;
 import java.util.List;
 
+import static org.junit.Assert.assertEquals;
+
 @PrepareForTest(VisitUtils.class)
 public class VisitUtilsTest {
     @Rule
@@ -35,6 +37,6 @@ public class VisitUtilsTest {
         BDDMockito.given(VisitUtils.getVisitsOnly(Mockito.anyString())).willReturn(visits);
         BDDMockito.given(VisitUtils.getVisitDetailsOnly(Mockito.anyString())).willReturn(visitDetails);
 
-        assert(visits.get(0).getVisitDetails().size() == visitDetails.size());
+        assertEquals(visits.get(0).getVisitDetails().size(), visitDetails.size());
     }
 }

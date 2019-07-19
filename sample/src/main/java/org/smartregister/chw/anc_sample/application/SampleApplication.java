@@ -60,6 +60,11 @@ public class SampleApplication extends DrishtiApplication {
     }
 
     @Override
+    public String getPassword() {
+        return super.getPassword();
+    }
+
+    @Override
     public void logoutCurrentUser() {
     }
 
@@ -74,7 +79,7 @@ public class SampleApplication extends DrishtiApplication {
                 repository = new SampleRepository(getInstance().getApplicationContext(), context);
             }
         } catch (UnsatisfiedLinkError e) {
-            Log.e(TAG, e.getMessage(), e);
+            //Log.e(TAG, e.getMessage(), e);
         }
         return repository;
     }

@@ -1,39 +1,22 @@
 package org.smartregister.chw.pnc.presenter;
 
-import org.apache.commons.lang3.StringUtils;
+import org.smartregister.chw.anc.contract.BaseAncRegisterFragmentContract;
+import org.smartregister.chw.anc.presenter.BaseAncRegisterFragmentPresenter;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.DBConstants;
-import org.smartregister.chw.pnc.contract.BasePncRegisterFragmentContract;
 import org.smartregister.configurableviews.model.Field;
-import org.smartregister.configurableviews.model.RegisterConfiguration;
-import org.smartregister.configurableviews.model.View;
-import org.smartregister.configurableviews.model.ViewConfiguration;
 
-import java.lang.ref.WeakReference;
 import java.util.List;
-import java.util.Set;
-import java.util.TreeSet;
 
-public class BasePncRegisterFragmentPresenter implements BasePncRegisterFragmentContract.Presenter{
-    protected WeakReference<BasePncRegisterFragmentContract.View> viewReference;
+public class BasePncRegisterFragmentPresenter extends BaseAncRegisterFragmentPresenter {
 
-    protected BasePncRegisterFragmentContract.Model model;
-
-    protected RegisterConfiguration config;
-
-    protected Set<View> visibleColumns = new TreeSet<>();
-    protected String viewConfigurationIdentifier;
-
-    public BasePncRegisterFragmentPresenter(BasePncRegisterFragmentContract.View view, BasePncRegisterFragmentContract.Model model, String viewConfigurationIdentifier) {
-        this.viewReference = new WeakReference<>(view);
-        this.model = model;
-        this.viewConfigurationIdentifier = viewConfigurationIdentifier;
-        this.config = model.defaultRegisterConfiguration();
+    public BasePncRegisterFragmentPresenter(BaseAncRegisterFragmentContract.View view, BaseAncRegisterFragmentContract.Model model, String viewConfigurationIdentifier) {
+        super(view, model, viewConfigurationIdentifier);
     }
 
     @Override
-   public void updateSortAndFilter(List<Field> filterList, Field sortField) {
-       // implement
+    public void updateSortAndFilter(List<Field> filterList, Field sortField) {
+        // implement
     }
 
     @Override
@@ -64,53 +47,4 @@ public class BasePncRegisterFragmentPresenter implements BasePncRegisterFragment
                 " ))";*/
     }
 
-    @Override
-    public void processViewConfigurations() {
-        if (StringUtils.isBlank(viewConfigurationIdentifier)) {
-            return;
-        }
-
-        ViewConfiguration viewConfiguration = model.getViewConfiguration(viewConfigurationIdentifier);
-        if (viewConfiguration != null) {
-            config = (RegisterConfiguration) viewConfiguration.getMetadata();
-            this.visibleColumns = model.getRegisterActiveColumns(viewConfigurationIdentifier);
-        }
-
-        if (config.getSearchBarText() != null && getView() != null) {
-            getView().updateSearchBarHint(config.getSearchBarText());
-        }
-    }
-
-    @Override
-    public void initializeQueries(String mainCondition) {
-        String tableName = getMainTable();
-
-        String countSelect = model.countSelect(tableName, mainCondition);
-        String mainSelect = model.mainSelect(tableName, mainCondition);
-
-        getView().initializeQueryParams(tableName, countSelect, mainSelect);
-        getView().initializeAdapter(visibleColumns);
-
-        getView().countExecute();
-        getView().filterandSortInInitializeQueries();
-    }
-
-    protected BasePncRegisterFragmentContract.View getView() {
-        if (viewReference != null)
-            return viewReference.get();
-        else
-            return null;
-    }
-
-    @Override
-    public void startSync() {
-//        implement
-
-    }
-
-    @Override
-    public void searchGlobally(String s) {
-//        implement
-
-    }
 }

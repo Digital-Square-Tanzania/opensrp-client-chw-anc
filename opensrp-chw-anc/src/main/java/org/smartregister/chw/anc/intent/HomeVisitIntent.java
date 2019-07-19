@@ -136,6 +136,7 @@ public class HomeVisitIntent extends IntentService {
             vaccine.setBaseEntityId(baseEntityID);
             vaccine.setName(tag.getName());
             vaccine.setDate(tag.getUpdatedVaccineDate().toDate());
+            vaccine.setCreatedAt(tag.getUpdatedVaccineDate().toDate());
 
             String lastChar = vaccine.getName().substring(vaccine.getName().length() - 1);
             if (StringUtils.isNumeric(lastChar)) {
@@ -173,6 +174,7 @@ public class HomeVisitIntent extends IntentService {
                     serviceRecord.setRecurringServiceId(tag.getTypeId());
                     serviceRecord.setDate(tag.getUpdatedVaccineDate().toDate());
                     serviceRecord.setValue(tag.getValue());
+                    serviceRecord.setCreatedAt(tag.getUpdatedVaccineDate().toDate());
 
                     JsonFormUtils.tagSyncMetadata(Utils.context().allSharedPreferences(), serviceRecord);
                 } else {

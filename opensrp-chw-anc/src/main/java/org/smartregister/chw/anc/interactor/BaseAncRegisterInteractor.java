@@ -59,6 +59,7 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
         AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
         Event baseEvent = JsonFormUtils.processJsonForm(allSharedPreferences, jsonString, table);
 
-        Util.processEvent(allSharedPreferences, baseEvent);
+        Util.addEvent(allSharedPreferences, baseEvent);
+        Util.startClientProcessing();
     }
 }

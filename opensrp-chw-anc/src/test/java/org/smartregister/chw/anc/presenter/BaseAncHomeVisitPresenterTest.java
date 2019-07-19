@@ -65,6 +65,7 @@ public class BaseAncHomeVisitPresenterTest extends BaseUnitTest {
         Mockito.doReturn(false).when(view).getEditMode();
         Mockito.doReturn(map).when(view).getAncHomeVisitActions();
 
+        Mockito.verify(view, Mockito.times(2)).displayProgressBar(true);
         Mockito.verify(interactor).submitVisit(false, null, map, presenter);
     }
 
@@ -80,6 +81,7 @@ public class BaseAncHomeVisitPresenterTest extends BaseUnitTest {
     public void testOnSubmitted() {
 
         presenter.onSubmitted(true);
+        Mockito.verify(view).displayProgressBar(false);
         Mockito.verify(view).close();
     }
 

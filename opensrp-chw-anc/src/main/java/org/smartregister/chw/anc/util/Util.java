@@ -10,7 +10,6 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.opensrp_chw_anc.R;
@@ -42,18 +41,18 @@ public class Util {
     private static String[] default_obs = {"start", "end", "deviceid", "subscriberid", "simserial", "phonenumber"};
 
     private static SimpleDateFormat getSourceDateFormat() {
-        return new SimpleDateFormat(AncLibrary.getInstance().getSourceDateFormat(), Locale.getDefault());
+        return new SimpleDateFormat(getInstance().getSourceDateFormat(), Locale.getDefault());
     }
 
     private static SimpleDateFormat getSaveDateFormat() {
-        return new SimpleDateFormat(AncLibrary.getInstance().getSaveDateFormat(), Locale.getDefault());
+        return new SimpleDateFormat(getInstance().getSaveDateFormat(), Locale.getDefault());
     }
 
-    public static void processEvent(AllSharedPreferences allSharedPreferences, Event baseEvent) throws Exception {
+    public static void addEvent(AllSharedPreferences allSharedPreferences, Event baseEvent) throws Exception {
         if (baseEvent != null) {
             JsonFormUtils.tagEvent(allSharedPreferences, baseEvent);
             JSONObject eventJson = new JSONObject(JsonFormUtils.gson.toJson(baseEvent));
-            processEvent(baseEvent.getBaseEntityId(), eventJson);
+            getSyncHelper().addEvent(baseEvent.getBaseEntityId(), eventJson);
         }
     }
 
@@ -66,6 +65,13 @@ public class Util {
             getClientProcessorForJava().processClient(getSyncHelper().getEvents(lastSyncDate, BaseRepository.TYPE_Unprocessed));
             getAllSharedPreferences().saveLastUpdatedAtDate(lastSyncDate.getTime());
         }
+    }
+
+    public static void startClientProcessing() throws Exception {
+        long lastSyncTimeStamp = getAllSharedPreferences().fetchLastUpdatedAtDate(0);
+        Date lastSyncDate = new Date(lastSyncTimeStamp);
+        getClientProcessorForJava().processClient(getSyncHelper().getEvents(lastSyncDate, BaseRepository.TYPE_Unsynced));
+        getAllSharedPreferences().saveLastUpdatedAtDate(lastSyncDate.getTime());
     }
 
     public static ECSyncHelper getSyncHelper() {

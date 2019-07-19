@@ -27,6 +27,8 @@ public class AncLibrary {
 
     private VisitRepository visitRepository;
     private VisitDetailsRepository visitDetailsRepository;
+    private String sourceDateFormat = "dd-MM-yyyy";
+    private String saveDateFormat = "yyyy-MM-dd";
 
     private AncLibrary(Context contextArg, Repository repositoryArg, int applicationVersion, int databaseVersion) {
         this.context = contextArg;
@@ -123,5 +125,21 @@ public class AncLibrary {
             compressor = Compressor.getDefault(context().applicationContext());
         }
         return compressor;
+    }
+
+    public String getSourceDateFormat() {
+        return sourceDateFormat;
+    }
+
+    public void setSourceDateFormat(String sourceDateFormat) {
+        this.sourceDateFormat = sourceDateFormat;
+    }
+
+    public String getSaveDateFormat() {
+        return saveDateFormat;
+    }
+
+    public void setSaveDateFormat(String saveDateFormat) {
+        this.saveDateFormat = saveDateFormat;
     }
 }

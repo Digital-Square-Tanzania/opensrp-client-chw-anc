@@ -10,6 +10,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.opensrp_chw_anc.R;
@@ -38,10 +39,15 @@ import static org.smartregister.util.Utils.getAllSharedPreferences;
 
 public class Util {
 
-    private static SimpleDateFormat source_sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-    private static SimpleDateFormat dest_sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-
     private static String[] default_obs = {"start", "end", "deviceid", "subscriberid", "simserial", "phonenumber"};
+
+    private static SimpleDateFormat getSourceDateFormat() {
+        return new SimpleDateFormat(AncLibrary.getInstance().getSourceDateFormat(), Locale.getDefault());
+    }
+
+    private static SimpleDateFormat getSaveDateFormat() {
+        return new SimpleDateFormat(AncLibrary.getInstance().getSaveDateFormat(), Locale.getDefault());
+    }
 
     public static void processEvent(AllSharedPreferences allSharedPreferences, Event baseEvent) throws Exception {
         if (baseEvent != null) {
@@ -97,8 +103,8 @@ public class Util {
 
                     if (detail.getVisitKey().contains("date")) {
                         // parse the
-                        detail.setDetails(getFormattedDate(source_sdf, dest_sdf, cleanString(obs.getValues().toString())));
-                        detail.setHumanReadable(getFormattedDate(source_sdf, dest_sdf, cleanString(obs.getHumanReadableValues().toString())));
+                        detail.setDetails(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getValues().toString())));
+                        detail.setHumanReadable(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getHumanReadableValues().toString())));
                     } else {
                         detail.setDetails(cleanString(obs.getValues().toString()));
                         detail.setHumanReadable(cleanString(obs.getHumanReadableValues().toString()));
@@ -198,8 +204,8 @@ public class Util {
 
                     if (detail.getVisitKey().contains("date")) {
                         // parse the
-                        detail.setDetails(getFormattedDate(source_sdf, dest_sdf, cleanString(obs.getValues().toString())));
-                        detail.setHumanReadable(getFormattedDate(source_sdf, dest_sdf, cleanString(obs.getHumanReadableValues().toString())));
+                        detail.setDetails(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getValues().toString())));
+                        detail.setHumanReadable(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getHumanReadableValues().toString())));
                     } else {
                         detail.setDetails(cleanString(obs.getValues().toString()));
                         detail.setHumanReadable(cleanString(obs.getHumanReadableValues().toString()));

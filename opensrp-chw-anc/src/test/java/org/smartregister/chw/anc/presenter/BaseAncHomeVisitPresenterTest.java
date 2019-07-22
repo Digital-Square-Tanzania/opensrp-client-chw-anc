@@ -21,7 +21,6 @@ import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-
 @PrepareForTest(JsonFormUtils.class)
 public class BaseAncHomeVisitPresenterTest extends BaseUnitTest {
     @Rule

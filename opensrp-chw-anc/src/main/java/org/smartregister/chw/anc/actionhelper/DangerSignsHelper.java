@@ -36,7 +36,7 @@ public class DangerSignsHelper implements BaseAncHomeVisitAction.AncHomeVisitAct
             JSONObject jsonObject = new JSONObject(jsonPayload);
             signs_present = JsonFormUtils.getCheckBoxValue(jsonObject, "danger_signs_present");
             counseling = JsonFormUtils.getValue(jsonObject, "danger_signs_counseling");
-        } catch (JSONException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }

@@ -82,7 +82,6 @@ public class Util {
         return getInstance().getClientProcessorForJava();
     }
 
-
     public static Visit eventToVisit(Event event, String visitID) throws JSONException {
         List<String> exceptions = Arrays.asList(default_obs);
 

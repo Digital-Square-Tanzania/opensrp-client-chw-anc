@@ -19,7 +19,6 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-
 import com.google.gson.Gson;
 
 import org.apache.commons.lang3.StringUtils;
@@ -205,14 +204,16 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         return (visit != null
                 && (new DateTime(visit.getDate()).getMonthOfYear() == new DateTime().getMonthOfYear())
                 && (new DateTime(visit.getDate()).getYear() == new DateTime().getYear())) ? true : false;
+    }
 
+    public Visit getVisit(String eventType) {
+        return getInstance().visitRepository().getLatestVisit(MEMBER_OBJECT.getBaseEntityId(), eventType);
     }
 
     private void displayView() {
 
-        Visit lastAncHomeVisitNotDoneEvent = getInstance().visitRepository().getLatestVisit(MEMBER_OBJECT.getBaseEntityId(), Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE);
-
-        Visit lastAncHomeVisitNotDoneUndoEvent = getInstance().visitRepository().getLatestVisit(MEMBER_OBJECT.getBaseEntityId(), Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE_UNDO);
+        Visit lastAncHomeVisitNotDoneEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE);
+        Visit lastAncHomeVisitNotDoneUndoEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE_UNDO);
 
         if (lastAncHomeVisitNotDoneUndoEvent != null
                 && lastAncHomeVisitNotDoneUndoEvent.getDate().before(lastAncHomeVisitNotDoneEvent.getDate())
@@ -221,7 +222,8 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         } else if (lastAncHomeVisitNotDoneUndoEvent == null && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
             setVisitViews();
         }
-        Visit lastVisit = getInstance().visitRepository().getLatestVisit(MEMBER_OBJECT.getBaseEntityId(), Constants.EVENT_TYPE.ANC_HOME_VISIT);
+
+        Visit lastVisit = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT);
         if (lastVisit != null) {
             boolean within24Hours =
                     (Days.daysBetween(new DateTime(lastVisit.getCreatedAt()), new DateTime()).getDays() < 1) &&
@@ -229,7 +231,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             setUpEditViews(true, within24Hours, lastVisit.getDate().getTime());
             return;
         }
-
     }
 
     private void setUpEditViews(boolean enable, boolean within24Hours, Long longDate) {
@@ -273,7 +274,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             visit.setPreProcessedJson(new Gson().toJson(event));
             getInstance().visitRepository().addVisit(visit);
         } catch (JSONException e) {
-            e.printStackTrace();
+            Timber.e(e);
         }
     }
 

@@ -1,5 +1,6 @@
 package org.smartregister.chw.anc.util;
 
+import com.google.gson.Gson;
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 
 import org.apache.commons.lang3.StringUtils;
@@ -7,14 +8,17 @@ import org.apache.commons.lang3.tuple.Triple;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.smartregister.Context;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.domain.tag.FormTag;
 import org.smartregister.immunization.domain.ServiceRecord;
 import org.smartregister.immunization.domain.Vaccine;
+import org.smartregister.location.helper.LocationHelper;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.util.FormUtils;
+import org.smartregister.view.LocationPickerView;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -82,6 +86,29 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         JSONArray fields = new JSONArray(fields_obj);
 
         return org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, encounterType, Constants.TABLES.ANC_MEMBERS);
+    }
+
+
+    public static Event undoEvent(String ancMemberBaseID, String eventType) {
+
+        Event eventMember = null;
+        try {
+            AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
+            String lastLocationId = locationId(allSharedPreferences);
+            JSONObject metadata = FormUtils.getInstance(AncLibrary.getInstance().context().applicationContext())
+                    .getFormJson("birth_certification")
+                    .getJSONObject(JsonFormUtils.METADATA);
+            metadata.put("encounter_location", lastLocationId);
+
+            eventMember = org.smartregister.util.JsonFormUtils.createEvent(new JSONArray(), metadata, formTag(allSharedPreferences), ancMemberBaseID, eventType,Constants.TABLES.ANC_MEMBERS);
+
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+
+
+        return eventMember;
     }
 
     public static Event processJsonForm(AllSharedPreferences allSharedPreferences, String jsonString, String table) {

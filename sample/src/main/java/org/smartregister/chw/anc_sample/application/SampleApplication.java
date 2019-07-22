@@ -60,6 +60,11 @@ public class SampleApplication extends DrishtiApplication {
     }
 
     @Override
+    public String getPassword() {
+        return super.getPassword();
+    }
+
+    @Override
     public void logoutCurrentUser() {
     }
 

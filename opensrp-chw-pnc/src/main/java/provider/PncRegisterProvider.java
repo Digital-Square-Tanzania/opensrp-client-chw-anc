@@ -1,24 +1,22 @@
-package org.smartregister.chw.anc.provider;
+package provider;
+
 
 import android.content.Context;
 import android.database.Cursor;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
-import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.smartregister.chw.anc.fragment.BaseAncRegisterFragment;
 import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.chw.anc.util.Util;
-import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.commonregistry.CommonPersonObject;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.commonregistry.CommonRepository;
@@ -36,18 +34,18 @@ import java.util.Set;
 
 import static org.smartregister.util.Utils.getName;
 
-public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProvider.RegisterViewHolder> {
+public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterProvider.RegisterViewHolder> {
 
     private final LayoutInflater inflater;
     private Set<org.smartregister.configurableviews.model.View> visibleColumns;
 
-    private View.OnClickListener onClickListener;
-    private View.OnClickListener paginationClickListener;
+    private android.view.View.OnClickListener onClickListener;
+    private android.view.View.OnClickListener paginationClickListener;
 
     private Context context;
     private CommonRepository commonRepository;
 
-    public AncRegisterProvider(Context context, CommonRepository commonRepository, Set visibleColumns, View.OnClickListener onClickListener, View.OnClickListener paginationClickListener) {
+    public PncRegisterProvider(Context context, CommonRepository commonRepository, Set visibleColumns, android.view.View.OnClickListener onClickListener, android.view.View.OnClickListener paginationClickListener) {
 //        TODO add onClickListener and commonRepository to constructor
 
         inflater = (LayoutInflater) context.getSystemService(Context.LAYOUT_INFLATER_SERVICE);
@@ -61,11 +59,13 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
     }
 
     @Override
-    public void getView(Cursor cursor, SmartRegisterClient client, RegisterViewHolder viewHolder) {
+    public void getView(Cursor cursor, SmartRegisterClient client, PncRegisterProvider.RegisterViewHolder viewHolder) {
         CommonPersonObjectClient pc = (CommonPersonObjectClient) client;
         if (visibleColumns.isEmpty()) {
             populatePatientColumn(pc, client, viewHolder);
             populateLastColumn(pc, viewHolder);
+
+            return;
         }
     }
 
@@ -90,11 +90,11 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
             int age = new Period(new DateTime(dobString), new DateTime()).getYears();
 
             String dates = MessageFormat.format("{0}: {1}, {2}: {3} {4}",
-                    context.getString(R.string.age),
+                    context.getString(org.smartregister.chw.opensrp_chw_anc.R.string.age),
                     age,
-                    context.getString(R.string.gestation_age_initial),
-                    Util.gestationAgeString(lmpString,context,false),
-                    context.getString(R.string.weeks)
+                    context.getString(org.smartregister.chw.opensrp_chw_anc.R.string.gestation_age_initial),
+                    Util.gestationAgeString(lmpString, context, false),
+                    context.getString(org.smartregister.chw.opensrp_chw_anc.R.string.weeks)
             );
 
             viewHolder.patientAge.setText(dates);
@@ -103,24 +103,24 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
         // add patient listener
         viewHolder.patientColumn.setOnClickListener(onClickListener);
         viewHolder.patientColumn.setTag(client);
-        viewHolder.patientColumn.setTag(R.id.VIEW_ID, BaseAncRegisterFragment.CLICK_VIEW_NORMAL);
+        viewHolder.patientColumn.setTag(org.smartregister.chw.opensrp_chw_anc.R.id.VIEW_ID, BaseAncRegisterFragment.CLICK_VIEW_NORMAL);
 
 
         // add due listener
         viewHolder.dueButton.setOnClickListener(onClickListener);
         viewHolder.dueButton.setTag(client);
-        viewHolder.dueButton.setTag(R.id.VIEW_ID, BaseAncRegisterFragment.CLICK_VIEW_DOSAGE_STATUS);
+        viewHolder.dueButton.setTag(org.smartregister.chw.opensrp_chw_anc.R.id.VIEW_ID, BaseAncRegisterFragment.CLICK_VIEW_DOSAGE_STATUS);
 
-        viewHolder.registerColumns.setOnClickListener(new View.OnClickListener() {
+        viewHolder.registerColumns.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(android.view.View v) {
                 viewHolder.patientColumn.performClick();
             }
         });
 
-        viewHolder.dueWrapper.setOnClickListener(new View.OnClickListener() {
+        viewHolder.dueWrapper.setOnClickListener(new android.view.View.OnClickListener() {
             @Override
-            public void onClick(View v) {
+            public void onClick(android.view.View v) {
                 viewHolder.dueButton.performClick();
             }
         });
@@ -130,11 +130,11 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
         if (commonRepository != null) {
             CommonPersonObject commonPersonObject = commonRepository.findByBaseEntityId(pc.entityId());
             if (commonPersonObject != null) {
-                viewHolder.dueButton.setVisibility(View.VISIBLE);
-                viewHolder.dueButton.setText(context.getString(R.string.anc_home_visit));
+                viewHolder.dueButton.setVisibility(android.view.View.VISIBLE);
+                viewHolder.dueButton.setText(context.getString(org.smartregister.chw.opensrp_chw_anc.R.string.anc_home_visit));
                 viewHolder.dueButton.setAllCaps(true);
             } else {
-                viewHolder.dueButton.setVisibility(View.GONE);
+                viewHolder.dueButton.setVisibility(android.view.View.GONE);
             }
         }
     }
@@ -146,8 +146,8 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
                 MessageFormat.format(context.getString(org.smartregister.R.string.str_page_info), currentPageCount,
                         totalPageCount));
 
-        footerViewHolder.nextPageView.setVisibility(hasNext ? View.VISIBLE : View.INVISIBLE);
-        footerViewHolder.previousPageView.setVisibility(hasPrevious ? View.VISIBLE : View.INVISIBLE);
+        footerViewHolder.nextPageView.setVisibility(hasNext ? android.view.View.VISIBLE : android.view.View.INVISIBLE);
+        footerViewHolder.previousPageView.setVisibility(hasPrevious ? android.view.View.VISIBLE : android.view.View.INVISIBLE);
 
         footerViewHolder.nextPageView.setOnClickListener(paginationClickListener);
         footerViewHolder.previousPageView.setOnClickListener(paginationClickListener);
@@ -175,15 +175,15 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
     }
 
     @Override
-    public RegisterViewHolder createViewHolder(ViewGroup parent) {
-        View view = inflater.inflate(R.layout.anc_register_list_row, parent, false);
-        return new RegisterViewHolder(view);
+    public PncRegisterProvider.RegisterViewHolder createViewHolder(ViewGroup parent) {
+        android.view.View view = inflater.inflate(org.smartregister.chw.opensrp_chw_anc.R.layout.anc_register_list_row, parent, false);
+        return new PncRegisterProvider.RegisterViewHolder(view);
     }
 
     @Override
     public RecyclerView.ViewHolder createFooterHolder(ViewGroup parent) {
-        View view = inflater.inflate(R.layout.smart_register_pagination, parent, false);
-        return new FooterViewHolder(view);
+        android.view.View view = inflater.inflate(org.smartregister.chw.opensrp_chw_anc.R.layout.smart_register_pagination, parent, false);
+        return new PncRegisterProvider.FooterViewHolder(view);
     }
 
     @Override
@@ -197,24 +197,24 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
         public TextView patientAge;
         public TextView villageTown;
         public Button dueButton;
-        public View patientColumn;
+        public android.view.View patientColumn;
 
-        public View registerColumns;
-        public View dueWrapper;
+        public android.view.View registerColumns;
+        public android.view.View dueWrapper;
 
-        public RegisterViewHolder(View itemView) {
+        public RegisterViewHolder(android.view.View itemView) {
             super(itemView);
 
-            patientName = itemView.findViewById(R.id.patient_name);
-            patientAge = itemView.findViewById(R.id.age_and_period);
+            patientName = itemView.findViewById(org.smartregister.chw.opensrp_chw_anc.R.id.patient_name);
+            patientAge = itemView.findViewById(org.smartregister.chw.opensrp_chw_anc.R.id.age_and_period);
 
-            villageTown = itemView.findViewById(R.id.village_town);
-            dueButton = itemView.findViewById(R.id.due_button);
+            villageTown = itemView.findViewById(org.smartregister.chw.opensrp_chw_anc.R.id.village_town);
+            dueButton = itemView.findViewById(org.smartregister.chw.opensrp_chw_anc.R.id.due_button);
 
-            patientColumn = itemView.findViewById(R.id.patient_column);
+            patientColumn = itemView.findViewById(org.smartregister.chw.opensrp_chw_anc.R.id.patient_column);
 
-            registerColumns = itemView.findViewById(R.id.register_columns);
-            dueWrapper = itemView.findViewById(R.id.due_button_wrapper);
+            registerColumns = itemView.findViewById(org.smartregister.chw.opensrp_chw_anc.R.id.register_columns);
+            dueWrapper = itemView.findViewById(org.smartregister.chw.opensrp_chw_anc.R.id.due_button_wrapper);
         }
     }
 
@@ -224,7 +224,7 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
         public Button nextPageView;
         public Button previousPageView;
 
-        public FooterViewHolder(View view) {
+        public FooterViewHolder(android.view.View view) {
             super(view);
 
             nextPageView = view.findViewById(org.smartregister.R.id.btn_next_page);
@@ -232,5 +232,4 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
             pageInfoView = view.findViewById(org.smartregister.R.id.txt_page_info);
         }
     }
-
 }

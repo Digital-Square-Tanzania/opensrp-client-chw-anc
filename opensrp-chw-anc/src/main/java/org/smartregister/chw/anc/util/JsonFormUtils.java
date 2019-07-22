@@ -86,17 +86,16 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
 
     public static Event undoEvent(String ancMemberBaseID, String eventType) {
 
-        Event eventMember = null;
         try {
             AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
 
-            eventMember = org.smartregister.util.JsonFormUtils.createEvent(new JSONArray(), new JSONObject(), formTag(allSharedPreferences), ancMemberBaseID, eventType, Constants.TABLES.ANC_MEMBERS);
+            return org.smartregister.util.JsonFormUtils.createEvent(new JSONArray(), new JSONObject(), formTag(allSharedPreferences), ancMemberBaseID, eventType, Constants.TABLES.ANC_MEMBERS);
 
         } catch (Exception e) {
-            e.printStackTrace();
+            Timber.e(e);
         }
 
-        return eventMember;
+        return null;
     }
 
     public static Event processJsonForm(AllSharedPreferences allSharedPreferences, String jsonString, String table) {

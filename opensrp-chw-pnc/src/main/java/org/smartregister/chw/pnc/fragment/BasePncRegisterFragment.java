@@ -1,8 +1,12 @@
 package org.smartregister.chw.pnc.fragment;
 
+import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.fragment.BaseAncRegisterFragment;
 import org.smartregister.chw.anc.model.BaseAncRegisterFragmentModel;
+import org.smartregister.chw.pnc.activity.BasePncHomeVisitActivity;
+import org.smartregister.chw.pnc.activity.BasePncMemberProfileActivity;
 import org.smartregister.chw.pnc.presenter.BasePncRegisterFragmentPresenter;
+import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.configurableviews.model.View;
 import org.smartregister.cursoradapter.RecyclerViewPaginatedAdapter;
 import org.smartregister.view.customcontrols.CustomFontTextView;
@@ -40,4 +44,13 @@ public class BasePncRegisterFragment extends BaseAncRegisterFragment {
         presenter = new BasePncRegisterFragmentPresenter(this, new BaseAncRegisterFragmentModel(), null);
     }
 
+    @Override
+    protected void openProfile(CommonPersonObjectClient client) {
+        BasePncMemberProfileActivity.startMe(getActivity(), new MemberObject(client), null, null);
+    }
+
+    @Override
+    protected void openHomeVisit(CommonPersonObjectClient client) {
+        BasePncHomeVisitActivity.startMe(getActivity(), new MemberObject(client), false);
+    }
 }

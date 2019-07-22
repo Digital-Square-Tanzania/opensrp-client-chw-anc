@@ -59,7 +59,7 @@ import static org.smartregister.util.Utils.getName;
 public class BaseAncMemberProfileActivity extends BaseProfileActivity implements BaseAncMemberProfileContract.View {
     protected MemberObject MEMBER_OBJECT;
     protected TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id, textview_record_anc_visit, textViewAncVisitNot, textViewNotVisitMonth, textViewUndo, tvEdit;
-    protected LinearLayout layoutRecordView, record_visit_done_bar;
+    protected LinearLayout layoutRecordView, record_reccuringvisit_done_bar;
     protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue, layoutRecordButtonDone, layoutNotRecordView;
     private String familyHeadName;
     private String familyHeadPhoneNumber;
@@ -127,7 +127,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         tvLastVisitDate = findViewById(R.id.textview_last_vist_day);
         tvUpComingServices = findViewById(R.id.textview_name_due);
         tvFamilyStatus = findViewById(R.id.textview_family_has);
-        record_visit_done_bar = findViewById(R.id.record_reccuringvisit_done_bar);
+        record_reccuringvisit_done_bar = findViewById(R.id.record_reccuringvisit_done_bar);
 
         initializePresenter();
         setupViews();
@@ -244,7 +244,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
                 textViewNotVisitMonth.setText(getContext().getString(R.string.anc_visit_done, monthString));
                 imageViewCross.setImageResource(R.drawable.activityrow_visited);
             } else {
-                record_visit_done_bar.setVisibility(View.VISIBLE);
+                record_reccuringvisit_done_bar.setVisibility(View.VISIBLE);
                 layoutNotRecordView.setVisibility(View.GONE);
             }
             textViewUndo.setVisibility(View.GONE);

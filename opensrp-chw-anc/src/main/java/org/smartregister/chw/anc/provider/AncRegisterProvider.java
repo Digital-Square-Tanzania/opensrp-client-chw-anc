@@ -17,6 +17,7 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.smartregister.chw.anc.fragment.BaseAncRegisterFragment;
 import org.smartregister.chw.anc.util.DBConstants;
+import org.smartregister.chw.anc.util.Util;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.commonregistry.CommonPersonObject;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
@@ -89,13 +90,12 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
         if (StringUtils.isNotBlank(dobString) && StringUtils.isNotBlank(lmpString)) {
 
             int age = new Period(new DateTime(dobString), new DateTime()).getYears();
-            int ga = Days.daysBetween(formatter.parseDateTime(lmpString), new DateTime()).getDays() / 7;
 
             String dates = MessageFormat.format("{0}: {1}, {2}: {3} {4}",
                     context.getString(R.string.age),
                     age,
                     context.getString(R.string.gestation_age_initial),
-                    ga,
+                    Util.gestationAgeString(lmpString,context,false),
                     context.getString(R.string.weeks)
             );
 

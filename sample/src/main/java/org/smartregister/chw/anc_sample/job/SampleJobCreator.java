@@ -30,7 +30,7 @@ public class SampleJobCreator implements JobCreator {
             case ValidateSyncDataServiceJob.TAG:
                 return new ValidateSyncDataServiceJob();
             default:
-                Log.d(SampleJobCreator.class.getCanonicalName(), "Looks like you tried to create a job " + tag + " that is not declared in the Anc Job Creator");
+                //Log.d(SampleJobCreator.class.getCanonicalName(), "Looks like you tried to create a job " + tag + " that is not declared in the Anc Job Creator");
                 return null;
         }
     }

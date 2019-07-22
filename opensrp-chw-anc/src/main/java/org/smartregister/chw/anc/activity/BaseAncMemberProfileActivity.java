@@ -19,6 +19,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+
 import com.google.gson.Gson;
 
 import org.apache.commons.lang3.StringUtils;
@@ -26,7 +27,6 @@ import org.ei.drishti.dto.AlertStatus;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.json.JSONException;
-import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.custom_views.BaseAncFloatingMenu;
 import org.smartregister.chw.anc.domain.MemberObject;
@@ -271,7 +271,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             Event event = JsonFormUtils.undoEvent(MEMBER_OBJECT.getBaseEntityId(), eventType);
             Visit visit = Util.eventToVisit(event, JsonFormUtils.generateRandomUUIDString());
             visit.setPreProcessedJson(new Gson().toJson(event));
-            AncLibrary.getInstance().visitRepository().addVisit(visit);
+            getInstance().visitRepository().addVisit(visit);
         } catch (JSONException e) {
             e.printStackTrace();
         }

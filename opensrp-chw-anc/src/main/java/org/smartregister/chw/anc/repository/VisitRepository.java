@@ -155,6 +155,25 @@ public class VisitRepository extends BaseRepository {
         return visits;
     }
 
+    public List<Visit> getAllUnSynced(Long last_edit_time, String baseEntityID) {
+        List<Visit> visits = new ArrayList<>();
+        Cursor cursor = null;
+        try {
+            cursor = getReadableDatabase().query(
+                    VISIT_TABLE, VISIT_COLUMNS, PROCESSED + " = ? AND UPDATED_AT <= ? AND " + BASE_ENTITY_ID + " = ? ",
+                    new String[]{"0", last_edit_time.toString(), baseEntityID}, null, null,
+                    VISIT_DATE + " DESC ", null);
+            visits = readVisits(cursor);
+        } catch (Exception e) {
+            Timber.e(e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return visits;
+    }
+
     public List<Visit> getVisits(String baseEntityID, String visitType) {
         List<Visit> visits = new ArrayList<>();
         Cursor cursor = null;
@@ -228,7 +247,7 @@ public class VisitRepository extends BaseRepository {
                 return date;
             }
         } catch (Exception e) {
-
+            Timber.e(e);
         } finally {
             if (cursor != null) {
                 cursor.close();

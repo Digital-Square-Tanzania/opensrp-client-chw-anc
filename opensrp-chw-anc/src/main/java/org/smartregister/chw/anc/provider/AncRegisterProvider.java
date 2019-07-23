@@ -11,10 +11,7 @@ import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.joda.time.Period;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.smartregister.chw.anc.fragment.BaseAncRegisterFragment;
 import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.chw.anc.util.Util;
@@ -82,7 +79,6 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
         viewHolder.villageTown.setText(Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.VILLAGE_TOWN, true));
 
         // calculate LMP
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
         String dobString = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.DOB, false);
         String lmpString = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LAST_MENSTRUAL_PERIOD, false);
         if (StringUtils.isNotBlank(dobString) && StringUtils.isNotBlank(lmpString)) {
@@ -93,7 +89,7 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
                     context.getString(R.string.age),
                     age,
                     context.getString(R.string.gestation_age_initial),
-                    Util.gestationAgeString(lmpString,context,false),
+                    Util.gestationAgeString(lmpString, context, false),
                     context.getString(R.string.weeks)
             );
 

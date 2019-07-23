@@ -263,7 +263,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
                     if (detailList != null) {
                         if (jo.getString(JsonFormConstants.TYPE).equalsIgnoreCase(JsonFormConstants.CHECK_BOX)) {
                             jo.put(JsonFormConstants.VALUE, getValue(jo, detailList));
-                        }else{
+                        } else {
                             jo.put(JsonFormConstants.VALUE, getValue(detailList.get(0)));
                         }
                     }
@@ -280,11 +280,11 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     }
 
     public static String getValue(VisitDetail visitDetail) {
-        String humanReadable = cleanString(visitDetail.getHumanReadable());
+        String humanReadable = visitDetail.getHumanReadable();
         if (StringUtils.isNotBlank(humanReadable))
             return humanReadable;
 
-        return cleanString(visitDetail.getDetails());
+        return visitDetail.getDetails();
     }
 
     public static JSONArray getValue(JSONObject jo, List<VisitDetail> visitDetails) throws JSONException {
@@ -326,7 +326,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         return dirtyString.substring(1, dirtyString.length() - 1);
     }
 
-    private static class NameID{
+    private static class NameID {
         private String name;
         private int position;
 

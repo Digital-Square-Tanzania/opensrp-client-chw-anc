@@ -21,17 +21,18 @@ public class BasePncRegisterFragmentPresenter extends BaseAncRegisterFragmentPre
 
     @Override
     public String getMainCondition() {
+
         return "";
     }
 
     @Override
     public String getDefaultSortQuery() {
-        return Constants.TABLES.ANC_MEMBERS + "." + DBConstants.KEY.LAST_INTERACTED_WITH + " DESC ";
+        return Constants.TABLES.PREGNANCY_OUTCOME + "." + DBConstants.KEY.LAST_INTERACTED_WITH + " DESC ";
     }
 
     @Override
     public String getMainTable() {
-        return Constants.TABLES.ANC_MEMBERS;
+       return Constants.TABLES.PREGNANCY_OUTCOME;
     }
 
 

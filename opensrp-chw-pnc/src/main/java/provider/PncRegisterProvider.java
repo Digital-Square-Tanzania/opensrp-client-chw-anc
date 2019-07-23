@@ -101,14 +101,17 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterProv
         }
 
         String dayPnc = Utils.getValue(pc.getColumnmaps(), Constants.KEY.DELIVERY_DATE, true);
-        int Period = new Period(formatter.parseDateTime(dayPnc), new DateTime()).getDays();
+        if(StringUtils.isNotBlank(dayPnc)){
+            int Period = new Period(formatter.parseDateTime(dayPnc), new DateTime()).getDays();
 
 
-        String pncDay = MessageFormat.format("{0} {1}",
-                context.getString(R.string.pnc_day),
-                Period
-        );
-        viewHolder.pncDay.setText(pncDay);
+            String pncDay = MessageFormat.format("{0} {1}",
+                    context.getString(R.string.pnc_day),
+                    Period
+            );
+            viewHolder.pncDay.setText(pncDay);
+        }
+
 
 
         // add patient listener

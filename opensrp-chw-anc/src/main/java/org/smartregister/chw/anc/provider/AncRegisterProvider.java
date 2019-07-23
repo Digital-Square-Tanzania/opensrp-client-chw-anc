@@ -11,10 +11,7 @@ import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
-import org.joda.time.Days;
 import org.joda.time.Period;
-import org.joda.time.format.DateTimeFormat;
-import org.joda.time.format.DateTimeFormatter;
 import org.smartregister.chw.anc.fragment.BaseAncRegisterFragment;
 import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.chw.anc.util.Util;
@@ -92,7 +89,7 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
                     context.getString(R.string.age),
                     age,
                     context.getString(R.string.gestation_age_initial),
-                    Util.gestationAgeString(lmpString,context,false),
+                    Util.gestationAgeString(lmpString, context, false),
                     context.getString(R.string.weeks)
             );
 

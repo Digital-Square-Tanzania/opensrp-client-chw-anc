@@ -64,12 +64,11 @@ public class BaseAncRegisterFragmentPresenterTest {
 
     }
 
-    @Test
-    public void testInitializeQueries(){
-
+   // @Test
+   // public void testInitializeQueries(){
       //  presenter.initializeQueries("abc","abc","abc");
 
-    }
+   // }
 
 
 }

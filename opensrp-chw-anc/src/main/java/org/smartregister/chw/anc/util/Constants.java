@@ -9,6 +9,7 @@ public interface Constants {
         String JSON = "json";
         String NEXT = "next";
         String ENCOUNTER_TYPE = "encounter_type";
+        String ENTITY_TYPE= "entity_id";
     }
 
     interface EVENT_TYPE {
@@ -17,16 +18,20 @@ public interface Constants {
         String ANC_HOME_VISIT_NOT_DONE = "ANC Home Visit Not Done";
         String ANC_HOME_VISIT_NOT_DONE_UNDO = "ANC Home Visit Not Done Undo";
         String UPDATE_EVENT_CONDITION = "Update";
+        String PREGNANCY_OUTCOME = "Pregnancy Outcome";
+        String CHILD_REGISTRATION = "Child Registration";
     }
 
     interface FORMS {
         String ANC_REGISTRATION = "anc_registration";
+        String PNC_CHILD_REGISTRATION = "pnc_child_enrollment";
     }
 
     interface TABLES {
         String ANC_MEMBERS = "ec_anc_register";
         String FAMILY_MEMBER = "ec_family_member";
-        String PREGNANCY_OUTCOME = "ec_pregnancy_outcome";
+        String PREGNANCY_OUTCOME = "pnc_child_enrollment";
+        String EC_CHILD = "ec_child";
     }
 
     interface CONFIGURATION {

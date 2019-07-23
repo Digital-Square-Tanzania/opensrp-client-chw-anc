@@ -30,5 +30,7 @@ public class DBConstants {
         public static final String PHONE_NUMBER = "phone_number";
         public static final String HAS_ANC_CARD = "has_anc_card";
 
+
+
     }
 }

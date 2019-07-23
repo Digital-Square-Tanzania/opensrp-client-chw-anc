@@ -1,3 +1,6 @@
 <resources>
     <string name="app_name">opensrp-chw-pnc</string>
+    <string name="pnc">PNC Clients</string>
+    <string name="pnc_visit">PNC Visit</string>
+    <string name="pnc_day">PNC Day</string>
 </resources>

@@ -9,7 +9,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -49,14 +48,14 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     protected Map<String, BaseAncHomeVisitAction> actionList = new LinkedHashMap<>();
     protected BaseAncHomeVisitContract.Presenter presenter;
     protected MemberObject memberObject;
-    private Boolean isEditMode = false;
-    private RecyclerView.Adapter mAdapter;
-    private ProgressBar progressBar;
-    private TextView tvSubmit;
-    private TextView tvTitle;
-    private String current_action;
-    private String confirmCloseTitle;
-    private String confirmCloseMessage;
+    protected Boolean isEditMode = false;
+    protected RecyclerView.Adapter mAdapter;
+    protected ProgressBar progressBar;
+    protected TextView tvSubmit;
+    protected TextView tvTitle;
+    protected String current_action;
+    protected String confirmCloseTitle;
+    protected String confirmCloseMessage;
 
     public static void startMe(Activity activity, MemberObject memberObject, Boolean isEditMode) {
         Intent intent = new Intent(activity, BaseAncHomeVisitActivity.class);
@@ -324,7 +323,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
                 }).setPositiveButton(com.vijay.jsonwizard.R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Timber.d( "No button on dialog in " + JsonFormActivity.class.getCanonicalName());
+                        Timber.d("No button on dialog in " + JsonFormActivity.class.getCanonicalName());
                     }
                 }).create();
 

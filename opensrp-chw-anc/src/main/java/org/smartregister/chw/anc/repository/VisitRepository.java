@@ -3,7 +3,6 @@ package org.smartregister.chw.anc.repository;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.smartregister.chw.anc.domain.Visit;
@@ -77,10 +76,13 @@ public class VisitRepository extends BaseRepository {
     }
 
     public void addVisit(Visit visit) {
+        addVisit(visit, getWritableDatabase());
+    }
+
+    public void addVisit(Visit visit, SQLiteDatabase database) {
         if (visit == null) {
             return;
         }
-        SQLiteDatabase database = getWritableDatabase();
         // Handle updated home visit details
         database.insert(VISIT_TABLE, null, createValues(visit));
     }
@@ -142,6 +144,25 @@ public class VisitRepository extends BaseRepository {
         Cursor cursor = null;
         try {
             cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, PROCESSED + " = ? AND UPDATED_AT <= ? ", new String[]{"0", last_edit_time.toString()}, null, null, VISIT_DATE + " DESC ", null);
+            visits = readVisits(cursor);
+        } catch (Exception e) {
+            Timber.e(e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return visits;
+    }
+
+    public List<Visit> getAllUnSynced(Long last_edit_time, String baseEntityID) {
+        List<Visit> visits = new ArrayList<>();
+        Cursor cursor = null;
+        try {
+            cursor = getReadableDatabase().query(
+                    VISIT_TABLE, VISIT_COLUMNS, PROCESSED + " = ? AND UPDATED_AT <= ? AND " + BASE_ENTITY_ID + " = ? ",
+                    new String[]{"0", last_edit_time.toString(), baseEntityID}, null, null,
+                    VISIT_DATE + " DESC ", null);
             visits = readVisits(cursor);
         } catch (Exception e) {
             Timber.e(e);
@@ -226,7 +247,7 @@ public class VisitRepository extends BaseRepository {
                 return date;
             }
         } catch (Exception e) {
-
+            Timber.e(e);
         } finally {
             if (cursor != null) {
                 cursor.close();

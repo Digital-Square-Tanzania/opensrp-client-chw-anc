@@ -3,7 +3,6 @@ package org.smartregister.chw.anc.repository;
 import android.content.ContentValues;
 import android.database.Cursor;
 
-
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.smartregister.chw.anc.domain.Visit;
@@ -77,10 +76,13 @@ public class VisitRepository extends BaseRepository {
     }
 
     public void addVisit(Visit visit) {
+        addVisit(visit, getWritableDatabase());
+    }
+
+    public void addVisit(Visit visit, SQLiteDatabase database) {
         if (visit == null) {
             return;
         }
-        SQLiteDatabase database = getWritableDatabase();
         // Handle updated home visit details
         database.insert(VISIT_TABLE, null, createValues(visit));
     }
@@ -153,6 +155,25 @@ public class VisitRepository extends BaseRepository {
         return visits;
     }
 
+    public List<Visit> getAllUnSynced(Long last_edit_time, String baseEntityID) {
+        List<Visit> visits = new ArrayList<>();
+        Cursor cursor = null;
+        try {
+            cursor = getReadableDatabase().query(
+                    VISIT_TABLE, VISIT_COLUMNS, PROCESSED + " = ? AND UPDATED_AT <= ? AND " + BASE_ENTITY_ID + " = ? ",
+                    new String[]{"0", last_edit_time.toString(), baseEntityID}, null, null,
+                    VISIT_DATE + " DESC ", null);
+            visits = readVisits(cursor);
+        } catch (Exception e) {
+            Timber.e(e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return visits;
+    }
+
     public List<Visit> getVisits(String baseEntityID, String visitType) {
         List<Visit> visits = new ArrayList<>();
         Cursor cursor = null;
@@ -201,4 +222,38 @@ public class VisitRepository extends BaseRepository {
         return (visits.size() > 0) ? visits.get(0) : null;
     }
 
+    public void setNotVisitingDate(String date, String baseID) {
+        try {
+            ContentValues values = new ContentValues();
+            values.put(DBConstants.KEY.VISIT_NOT_DONE, date);
+            getWritableDatabase().update(Constants.TABLES.ANC_MEMBERS, values, DBConstants.KEY.BASE_ENTITY_ID + " = ?", new String[]{baseID});
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+    }
+
+    public String getLastInteractedWithAndVisitNotDone(String baseEntityID, String dateColumn) {
+        SQLiteDatabase database = getReadableDatabase();
+        net.sqlcipher.Cursor cursor = null;
+        try {
+            if (database == null) {
+                return null;
+            }
+
+            cursor = database.query(Constants.TABLES.ANC_MEMBERS, new String[]{dateColumn}, BASE_ENTITY_ID + " = ? " + COLLATE_NOCASE, new String[]{baseEntityID}, null, null, null);
+
+            if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
+                String date = cursor.getString(cursor.getColumnIndex(dateColumn));
+                return date;
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return null;
+
+    }
 }

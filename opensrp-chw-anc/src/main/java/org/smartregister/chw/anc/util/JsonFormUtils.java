@@ -295,11 +295,11 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     }
 
     public static String getValue(VisitDetail visitDetail) {
-        String humanReadable = cleanString(visitDetail.getHumanReadable());
+        String humanReadable = visitDetail.getHumanReadable();
         if (StringUtils.isNotBlank(humanReadable))
             return humanReadable;
 
-        return cleanString(visitDetail.getDetails());
+        return visitDetail.getDetails();
     }
 
     public static JSONArray getValue(JSONObject jo, List<VisitDetail> visitDetails) throws JSONException {

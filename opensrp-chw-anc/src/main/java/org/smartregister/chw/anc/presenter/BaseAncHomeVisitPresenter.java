@@ -55,6 +55,7 @@ public class BaseAncHomeVisitPresenter implements BaseAncHomeVisitContract.Prese
     @Override
     public void submitVisit() {
         if (view.get() != null) {
+            view.get().displayProgressBar(true);
             interactor.submitVisit(view.get().getEditMode(), memberObject.getBaseEntityId(), view.get().getAncHomeVisitActions(), this);
         }
     }
@@ -74,6 +75,7 @@ public class BaseAncHomeVisitPresenter implements BaseAncHomeVisitContract.Prese
     @Override
     public void onSubmitted(boolean successful) {
         if (view.get() != null) {
+            view.get().displayProgressBar(false);
             if (successful) {
                 view.get().close();
             } else {

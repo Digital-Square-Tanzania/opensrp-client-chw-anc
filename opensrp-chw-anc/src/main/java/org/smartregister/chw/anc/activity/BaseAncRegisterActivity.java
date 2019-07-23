@@ -134,7 +134,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
             try {
                 String jsonString = data.getStringExtra(Constants.JSON_FORM_EXTRA.JSON);
                 String table = data.getStringExtra(Constants.ACTIVITY_PAYLOAD.TABLE_NAME);
-                Timber.d("JSONResult", jsonString);
+                Timber.d("JSONResult %s", jsonString);
 
                 JSONObject form = new JSONObject(jsonString);
                 if (form.getString(Constants.ENCOUNTER_TYPE).equals(getRegisterEventType())) {
@@ -221,7 +221,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
 //            process the form
             try {
                 String jsonString = data.getStringExtra(Constants.JSON_FORM_EXTRA.JSON);
-                Timber.d("JSONResult", jsonString);
+                Timber.d("JSONResult %s", jsonString);
 
                 JSONObject form = new JSONObject(jsonString);
                 String encounter_type = form.optString(Constants.JSON_FORM_EXTRA.ENCOUNTER_TYPE);

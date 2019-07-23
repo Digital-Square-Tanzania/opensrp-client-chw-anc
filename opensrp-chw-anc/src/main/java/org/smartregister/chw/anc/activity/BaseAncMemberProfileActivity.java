@@ -229,7 +229,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
                     (Days.daysBetween(new DateTime(lastVisit.getCreatedAt()), new DateTime()).getDays() < 1) &&
                             (Days.daysBetween(new DateTime(lastVisit.getDate()), new DateTime()).getDays() <= 1);
             setUpEditViews(true, within24Hours, lastVisit.getDate().getTime());
-            return;
         }
     }
 

@@ -16,7 +16,8 @@ import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.smartregister.chw.anc.fragment.BaseAncRegisterFragment;
 import org.smartregister.chw.anc.util.DBConstants;
-import org.smartregister.chw.anc.util.Util;
+import org.smartregister.chw.pnc.R;
+import org.smartregister.chw.pnc.util.Constants;
 import org.smartregister.commonregistry.CommonPersonObject;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.commonregistry.CommonRepository;
@@ -72,33 +73,43 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterProv
     private void populatePatientColumn(CommonPersonObjectClient pc, SmartRegisterClient client, final RegisterViewHolder viewHolder) {
 
 
+        viewHolder.villageTown.setText(Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.VILLAGE_TOWN, true));
+
         String fname = getName(
                 Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.FIRST_NAME, true),
                 Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.MIDDLE_NAME, true)
         );
 
         String patientName = getName(fname, Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LAST_NAME, true));
-        viewHolder.patientName.setText(patientName);
-        viewHolder.villageTown.setText(Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.VILLAGE_TOWN, true));
 
-        // calculate LMP
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
         String dobString = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.DOB, false);
-        String lmpString = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LAST_MENSTRUAL_PERIOD, false);
-        if (StringUtils.isNotBlank(dobString) && StringUtils.isNotBlank(lmpString)) {
+        if (StringUtils.isNotBlank(dobString)) {
 
             int age = new Period(new DateTime(dobString), new DateTime()).getYears();
 
-            String dates = MessageFormat.format("{0}: {1}, {2}: {3} {4}",
-                    context.getString(org.smartregister.chw.opensrp_chw_anc.R.string.age),
-                    age,
-                    context.getString(org.smartregister.chw.opensrp_chw_anc.R.string.gestation_age_initial),
-                    Util.gestationAgeString(lmpString, context, false),
-                    context.getString(org.smartregister.chw.opensrp_chw_anc.R.string.weeks)
+            String patientNameAge = MessageFormat.format("{0}, {1}",
+                    patientName,
+                    age
             );
 
-            viewHolder.patientAge.setText(dates);
+            viewHolder.patientNameAndAge.setText(patientNameAge);
+
+        } else {
+
+            viewHolder.patientNameAndAge.setText(patientName);
         }
+
+        String dayPnc = Utils.getValue(pc.getColumnmaps(), Constants.KEY.DELIVERY_DATE, true);
+        int Period = new Period(formatter.parseDateTime(dayPnc), new DateTime()).getDays();
+
+
+        String pncDay = MessageFormat.format("{0} {1}",
+                context.getString(R.string.pnc_day),
+                Period
+        );
+        viewHolder.pncDay.setText(pncDay);
+
 
         // add patient listener
         viewHolder.patientColumn.setOnClickListener(onClickListener);
@@ -176,7 +187,7 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterProv
 
     @Override
     public PncRegisterProvider.RegisterViewHolder createViewHolder(ViewGroup parent) {
-        android.view.View view = inflater.inflate(org.smartregister.chw.opensrp_chw_anc.R.layout.anc_register_list_row, parent, false);
+        android.view.View view = inflater.inflate(R.layout.pnc_register_list_row, parent, false);
         return new PncRegisterProvider.RegisterViewHolder(view);
     }
 
@@ -193,9 +204,9 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterProv
 
     // implement place holder view
     public class RegisterViewHolder extends RecyclerView.ViewHolder {
-        public TextView patientName;
-        public TextView patientAge;
+        public TextView patientNameAndAge;
         public TextView villageTown;
+        public TextView pncDay;
         public Button dueButton;
         public android.view.View patientColumn;
 
@@ -205,8 +216,8 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterProv
         public RegisterViewHolder(android.view.View itemView) {
             super(itemView);
 
-            patientName = itemView.findViewById(org.smartregister.chw.opensrp_chw_anc.R.id.patient_name);
-            patientAge = itemView.findViewById(org.smartregister.chw.opensrp_chw_anc.R.id.age_and_period);
+            patientNameAndAge = itemView.findViewById(R.id.patient_name_and_age);
+            pncDay = itemView.findViewById(R.id.pnc_period);
 
             villageTown = itemView.findViewById(org.smartregister.chw.opensrp_chw_anc.R.id.village_town);
             dueButton = itemView.findViewById(org.smartregister.chw.opensrp_chw_anc.R.id.due_button);

@@ -82,7 +82,6 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
         viewHolder.villageTown.setText(Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.VILLAGE_TOWN, true));
 
         // calculate LMP
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
         String dobString = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.DOB, false);
         String lmpString = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LAST_MENSTRUAL_PERIOD, false);
         if (StringUtils.isNotBlank(dobString) && StringUtils.isNotBlank(lmpString)) {

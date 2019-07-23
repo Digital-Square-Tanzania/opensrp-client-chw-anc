@@ -28,6 +28,7 @@ public class BasePncRegisterFragment extends BaseAncRegisterFragment {
         CustomFontTextView titleView = view.findViewById(org.smartregister.chw.opensrp_chw_anc.R.id.txt_title_label);
         if (titleView != null) {
             titleView.setText(getString(org.smartregister.chw.pnc.R.string.pnc));
+
         }
     }
 

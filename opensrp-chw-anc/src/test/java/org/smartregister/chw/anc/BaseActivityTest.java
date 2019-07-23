@@ -26,9 +26,9 @@ public abstract class BaseActivityTest<T extends Activity> {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        if(getControllerIntent() == null){
+        if (getControllerIntent() == null) {
             controller = Robolectric.buildActivity(getActivityClass()).create().start();
-        }else{
+        } else {
             controller = Robolectric.buildActivity(getActivityClass(), getControllerIntent()).create().start();
         }
         activity = controller.get();
@@ -37,8 +37,10 @@ public abstract class BaseActivityTest<T extends Activity> {
     @After
     public void tearDown() {
         try {
-            getActivity().finish();
-            getActivityController().pause().stop().destroy(); //destroy controller if we can
+            if (getActivity() != null) {
+                getActivity().finish();
+                getActivityController().pause().stop().destroy(); //destroy controller if we can
+            }
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -48,7 +50,7 @@ public abstract class BaseActivityTest<T extends Activity> {
     }
 
     @Test
-    public void testActivityExists(){
+    public void testActivityExists() {
         Assert.assertNotNull(getActivity());
     }
 
@@ -62,7 +64,7 @@ public abstract class BaseActivityTest<T extends Activity> {
         return controller;
     }
 
-    protected Intent getControllerIntent(){
+    protected Intent getControllerIntent() {
         return null;
     }
 }

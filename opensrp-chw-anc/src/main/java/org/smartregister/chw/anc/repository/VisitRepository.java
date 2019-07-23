@@ -201,39 +201,4 @@ public class VisitRepository extends BaseRepository {
         return (visits.size() > 0) ? visits.get(0) : null;
     }
 
-    public void setNotVisitingDate(String date, String baseID) {
-        try {
-            ContentValues values = new ContentValues();
-            values.put(DBConstants.KEY.VISIT_NOT_DONE, date);
-            getWritableDatabase().update(Constants.TABLES.ANC_MEMBERS, values, DBConstants.KEY.BASE_ENTITY_ID + " = ?", new String[]{baseID});
-        } catch (Exception e) {
-            Timber.e(e);
-        }
-    }
-
-    public String getLastInteractedWithAndVisitNotDone(String baseEntityID, String dateColumn) {
-        SQLiteDatabase database = getReadableDatabase();
-        net.sqlcipher.Cursor cursor = null;
-        try {
-            if (database == null) {
-                return null;
-            }
-
-            cursor = database.query(Constants.TABLES.ANC_MEMBERS, new String[]{dateColumn}, BASE_ENTITY_ID + " = ? " + COLLATE_NOCASE, new String[]{baseEntityID}, null, null, null);
-
-            if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
-                String date = cursor.getString(cursor.getColumnIndex(dateColumn));
-                return date;
-            }
-        } catch (Exception e) {
-
-        } finally {
-            if (cursor != null) {
-                cursor.close();
-            }
-        }
-        return null;
-
-    }
-
 }

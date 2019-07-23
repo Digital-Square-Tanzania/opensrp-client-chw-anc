@@ -9,7 +9,6 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.widget.DividerItemDecoration;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
-
 import android.view.View;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -30,7 +29,6 @@ import org.smartregister.chw.anc.interactor.BaseAncHomeVisitInteractor;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.anc.presenter.BaseAncHomeVisitPresenter;
 import org.smartregister.chw.anc.util.Constants;
-import org.smartregister.chw.anc.util.VisitUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.util.LangUtils;
 import org.smartregister.view.activity.SecuredActivity;
@@ -325,7 +323,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
                 }).setPositiveButton(com.vijay.jsonwizard.R.string.no, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Timber.d( "No button on dialog in " + JsonFormActivity.class.getCanonicalName());
+                        Timber.d("No button on dialog in " + JsonFormActivity.class.getCanonicalName());
                     }
                 }).create();
 

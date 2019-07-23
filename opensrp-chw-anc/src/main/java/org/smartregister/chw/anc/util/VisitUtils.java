@@ -1,5 +1,8 @@
 package org.smartregister.chw.anc.util;
 
+import android.content.Context;
+import android.content.Intent;
+
 import com.fatboyindustrial.gsonjodatime.Converters;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -18,6 +21,8 @@ import org.smartregister.immunization.domain.Vaccine;
 import org.smartregister.immunization.domain.VaccineWrapper;
 import org.smartregister.immunization.repository.RecurringServiceRecordRepository;
 import org.smartregister.immunization.repository.VaccineRepository;
+import org.smartregister.immunization.service.intent.RecurringIntentService;
+import org.smartregister.immunization.service.intent.VaccineIntentService;
 import org.smartregister.repository.AllSharedPreferences;
 
 import java.util.ArrayList;
@@ -67,7 +72,12 @@ public class VisitUtils {
         return visitMap;
     }
 
-
+    /**
+     * To be invoked for manual processing
+     *
+     * @param baseEntityID
+     * @throws Exception
+     */
     public static void processVisits(String baseEntityID) throws Exception {
         processVisits(AncLibrary.getInstance().visitRepository(), AncLibrary.getInstance().visitDetailsRepository(), baseEntityID);
     }
@@ -96,6 +106,11 @@ public class VisitUtils {
 
         // process after all events are saved
         Util.startClientProcessing();
+
+        // process vaccines and services
+        Context context = AncLibrary.getInstance().context().applicationContext();
+        context.startService(new Intent(context, VaccineIntentService.class));
+        context.startService(new Intent(context, RecurringIntentService.class));
     }
 
     private static void processVisitDetails(VisitDetailsRepository visitDetailsRepository, String visitID, String baseEntityID) {

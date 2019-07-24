@@ -1,7 +1,5 @@
 package org.smartregister.chw.anc.util;
 
-import android.content.Context;
-
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -23,7 +21,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-@PrepareForTest({VisitUtils.class, AncLibrary.class})
+@PrepareForTest({VisitUtils.class, AncLibrary.class, Util.class})
 public class VisitUtilsTest {
     @Rule
     public PowerMockRule rule = new PowerMockRule();
@@ -37,22 +35,14 @@ public class VisitUtilsTest {
     @Mock
     private VisitDetailsRepository visitDetailsRepository;
 
-    @Mock
-    private Context context;
-
-    @Mock
-    private org.smartregister.Context smartContext;
-
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
 
         PowerMockito.mockStatic(AncLibrary.class);
-
         BDDMockito.given(AncLibrary.getInstance()).willReturn(ancLibrary);
         Mockito.doReturn(visitRepository).when(ancLibrary).visitRepository();
         Mockito.doReturn(visitDetailsRepository).when(ancLibrary).visitDetailsRepository();
-
     }
 
     private List<Visit> getRandomVisits() {

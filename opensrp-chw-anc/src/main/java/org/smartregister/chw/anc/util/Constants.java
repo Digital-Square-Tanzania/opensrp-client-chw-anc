@@ -9,7 +9,7 @@ public interface Constants {
         String JSON = "json";
         String NEXT = "next";
         String ENCOUNTER_TYPE = "encounter_type";
-        String ENTITY_TYPE= "entity_id";
+        String ENTITY_TYPE = "entity_id";
     }
 
     interface EVENT_TYPE {
@@ -53,5 +53,10 @@ public interface Constants {
         String MEMBER_PROFILE_OBJECT = "MemberObject";
         String FAMILY_HEAD_NAME = "familyHeadName";
         String FAMILY_HEAD_PHONE = "familyHeadPhoneNumber";
+    }
+
+    interface RELATIONSHIP {
+        String MOTHER = "mother";
+        String FAMILY = "family";
     }
 }

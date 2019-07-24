@@ -26,6 +26,7 @@ import timber.log.Timber;
 
 import static org.smartregister.chw.anc.util.Constants.ENCOUNTER_TYPE;
 import static org.smartregister.chw.anc.util.DBConstants.KEY.MOTHER_ENTITY_ID;
+import static org.smartregister.chw.anc.util.DBConstants.KEY.RELATIONAL_ID;
 
 public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     public static final String METADATA = "metadata";
@@ -114,7 +115,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         return org.smartregister.util.JsonFormUtils.createEvent(fields, getJSONObject(jsonForm, METADATA), formTag(allSharedPreferences), entityId, getString(jsonForm, ENCOUNTER_TYPE), table);
     }
 
-    protected static FormTag formTag(AllSharedPreferences allSharedPreferences) {
+    public static FormTag formTag(AllSharedPreferences allSharedPreferences) {
         FormTag formTag = new FormTag();
         formTag.providerId = allSharedPreferences.fetchRegisteredANM();
         formTag.appVersion = AncLibrary.getInstance().getApplicationVersion();
@@ -356,14 +357,22 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
             if (form != null) {
                 JSONObject stepOne = form.getJSONObject(JsonFormUtils.STEP1);
                 JSONArray jsonArray = stepOne.getJSONArray(JsonFormUtils.FIELDS);
-                form.put(MOTHER_ENTITY_ID, motherBaseId);
+
                 JSONObject preLoadObject;
+                JSONObject jsonObject;
 
                 for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
+                    jsonObject = jsonArray.getJSONObject(i);
+
                     preLoadObject = getFieldJSONObject(fields, jsonObject.optString(JsonFormUtils.KEY));
-                    if (preLoadObject != null)
-                        jsonObject.put(JsonFormUtils.VALUE, preLoadObject.opt(JsonFormUtils.VALUE));
+                    if (preLoadObject != null) {
+                        if (RELATIONAL_ID.equals(preLoadObject.opt(JsonFormUtils.KEY)))
+                            form.put(RELATIONAL_ID, preLoadObject.opt(JsonFormUtils.KEY));
+                        else if (RELATIONAL_ID.equals(preLoadObject.opt(JsonFormUtils.KEY)))
+                            form.put(MOTHER_ENTITY_ID, motherBaseId);
+                        else
+                            jsonObject.put(JsonFormUtils.VALUE, preLoadObject.opt(JsonFormUtils.VALUE));
+                    }
                 }
 
                 return form;

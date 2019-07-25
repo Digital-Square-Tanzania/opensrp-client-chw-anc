@@ -256,5 +256,4 @@ public class VisitRepository extends BaseRepository {
         return null;
 
     }
-
 }

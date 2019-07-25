@@ -2,15 +2,22 @@ package org.smartregister.chw.anc.interactor;
 
 import android.support.annotation.VisibleForTesting;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.contract.BaseAncRegisterContract;
 import org.smartregister.chw.anc.util.AppExecutors;
+import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.anc.util.Util;
+import org.smartregister.clientandeventmodel.Client;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.repository.AllSharedPreferences;
 
 import timber.log.Timber;
+
+import static org.smartregister.chw.anc.util.Constants.RELATIONSHIP.FAMILY;
+import static org.smartregister.chw.anc.util.Constants.TABLES.EC_CHILD;
 
 public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Interactor {
 
@@ -62,4 +69,37 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
         Util.addEvent(allSharedPreferences, baseEvent);
         Util.startClientProcessing();
     }
+
+    public void processPncChild(JSONArray fields, AllSharedPreferences allSharedPreferences, String entityId, String familyBaseEntityId, String motherBaseId) {
+        try {
+            Client pncChild = org.smartregister.util.JsonFormUtils.createBaseClient(fields, JsonFormUtils.formTag(allSharedPreferences), entityId);
+
+            pncChild.addRelationship(FAMILY, familyBaseEntityId);
+            pncChild.addRelationship(Constants.RELATIONSHIP.MOTHER, motherBaseId);
+
+            JSONObject eventJson = new JSONObject(JsonFormUtils.gson.toJson(pncChild));
+            Util.getSyncHelper().addClient(pncChild.getBaseEntityId(), eventJson);
+
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+    }
+
+    public void processPncEvent(AllSharedPreferences allSharedPreferences, JSONObject pncForm) {
+
+        Event baseEvent = JsonFormUtils.processJsonForm(allSharedPreferences, pncForm.toString(), EC_CHILD);
+
+        try {
+            Util.addEvent(allSharedPreferences, baseEvent);
+            Util.startClientProcessing();
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+    }
+
+
 }
+
+
+
+

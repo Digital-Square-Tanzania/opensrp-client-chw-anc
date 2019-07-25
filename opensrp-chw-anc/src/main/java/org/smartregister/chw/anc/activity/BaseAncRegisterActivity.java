@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 import com.vijay.jsonwizard.domain.Form;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 import org.smartregister.AllConstants;
 import org.smartregister.Context;
@@ -21,9 +22,12 @@ import org.smartregister.chw.anc.listener.BaseAncBottomNavigationListener;
 import org.smartregister.chw.anc.model.BaseAncRegisterModel;
 import org.smartregister.chw.anc.presenter.BaseAncRegisterPresenter;
 import org.smartregister.chw.anc.util.Constants;
+import org.smartregister.chw.anc.util.DBConstants;
+import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.helper.BottomNavigationHelper;
 import org.smartregister.listener.BottomNavigationListener;
+import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.view.activity.BaseRegisterActivity;
 import org.smartregister.view.fragment.BaseRegisterFragment;
 
@@ -32,13 +36,21 @@ import java.util.List;
 
 import timber.log.Timber;
 
+import static org.smartregister.chw.anc.util.Constants.EVENT_TYPE.PREGNANCY_OUTCOME;
 import static org.smartregister.chw.anc.util.Constants.EVENT_TYPE.UPDATE_EVENT_CONDITION;
+import static org.smartregister.immunization.ImmunizationLibrary.getInstance;
+import static org.smartregister.util.JsonFormUtils.fields;
+import static org.smartregister.util.JsonFormUtils.getFieldJSONObject;
 
 public class BaseAncRegisterActivity extends BaseRegisterActivity implements BaseAncRegisterContract.View {
 
     protected String BASE_ENTITY_ID;
     protected String ACTION;
     protected String TABLE;
+
+    private BaseAncRegisterModel baseAncRegisterModel = new BaseAncRegisterModel();
+
+    private BaseAncRegisterInteractor baseAncRegisterInteractor = new BaseAncRegisterInteractor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -186,7 +198,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
 
     @Override
     protected void initializePresenter() {
-        presenter = new BaseAncRegisterPresenter(this, new BaseAncRegisterModel(), new BaseAncRegisterInteractor());
+        presenter = new BaseAncRegisterPresenter(this, baseAncRegisterModel, baseAncRegisterInteractor);
     }
 
     @Override
@@ -213,9 +225,26 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
                 Timber.d("JSONResult %s", jsonString);
 
                 JSONObject form = new JSONObject(jsonString);
-                String encounter_type = form.getString(Constants.JSON_FORM_EXTRA.ENCOUNTER_TYPE);
+                String encounter_type = form.optString(Constants.JSON_FORM_EXTRA.ENCOUNTER_TYPE);
+                String motherBaseId = form.optString(Constants.JSON_FORM_EXTRA.ENTITY_TYPE);
+
+                if (encounter_type.equals(PREGNANCY_OUTCOME)) {
+                    String childBaseEntityId = JsonFormUtils.generateRandomUUIDString();
+                    AllSharedPreferences allSharedPreferences = getInstance().context().allSharedPreferences();
+                    JSONObject pncForm = baseAncRegisterModel.getFormAsJson(Constants.FORMS.PNC_CHILD_REGISTRATION, childBaseEntityId, getLocationID());
+                    JSONArray fields = fields(form);
+
+                    JSONObject familyIdObject = getFieldJSONObject(fields, DBConstants.KEY.RELATIONAL_ID);
+                    String familyBaseEntityId = familyIdObject.getString(JsonFormUtils.VALUE);
+                    pncForm = JsonFormUtils.populatePNCForm(pncForm, fields, familyBaseEntityId);
+
+                    baseAncRegisterInteractor.processPncChild(fields, allSharedPreferences, childBaseEntityId, familyBaseEntityId, motherBaseId);
+                    baseAncRegisterInteractor.processPncEvent(allSharedPreferences, pncForm);
+
+                }
+
                 // process anc registration
-                if (!encounter_type.startsWith(UPDATE_EVENT_CONDITION)) {
+                if (encounter_type != null && !encounter_type.startsWith(UPDATE_EVENT_CONDITION)) {
                     presenter().saveForm(form.toString(), false, TABLE);
                 } else {
                     presenter().saveForm(form.toString(), true, TABLE);

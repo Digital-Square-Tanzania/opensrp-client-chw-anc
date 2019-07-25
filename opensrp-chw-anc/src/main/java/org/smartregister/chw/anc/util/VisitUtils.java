@@ -146,7 +146,7 @@ public class VisitUtils {
 
     }
 
-    protected static void saveVaccines(List<VaccineWrapper> tags, String baseEntityID) {
+    public static void saveVaccines(List<VaccineWrapper> tags, String baseEntityID) {
         for (VaccineWrapper tag : tags) {
             if (tag.getUpdatedVaccineDate() == null) {
                 return;
@@ -173,11 +173,11 @@ public class VisitUtils {
         }
     }
 
-    protected static VaccineRepository getVaccineRepository() {
+    public static VaccineRepository getVaccineRepository() {
         return ImmunizationLibrary.getInstance().vaccineRepository();
     }
 
-    protected static void saveServices(List<ServiceWrapper> tags, String baseEntityId) {
+    public static void saveServices(List<ServiceWrapper> tags, String baseEntityId) {
         for (ServiceWrapper tag : tags) {
             if (tag.getUpdatedVaccineDate() == null) {
                 return;

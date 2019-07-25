@@ -158,7 +158,11 @@ public class MemberObject implements Serializable {
     }
 
     public int getGestationAge() {
-        return Days.daysBetween(DateTimeFormat.forPattern("dd-MM-yyyy").parseDateTime(lastMenstrualPeriod), new DateTime()).getDays() / 7;
+        try {
+            return Days.daysBetween(DateTimeFormat.forPattern("dd-MM-yyyy").parseDateTime(lastMenstrualPeriod), new DateTime()).getDays() / 7;
+        } catch (Exception e) {
+            return 0;
+        }
     }
 
     public String getFullName() {

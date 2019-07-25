@@ -11,7 +11,9 @@ import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.joda.time.Period;
+import org.joda.time.Years;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.smartregister.chw.anc.fragment.BaseAncRegisterFragment;
@@ -72,7 +74,6 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterProv
 
     private void populatePatientColumn(CommonPersonObjectClient pc, SmartRegisterClient client, final RegisterViewHolder viewHolder) {
 
-
         viewHolder.villageTown.setText(Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.VILLAGE_TOWN, true));
 
         String fname = getName(
@@ -84,7 +85,7 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterProv
 
         String dobString = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.DOB, false);
         if (StringUtils.isNotBlank(dobString)) {
-            int age = new Period(new DateTime(dobString), new DateTime()).getYears();
+            int age = Years.yearsBetween(new DateTime(dobString), new DateTime()).getYears();
             String patientNameAge = MessageFormat.format("{0}, {1}",
                     patientName,
                     age
@@ -97,10 +98,10 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterProv
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
         String dayPnc = Utils.getValue(pc.getColumnmaps(), Constants.KEY.DELIVERY_DATE, true);
         if(StringUtils.isNotBlank(dayPnc)){
-            int Period = new Period(formatter.parseDateTime(dayPnc), new DateTime()).getDays();
+            int period = Days.daysBetween(new DateTime(dayPnc), new DateTime()).getDays();
             String pncDay = MessageFormat.format("{0} {1}",
                     context.getString(R.string.pnc_day),
-                    Period
+                    period
             );
             viewHolder.pncDay.setText(pncDay);
         }

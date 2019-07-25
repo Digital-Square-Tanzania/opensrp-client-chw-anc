@@ -11,7 +11,7 @@ import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
-import org.joda.time.Period;
+import org.joda.time.Years;
 import org.smartregister.chw.anc.fragment.BaseAncRegisterFragment;
 import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.chw.anc.util.Util;
@@ -82,8 +82,7 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
         String dobString = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.DOB, false);
         String lmpString = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LAST_MENSTRUAL_PERIOD, false);
         if (StringUtils.isNotBlank(dobString) && StringUtils.isNotBlank(lmpString)) {
-
-            int age = new Period(new DateTime(dobString), new DateTime()).getYears();
+            int age = Years.yearsBetween(new DateTime(dobString), new DateTime()).getYears();
 
             String dates = MessageFormat.format("{0}: {1}, {2}: {3} {4}",
                     context.getString(R.string.age),

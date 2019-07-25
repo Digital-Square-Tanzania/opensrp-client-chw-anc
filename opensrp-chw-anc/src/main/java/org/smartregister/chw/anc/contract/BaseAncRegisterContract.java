@@ -27,8 +27,7 @@ public interface BaseAncRegisterContract {
 
     interface Model {
 
-        JSONObject getFormAsJson(String formName, String entityId,
-                                 String currentLocationId) throws Exception;
+        JSONObject getFormAsJson(String formName, String entityId, String currentLocationId) throws Exception;
 
     }
 

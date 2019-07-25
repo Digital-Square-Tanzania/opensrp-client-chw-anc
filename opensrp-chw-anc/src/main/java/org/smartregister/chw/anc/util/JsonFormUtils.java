@@ -25,6 +25,8 @@ import java.util.Map;
 import timber.log.Timber;
 
 import static org.smartregister.chw.anc.util.Constants.ENCOUNTER_TYPE;
+import static org.smartregister.chw.anc.util.DBConstants.KEY.MOTHER_ENTITY_ID;
+import static org.smartregister.chw.anc.util.DBConstants.KEY.RELATIONAL_ID;
 
 public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     public static final String METADATA = "metadata";
@@ -84,12 +86,12 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         return org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, encounterType, Constants.TABLES.ANC_MEMBERS);
     }
 
-    public static Event undoEvent(String ancMemberBaseID, String eventType) {
+    public static Event createUntaggedEvent(String baseEntityId, String eventType, String table) {
 
         try {
             AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
 
-            return org.smartregister.util.JsonFormUtils.createEvent(new JSONArray(), new JSONObject(), formTag(allSharedPreferences), ancMemberBaseID, eventType, Constants.TABLES.ANC_MEMBERS);
+            return org.smartregister.util.JsonFormUtils.createEvent(new JSONArray(), new JSONObject(), formTag(allSharedPreferences), baseEntityId, eventType, table);
 
         } catch (Exception e) {
             Timber.e(e);
@@ -113,7 +115,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         return org.smartregister.util.JsonFormUtils.createEvent(fields, getJSONObject(jsonForm, METADATA), formTag(allSharedPreferences), entityId, getString(jsonForm, ENCOUNTER_TYPE), table);
     }
 
-    protected static FormTag formTag(AllSharedPreferences allSharedPreferences) {
+    public static FormTag formTag(AllSharedPreferences allSharedPreferences) {
         FormTag formTag = new FormTag();
         formTag.providerId = allSharedPreferences.fetchRegisteredANM();
         formTag.appVersion = AncLibrary.getInstance().getApplicationVersion();
@@ -349,4 +351,37 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
             this.position = position;
         }
     }
+
+    public static JSONObject populatePNCForm(JSONObject form, JSONArray fields, String motherBaseId) {
+        try {
+            if (form != null) {
+                JSONObject stepOne = form.getJSONObject(JsonFormUtils.STEP1);
+                JSONArray jsonArray = stepOne.getJSONArray(JsonFormUtils.FIELDS);
+
+                JSONObject preLoadObject;
+                JSONObject jsonObject;
+
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    jsonObject = jsonArray.getJSONObject(i);
+
+                    preLoadObject = getFieldJSONObject(fields, jsonObject.optString(JsonFormUtils.KEY));
+                    if (preLoadObject != null) {
+                        if (RELATIONAL_ID.equals(preLoadObject.opt(JsonFormUtils.KEY)))
+                            form.put(RELATIONAL_ID, preLoadObject.opt(JsonFormUtils.KEY));
+                        else if (RELATIONAL_ID.equals(preLoadObject.opt(JsonFormUtils.KEY)))
+                            form.put(MOTHER_ENTITY_ID, motherBaseId);
+                        else
+                            jsonObject.put(JsonFormUtils.VALUE, preLoadObject.opt(JsonFormUtils.VALUE));
+                    }
+                }
+
+                return form;
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+
+        return null;
+    }
+
 }

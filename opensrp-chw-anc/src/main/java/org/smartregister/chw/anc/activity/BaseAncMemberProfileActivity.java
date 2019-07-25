@@ -268,7 +268,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     private void saveVisit(String eventType) {
         try {
-            Event event = JsonFormUtils.undoEvent(MEMBER_OBJECT.getBaseEntityId(), eventType);
+            Event event = JsonFormUtils.createUntaggedEvent(MEMBER_OBJECT.getBaseEntityId(), eventType, Constants.TABLES.ANC_MEMBERS);
             Visit visit = Util.eventToVisit(event, JsonFormUtils.generateRandomUUIDString());
             visit.setPreProcessedJson(new Gson().toJson(event));
             getInstance().visitRepository().addVisit(visit);

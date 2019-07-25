@@ -19,10 +19,13 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.google.gson.Gson;
+
 import org.apache.commons.lang3.StringUtils;
 import org.ei.drishti.dto.AlertStatus;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.json.JSONException;
 import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.custom_views.BaseAncFloatingMenu;
 import org.smartregister.chw.anc.domain.MemberObject;
@@ -30,9 +33,11 @@ import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.interactor.BaseAncMemberProfileInteractor;
 import org.smartregister.chw.anc.presenter.BaseAncMemberProfilePresenter;
 import org.smartregister.chw.anc.util.Constants;
+import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.anc.util.Util;
 import org.smartregister.chw.anc.util.Utils;
 import org.smartregister.chw.opensrp_chw_anc.R;
+import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.helper.ImageRenderHelper;
 import org.smartregister.view.activity.BaseProfileActivity;
 
@@ -53,7 +58,7 @@ import static org.smartregister.util.Utils.getName;
 public class BaseAncMemberProfileActivity extends BaseProfileActivity implements BaseAncMemberProfileContract.View {
     protected MemberObject MEMBER_OBJECT;
     protected TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id, textview_record_anc_visit, textViewAncVisitNot, textViewNotVisitMonth, textViewUndo, tvEdit;
-    private LinearLayout layoutRecordView, record_visit_done_bar;
+    protected LinearLayout layoutRecordView, record_reccuringvisit_done_bar;
     protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue, layoutRecordButtonDone, layoutNotRecordView;
     private String familyHeadName;
     private String familyHeadPhoneNumber;
@@ -121,7 +126,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         tvLastVisitDate = findViewById(R.id.textview_last_vist_day);
         tvUpComingServices = findViewById(R.id.textview_name_due);
         tvFamilyStatus = findViewById(R.id.textview_family_has);
-        record_visit_done_bar = findViewById(R.id.record_reccuringvisit_done_bar);
+        record_reccuringvisit_done_bar = findViewById(R.id.record_reccuringvisit_done_bar);
 
         initializePresenter();
         setupViews();
@@ -194,24 +199,37 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         displayView();
     }
 
+    private boolean ancHomeVisitNotDoneEvent(Visit visit) {
+
+        return (visit != null
+                && (new DateTime(visit.getDate()).getMonthOfYear() == new DateTime().getMonthOfYear())
+                && (new DateTime(visit.getDate()).getYear() == new DateTime().getYear())) ? true : false;
+    }
+
+    public Visit getVisit(String eventType) {
+        return getInstance().visitRepository().getLatestVisit(MEMBER_OBJECT.getBaseEntityId(), eventType);
+    }
+
     private void displayView() {
 
-        Visit lastNotDoneVisit = getInstance().visitRepository().getLatestVisit(MEMBER_OBJECT.getBaseEntityId(), Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE);
-        if (lastNotDoneVisit != null
-                && (new DateTime(lastNotDoneVisit.getDate()).getMonthOfYear() == new DateTime().getMonthOfYear())
-                && (new DateTime(lastNotDoneVisit.getDate()).getYear() == new DateTime().getYear())
-        ) {
+        Visit lastAncHomeVisitNotDoneEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE);
+        Visit lastAncHomeVisitNotDoneUndoEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE_UNDO);
+
+        if (lastAncHomeVisitNotDoneUndoEvent != null
+                && lastAncHomeVisitNotDoneUndoEvent.getDate().before(lastAncHomeVisitNotDoneEvent.getDate())
+                && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
+            setVisitViews();
+        } else if (lastAncHomeVisitNotDoneUndoEvent == null && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
             setVisitViews();
         }
 
-        Visit lastVisit = getInstance().visitRepository().getLatestVisit(MEMBER_OBJECT.getBaseEntityId(), Constants.EVENT_TYPE.ANC_HOME_VISIT);
+        Visit lastVisit = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT);
         if (lastVisit != null) {
             boolean within24Hours =
                     (Days.daysBetween(new DateTime(lastVisit.getCreatedAt()), new DateTime()).getDays() < 1) &&
                             (Days.daysBetween(new DateTime(lastVisit.getDate()), new DateTime()).getDays() <= 1);
             setUpEditViews(true, within24Hours, lastVisit.getDate().getTime());
         }
-
     }
 
     private void setUpEditViews(boolean enable, boolean within24Hours, Long longDate) {
@@ -226,7 +244,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
                 textViewNotVisitMonth.setText(getContext().getString(R.string.anc_visit_done, monthString));
                 imageViewCross.setImageResource(R.drawable.activityrow_visited);
             } else {
-                record_visit_done_bar.setVisibility(View.VISIBLE);
+                record_reccuringvisit_done_bar.setVisibility(View.VISIBLE);
                 layoutNotRecordView.setVisibility(View.GONE);
             }
             textViewUndo.setVisibility(View.GONE);
@@ -245,7 +263,18 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     @Override
     public void setVisitNotDoneThisMonth() {
         setVisitViews();
-        getInstance().visitRepository().setNotVisitingDate(Utils.getTodayDate(), MEMBER_OBJECT.getBaseEntityId());
+        saveVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE);
+    }
+
+    private void saveVisit(String eventType) {
+        try {
+            Event event = JsonFormUtils.undoEvent(MEMBER_OBJECT.getBaseEntityId(), eventType);
+            Visit visit = Util.eventToVisit(event, JsonFormUtils.generateRandomUUIDString());
+            visit.setPreProcessedJson(new Gson().toJson(event));
+            getInstance().visitRepository().addVisit(visit);
+        } catch (JSONException e) {
+            Timber.e(e);
+        }
     }
 
     @Override
@@ -254,8 +283,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         layoutNotRecordView.setVisibility(View.GONE);
         layoutRecordButtonDone.setVisibility(View.VISIBLE);
         layoutRecordView.setVisibility(View.VISIBLE);
-
-        getInstance().visitRepository().setNotVisitingDate(null, MEMBER_OBJECT.getBaseEntityId());
+        saveVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE_UNDO);
     }
 
 

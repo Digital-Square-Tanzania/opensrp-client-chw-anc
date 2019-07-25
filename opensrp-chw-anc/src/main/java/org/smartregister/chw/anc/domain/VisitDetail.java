@@ -5,6 +5,7 @@ import java.util.Date;
 public class VisitDetail {
     private String visitDetailsId;
     private String visitId;
+    private String baseEntityId;
     private String visitKey;
     private String details; //
     private String humanReadable; //
@@ -29,6 +30,14 @@ public class VisitDetail {
 
     public void setVisitId(String visitId) {
         this.visitId = visitId;
+    }
+
+    public String getBaseEntityId() {
+        return baseEntityId;
+    }
+
+    public void setBaseEntityId(String baseEntityId) {
+        this.baseEntityId = baseEntityId;
     }
 
     public String getVisitKey() {

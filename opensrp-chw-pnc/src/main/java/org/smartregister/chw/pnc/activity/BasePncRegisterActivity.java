@@ -8,10 +8,7 @@ public class BasePncRegisterActivity extends BaseAncRegisterActivity {
 
     @Override
     protected BaseRegisterFragment getRegisterFragment() {
-
         return new BasePncRegisterFragment();
     }
-
-
 
 }

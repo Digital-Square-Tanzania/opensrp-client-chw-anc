@@ -98,7 +98,7 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterProv
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
         String dayPnc = Utils.getValue(pc.getColumnmaps(), Constants.KEY.DELIVERY_DATE, true);
         if(StringUtils.isNotBlank(dayPnc)){
-            int period = Days.daysBetween(new DateTime(dayPnc), new DateTime()).getDays();
+            int period = Days.daysBetween(new DateTime(formatter.parseDateTime(dayPnc)), new DateTime()).getDays();
             String pncDay = MessageFormat.format("{0} {1}",
                     context.getString(R.string.pnc_day),
                     period

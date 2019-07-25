@@ -82,29 +82,22 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterProv
 
         String patientName = getName(fname, Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LAST_NAME, true));
 
-        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
         String dobString = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.DOB, false);
         if (StringUtils.isNotBlank(dobString)) {
-
             int age = new Period(new DateTime(dobString), new DateTime()).getYears();
-
             String patientNameAge = MessageFormat.format("{0}, {1}",
                     patientName,
                     age
             );
-
             viewHolder.patientNameAndAge.setText(patientNameAge);
-
         } else {
-
             viewHolder.patientNameAndAge.setText(patientName);
         }
 
+        DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
         String dayPnc = Utils.getValue(pc.getColumnmaps(), Constants.KEY.DELIVERY_DATE, true);
         if(StringUtils.isNotBlank(dayPnc)){
             int Period = new Period(formatter.parseDateTime(dayPnc), new DateTime()).getDays();
-
-
             String pncDay = MessageFormat.format("{0} {1}",
                     context.getString(R.string.pnc_day),
                     Period
@@ -112,13 +105,10 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterProv
             viewHolder.pncDay.setText(pncDay);
         }
 
-
-
         // add patient listener
         viewHolder.patientColumn.setOnClickListener(onClickListener);
         viewHolder.patientColumn.setTag(client);
         viewHolder.patientColumn.setTag(org.smartregister.chw.opensrp_chw_anc.R.id.VIEW_ID, BaseAncRegisterFragment.CLICK_VIEW_NORMAL);
-
 
         // add due listener
         viewHolder.dueButton.setOnClickListener(onClickListener);

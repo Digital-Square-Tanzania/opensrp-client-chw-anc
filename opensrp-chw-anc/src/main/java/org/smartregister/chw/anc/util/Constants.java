@@ -15,6 +15,10 @@ public interface Constants {
         String ANC_REGISTRATION = "Anc Registration";
         String ANC_HOME_VISIT = "ANC Home Visit";
         String ANC_HOME_VISIT_NOT_DONE = "ANC Home Visit Not Done";
+        String PNC_REGISTRATION = "PNC Registration";
+        String PNC_HOME_VISIT = "PNC Home Visit";
+        String PNC_HOME_VISIT_NOT_DONE = "PNC Home Visit Not Done";
+        String PNC_HOME_VISIT_NOT_DONE_UNDO = "PNC Home Visit Not Done Undo";
         String UPDATE_EVENT_CONDITION = "Update";
     }
 

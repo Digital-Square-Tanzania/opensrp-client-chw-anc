@@ -212,7 +212,6 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         return "";
     }
 
-
     /**
      * Returns a value from a native forms checkbox field and returns an comma separated string
      *
@@ -258,7 +257,6 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         }
         return "";
     }
-
 
     public static void populateForm(JSONObject jsonObject, Map<String, List<VisitDetail>> details) {
         Timber.v("populateForm");

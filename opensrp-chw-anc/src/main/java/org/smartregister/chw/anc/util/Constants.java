@@ -10,6 +10,7 @@ public interface Constants {
         String NEXT = "next";
         String ENCOUNTER_TYPE = "encounter_type";
         String ENTITY_TYPE = "entity_id";
+        String OPENSPR_ID = "opensrp_id";
     }
 
     interface EVENT_TYPE {

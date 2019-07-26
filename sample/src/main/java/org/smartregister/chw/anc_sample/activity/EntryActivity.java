@@ -1,13 +1,17 @@
 package org.smartregister.chw.anc_sample.activity;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
 import org.smartregister.chw.anc.activity.BaseAncMemberProfileActivity;
+import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.domain.MemberObject;
+import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
 import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.chw.anc_sample.R;
+import org.smartregister.chw.anc_sample.utils.Constants;
 import org.smartregister.chw.pnc.activity.BasePncHomeVisitActivity;
 import org.smartregister.chw.pnc.activity.BasePncMemberProfileActivity;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
@@ -18,7 +22,7 @@ import java.util.Map;
 
 import timber.log.Timber;
 
-public class EntryActivity extends SecuredActivity implements View.OnClickListener {
+public class EntryActivity extends SecuredActivity implements View.OnClickListener, BaseAncHomeVisitContract.VisitView {
 
 
     @Override
@@ -68,10 +72,10 @@ public class EntryActivity extends SecuredActivity implements View.OnClickListen
                 BasePncMemberProfileActivity.startMe(this, EntryActivity.getSampleMember(), "Juma Family Head", "0976345634");
                 break;
             case R.id.immunization_fragment:
-                startActivity(new Intent(this, AncRegisterActivity.class));
+                BaseAncHomeVisitFragment.getInstance(this, Constants.HOME_VISIT_FORMS.IMMUNIZATION, null, null, null).show(getFragmentManager(), "HV");
                 break;
             case R.id.home_visit_fragment:
-                startActivity(new Intent(this, AncRegisterActivity.class));
+                BaseAncHomeVisitFragment.getInstance(this, Constants.HOME_VISIT_FORMS.IMMUNIZATION, null, null, null).show(getFragmentManager(), "HV");
                 break;
             default:
                 break;
@@ -97,5 +101,15 @@ public class EntryActivity extends SecuredActivity implements View.OnClickListen
         commonPersonObject.setColumnmaps(details);
 
         return new MemberObject(commonPersonObject);
+    }
+
+    @Override
+    public void onDialogOptionUpdated(String jsonString) {
+        Timber.v("onDialogOptionUpdated %s", jsonString);
+    }
+
+    @Override
+    public Context getMyContext() {
+        return this;
     }
 }

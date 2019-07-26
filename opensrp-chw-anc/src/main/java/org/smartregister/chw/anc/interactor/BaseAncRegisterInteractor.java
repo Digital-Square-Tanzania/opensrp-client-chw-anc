@@ -78,6 +78,8 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
             pncChild.addRelationship(Constants.RELATIONSHIP.MOTHER, motherBaseId);
 
             JSONObject eventJson = new JSONObject(JsonFormUtils.gson.toJson(pncChild));
+            AncLibrary.getInstance().getUniqueIdRepository().close(pncChild.getIdentifier(Constants.JSON_FORM_EXTRA.OPENSPR_ID));
+
             Util.getSyncHelper().addClient(pncChild.getBaseEntityId(), eventJson);
 
         } catch (Exception e) {

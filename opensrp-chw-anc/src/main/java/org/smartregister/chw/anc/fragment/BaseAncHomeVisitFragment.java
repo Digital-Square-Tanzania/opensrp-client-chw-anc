@@ -175,27 +175,6 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
         Timber.v("prepareOptionView");
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Light_NoActionBar);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (getDialog() != null && getDialog().getWindow() != null) {
-                    getDialog().getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-                }
-            }
-        });
-
-    }
-
     public String getTitle() {
         return title;
     }
@@ -283,7 +262,6 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
             infoIcon.setVisibility(View.GONE);
         }
     }
-
 
     protected void onShowInfo() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(getView().getContext(), com.vijay.jsonwizard.R.style.AppThemeAlertDialog);

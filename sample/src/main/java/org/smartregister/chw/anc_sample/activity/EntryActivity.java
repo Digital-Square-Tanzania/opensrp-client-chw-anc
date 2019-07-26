@@ -9,6 +9,7 @@ import org.smartregister.chw.anc.activity.BaseAncMemberProfileActivity;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
+import org.smartregister.chw.anc.fragment.BaseHomeVisitImmunizationFragment;
 import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.chw.anc_sample.R;
 import org.smartregister.chw.anc_sample.utils.Constants;
@@ -72,7 +73,7 @@ public class EntryActivity extends SecuredActivity implements View.OnClickListen
                 BasePncMemberProfileActivity.startMe(this, EntryActivity.getSampleMember(), "Juma Family Head", "0976345634");
                 break;
             case R.id.immunization_fragment:
-                BaseAncHomeVisitFragment.getInstance(this, Constants.HOME_VISIT_FORMS.IMMUNIZATION, null, null, null).show(getFragmentManager(), "HV");
+                BaseHomeVisitImmunizationFragment.getInstance(this, "123345", null).show(getFragmentManager(), "HV");
                 break;
             case R.id.home_visit_fragment:
                 BaseAncHomeVisitFragment.getInstance(this, Constants.HOME_VISIT_FORMS.IMMUNIZATION, null, null, null).show(getFragmentManager(), "HV");

@@ -1,18 +1,69 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    tools:context=".activity.AncRegisterActivity">
+    android:layout_height="match_parent">
 
-    <TextView
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="Hello World!"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:orientation="vertical"
+        tools:context=".activity.EntryActivity">
+        
+        <Button
+            android:id="@+id/anc_activity"
+            style="@style/SampleList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ANC Activity" />
 
-</android.support.constraint.ConstraintLayout>
+        <Button
+            android:id="@+id/anc_home_visit"
+            style="@style/SampleList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ANC Home Visit" />
+
+        <Button
+            android:id="@+id/anc_profile"
+            style="@style/SampleList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="ANC Profile" />
+
+        <Button
+            android:id="@+id/pnc_activity"
+            style="@style/SampleList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PNC Activity" />
+
+        <Button
+            android:id="@+id/pnc_home_visit"
+            style="@style/SampleList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PNC Home Visit" />
+
+        <Button
+            android:id="@+id/pnc_profile"
+            style="@style/SampleList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="PNC Profile" />
+
+        <Button
+            android:id="@+id/home_visit_fragment"
+            style="@style/SampleList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Home Visit Fragment" />
+
+        <Button
+            android:id="@+id/immunization_fragment"
+            style="@style/SampleList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Immunization Fragment" />
+    </LinearLayout>
+</ScrollView>

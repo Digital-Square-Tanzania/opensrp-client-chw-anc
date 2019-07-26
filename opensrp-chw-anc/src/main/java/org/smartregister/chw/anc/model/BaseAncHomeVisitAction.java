@@ -1,11 +1,13 @@
 package org.smartregister.chw.anc.model;
 
 import android.content.Context;
+import android.support.v4.app.Fragment;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
+import org.smartregister.chw.anc.fragment.BaseHomeVisitFragment;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.immunization.domain.ServiceWrapper;
 import org.smartregister.immunization.domain.VaccineWrapper;
@@ -24,7 +26,7 @@ public class BaseAncHomeVisitAction {
     private Status actionStatus;
     private ScheduleStatus scheduleStatus;
     private boolean optional;
-    private BaseAncHomeVisitFragment destinationFragment;
+    private BaseHomeVisitFragment destinationFragment;
     private String formName;
     private String jsonPayload;
     private String selectedOption;
@@ -58,7 +60,7 @@ public class BaseAncHomeVisitAction {
         private Status actionStatus = Status.PENDING;
         private ScheduleStatus scheduleStatus = ScheduleStatus.DUE;
         private boolean optional = true;
-        private BaseAncHomeVisitFragment destinationFragment;
+        private BaseHomeVisitFragment destinationFragment;
         private String formName;
         private AncHomeVisitActionHelper ancHomeVisitActionHelper;
         private VaccineWrapper vaccineWrapper;
@@ -81,7 +83,7 @@ public class BaseAncHomeVisitAction {
             return this;
         }
 
-        public Builder withDestinationFragment(BaseAncHomeVisitFragment destinationFragment) {
+        public Builder withDestinationFragment(BaseHomeVisitFragment destinationFragment) {
             this.destinationFragment = destinationFragment;
             return this;
         }
@@ -250,11 +252,11 @@ public class BaseAncHomeVisitAction {
         this.jsonPayload = jsonPayload;
     }
 
-    public BaseAncHomeVisitFragment getDestinationFragment() {
+    public BaseHomeVisitFragment getDestinationFragment() {
         return destinationFragment;
     }
 
-    public void setDestinationFragment(BaseAncHomeVisitFragment destinationFragment) {
+    public void setDestinationFragment(BaseHomeVisitFragment destinationFragment) {
         this.destinationFragment = destinationFragment;
     }
 

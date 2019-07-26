@@ -1,6 +1,5 @@
 package org.smartregister.chw.anc.fragment;
 
-
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -44,7 +43,7 @@ import timber.log.Timber;
 
 import static org.smartregister.util.JsonFormUtils.fields;
 
-public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnClickListener, BaseAncHomeVisitFragmentContract.View {
+public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements View.OnClickListener, BaseAncHomeVisitFragmentContract.View {
 
     private BaseAncHomeVisitContract.VisitView homeVisitView;
     private String title;
@@ -54,7 +53,6 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     private String infoIconDetails;
     @DrawableRes
     private int imageRes;
-    private JSONObject jsonObject;
     private String count = "1";
 
     private BaseAncHomeVisitFragmentContract.Presenter presenter;

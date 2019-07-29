@@ -11,6 +11,7 @@ import org.smartregister.chw.anc_sample.BuildConfig;
 import org.smartregister.chw.anc_sample.job.SampleJobCreator;
 import org.smartregister.chw.anc_sample.repository.SampleRepository;
 import org.smartregister.chw.anc_sample.utils.SampleConstants;
+import org.smartregister.chw.pnc.PncLibrary;
 import org.smartregister.commonregistry.CommonFtsObject;
 import org.smartregister.configurableviews.ConfigurableViewsLibrary;
 import org.smartregister.receiver.SyncStatusBroadcastReceiver;
@@ -42,6 +43,7 @@ public class SampleApplication extends DrishtiApplication {
         CoreLibrary.init(context);
         ConfigurableViewsLibrary.init(context, getRepository());
         AncLibrary.init(context, getRepository(), BuildConfig.VERSION_CODE, BuildConfig.DATABASE_VERSION);
+        PncLibrary.init(context, getRepository(), BuildConfig.VERSION_CODE, BuildConfig.DATABASE_VERSION);
 
         SyncStatusBroadcastReceiver.init(this);
 

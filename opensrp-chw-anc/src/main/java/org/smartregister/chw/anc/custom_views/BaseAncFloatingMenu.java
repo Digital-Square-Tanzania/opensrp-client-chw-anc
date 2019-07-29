@@ -10,15 +10,16 @@ import org.smartregister.chw.anc.fragment.BaseAncWomanCallDialogFragment;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
 public class BaseAncFloatingMenu extends LinearLayout implements View.OnClickListener {
-    private String phoneNumber, familyHeadName, familyHeadPhone, womanName;
+    private String phoneNumber, familyHeadName, familyHeadPhone, womanName, womanProfileType;
 
-    public BaseAncFloatingMenu(Context context, String ancWomanName, String ancWomanPhone, String ancFamilyHeadName, String ancFamilyHeadPhone) {
+    public BaseAncFloatingMenu(Context context, String ancWomanName, String ancWomanPhone, String ancFamilyHeadName, String ancFamilyHeadPhone, String profileType) {
         super(context);
         initUi();
         womanName = ancWomanName;
         phoneNumber = ancWomanPhone;
         familyHeadName = ancFamilyHeadName;
         familyHeadPhone = ancFamilyHeadPhone;
+        womanProfileType = profileType;
     }
 
     public BaseAncFloatingMenu(Context context, AttributeSet attrs) {
@@ -38,7 +39,7 @@ public class BaseAncFloatingMenu extends LinearLayout implements View.OnClickLis
             @Override
             public void onClick(View v) {
                 Activity activity = (Activity) getContext();
-                BaseAncWomanCallDialogFragment.launchDialog(activity, womanName, phoneNumber, familyHeadName, familyHeadPhone);
+                BaseAncWomanCallDialogFragment.launchDialog(activity, womanName, phoneNumber, familyHeadName, familyHeadPhone, womanProfileType);
             }
         });
     }

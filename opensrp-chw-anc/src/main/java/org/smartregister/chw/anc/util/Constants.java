@@ -64,4 +64,9 @@ public interface Constants {
         String MOTHER = "mother";
         String FAMILY = "family";
     }
+
+    interface MEMBER_PROFILE_TYPES {
+        String ANC = "anc";
+        String PNC = "pnc";
+    }
 }

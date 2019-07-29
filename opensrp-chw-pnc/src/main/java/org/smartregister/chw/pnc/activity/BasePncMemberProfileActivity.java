@@ -5,6 +5,7 @@ import android.content.Intent;
 
 import org.smartregister.chw.anc.activity.BaseAncMemberProfileActivity;
 import org.smartregister.chw.anc.domain.MemberObject;
+import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.pnc.R;
 import org.smartregister.chw.pnc.interactor.BasePncMemberProfileInteractor;
 import org.smartregister.view.customcontrols.CustomFontTextView;
@@ -43,5 +44,9 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
         if (pncDay != null) {
             text_view_ga.setText(getName(getString(R.string.pnc_day), pncDay));
         }
+    }
+    @Override
+    protected String getProfileType() {
+        return Constants.MEMBER_PROFILE_TYPES.PNC;
     }
 }

@@ -73,7 +73,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     protected CircleImageView imageView;
 
-
     public static void startMe(Activity activity, MemberObject memberObject, String familyHeadName, String familyHeadPhoneNumber) {
         Intent intent = new Intent(activity, BaseAncMemberProfileActivity.class);
         intent.putExtra(MEMBER_PROFILE_OBJECT, memberObject);
@@ -150,7 +149,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         }
 
         if (StringUtils.isNotBlank(MEMBER_OBJECT.getPhoneNumber()) || StringUtils.isNotBlank(familyHeadPhoneNumber)) {
-            baseAncFloatingMenu = new BaseAncFloatingMenu(this, ancWomanName, MEMBER_OBJECT.getPhoneNumber(), familyHeadName, familyHeadPhoneNumber);
+            baseAncFloatingMenu = new BaseAncFloatingMenu(this, ancWomanName, MEMBER_OBJECT.getPhoneNumber(), familyHeadName, familyHeadPhoneNumber, getProfileType());
             baseAncFloatingMenu.setGravity(Gravity.BOTTOM | Gravity.RIGHT);
             LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -428,6 +427,10 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     @Override
     public void openFamilyDueServices() {
         // TODO implement
+    }
+
+    protected String getProfileType() {
+        return Constants.MEMBER_PROFILE_TYPES.ANC;
     }
 
 }

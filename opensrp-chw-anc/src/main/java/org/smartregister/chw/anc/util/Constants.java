@@ -35,7 +35,7 @@ public interface Constants {
     interface TABLES {
         String ANC_MEMBERS = "ec_anc_register";
         String FAMILY_MEMBER = "ec_family_member";
-        String PREGNANCY_OUTCOME = "pnc_child_enrollment";
+        String PREGNANCY_OUTCOME = "ec_pregnancy_outcome";
         String EC_CHILD = "ec_child";
     }
 

@@ -30,6 +30,7 @@
 
     <string name="return_to_family_members">Return to family members</string>
     <string name="return_to_all_anc_women">Return to all ANC women</string>
+    <string name="record_pnc_visit">Record PNC visit</string>
     <string name="record_anc_visit">Record ANC visit</string>
     <string name="visit_not_done_btn_child_profile">Visit not done</string>
     <string name="not_visiting_this_month">Not visiting this month</string>

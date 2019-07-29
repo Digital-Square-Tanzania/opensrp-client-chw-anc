@@ -4,4 +4,5 @@
     <string name="pnc_visit">PNC Visit</string>
     <string name="pnc_day">PNC Day</string>
     <string name="return_to_all_pnc_women">Return to all PNC women</string>
+    <string name="pnc_day_count">d</string>
 </resources>

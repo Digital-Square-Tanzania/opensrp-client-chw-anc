@@ -34,6 +34,9 @@ public class PncLibrary {
         this.databaseVersion = databaseVersion;
 
     }
+    public Context context() {
+        return context;
+    }
 
     public static void init(Context context, Repository repository, int applicationVersion, int databaseVersion) {
         if (instance == null) {

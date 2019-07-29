@@ -71,7 +71,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     private ProgressBar progressBar;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
 
-    private CircleImageView imageView;
+    protected CircleImageView imageView;
 
 
     public static void startMe(Activity activity, MemberObject memberObject, String familyHeadName, String familyHeadPhoneNumber) {

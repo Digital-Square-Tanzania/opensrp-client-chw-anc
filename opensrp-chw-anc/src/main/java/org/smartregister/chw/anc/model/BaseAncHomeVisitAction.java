@@ -328,7 +328,7 @@ public class BaseAncHomeVisitAction {
 
         /**
          * Inject values to the json form before rendering
-         * Only called once afte the form has been read from the assets folder
+         * Only called once after the form has been read from the assets folder
          */
         void onJsonFormLoaded(String jsonString, Context context, Map<String, List<VisitDetail>> details);
 

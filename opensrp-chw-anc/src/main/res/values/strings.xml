@@ -73,4 +73,10 @@
     <string name="anc_home_visit_danger_signs">Danger signs</string>
     <string name="danger_signs_counselling">Danger signs counselling</string>
     <string name="not_done">Not done</string>
+
+    <string name="vaccines_not_done">VACCINES NOT DONE</string>
+    <string name="add_date_separately">+ ADD DATE FOR EACH VACCINE</string>
+    <string name="when_vaccines_given_text">When were vaccinations done?</string>
+    <string name="which_vaccines_given_text">Which vaccinations were done?</string>
+    <string name="record_vaccinations">Record vaccinations</string>
 </resources>

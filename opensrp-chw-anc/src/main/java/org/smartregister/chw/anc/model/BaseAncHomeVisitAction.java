@@ -21,6 +21,7 @@ import java.util.Map;
  */
 public class BaseAncHomeVisitAction {
 
+    private String baseEntityID;
     private String title;
     private String subTitle;
     private Status actionStatus;
@@ -37,6 +38,7 @@ public class BaseAncHomeVisitAction {
     private Context context;
 
     private BaseAncHomeVisitAction(Builder builder) throws ValidationException {
+        this.baseEntityID = builder.baseEntityID;
         this.title = builder.title;
         this.subTitle = builder.subTitle;
         this.actionStatus = builder.actionStatus;
@@ -55,6 +57,7 @@ public class BaseAncHomeVisitAction {
     }
 
     public static class Builder {
+        private String baseEntityID;
         private String title;
         private String subTitle;
         private Status actionStatus = Status.PENDING;
@@ -71,6 +74,11 @@ public class BaseAncHomeVisitAction {
         public Builder(Context context, String title) {
             this.context = context;
             this.title = title;
+        }
+
+        public Builder withBaseEntityID(String baseEntityID) {
+            this.baseEntityID = baseEntityID;
+            return this;
         }
 
         public Builder withSubtitle(String subTitle) {

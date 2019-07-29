@@ -1,12 +1,10 @@
 package org.smartregister.chw.anc.model;
 
 import android.content.Context;
-import android.support.v4.app.Fragment;
 
 import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.domain.VisitDetail;
-import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
 import org.smartregister.chw.anc.fragment.BaseHomeVisitFragment;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.immunization.domain.ServiceWrapper;
@@ -26,6 +24,7 @@ public class BaseAncHomeVisitAction {
     private String subTitle;
     private Status actionStatus;
     private ScheduleStatus scheduleStatus;
+    private ProcessingMode processingMode;
     private boolean optional;
     private BaseHomeVisitFragment destinationFragment;
     private String formName;
@@ -62,6 +61,7 @@ public class BaseAncHomeVisitAction {
         private String subTitle;
         private Status actionStatus = Status.PENDING;
         private ScheduleStatus scheduleStatus = ScheduleStatus.DUE;
+        private ProcessingMode processingMode = ProcessingMode.COMBINED;
         private boolean optional = true;
         private BaseHomeVisitFragment destinationFragment;
         private String formName;
@@ -116,6 +116,11 @@ public class BaseAncHomeVisitAction {
             return this;
         }
 
+        public Builder withProcessingMode(ProcessingMode processingMode) {
+            this.processingMode = processingMode;
+            return this;
+        }
+
         public Builder withVaccineWrapper(VaccineWrapper vaccineWrapper) {
             this.vaccineWrapper = vaccineWrapper;
             return this;
@@ -162,10 +167,10 @@ public class BaseAncHomeVisitAction {
                 }
             }
 
-            if(details != null && details.size() > 0){
-                if(destinationFragment != null){
+            if (details != null && details.size() > 0) {
+                if (destinationFragment != null) {
                     setJsonPayload(destinationFragment.getJsonObject().toString()); // force reload
-                }else{
+                } else {
                     setJsonPayload(this.jsonPayload); // force reload
                 }
             }
@@ -182,6 +187,14 @@ public class BaseAncHomeVisitAction {
         if (StringUtils.isBlank(formName) && destinationFragment == null) {
             throw new ValidationException("This action object lacks a valid form or destination fragment");
         }
+    }
+
+    public String getBaseEntityID() {
+        return baseEntityID;
+    }
+
+    public void setBaseEntityID(String baseEntityID) {
+        this.baseEntityID = baseEntityID;
     }
 
     public String getTitle() {
@@ -214,6 +227,14 @@ public class BaseAncHomeVisitAction {
 
     public void setScheduleStatus(ScheduleStatus scheduleStatus) {
         this.scheduleStatus = scheduleStatus;
+    }
+
+    public ProcessingMode getProcessingMode() {
+        return processingMode;
+    }
+
+    public void setProcessingMode(ProcessingMode processingMode) {
+        this.processingMode = processingMode;
     }
 
     public boolean isOptional() {
@@ -331,6 +352,11 @@ public class BaseAncHomeVisitAction {
     public enum Status {COMPLETED, PARTIALLY_COMPLETED, PENDING}
 
     public enum ScheduleStatus {DUE, OVERDUE}
+
+    /**
+     * Detached processing generates separate event when form is submitted
+     */
+    public enum ProcessingMode {COMBINED, DETACHED}
 
     public interface AncHomeVisitActionHelper {
 

@@ -96,7 +96,6 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
                 boolean result = true;
                 try {
 
-
                     Map<String, String> jsons = new HashMap<>();
                     Map<String, VaccineWrapper> vaccineWrapperMap = new HashMap<>();
                     Map<String, ServiceWrapper> serviceWrapperMap = new HashMap<>();
@@ -150,7 +149,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
             JsonFormUtils.tagEvent(allSharedPreferences, baseEvent);
 
             String visitID = (editMode) ?
-                    AncLibrary.getInstance().visitRepository().getLatestVisit(memberID, Constants.EVENT_TYPE.ANC_HOME_VISIT).getVisitId() :
+                    AncLibrary.getInstance().visitRepository().getLatestVisit(memberID, getEncounterType()).getVisitId() :
                     JsonFormUtils.generateRandomUUIDString();
 
 

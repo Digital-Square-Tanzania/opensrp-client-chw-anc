@@ -61,7 +61,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     protected LinearLayout layoutRecordView, record_reccuringvisit_done_bar;
     protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue, layoutRecordButtonDone, layoutNotRecordView;
     private String familyHeadName;
-    protected TextView textview_record_reccuring_visit;
+    protected TextView recordRecurringVisit;
     private String familyHeadPhoneNumber;
     private BaseAncFloatingMenu baseAncFloatingMenu;
     private ImageView imageViewCross;
@@ -177,7 +177,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         textViewUndo = findViewById(R.id.textview_undo);
         imageViewCross = findViewById(R.id.cross_image);
         layoutNotRecordView = findViewById(R.id.record_visit_status_bar);
-        textview_record_reccuring_visit = findViewById(R.id.textview_record_reccuring_visit);
+        recordRecurringVisit = findViewById(R.id.textview_record_reccuring_visit);
 
 
         textview_record_anc_visit.setOnClickListener(this);
@@ -190,7 +190,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         textViewUndo.setOnClickListener(this);
         imageViewCross.setOnClickListener(this);
         layoutRecordButtonDone.setOnClickListener(this);
-        textview_record_reccuring_visit.setOnClickListener(this);
+        recordRecurringVisit.setOnClickListener(this);
 
 
         imageView = findViewById(R.id.imageview_profile);

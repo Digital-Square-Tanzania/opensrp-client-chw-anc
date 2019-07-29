@@ -12,6 +12,7 @@ import org.smartregister.view.customcontrols.CustomFontTextView;
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.FAMILY_HEAD_NAME;
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.FAMILY_HEAD_PHONE;
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER_PROFILE_OBJECT;
+import static org.smartregister.util.Utils.getName;
 
 public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
     private BasePncMemberProfileInteractor basePncMemberProfileInteractor = new BasePncMemberProfileInteractor();
@@ -36,4 +37,11 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
         basePncMemberProfileInteractor.getPncMotherNameDetails(MEMBER_OBJECT, text_view_anc_member_name, imageView);
     }
 
+    @Override
+    public void setMemberGA(String memberGA) {
+        String pncDay = basePncMemberProfileInteractor.getPncDay(MEMBER_OBJECT.getBaseEntityId());
+        if (pncDay != null) {
+            text_view_ga.setText(getName(getString(R.string.pnc_day), pncDay));
+        }
+    }
 }

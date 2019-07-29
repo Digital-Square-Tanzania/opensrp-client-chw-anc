@@ -3,6 +3,10 @@ package org.smartregister.chw.pnc.interactor;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
+import org.joda.time.Days;
+import org.joda.time.format.DateTimeFormat;
+import org.joda.time.format.DateTimeFormatter;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.interactor.BaseAncMemberProfileInteractor;
 import org.smartregister.chw.anc.util.DBConstants;
@@ -20,6 +24,17 @@ import static org.smartregister.chw.pnc.PncLibrary.getInstance;
 import static org.smartregister.util.Utils.getName;
 
 public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteractor implements BasePncMemberProfileContract.Interactor {
+
+    @Override
+    public String getPncDay(String motherBaseID) {
+        String dayPnc = getInstance().profileRepository().getDeliveryDate(motherBaseID);
+
+        if (dayPnc != null) {
+            DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
+            dayPnc = String.valueOf(Days.daysBetween(new DateTime(formatter.parseDateTime(dayPnc)), new DateTime()).getDays());
+        }
+        return dayPnc;
+    }
 
     @Override
     public String getPncMotherNameDetails(MemberObject memberObject, TextView textView, CircleImageView imageView) {

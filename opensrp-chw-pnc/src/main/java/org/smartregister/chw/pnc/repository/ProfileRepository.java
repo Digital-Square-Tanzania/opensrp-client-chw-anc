@@ -25,6 +25,7 @@ public class ProfileRepository extends BaseRepository {
 
 
     private static final String MOHTER_ENTITY_ID = "mother_entity_id";
+    private static final String DELIVERY_DATE = "delivery_date";
 
     private String[] CHILD_COLUMNS = {DBConstants.KEY.FIRST_NAME, DBConstants.KEY.MIDDLE_NAME, DBConstants.KEY.LAST_NAME, DBConstants.KEY.DOB, GENDER, MOHTER_ENTITY_ID};
 
@@ -76,4 +77,31 @@ public class ProfileRepository extends BaseRepository {
         }
         return childMemberObjects;
     }
+
+    public String getDeliveryDate(String motherBaseEntityID) {
+
+        SQLiteDatabase database = getReadableDatabase();
+
+        String delivery_date = null;
+
+        net.sqlcipher.Cursor cursor = null;
+        try {
+            if (database == null) {
+                return null;
+            }
+            cursor = database.query(Constants.TABLES.EC_PREGNANCY_OUTCOME, new String[]{DELIVERY_DATE}, DBConstants.KEY.BASE_ENTITY_ID + " = ? " + COLLATE_NOCASE, new String[]{motherBaseEntityID}, null, null, null);
+
+            if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
+                delivery_date = cursor.getString(cursor.getColumnIndex(DELIVERY_DATE));
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return delivery_date;
+    }
+
 }

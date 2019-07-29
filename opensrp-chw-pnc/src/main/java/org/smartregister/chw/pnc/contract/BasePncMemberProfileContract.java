@@ -11,6 +11,7 @@ public interface BasePncMemberProfileContract extends BaseAncMemberProfileContra
 
     interface Interactor {
         String getPncMotherNameDetails(MemberObject memberObject, TextView textView, CircleImageView imageView);
+        String getPncDay(String motherBaseID);
     }
 
 }

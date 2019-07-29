@@ -46,6 +46,7 @@
     <string name="gest_age_weeks">weeks</string>
 
     <string name="call_anc_woman">Call ANC woman</string>
+    <string name="call_pnc_woman">Call PNC woman</string>
     <string name="anc_call">Call</string>
     <string name="copy_to_clipboard">Copy to clipboard</string>
     <string name="copied_phone_number">PhoneNumber copied to clipboard</string>

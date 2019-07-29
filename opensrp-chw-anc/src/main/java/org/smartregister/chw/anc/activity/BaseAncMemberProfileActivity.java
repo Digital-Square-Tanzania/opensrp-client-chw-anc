@@ -194,6 +194,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
         imageView = findViewById(R.id.imageview_profile);
         imageView.setBorderWidth(2);
+        setRecordVisitTitle(getString(R.string.record_anc_visit));
 
         displayView();
     }
@@ -376,6 +377,11 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     @Override
     public void setMemberName(String memberName) {
         text_view_anc_member_name.setText(memberName);
+    }
+
+    @Override
+    public void setRecordVisitTitle(String title) {
+        textview_record_anc_visit.setText(title);
     }
 
     @Override

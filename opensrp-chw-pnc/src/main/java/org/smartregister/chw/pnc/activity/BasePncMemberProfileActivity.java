@@ -34,6 +34,7 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
     @Override
     public void setMemberName(String memberName) {
         basePncMemberProfileInteractor.getPncMotherNameDetails(MEMBER_OBJECT, text_view_anc_member_name);
+//        imageView.setBorderColor(getResources().getColor(R.color.light_blue));
     }
 
 }

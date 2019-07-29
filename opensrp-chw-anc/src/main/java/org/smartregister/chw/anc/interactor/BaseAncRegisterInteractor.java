@@ -13,11 +13,13 @@ import org.smartregister.chw.anc.util.Util;
 import org.smartregister.clientandeventmodel.Client;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.repository.AllSharedPreferences;
+import org.smartregister.repository.BaseRepository;
 
 import timber.log.Timber;
 
 import static org.smartregister.chw.anc.util.Constants.RELATIONSHIP.FAMILY;
 import static org.smartregister.chw.anc.util.Constants.TABLES.EC_CHILD;
+import static org.smartregister.chw.anc.util.Util.getSyncHelper;
 
 public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Interactor {
 
@@ -80,7 +82,7 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
             JSONObject eventJson = new JSONObject(JsonFormUtils.gson.toJson(pncChild));
             AncLibrary.getInstance().getUniqueIdRepository().close(pncChild.getIdentifier(Constants.JSON_FORM_EXTRA.OPENSPR_ID));
 
-            Util.getSyncHelper().addClient(pncChild.getBaseEntityId(), eventJson);
+            getSyncHelper().addClient(pncChild.getBaseEntityId(), eventJson);
 
         } catch (Exception e) {
             Timber.e(e);

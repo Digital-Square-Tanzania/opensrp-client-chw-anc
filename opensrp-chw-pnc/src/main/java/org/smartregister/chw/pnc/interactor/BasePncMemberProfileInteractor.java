@@ -38,7 +38,7 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
     @Override
     public String getPncMotherNameDetails(MemberObject memberObject, TextView textView, CircleImageView imageView) {
 
-        List<CommonPersonObjectClient> children = PncLibrary.getInstance().profileRepository().getChildrenLessThan29DaysOld(memberObject.getBaseEntityId());
+        List<CommonPersonObjectClient> children = pncChildrenUnder29Days(memberObject.getBaseEntityId());
         String nameDetails = memberObject.getMemberName();
         textView.setText(nameDetails);
         if (children.size() > 0) {
@@ -60,6 +60,11 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
         }
 
         return nameDetails;
+    }
+
+    @Override
+    public List<CommonPersonObjectClient> pncChildrenUnder29Days(String motherBaseID) {
+        return PncLibrary.getInstance().profileRepository().getChildrenLessThan29DaysOld(motherBaseID);
     }
 
     private String childNameDetails(String firstName, String middleName, String surName, String age, char gender) {

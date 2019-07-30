@@ -52,7 +52,6 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
         return Constants.MEMBER_PROFILE_TYPES.PNC;
     }
 
-
     @Override
     public void setRecordVisitTitle(String title) {
         textview_record_anc_visit.setText(getString(R.string.record_pnc_visit));

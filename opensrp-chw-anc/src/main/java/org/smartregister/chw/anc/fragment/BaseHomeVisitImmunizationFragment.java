@@ -15,9 +15,9 @@ import java.util.Map;
 
 public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment {
 
-    private BaseAncHomeVisitContract.VisitView visitView;
-    private String baseEntityID;
-    private Map<String, List<VisitDetail>> details;
+    protected BaseAncHomeVisitContract.VisitView visitView;
+    protected String baseEntityID;
+    protected Map<String, List<VisitDetail>> details;
 
     public static BaseHomeVisitImmunizationFragment getInstance(final BaseAncHomeVisitContract.VisitView view, String baseEntityID, Map<String, List<VisitDetail>> details) {
         BaseHomeVisitImmunizationFragment fragment = new BaseHomeVisitImmunizationFragment();

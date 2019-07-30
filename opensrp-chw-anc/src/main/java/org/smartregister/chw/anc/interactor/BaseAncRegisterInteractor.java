@@ -13,7 +13,6 @@ import org.smartregister.chw.anc.util.Util;
 import org.smartregister.clientandeventmodel.Client;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.repository.AllSharedPreferences;
-import org.smartregister.repository.BaseRepository;
 
 import timber.log.Timber;
 

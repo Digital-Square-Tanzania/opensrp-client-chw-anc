@@ -3,37 +3,21 @@ package org.smartregister.chw.pnc;
 import org.smartregister.Context;
 import org.smartregister.chw.pnc.repository.ProfileRepository;
 import org.smartregister.repository.Repository;
-import org.smartregister.repository.UniqueIdRepository;
-import org.smartregister.sync.ClientProcessorForJava;
-import org.smartregister.sync.helper.ECSyncHelper;
-
-import id.zelory.compressor.Compressor;
 
 public class PncLibrary {
     private static PncLibrary instance;
 
-
-    private int applicationVersion;
-    private int databaseVersion;
-
     private final Context context;
     private final Repository repository;
-
-    private UniqueIdRepository uniqueIdRepository;
-    private ECSyncHelper syncHelper;
-
-    private ClientProcessorForJava clientProcessorForJava;
-    private Compressor compressor;
 
     private ProfileRepository profileRepository;
 
     private PncLibrary(Context contextArg, Repository repositoryArg, int applicationVersion, int databaseVersion) {
         this.context = contextArg;
         this.repository = repositoryArg;
-        this.applicationVersion = applicationVersion;
-        this.databaseVersion = databaseVersion;
 
     }
+
     public Context context() {
         return context;
     }

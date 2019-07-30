@@ -7,6 +7,9 @@ import org.smartregister.repository.Repository;
 public class PncLibrary {
     private static PncLibrary instance;
 
+    protected int applicationVersion;
+    protected int databaseVersion;
+
     private final Context context;
     private final Repository repository;
 
@@ -15,7 +18,8 @@ public class PncLibrary {
     private PncLibrary(Context contextArg, Repository repositoryArg, int applicationVersion, int databaseVersion) {
         this.context = contextArg;
         this.repository = repositoryArg;
-
+        this.applicationVersion = applicationVersion;
+        this.databaseVersion = databaseVersion;
     }
 
     public Context context() {

@@ -20,14 +20,13 @@ import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
-import static org.smartregister.chw.pnc.PncLibrary.getInstance;
 import static org.smartregister.util.Utils.getName;
 
 public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteractor implements BasePncMemberProfileContract.Interactor {
 
     @Override
     public String getPncDay(String motherBaseID) {
-        String dayPnc = getInstance().profileRepository().getDeliveryDate(motherBaseID);
+        String dayPnc = PncLibrary.getInstance().profileRepository().getDeliveryDate(motherBaseID);
 
         if (dayPnc != null) {
             DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
@@ -39,7 +38,7 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
     @Override
     public String getPncMotherNameDetails(MemberObject memberObject, TextView textView, CircleImageView imageView) {
 
-        List<CommonPersonObjectClient> children = getInstance().profileRepository().getChildrenLessThan29DaysOld(memberObject.getBaseEntityId());
+        List<CommonPersonObjectClient> children = PncLibrary.getInstance().profileRepository().getChildrenLessThan29DaysOld(memberObject.getBaseEntityId());
         String nameDetails = memberObject.getMemberName();
         textView.setText(nameDetails);
         if (children.size() > 0) {

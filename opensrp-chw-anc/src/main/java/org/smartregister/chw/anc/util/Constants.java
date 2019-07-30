@@ -10,6 +10,7 @@ public interface Constants {
         String NEXT = "next";
         String ENCOUNTER_TYPE = "encounter_type";
         String ENTITY_TYPE = "entity_id";
+        String OPENSPR_ID = "opensrp_id";
     }
 
     interface EVENT_TYPE {
@@ -34,7 +35,7 @@ public interface Constants {
     interface TABLES {
         String ANC_MEMBERS = "ec_anc_register";
         String FAMILY_MEMBER = "ec_family_member";
-        String PREGNANCY_OUTCOME = "pnc_child_enrollment";
+        String PREGNANCY_OUTCOME = "ec_pregnancy_outcome";
         String EC_CHILD = "ec_child";
     }
 
@@ -62,5 +63,10 @@ public interface Constants {
     interface RELATIONSHIP {
         String MOTHER = "mother";
         String FAMILY = "family";
+    }
+
+    interface MEMBER_PROFILE_TYPES {
+        String ANC = "anc";
+        String PNC = "pnc";
     }
 }

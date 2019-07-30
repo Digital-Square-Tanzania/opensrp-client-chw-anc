@@ -1,5 +1,6 @@
 package org.smartregister.chw.anc.actionhelper;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.anc.util.JsonFormUtils;
@@ -10,8 +11,8 @@ import java.text.MessageFormat;
 import timber.log.Timber;
 
 public class DangerSignsHelper extends HomeVisitActionHelper {
-    private String signs_present;
-    private String counseling;
+    private String signs_present = "";
+    private String counseling = "";
 
     @Override
     public void onPayloadReceived(String jsonPayload) {
@@ -42,6 +43,9 @@ public class DangerSignsHelper extends HomeVisitActionHelper {
 
     @Override
     public BaseAncHomeVisitAction.Status evaluateStatusOnPayload() {
+        if (StringUtils.isBlank(counseling))
+            return BaseAncHomeVisitAction.Status.PENDING;
+
         if (counseling.equalsIgnoreCase("Yes")) {
             return BaseAncHomeVisitAction.Status.COMPLETED;
         } else if (counseling.equalsIgnoreCase("No")) {

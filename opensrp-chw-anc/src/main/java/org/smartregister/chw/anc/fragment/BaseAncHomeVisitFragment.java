@@ -1,6 +1,5 @@
 package org.smartregister.chw.anc.fragment;
 
-
 import android.app.AlertDialog;
 import android.app.DialogFragment;
 import android.content.Context;
@@ -44,7 +43,7 @@ import timber.log.Timber;
 
 import static org.smartregister.util.JsonFormUtils.fields;
 
-public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnClickListener, BaseAncHomeVisitFragmentContract.View {
+public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements View.OnClickListener, BaseAncHomeVisitFragmentContract.View {
 
     private BaseAncHomeVisitContract.VisitView homeVisitView;
     private String title;
@@ -54,7 +53,6 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
     private String infoIconDetails;
     @DrawableRes
     private int imageRes;
-    private JSONObject jsonObject;
     private String count = "1";
 
     private BaseAncHomeVisitFragmentContract.Presenter presenter;
@@ -177,27 +175,6 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
         Timber.v("prepareOptionView");
     }
 
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-
-        setStyle(DialogFragment.STYLE_NORMAL, android.R.style.Theme_Holo_Light_NoActionBar);
-    }
-
-    @Override
-    public void onStart() {
-        super.onStart();
-        new Handler().post(new Runnable() {
-            @Override
-            public void run() {
-                if (getDialog() != null && getDialog().getWindow() != null) {
-                    getDialog().getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
-                }
-            }
-        });
-
-    }
-
     public String getTitle() {
         return title;
     }
@@ -285,7 +262,6 @@ public class BaseAncHomeVisitFragment extends DialogFragment implements View.OnC
             infoIcon.setVisibility(View.GONE);
         }
     }
-
 
     protected void onShowInfo() {
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(getView().getContext(), com.vijay.jsonwizard.R.style.AppThemeAlertDialog);

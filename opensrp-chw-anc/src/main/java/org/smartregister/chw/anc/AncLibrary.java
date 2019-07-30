@@ -30,7 +30,7 @@ public class AncLibrary {
     private String sourceDateFormat = "dd-MM-yyyy";
     private String saveDateFormat = "yyyy-MM-dd";
 
-    private AncLibrary(Context contextArg, Repository repositoryArg, int applicationVersion, int databaseVersion) {
+    protected AncLibrary(Context contextArg, Repository repositoryArg, int applicationVersion, int databaseVersion) {
         this.context = contextArg;
         this.repository = repositoryArg;
         this.applicationVersion = applicationVersion;

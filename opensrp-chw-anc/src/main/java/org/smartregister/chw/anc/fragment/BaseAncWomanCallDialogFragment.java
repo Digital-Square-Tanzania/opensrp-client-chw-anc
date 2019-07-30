@@ -16,6 +16,7 @@ import android.widget.TextView;
 import org.apache.commons.lang3.StringUtils;
 import org.smartregister.chw.anc.contract.BaseAncWomanCallDialogContract;
 import org.smartregister.chw.anc.listener.BaseAncWomanCallWidgetDialogListener;
+import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
 import static android.view.View.GONE;
@@ -24,10 +25,10 @@ import static org.smartregister.util.Utils.getName;
 public class BaseAncWomanCallDialogFragment extends DialogFragment implements BaseAncWomanCallDialogContract.View {
 
     public static final String DIALOG_TAG = "BaseAncCallWidgetDialogFragment_DIALOG_TAG";
-    private static String ancWomanName, ancWomanPhoneNumber, ancFamillyHeadName, ancFamilyHeadPhone;
+    private static String ancWomanName, ancWomanPhoneNumber, ancFamillyHeadName, ancFamilyHeadPhone, womanProfileType;
     private View.OnClickListener listener = null;
 
-    public static BaseAncWomanCallDialogFragment launchDialog(Activity activity, String womanName, String ancWomanPhone, String familyHeadName, String familyHeadPhone) {
+    public static BaseAncWomanCallDialogFragment launchDialog(Activity activity, String womanName, String ancWomanPhone, String familyHeadName, String familyHeadPhone, String profileType) {
         BaseAncWomanCallDialogFragment dialogFragment = BaseAncWomanCallDialogFragment.newInstance();
         FragmentTransaction ft = activity.getFragmentManager().beginTransaction();
         Fragment prev = activity.getFragmentManager().findFragmentByTag(DIALOG_TAG);
@@ -35,6 +36,7 @@ public class BaseAncWomanCallDialogFragment extends DialogFragment implements Ba
         ancWomanName = womanName;
         ancFamillyHeadName = familyHeadName;
         ancFamilyHeadPhone = familyHeadPhone;
+        womanProfileType = profileType;
         if (prev != null) {
             ft.remove(prev);
         }
@@ -60,6 +62,9 @@ public class BaseAncWomanCallDialogFragment extends DialogFragment implements Ba
                              Bundle savedInstanceState) {
         ViewGroup dialogView = (ViewGroup) inflater.inflate(R.layout.anc_member_call_widget_dialog_fragment, container, false);
         setUpPosition();
+        TextView callTittleTextView = dialogView.findViewById(R.id.call_title);
+        if (womanProfileType.equals(Constants.MEMBER_PROFILE_TYPES.PNC))
+            callTittleTextView.setText(getString(R.string.call_pnc_woman));
 
         if (listener == null) {
             listener = new BaseAncWomanCallWidgetDialogListener(this);

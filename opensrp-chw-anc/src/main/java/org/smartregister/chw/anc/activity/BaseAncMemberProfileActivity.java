@@ -61,6 +61,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     protected LinearLayout layoutRecordView, record_reccuringvisit_done_bar;
     protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue, layoutRecordButtonDone, layoutNotRecordView;
     private String familyHeadName;
+    protected TextView recordRecurringVisit;
     private String familyHeadPhoneNumber;
     private BaseAncFloatingMenu baseAncFloatingMenu;
     private ImageView imageViewCross;
@@ -71,8 +72,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     private ProgressBar progressBar;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
 
-    private CircleImageView imageView;
-
+    protected CircleImageView imageView;
 
     public static void startMe(Activity activity, MemberObject memberObject, String familyHeadName, String familyHeadPhoneNumber) {
         Intent intent = new Intent(activity, BaseAncMemberProfileActivity.class);
@@ -150,7 +150,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         }
 
         if (StringUtils.isNotBlank(MEMBER_OBJECT.getPhoneNumber()) || StringUtils.isNotBlank(familyHeadPhoneNumber)) {
-            baseAncFloatingMenu = new BaseAncFloatingMenu(this, ancWomanName, MEMBER_OBJECT.getPhoneNumber(), familyHeadName, familyHeadPhoneNumber);
+            baseAncFloatingMenu = new BaseAncFloatingMenu(this, ancWomanName, MEMBER_OBJECT.getPhoneNumber(), familyHeadName, familyHeadPhoneNumber, getProfileType());
             baseAncFloatingMenu.setGravity(Gravity.BOTTOM | Gravity.RIGHT);
             LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -177,7 +177,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         textViewUndo = findViewById(R.id.textview_undo);
         imageViewCross = findViewById(R.id.cross_image);
         layoutNotRecordView = findViewById(R.id.record_visit_status_bar);
-        TextView textview_record_reccuring_visit = findViewById(R.id.textview_record_reccuring_visit);
+        recordRecurringVisit = findViewById(R.id.textview_record_reccuring_visit);
 
 
         textview_record_anc_visit.setOnClickListener(this);
@@ -190,11 +190,12 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         textViewUndo.setOnClickListener(this);
         imageViewCross.setOnClickListener(this);
         layoutRecordButtonDone.setOnClickListener(this);
-        textview_record_reccuring_visit.setOnClickListener(this);
+        recordRecurringVisit.setOnClickListener(this);
 
 
         imageView = findViewById(R.id.imageview_profile);
         imageView.setBorderWidth(2);
+        setRecordVisitTitle(getString(R.string.record_anc_visit));
 
         displayView();
     }
@@ -380,6 +381,11 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     @Override
+    public void setRecordVisitTitle(String title) {
+        textview_record_anc_visit.setText(title);
+    }
+
+    @Override
     public void setMemberGA(String memberGA) {
         String gest_age = String.format(getString(R.string.gest_age), String.valueOf(memberGA)) + " " + getString(R.string.gest_age_weeks);
         text_view_ga.setText(gest_age);
@@ -428,6 +434,10 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     @Override
     public void openFamilyDueServices() {
         // TODO implement
+    }
+
+    protected String getProfileType() {
+        return Constants.MEMBER_PROFILE_TYPES.ANC;
     }
 
 }

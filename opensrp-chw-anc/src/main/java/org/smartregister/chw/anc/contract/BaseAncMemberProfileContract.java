@@ -15,6 +15,8 @@ public interface BaseAncMemberProfileContract {
 
         void setMemberName(String memberName);
 
+        void setRecordVisitTitle(String tittle);
+
         void setMemberGA(String memberGA);
 
         void setMemberAddress(String memberAddress);

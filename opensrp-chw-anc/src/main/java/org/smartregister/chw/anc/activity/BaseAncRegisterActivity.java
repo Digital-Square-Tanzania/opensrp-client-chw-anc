@@ -257,4 +257,13 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
             finish();
         }
     }
+
+    @Override
+    protected void onDestroy() {
+        try {
+            super.onDestroy();
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+    }
 }

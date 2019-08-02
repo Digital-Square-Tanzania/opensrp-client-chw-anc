@@ -3,6 +3,7 @@ package org.smartregister.chw.anc.interactor;
 import android.support.annotation.VisibleForTesting;
 
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.contract.BaseAncRegisterContract;
@@ -54,7 +55,14 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
                 appExecutors.mainThread().execute(new Runnable() {
                     @Override
                     public void run() {
-                        callBack.onRegistrationSaved(isEditMode);
+                        try {
+                            JSONObject form = new JSONObject(jsonString);
+                            callBack.onRegistrationSaved(isEditMode);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+
+
                     }
                 });
             }

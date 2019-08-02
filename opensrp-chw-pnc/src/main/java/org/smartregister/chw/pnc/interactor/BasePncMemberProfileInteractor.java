@@ -83,7 +83,4 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
         return null;
     }
 
-    public void updateChild(final Pair<Client, Event> pair, final String jsonString) {
-//        implement on the app
-    }
 }

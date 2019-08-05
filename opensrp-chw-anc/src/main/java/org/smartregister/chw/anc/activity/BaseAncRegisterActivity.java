@@ -232,9 +232,12 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
 
                 if (encounter_type.equals(PREGNANCY_OUTCOME)) {
                     JSONArray fields = fields(form);
+
+                    JSONObject deliveryDate = getFieldJSONObject(fields, DBConstants.KEY.DELIVERY_DATE);
+                    hasChildRegistration = StringUtils.isNotBlank(deliveryDate.optString(JsonFormUtils.VALUE)) ? true : false;
+
                     JSONObject uniqueID = getFieldJSONObject(fields, DBConstants.KEY.UNIQUE_ID);
                     if (StringUtils.isNotBlank(uniqueID.optString(JsonFormUtils.VALUE))) {
-                        hasChildRegistration = true;
                         String childBaseEntityId = JsonFormUtils.generateRandomUUIDString();
                         AllSharedPreferences allSharedPreferences = getInstance().context().allSharedPreferences();
                         JSONObject pncForm = baseAncRegisterModel.getFormAsJson(Constants.FORMS.PNC_CHILD_REGISTRATION,

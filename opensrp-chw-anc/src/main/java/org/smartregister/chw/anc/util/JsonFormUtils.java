@@ -201,10 +201,14 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     }
 
     public static String getFirstObjectKey(JSONObject jsonObject) {
+        return getObjectKey(jsonObject, 0);
+    }
+
+    public static String getObjectKey(JSONObject jsonObject, int position) {
         try {
             JSONArray jsonArray = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
-            if (jsonArray.length() > 0) {
-                return jsonArray.getJSONObject(0).getString(JsonFormConstants.KEY);
+            if (jsonArray.length() > position && position > -1) {
+                return jsonArray.getJSONObject(position - 1).getString(JsonFormConstants.KEY);
 
             }
         } catch (Exception e) {

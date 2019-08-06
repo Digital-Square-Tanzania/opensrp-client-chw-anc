@@ -4,6 +4,7 @@ import android.content.res.Resources;
 
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitFragmentContract;
@@ -63,17 +64,22 @@ public class BaseAncHomeVisitFragmentModel implements BaseAncHomeVisitFragmentCo
 
     private String getQuestion(JSONObject jsonObject) {
         try {
-            return jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0).getString(JsonFormConstants.HINT);
+            JSONObject targetObject = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0);
+            if (targetObject.has(JsonFormConstants.HINT))
+                return targetObject.getString(JsonFormConstants.HINT);
+
         } catch (JSONException e) {
             Timber.e(e);
-            return "";
         }
+        return "";
     }
 
     private int getImage(JSONObject jsonObject, BaseAncHomeVisitFragmentContract.Presenter presenter) {
         try {
-            String image = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0).getString(JsonFormUtils.IMAGE);
-            if (presenter.getView() != null) {
+            JSONObject targetObject = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0);
+
+            String image = (targetObject.has(JsonFormUtils.IMAGE)) ? targetObject.getString(JsonFormUtils.IMAGE) : "";
+            if (presenter.getView() != null && StringUtils.isNotBlank(image)) {
                 Resources resources = presenter.getView().getMyContext().getResources();
                 return resources.getIdentifier(image, "drawable",
                         presenter.getView().getMyContext().getPackageName());
@@ -86,7 +92,10 @@ public class BaseAncHomeVisitFragmentModel implements BaseAncHomeVisitFragmentCo
 
     private BaseAncHomeVisitFragment.QuestionType getQuestionType(JSONObject jsonObject) {
         try {
-            String type = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0).getString(JsonFormConstants.TYPE);
+            JSONObject targetObject = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0);
+
+            String type = (targetObject.has(JsonFormConstants.TYPE)) ? targetObject.getString(JsonFormConstants.TYPE) : "";
+
             switch (type) {
                 case JsonFormConstants.SPINNER:
                     return BaseAncHomeVisitFragment.QuestionType.BOOLEAN;
@@ -105,27 +114,36 @@ public class BaseAncHomeVisitFragmentModel implements BaseAncHomeVisitFragmentCo
 
     private String getInfoIconTitle(JSONObject jsonObject) {
         try {
-            return jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0).getString(JsonFormConstants.LABEL_INFO_TITLE);
+            JSONObject targetObject = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0);
+            if (targetObject.has(JsonFormConstants.LABEL_INFO_TITLE))
+                return targetObject.getString(JsonFormConstants.LABEL_INFO_TITLE);
         } catch (JSONException e) {
             Timber.e(e);
-            return "";
         }
+        return "";
     }
 
     private String getInfoIconDetails(JSONObject jsonObject) {
         try {
-            return jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0).getString(JsonFormConstants.LABEL_INFO_TEXT);
+            JSONObject targetObject = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0);
+            if (targetObject.has(JsonFormConstants.LABEL_INFO_TEXT))
+                return targetObject.getString(JsonFormConstants.LABEL_INFO_TEXT);
         } catch (JSONException e) {
             Timber.e(e);
-            return "";
         }
+        return "";
     }
 
     private String getValue(JSONObject jsonObject) {
         try {
-            return jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0).getString(JsonFormConstants.VALUE);
-        } catch (JSONException e) {
+            JSONObject targetObject = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0);
+            if (targetObject.has(JsonFormConstants.VALUE))
+                return targetObject.getString(JsonFormConstants.VALUE);
+
             return "";
+        } catch (JSONException e) {
+            Timber.e(e);
         }
+        return "";
     }
 }

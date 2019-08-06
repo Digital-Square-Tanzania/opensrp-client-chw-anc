@@ -29,7 +29,7 @@ public class ProfileRepository extends BaseRepository {
         super(repository);
     }
 
-    private CommonPersonObjectClient getChildMember(Cursor cursor, int childAgeInDays) {
+    private CommonPersonObjectClient getChildMember(Cursor cursor) {
         String[] columnNames = cursor.getColumnNames();
         Map<String, String> details = new HashMap<>();
 
@@ -37,7 +37,6 @@ public class ProfileRepository extends BaseRepository {
             details.put(columnName, cursor.getString(cursor.getColumnIndex(columnName)));
         }
 
-        details.put(DBConstants.KEY.DOB, String.valueOf(childAgeInDays));
         CommonPersonObjectClient commonPersonObject = new CommonPersonObjectClient("", details, "");
         commonPersonObject.setColumnmaps(details);
         commonPersonObject.setCaseId(cursor.getString(cursor.getColumnIndex(DBConstants.KEY.BASE_ENTITY_ID)));
@@ -62,7 +61,7 @@ public class ProfileRepository extends BaseRepository {
                     String dob = cursor.getString(cursor.getColumnIndex(DBConstants.KEY.DOB));
                     int childAgeInDays = PncUtil.getDaysDifference(dob);
                     if (childAgeInDays < 29) {
-                        childMemberObjects.add(getChildMember(cursor, childAgeInDays));
+                        childMemberObjects.add(getChildMember(cursor));
                     }
                     cursor.moveToNext();
                 }

@@ -32,6 +32,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     public static final String METADATA = "metadata";
     public static final String IMAGE = "image";
     public static final String ANC_HOME_VISIT = "home_visit_group";
+    private static final String V_REQUIRED = "v_required";
 
     protected static Triple<Boolean, JSONObject, JSONArray> validateParameters(String jsonString) {
 
@@ -380,6 +381,41 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         }
 
         return null;
+    }
+
+    public static JSONObject SetRequiredFieldsToFalseForPncChild(JSONObject form, String FamilyBaseEntityId, String membergetBaseEntityId) {
+
+        JSONArray fields = fields(form);
+        for (int i = 0; i < fields.length(); i++) {
+            try {
+                JSONObject formObject = fields.getJSONObject(i);
+                if (formObject.has(V_REQUIRED) && StringUtils.isBlank(formObject.optString(VALUE))) {
+                    formObject.remove(V_REQUIRED);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            form.put(DBConstants.KEY.RELATIONAL_ID, FamilyBaseEntityId);
+            form.put(MOTHER_ENTITY_ID, membergetBaseEntityId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return form;
+    }
+
+    public static void updateFormField(JSONArray formFieldArrays, String formFieldKey, String updateValue) {
+        if (updateValue != null) {
+            JSONObject formObject = org.smartregister.util.JsonFormUtils.getFieldJSONObject(formFieldArrays, formFieldKey);
+            if (formObject != null) {
+                try {
+                    formObject.put(org.smartregister.util.JsonFormUtils.VALUE, updateValue);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
     }
 
 }

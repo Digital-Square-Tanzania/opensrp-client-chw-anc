@@ -1,6 +1,5 @@
 package org.smartregister.chw.pnc.interactor;
 
-import android.util.Pair;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
@@ -15,8 +14,7 @@ import org.smartregister.chw.pnc.PncLibrary;
 import org.smartregister.chw.pnc.R;
 import org.smartregister.chw.pnc.contract.BasePncMemberProfileContract;
 import org.smartregister.chw.pnc.util.Constants;
-import org.smartregister.clientandeventmodel.Client;
-import org.smartregister.clientandeventmodel.Event;
+import org.smartregister.chw.pnc.util.PncUtil;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 
 import java.util.List;
@@ -52,7 +50,8 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
                 textView.append(" +\n" + childNameDetails(childObject.getColumnmaps().get(DBConstants.KEY.FIRST_NAME),
                         childObject.getColumnmaps().get(DBConstants.KEY.MIDDLE_NAME),
                         childObject.getColumnmaps().get(DBConstants.KEY.LAST_NAME),
-                        childObject.getColumnmaps().get(DBConstants.KEY.DOB), gender));
+                        String.valueOf(PncUtil.getDaysDifference(childObject.getColumnmaps().get(DBConstants.KEY.DOB))),
+                        gender));
                 if (gender == 'M')
                     imageView.setBorderColor(PncLibrary.getInstance().context().getColorResource(R.color.light_blue));
                 else

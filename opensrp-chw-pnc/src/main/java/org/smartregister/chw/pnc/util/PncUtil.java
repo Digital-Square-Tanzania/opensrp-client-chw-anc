@@ -3,6 +3,7 @@ package org.smartregister.chw.pnc.util;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
+import org.smartregister.chw.pnc.repository.PncCloseDateRepository;
 import org.smartregister.clientandeventmodel.DateUtil;
 
 import java.text.DateFormat;
@@ -41,4 +42,7 @@ public class PncUtil {
         return date;
     }
 
+    public static void updatePregancyOutcome(Integer numberOfDays, PncCloseDateRepository pncCloseDateRepository) {
+        pncCloseDateRepository.closeOldPNCRecords(numberOfDays);
+    }
 }

@@ -18,18 +18,21 @@ import org.joda.time.LocalDate;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.domain.VisitDetail;
+import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.Util;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.immunization.db.VaccineRepo;
 import org.smartregister.immunization.domain.ServiceSchedule;
 import org.smartregister.immunization.domain.VaccineWrapper;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment implements View.OnClickListener {
@@ -205,18 +208,22 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         // notify the view (write to json file then dismiss)
 
         Date vaccineDate = getDateFromDatePicker(singleDatePicker);
-        Map<VaccineWrapper, Date> vaccineDateMap = new HashMap<>();
+        SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMATS.NATIVE_FORMS, Locale.getDefault());
+        HashMap<VaccineWrapper, String> vaccineDateMap = new HashMap<>();
 
         for (VaccineView vaccineView : vaccineViews) {
-            if (vaccineView.getCheckBox().isChecked()) {
-                VaccineWrapper wrapper = vaccineWrappers.get(vaccineView.getVaccineName());
-                if (wrapper != null)
-                    vaccineDateMap.put(wrapper, (individualVaccineMode) ? vaccineDate : getDateFromDatePicker(vaccineView.getDatePickerView()));
+            VaccineWrapper wrapper = vaccineWrappers.get(vaccineView.getVaccineName());
+            if (wrapper != null) {
+                if (vaccineView.getCheckBox().isChecked()) {
+                    vaccineDateMap.put(wrapper, (!individualVaccineMode) ? dateFormat.format(vaccineDate) : dateFormat.format(getDateFromDatePicker(vaccineView.getDatePickerView())));
+                } else {
+                    vaccineDateMap.put(wrapper, "Vaccine not given");
+                }
             }
         }
 
         // create a json object and write values to it that have the vaccine dates
-        JSONObject jsonObject = Util.getVisitJSONFromWrapper(vaccineDateMap);
+        JSONObject jsonObject = Util.getVisitJSONFromWrapper(baseEntityID, vaccineDateMap);
 
         // notify the view
         if (jsonObject != null) {

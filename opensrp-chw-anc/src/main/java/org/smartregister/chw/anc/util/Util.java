@@ -252,21 +252,21 @@ public class Util {
     }
 
     @Nullable
-    public static JSONObject getVisitJSONFromWrapper(Map<VaccineWrapper, Date> vaccineWrapperDateMap) {
+    public static JSONObject getVisitJSONFromWrapper(String entityID, Map<VaccineWrapper, String> vaccineWrapperDateMap) {
 
         try {
-            SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMATS.NATIVE_FORMS, Locale.getDefault());
             JSONObject jsonObject = JsonFormUtils.getFormAsJson(Constants.FORMS.IMMUNIZATIOIN_VISIT);
+            jsonObject.put("entity_id", entityID);
             JSONArray jsonArray = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
 
 
-            for (Map.Entry<VaccineWrapper, Date> entry : vaccineWrapperDateMap.entrySet()) {
+            for (Map.Entry<VaccineWrapper, String> entry : vaccineWrapperDateMap.entrySet()) {
                 JSONObject field = new JSONObject();
                 field.put(JsonFormConstants.KEY, removeSpaces(entry.getKey().getName()));
-                field.put("openmrs_entity_parent", "");
-                field.put("openmrs_entity", "concept");
-                field.put("openmrs_entity_id", removeSpaces(entry.getKey().getName()));
-                field.put(JsonFormConstants.VALUE, dateFormat.format(entry.getValue()));
+                field.put(JsonFormConstants.OPENMRS_ENTITY_PARENT, "");
+                field.put(JsonFormConstants.OPENMRS_ENTITY, "concept");
+                field.put(JsonFormConstants.OPENMRS_ENTITY_ID, removeSpaces(entry.getKey().getName()));
+                field.put(JsonFormConstants.VALUE, entry.getValue());
 
                 jsonArray.put(field);
             }

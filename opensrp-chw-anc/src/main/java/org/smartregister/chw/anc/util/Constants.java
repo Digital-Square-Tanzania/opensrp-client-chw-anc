@@ -74,4 +74,8 @@ public interface Constants {
     interface DATE_FORMATS {
         String NATIVE_FORMS = "dd-MM-yyyy";
     }
+
+    interface HOME_VISIT {
+        String VACCINE_NOT_GIVEN = "Vaccine not given";
+    }
 }

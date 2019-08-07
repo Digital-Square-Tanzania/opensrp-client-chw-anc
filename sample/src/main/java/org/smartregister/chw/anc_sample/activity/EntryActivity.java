@@ -33,6 +33,7 @@ import timber.log.Timber;
 
 public class EntryActivity extends SecuredActivity implements View.OnClickListener, BaseAncHomeVisitContract.VisitView {
 
+    private BaseHomeVisitImmunizationFragment immunizationFragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -81,7 +82,7 @@ public class EntryActivity extends SecuredActivity implements View.OnClickListen
                 BasePncMemberProfileActivity.startMe(this, EntryActivity.getSampleMember(), "Juma Family Head", "0976345634");
                 break;
             case R.id.immunization_fragment:
-                BaseHomeVisitImmunizationFragment.getInstance(this, "123345", null, getFakeVaccines()).show(getFragmentManager(), "HV");
+                openImmunizationFrag();
                 break;
             case R.id.home_visit_fragment:
                 BaseAncHomeVisitFragment.getInstance(this, Constants.HOME_VISIT_FORMS.IMMUNIZATION, null, null, null).show(getFragmentManager(), "HV");
@@ -89,6 +90,13 @@ public class EntryActivity extends SecuredActivity implements View.OnClickListen
             default:
                 break;
         }
+    }
+
+    private void openImmunizationFrag(){
+        if(immunizationFragment == null){
+            immunizationFragment = BaseHomeVisitImmunizationFragment.getInstance(this, "123345", null, getFakeVaccines());
+        }
+        immunizationFragment.show(getFragmentManager(), "HV");
     }
 
     public static MemberObject getSampleMember() {

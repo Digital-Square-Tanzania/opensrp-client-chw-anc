@@ -107,10 +107,18 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
                             jsons.put(entry.getKey(), json);
                             JSONObject jsonObject = new JSONObject(json);
                             if (entry.getValue().getVaccineWrapper() != null) {
-                                vaccineWrapperMap.put(JsonFormUtils.getFirstObjectKey(jsonObject), entry.getValue().getVaccineWrapper());
+                                int position = 0;
+                                for (VaccineWrapper v : entry.getValue().getVaccineWrapper()) {
+                                    vaccineWrapperMap.put(JsonFormUtils.getObjectKey(jsonObject, position), v);
+                                    position++;
+                                }
                             }
                             if (entry.getValue().getServiceWrapper() != null) {
-                                serviceWrapperMap.put(JsonFormUtils.getFirstObjectKey(jsonObject), entry.getValue().getServiceWrapper());
+                                int position = 0;
+                                for (ServiceWrapper sw : entry.getValue().getServiceWrapper()) {
+                                    serviceWrapperMap.put(JsonFormUtils.getObjectKey(jsonObject, position), sw);
+                                    position++;
+                                }
                             }
                         }
                     }

@@ -2,12 +2,16 @@ package org.smartregister.chw.anc.util;
 
 import android.content.Context;
 
+import com.vijay.jsonwizard.constants.JsonFormConstants;
+
 import net.sqlcipher.database.SQLiteDatabase;
 
+import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.domain.Visit;
@@ -16,6 +20,7 @@ import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.clientandeventmodel.Obs;
 import org.smartregister.domain.db.EventClient;
+import org.smartregister.immunization.domain.VaccineWrapper;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.sync.ClientProcessorForJava;
@@ -246,4 +251,34 @@ public class Util {
         return String.valueOf(ga);
     }
 
+    @Nullable
+    public static JSONObject getVisitJSONFromWrapper(Map<VaccineWrapper, Date> vaccineWrapperDateMap) {
+
+        try {
+            SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMATS.NATIVE_FORMS, Locale.getDefault());
+            JSONObject jsonObject = JsonFormUtils.getFormAsJson(Constants.FORMS.IMMUNIZATIOIN_VISIT);
+            JSONArray jsonArray = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
+
+
+            for (Map.Entry<VaccineWrapper, Date> entry : vaccineWrapperDateMap.entrySet()) {
+                JSONObject field = new JSONObject();
+                field.put(JsonFormConstants.KEY, removeSpaces(entry.getKey().getName()));
+                field.put("openmrs_entity_parent", "");
+                field.put("openmrs_entity", "concept");
+                field.put("openmrs_entity_id", removeSpaces(entry.getKey().getName()));
+                field.put(JsonFormConstants.VALUE, dateFormat.format(entry.getValue()));
+
+                jsonArray.put(field);
+            }
+
+            return jsonObject;
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+        return null;
+    }
+
+    public static String removeSpaces(String s) {
+        return s.replace(" ", "_").toLowerCase();
+    }
 }

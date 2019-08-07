@@ -30,6 +30,7 @@ public interface Constants {
     interface FORMS {
         String ANC_REGISTRATION = "anc_registration";
         String PNC_CHILD_REGISTRATION = "pnc_child_enrollment";
+        String IMMUNIZATIOIN_VISIT = "immunization_visit";
     }
 
     interface TABLES {
@@ -68,5 +69,9 @@ public interface Constants {
     interface MEMBER_PROFILE_TYPES {
         String ANC = "anc";
         String PNC = "pnc";
+    }
+
+    interface DATE_FORMATS {
+        String NATIVE_FORMS = "dd-MM-yyyy";
     }
 }

@@ -61,7 +61,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     protected LinearLayout layoutRecordView, record_reccuringvisit_done_bar;
     protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue, layoutRecordButtonDone, layoutNotRecordView;
     private String familyHeadName;
-    protected TextView recordRecurringVisit;
+    protected TextView recordRecurringVisit, textview_record_visit;
     private String familyHeadPhoneNumber;
     private BaseAncFloatingMenu baseAncFloatingMenu;
     private ImageView imageViewCross;
@@ -127,6 +127,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         tvUpComingServices = findViewById(R.id.textview_name_due);
         tvFamilyStatus = findViewById(R.id.textview_family_has);
         record_reccuringvisit_done_bar = findViewById(R.id.record_reccuringvisit_done_bar);
+        textview_record_visit = findViewById(R.id.textview_record_visit);
 
         initializePresenter();
         setupViews();

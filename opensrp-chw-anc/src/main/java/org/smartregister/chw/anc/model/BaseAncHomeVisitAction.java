@@ -10,6 +10,7 @@ import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.immunization.domain.ServiceWrapper;
 import org.smartregister.immunization.domain.VaccineWrapper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +32,8 @@ public class BaseAncHomeVisitAction {
     private String jsonPayload;
     private String selectedOption;
     private AncHomeVisitActionHelper ancHomeVisitActionHelper;
-    private VaccineWrapper vaccineWrapper;
-    private ServiceWrapper serviceWrapper;
+    private List<VaccineWrapper> vaccineWrapper;
+    private List<ServiceWrapper> serviceWrapper;
     private Map<String, List<VisitDetail>> details;
     private Context context;
 
@@ -66,8 +67,8 @@ public class BaseAncHomeVisitAction {
         private BaseHomeVisitFragment destinationFragment;
         private String formName;
         private AncHomeVisitActionHelper ancHomeVisitActionHelper;
-        private VaccineWrapper vaccineWrapper;
-        private ServiceWrapper serviceWrapper;
+        private List<VaccineWrapper> vaccineWrapper = new ArrayList<>();
+        private List<ServiceWrapper> serviceWrapper = new ArrayList<>();
         private Map<String, List<VisitDetail>> details = new HashMap<>();
         private Context context;
 
@@ -122,12 +123,22 @@ public class BaseAncHomeVisitAction {
         }
 
         public Builder withVaccineWrapper(VaccineWrapper vaccineWrapper) {
-            this.vaccineWrapper = vaccineWrapper;
+            this.vaccineWrapper.add(vaccineWrapper);
+            return this;
+        }
+
+        public Builder withVaccineWrapper(List<VaccineWrapper> vaccineWrapper) {
+            this.vaccineWrapper.addAll(vaccineWrapper);
             return this;
         }
 
         public Builder withServiceWrapper(ServiceWrapper serviceWrapper) {
-            this.serviceWrapper = serviceWrapper;
+            this.serviceWrapper.add(serviceWrapper);
+            return this;
+        }
+
+        public Builder withServiceWrapper(List<ServiceWrapper> serviceWrapper) {
+            this.serviceWrapper.addAll(serviceWrapper);
             return this;
         }
 
@@ -333,20 +344,20 @@ public class BaseAncHomeVisitAction {
         }
     }
 
-    public VaccineWrapper getVaccineWrapper() {
+    public List<VaccineWrapper> getVaccineWrapper() {
         return (getActionStatus() == Status.COMPLETED) ? vaccineWrapper : null;
     }
 
     public void setVaccineWrapper(VaccineWrapper vaccineWrapper) {
-        this.vaccineWrapper = vaccineWrapper;
+        this.vaccineWrapper.add(vaccineWrapper);
     }
 
-    public ServiceWrapper getServiceWrapper() {
+    public List<ServiceWrapper> getServiceWrapper() {
         return (getActionStatus() == Status.COMPLETED) ? serviceWrapper : null;
     }
 
     public void setServiceWrapper(ServiceWrapper serviceWrapper) {
-        this.serviceWrapper = serviceWrapper;
+        this.serviceWrapper.add(serviceWrapper);
     }
 
     public enum Status {COMPLETED, PARTIALLY_COMPLETED, PENDING}

@@ -27,11 +27,12 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
     }
 
     @Override
-    protected void onCreation() {
-        super.onCreation();
+    protected void setupViews() {
+        super.setupViews();
         CustomFontTextView titleView = findViewById(R.id.toolbar_title);
         titleView.setText(getString(R.string.return_to_all_pnc_women));
-        textViewNotVisitMonth.setEnabled(false);
+        record_reccuringvisit_done_bar.setVisibility(view_anc_record.GONE);
+        textViewAncVisitNot.setVisibility(view_anc_record.GONE);
     }
 
     @Override
@@ -51,7 +52,6 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
     protected String getProfileType() {
         return Constants.MEMBER_PROFILE_TYPES.PNC;
     }
-
 
     @Override
     public void setRecordVisitTitle(String title) {

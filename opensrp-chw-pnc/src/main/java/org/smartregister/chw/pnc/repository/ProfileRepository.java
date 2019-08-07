@@ -18,8 +18,6 @@ import java.util.Map;
 
 import timber.log.Timber;
 
-import static org.smartregister.chw.pnc.util.Constants.KEY.GENDER;
-
 
 public class ProfileRepository extends BaseRepository {
 
@@ -27,21 +25,21 @@ public class ProfileRepository extends BaseRepository {
     private static final String MOHTER_ENTITY_ID = "mother_entity_id";
     private static final String DELIVERY_DATE = "delivery_date";
 
-    private String[] CHILD_COLUMNS = {DBConstants.KEY.FIRST_NAME, DBConstants.KEY.MIDDLE_NAME, DBConstants.KEY.LAST_NAME, DBConstants.KEY.DOB, GENDER, MOHTER_ENTITY_ID};
-
     public ProfileRepository(Repository repository) {
         super(repository);
     }
 
-    private CommonPersonObjectClient getChildMember(Cursor cursor, int childAgeInDays) {
+    private CommonPersonObjectClient getChildMember(Cursor cursor) {
+        String[] columnNames = cursor.getColumnNames();
         Map<String, String> details = new HashMap<>();
-        details.put(DBConstants.KEY.FIRST_NAME, cursor.getString(cursor.getColumnIndex(DBConstants.KEY.FIRST_NAME)));
-        details.put(DBConstants.KEY.LAST_NAME, cursor.getString(cursor.getColumnIndex(DBConstants.KEY.LAST_NAME)));
-        details.put(DBConstants.KEY.MIDDLE_NAME, cursor.getString(cursor.getColumnIndex(DBConstants.KEY.MIDDLE_NAME)));
-        details.put(DBConstants.KEY.DOB, String.valueOf(childAgeInDays));
-        details.put(GENDER, cursor.getString(cursor.getColumnIndex(GENDER)));
+
+        for (String columnName : columnNames) {
+            details.put(columnName, cursor.getString(cursor.getColumnIndex(columnName)));
+        }
+
         CommonPersonObjectClient commonPersonObject = new CommonPersonObjectClient("", details, "");
         commonPersonObject.setColumnmaps(details);
+        commonPersonObject.setCaseId(cursor.getString(cursor.getColumnIndex(DBConstants.KEY.BASE_ENTITY_ID)));
 
         return commonPersonObject;
 
@@ -58,14 +56,14 @@ public class ProfileRepository extends BaseRepository {
             if (database == null) {
                 return null;
             }
-            cursor = database.query(Constants.TABLES.EC_CHILD, CHILD_COLUMNS, MOHTER_ENTITY_ID + " = ? " + COLLATE_NOCASE, new String[]{motherBaseEntityID}, null, null, null);
-
+            cursor = database.rawQuery("SELECT * fROM " + Constants.TABLES.EC_CHILD + " WHERE " + MOHTER_ENTITY_ID + "=?",
+                    new String[]{motherBaseEntityID});
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
                     String dob = cursor.getString(cursor.getColumnIndex(DBConstants.KEY.DOB));
                     int childAgeInDays = PncUtil.getDaysDifference(dob);
                     if (childAgeInDays < 29) {
-                        childMemberObjects.add(getChildMember(cursor, childAgeInDays));
+                        childMemberObjects.add(getChildMember(cursor));
                     }
                     cursor.moveToNext();
                 }

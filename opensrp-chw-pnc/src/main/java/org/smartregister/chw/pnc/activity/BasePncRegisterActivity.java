@@ -4,6 +4,8 @@ import org.smartregister.chw.anc.activity.BaseAncRegisterActivity;
 import org.smartregister.chw.pnc.fragment.BasePncRegisterFragment;
 import org.smartregister.view.fragment.BaseRegisterFragment;
 
+import timber.log.Timber;
+
 public class BasePncRegisterActivity extends BaseAncRegisterActivity {
 
     @Override
@@ -11,4 +13,12 @@ public class BasePncRegisterActivity extends BaseAncRegisterActivity {
         return new BasePncRegisterFragment();
     }
 
+    @Override
+    protected void onDestroy() {
+        try {
+            super.onDestroy();
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+    }
 }

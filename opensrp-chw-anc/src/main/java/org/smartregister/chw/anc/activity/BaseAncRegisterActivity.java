@@ -11,6 +11,7 @@ import android.widget.Toast;
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 import com.vijay.jsonwizard.domain.Form;
 
+import org.apache.commons.lang3.StringUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 import org.smartregister.AllConstants;
@@ -47,6 +48,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
     protected String BASE_ENTITY_ID;
     protected String ACTION;
     protected String TABLE;
+    protected boolean hasChildRegistration = false;
 
     private BaseAncRegisterModel baseAncRegisterModel = new BaseAncRegisterModel();
 
@@ -229,18 +231,26 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
                 String motherBaseId = form.optString(Constants.JSON_FORM_EXTRA.ENTITY_TYPE);
 
                 if (encounter_type.equals(PREGNANCY_OUTCOME)) {
-                    String childBaseEntityId = JsonFormUtils.generateRandomUUIDString();
-                    AllSharedPreferences allSharedPreferences = getInstance().context().allSharedPreferences();
-                    JSONObject pncForm = baseAncRegisterModel.getFormAsJson(Constants.FORMS.PNC_CHILD_REGISTRATION, childBaseEntityId, getLocationID());
                     JSONArray fields = fields(form);
 
-                    JSONObject familyIdObject = getFieldJSONObject(fields, DBConstants.KEY.RELATIONAL_ID);
-                    String familyBaseEntityId = familyIdObject.getString(JsonFormUtils.VALUE);
-                    pncForm = JsonFormUtils.populatePNCForm(pncForm, fields, familyBaseEntityId);
+                    JSONObject deliveryDate = getFieldJSONObject(fields, DBConstants.KEY.DELIVERY_DATE);
+                    hasChildRegistration = StringUtils.isNotBlank(deliveryDate.optString(JsonFormUtils.VALUE)) ? true : false;
 
-                    baseAncRegisterInteractor.processPncChild(fields, allSharedPreferences, childBaseEntityId, familyBaseEntityId, motherBaseId);
-                    baseAncRegisterInteractor.processPncEvent(allSharedPreferences, pncForm);
+                    JSONObject uniqueID = getFieldJSONObject(fields, DBConstants.KEY.UNIQUE_ID);
+                    if (StringUtils.isNotBlank(uniqueID.optString(JsonFormUtils.VALUE))) {
+                        String childBaseEntityId = JsonFormUtils.generateRandomUUIDString();
+                        AllSharedPreferences allSharedPreferences = getInstance().context().allSharedPreferences();
+                        JSONObject pncForm = baseAncRegisterModel.getFormAsJson(Constants.FORMS.PNC_CHILD_REGISTRATION,
+                                childBaseEntityId, getLocationID());
 
+                        JSONObject familyIdObject = getFieldJSONObject(fields, DBConstants.KEY.RELATIONAL_ID);
+                        String familyBaseEntityId = familyIdObject.getString(JsonFormUtils.VALUE);
+                        pncForm = JsonFormUtils.populatePNCForm(pncForm, fields, familyBaseEntityId);
+
+                        baseAncRegisterInteractor.processPncChild(fields, allSharedPreferences, childBaseEntityId,
+                                familyBaseEntityId, motherBaseId);
+                        baseAncRegisterInteractor.processPncEvent(allSharedPreferences, pncForm);
+                    }
                 }
 
                 // process anc registration
@@ -255,6 +265,15 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
             }
         } else {
             finish();
+        }
+    }
+
+    @Override
+    protected void onDestroy() {
+        try {
+            super.onDestroy();
+        } catch (Exception e) {
+            Timber.e(e);
         }
     }
 }

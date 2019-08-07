@@ -47,11 +47,14 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
     // global maximum date
     private Date maxVaccineDate = ServiceSchedule.standardiseDateTime(DateTime.now()).toDate();
 
-    public static BaseHomeVisitImmunizationFragment getInstance(final BaseAncHomeVisitContract.VisitView view, String baseEntityID, Map<String, List<VisitDetail>> details) {
+    public static BaseHomeVisitImmunizationFragment getInstance(final BaseAncHomeVisitContract.VisitView view, String baseEntityID, Map<String, List<VisitDetail>> details, List<VaccineWrapper> vaccineWrappers) {
         BaseHomeVisitImmunizationFragment fragment = new BaseHomeVisitImmunizationFragment();
         fragment.visitView = view;
         fragment.baseEntityID = baseEntityID;
         fragment.details = details;
+        for (VaccineWrapper vaccineWrapper : vaccineWrappers) {
+            fragment.vaccineWrappers.put(vaccineWrapper.getName(), vaccineWrapper);
+        }
         return fragment;
     }
 
@@ -62,37 +65,12 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
     private DatePicker singleDatePicker;
     private Button saveButton;
 
-    //TODO delete these vaccines
-    private void getFakeVaccines() {
-        VaccineWrapper wrapper = new VaccineWrapper();
-        wrapper.setName("OPV 2");
-        wrapper.setVaccine(VaccineRepo.Vaccine.opv2);
-        vaccineWrappers.put(wrapper.getName(), wrapper);
-
-        VaccineWrapper wrapper1 = new VaccineWrapper();
-        wrapper1.setName("Penta 1");
-        wrapper1.setVaccine(VaccineRepo.Vaccine.penta1);
-        vaccineWrappers.put(wrapper1.getName(), wrapper1);
-
-        VaccineWrapper wrapper2 = new VaccineWrapper();
-        wrapper2.setName("PCV 2");
-        wrapper2.setVaccine(VaccineRepo.Vaccine.pcv2);
-        vaccineWrappers.put(wrapper2.getName(), wrapper2);
-
-        VaccineWrapper wrapper3 = new VaccineWrapper();
-        wrapper3.setName("Rota 2");
-        wrapper3.setVaccine(VaccineRepo.Vaccine.rota2);
-        vaccineWrappers.put(wrapper3.getName(), wrapper3);
-    }
-
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_home_visit_immunization, container, false);
         this.inflater = inflater;
-
-        getFakeVaccines();// delete this method
 
         multipleVaccineDatePickerView = view.findViewById(R.id.multiple_vaccine_date_pickerview);
         singleVaccineAddView = view.findViewById(R.id.single_vaccine_add_layout);
@@ -149,6 +127,27 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         }
     }
 
+    private void initializeDatePicker(DatePicker datePicker) {
+        if (minVaccineDate.getTime() > maxVaccineDate.getTime()) {
+            datePicker.setMinDate(minVaccineDate.getTime());
+            datePicker.setMaxDate(minVaccineDate.getTime());
+        } else {
+            datePicker.setMinDate(minVaccineDate.getTime());
+            datePicker.setMaxDate(maxVaccineDate.getTime());
+        }
+    }
+
+    private Date getDateFromDatePicker(DatePicker datePicker) {
+        int day = datePicker.getDayOfMonth();
+        int month = datePicker.getMonth();
+        int year = datePicker.getYear();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.set(year, month, day);
+
+        return calendar.getTime();
+    }
+
     /**
      * execute when no vaccine done is selected
      */
@@ -194,16 +193,8 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
             singleVaccineAddView.addView(layout);
             x++;
         }
-    }
 
-    private void initializeDatePicker(DatePicker datePicker) {
-        if (minVaccineDate.getTime() > maxVaccineDate.getTime()) {
-            datePicker.setMinDate(minVaccineDate.getTime());
-            datePicker.setMaxDate(minVaccineDate.getTime());
-        } else {
-            datePicker.setMinDate(minVaccineDate.getTime());
-            datePicker.setMaxDate(maxVaccineDate.getTime());
-        }
+        redrawView();
     }
 
     /**
@@ -228,22 +219,12 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         JSONObject jsonObject = Util.getVisitJSONFromWrapper(vaccineDateMap);
 
         // notify the view
-        visitView.onDialogOptionUpdated(jsonObject.toString());
+        if (jsonObject != null) {
+            visitView.onDialogOptionUpdated(jsonObject.toString());
 
-        // save the view
-        dismiss();
-    }
-
-    // reads date from date picker
-    private Date getDateFromDatePicker(DatePicker datePicker) {
-        int day = datePicker.getDayOfMonth();
-        int month = datePicker.getMonth();
-        int year = datePicker.getYear();
-
-        Calendar calendar = Calendar.getInstance();
-        calendar.set(year, month, day);
-
-        return calendar.getTime();
+            // save the view
+            dismiss();
+        }
     }
 
     /**
@@ -260,7 +241,7 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         boolean noVaccine = true;
         for (VaccineView vaccineView : vaccineViews) {
             // enable or disable views
-            if (individualVaccineMode && vaccineView.getDatePickerView() != null) {
+            if (vaccineView.getDatePickerView() != null) {
                 ((View) vaccineView.getDatePickerView().getParent()).setVisibility(vaccineView.getCheckBox().isChecked() ? View.VISIBLE : View.GONE);
             }
 
@@ -304,6 +285,9 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         }
     }
 
+    /**
+     * Reference container
+     */
     private class VaccineView {
         private String vaccineName;
         private DatePicker datePickerView;
@@ -317,10 +301,6 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
 
         public String getVaccineName() {
             return vaccineName;
-        }
-
-        public void setVaccineName(String vaccineName) {
-            this.vaccineName = vaccineName;
         }
 
         public DatePicker getDatePickerView() {

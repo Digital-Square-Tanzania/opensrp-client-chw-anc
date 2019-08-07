@@ -16,6 +16,7 @@ import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.clientandeventmodel.Obs;
 import org.smartregister.domain.db.EventClient;
+import org.smartregister.immunization.domain.VaccineWrapper;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.sync.ClientProcessorForJava;
@@ -246,4 +247,9 @@ public class Util {
         return String.valueOf(ga);
     }
 
+    public static JSONObject getVisitJSONFromWrapper(Map<VaccineWrapper, Date> vaccineWrapperDateMap) {
+        JSONObject jsonObject = new JSONObject();
+
+        return jsonObject;
+    }
 }

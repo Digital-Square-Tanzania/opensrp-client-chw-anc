@@ -1,6 +1,7 @@
 package org.smartregister.chw.pnc;
 
 import org.smartregister.Context;
+import org.smartregister.chw.pnc.repository.PncCloseDateRepository;
 import org.smartregister.chw.pnc.repository.ProfileRepository;
 import org.smartregister.repository.Repository;
 
@@ -14,6 +15,7 @@ public class PncLibrary {
     private final Repository repository;
 
     private ProfileRepository profileRepository;
+    private PncCloseDateRepository pncCloseDateRepository;
 
     private PncLibrary(Context contextArg, Repository repositoryArg, int applicationVersion, int databaseVersion) {
         this.context = contextArg;
@@ -42,6 +44,13 @@ public class PncLibrary {
         return instance;
     }
 
+    public PncCloseDateRepository getPncCloseDateRepository() {
+        if (pncCloseDateRepository == null) {
+            pncCloseDateRepository = new PncCloseDateRepository(getRepository());
+        }
+
+        return pncCloseDateRepository;
+    }
 
     public ProfileRepository profileRepository() {
         if (profileRepository == null) {

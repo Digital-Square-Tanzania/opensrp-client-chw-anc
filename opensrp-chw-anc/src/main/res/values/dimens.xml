@@ -64,8 +64,6 @@
     <dimen name="anc_record_visit_padding_left">30dp</dimen>
     <dimen name="anc_record_visit_padding_right">30dp</dimen>
 
-    <string name="medical_history">Medical History</string>
-
     <dimen name="call_widget_padding_top">10dp</dimen>
     <dimen name="call_widget_padding_side">15dp</dimen>
     <dimen name="call_widget_padding_bottom">30dp</dimen>
@@ -77,5 +75,7 @@
     <dimen name="copy_to_clipboard_header_text_size">20sp</dimen>
     <dimen name="copy_to_clipboard_message_text_size">14sp</dimen>
 
-    <string name="upcoming_services">Upcoming Services</string>
+    <dimen name="px_14_to_sp">14dp</dimen>
+    <dimen name="px_16_to_sp">16dp</dimen>
+
 </resources>

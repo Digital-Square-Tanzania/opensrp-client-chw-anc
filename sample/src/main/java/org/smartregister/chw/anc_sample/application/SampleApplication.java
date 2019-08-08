@@ -14,6 +14,7 @@ import org.smartregister.chw.anc_sample.utils.SampleConstants;
 import org.smartregister.chw.pnc.PncLibrary;
 import org.smartregister.commonregistry.CommonFtsObject;
 import org.smartregister.configurableviews.ConfigurableViewsLibrary;
+import org.smartregister.immunization.ImmunizationLibrary;
 import org.smartregister.receiver.SyncStatusBroadcastReceiver;
 import org.smartregister.repository.Repository;
 import org.smartregister.repository.UniqueIdRepository;
@@ -45,6 +46,7 @@ public class SampleApplication extends DrishtiApplication {
         AncLibrary.init(context, getRepository(), BuildConfig.VERSION_CODE, BuildConfig.DATABASE_VERSION);
         PncLibrary.init(context, getRepository(), BuildConfig.VERSION_CODE, BuildConfig.DATABASE_VERSION);
 
+        ImmunizationLibrary.init(context, getRepository(), null, BuildConfig.VERSION_CODE, BuildConfig.DATABASE_VERSION);
         SyncStatusBroadcastReceiver.init(this);
 
         //Auto login by default

@@ -48,6 +48,14 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
     private List<VaccineView> vaccineViews = new ArrayList<>();
     private Map<String, VaccineWrapper> vaccineWrappers = new LinkedHashMap<>();
 
+    private LayoutInflater inflater;
+    private LinearLayout multipleVaccineDatePickerView, singleVaccineAddView, vaccinationNameLayout;
+    private TextView textViewAddDate;
+    private CheckBox checkBoxNoVaccinesDone;
+    private DatePicker singleDatePicker;
+    private Button saveButton;
+    protected BaseHomeVisitImmunizationFragmentContract.Presenter presenter;
+
     // global minimum date dob should be set if not provided
     private Date minVaccineDate = LocalDate.now().minusYears(5).toDate();
 
@@ -64,15 +72,6 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         }
         return fragment;
     }
-
-    private LayoutInflater inflater;
-    private LinearLayout multipleVaccineDatePickerView, singleVaccineAddView, vaccinationNameLayout;
-    private TextView textViewAddDate;
-    private CheckBox checkBoxNoVaccinesDone;
-    private DatePicker singleDatePicker;
-    private Button saveButton;
-
-    protected BaseHomeVisitImmunizationFragmentContract.Presenter presenter;
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,

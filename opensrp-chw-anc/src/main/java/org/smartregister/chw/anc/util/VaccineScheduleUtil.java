@@ -26,7 +26,7 @@ public class VaccineScheduleUtil {
     public static Map<String, VaccineGroup> getVaccineGroups(Context context, String vaccineType) {
         Map<String, VaccineGroup> groupedVaccines = new LinkedHashMap<>();
 
-        List<VaccineGroup> vaccineGroups = vaccineType.equals("woman") ?
+        List<VaccineGroup> vaccineGroups = "woman".equals(vaccineType) ?
                 VaccinatorUtils.getSupportedWomanVaccines(context, "") :
                 VaccinatorUtils.getSupportedVaccines(context);
 

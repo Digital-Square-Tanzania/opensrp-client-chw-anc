@@ -56,13 +56,10 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
                     @Override
                     public void run() {
                         try {
-                            JSONObject form = new JSONObject(jsonString);
                             callBack.onRegistrationSaved(isEditMode);
-                        } catch (JSONException e) {
+                        } catch (Exception e) {
                             e.printStackTrace();
                         }
-
-
                     }
                 });
             }

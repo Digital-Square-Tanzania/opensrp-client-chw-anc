@@ -22,8 +22,10 @@ public class BaseHomeVisitImmunizationFragmentModel implements BaseHomeVisitImmu
                 Map<String, String> map = new HashMap<>();
 
                 JSONArray jsonArray = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
-                int x = 0, size = jsonArray.length();
-                boolean noSelected = true, varriedMode = false;
+                int x = 0;
+                int size = jsonArray.length();
+                boolean noSelected = true;
+                boolean variedMode = false;
                 String preValue = null;
 
                 while (x < size) {
@@ -35,8 +37,8 @@ public class BaseHomeVisitImmunizationFragmentModel implements BaseHomeVisitImmu
                     if (!value.equalsIgnoreCase(Constants.HOME_VISIT.VACCINE_NOT_GIVEN)) {
                         noSelected = false;
 
-                        if (preValue != null && !varriedMode && !preValue.equalsIgnoreCase(value)) {
-                            varriedMode = true;
+                        if (preValue != null && !variedMode && !preValue.equalsIgnoreCase(value)) {
+                            variedMode = true;
                         }
 
                         preValue = value;
@@ -52,7 +54,7 @@ public class BaseHomeVisitImmunizationFragmentModel implements BaseHomeVisitImmu
                 // This function must be called before the other 2 functions
 
                 presenter.onNoVaccineStatus(noSelected);
-                presenter.onSelectedVaccinesInitialized(map, varriedMode);
+                presenter.onSelectedVaccinesInitialized(map, variedMode);
             }
         } catch (Exception e) {
             Timber.e(e);

@@ -387,7 +387,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         return null;
     }
 
-    public static JSONObject SetRequiredFieldsToFalseForPncChild(JSONObject form, String FamilyBaseEntityId, String membergetBaseEntityId) {
+    public static JSONObject setRequiredFieldsToFalseForPncChild(JSONObject form, String FamilyBaseEntityId, String membergetBaseEntityId) {
 
         JSONArray fields = fields(form);
         for (int i = 0; i < fields.length(); i++) {
@@ -401,7 +401,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
             }
         }
         try {
-            form.put(DBConstants.KEY.RELATIONAL_ID, FamilyBaseEntityId);
+            form.put(RELATIONAL_ID, FamilyBaseEntityId);
             form.put(MOTHER_ENTITY_ID, membergetBaseEntityId);
         } catch (JSONException e) {
             e.printStackTrace();

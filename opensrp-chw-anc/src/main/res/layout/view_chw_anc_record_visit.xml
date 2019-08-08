@@ -11,8 +11,8 @@
         android:id="@+id/record_visit_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:padding="10dp"
         android:gravity="center"
+        android:padding="10dp"
         android:visibility="visible"
         android:weightSum="2">
 

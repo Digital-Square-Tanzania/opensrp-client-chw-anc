@@ -345,16 +345,6 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         return dirtyString.substring(1, dirtyString.length() - 1);
     }
 
-    private static class NameID {
-        private String name;
-        private int position;
-
-        public NameID(String name, int position) {
-            this.name = name;
-            this.position = position;
-        }
-    }
-
     public static JSONObject populatePNCForm(JSONObject form, JSONArray fields, String motherBaseId) {
         try {
             if (form != null) {
@@ -419,6 +409,16 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
                     e.printStackTrace();
                 }
             }
+        }
+    }
+
+    private static class NameID {
+        private String name;
+        private int position;
+
+        public NameID(String name, int position) {
+            this.name = name;
+            this.position = position;
         }
     }
 

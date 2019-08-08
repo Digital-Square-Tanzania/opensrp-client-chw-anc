@@ -12,6 +12,10 @@ import timber.log.Timber;
 
 public class SampleDefaultApplication extends DrishtiApplication {
 
+    public static synchronized SampleDefaultApplication getInstance() {
+        return (SampleDefaultApplication) mInstance;
+    }
+
     @Override
     public void onCreate() {
         super.onCreate();
@@ -38,10 +42,6 @@ public class SampleDefaultApplication extends DrishtiApplication {
     @Override
     public void logoutCurrentUser() {
         Timber.v("logoutCurrentUser");
-    }
-
-    public static synchronized SampleDefaultApplication getInstance() {
-        return (SampleDefaultApplication) mInstance;
     }
 
     @Override

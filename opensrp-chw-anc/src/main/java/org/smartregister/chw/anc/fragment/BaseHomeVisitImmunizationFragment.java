@@ -105,7 +105,15 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         checkBoxNoVaccinesDone.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                onNoVaccinesDoneToggle(isChecked);
+                if (isChecked) {
+                    setSingleEntryMode(true);
+                    for (VaccineView vaccineView : vaccineViews) {
+                        if (vaccineView.getCheckBox().isChecked())
+                            vaccineView.getCheckBox().setChecked(false);
+                    }
+                }
+
+                redrawView();
             }
         });
 
@@ -133,7 +141,20 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
             checkBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
                 @Override
                 public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
-                    onViewStateVaccineDone();
+                    if (isChecked) {
+                        checkBoxNoVaccinesDone.setChecked(false);
+                    } else {
+                        // check if there are any active vaccine
+                        boolean enableNoVaccines = true;
+                        for (VaccineView vaccineView : vaccineViews) {
+                            if (vaccineView.getCheckBox().isChecked())
+                                enableNoVaccines = false;
+                        }
+
+                        if (enableNoVaccines && !checkBoxNoVaccinesDone.isChecked())
+                            checkBoxNoVaccinesDone.setChecked(true);
+                    }
+                    redrawView();
                 }
             });
             vaccinationNameLayout.addView(vaccinationName);
@@ -164,26 +185,6 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
 
     private void setDateFromDatePicker(DatePicker datePicker, Date date) {
         datePicker.init(date.getYear(), date.getMonth(), date.getDay(), null);
-    }
-
-    /**
-     * execute when no vaccine done is selected
-     */
-    private void onNoVaccinesDoneToggle(boolean isActive) {
-        if (isActive) {
-            for (VaccineView vaccineView : vaccineViews) {
-                vaccineView.getCheckBox().setChecked(false);
-            }
-        }
-
-        redrawView();
-    }
-
-    /**
-     * is executed each time a vaccine is selected
-     */
-    private void onViewStateVaccineDone() {
-        redrawView();
     }
 
     /**
@@ -227,18 +228,17 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMATS.NATIVE_FORMS, Locale.getDefault());
         HashMap<VaccineWrapper, String> vaccineDateMap = new HashMap<>();
 
-        boolean multiModeActive = multipleVaccineDatePickerView.getVisibility() == View.VISIBLE;
+        boolean multiModeActive = multipleVaccineDatePickerView.getVisibility() == View.GONE;
 
         for (VaccineView vaccineView : vaccineViews) {
             VaccineWrapper wrapper = vaccineWrappers.get(vaccineView.getVaccineName());
             if (wrapper != null) {
-                if (!checkBoxNoVaccinesDone.isChecked()) {
-                    if (vaccineView.getCheckBox().isChecked() && vaccineView.getDatePickerView() != null && multiModeActive) {
+                if (!checkBoxNoVaccinesDone.isChecked() && vaccineView.getCheckBox().isChecked()) {
+                    if (vaccineView.getDatePickerView() != null && multiModeActive) {
                         vaccineDateMap.put(wrapper, dateFormat.format(getDateFromDatePicker(vaccineView.getDatePickerView())));
                     } else if (vaccineDate != null) {
                         vaccineDateMap.put(wrapper, dateFormat.format(vaccineDate));
                     }
-                    //vaccineDateMap.put(wrapper, (!individualVaccineMode) ? dateFormat.format(vaccineDate) : dateFormat.format(getDateFromDatePicker(vaccineView.getDatePickerView())));
                 } else {
                     vaccineDateMap.put(wrapper, Constants.HOME_VISIT.VACCINE_NOT_GIVEN);
                 }
@@ -268,27 +268,22 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
      * Is called on every ui updating action
      */
     public void redrawView() {
-        boolean noVaccine = true, multiMode = false;
+        boolean noVaccine = true;
         for (VaccineView vaccineView : vaccineViews) {
             // enable or disable views
             if (vaccineView.getDatePickerView() != null) {
                 ((View) vaccineView.getDatePickerView().getParent()).setVisibility(vaccineView.getCheckBox().isChecked() ? View.VISIBLE : View.GONE);
-                multiMode = true;
             }
 
             if (vaccineView.getCheckBox().isChecked())
                 noVaccine = false;
         }
 
-
-        checkBoxNoVaccinesDone.setChecked(noVaccine);
         if (noVaccine) {
             multipleVaccineDatePickerView.setAlpha(0.3f);
-            setSingleEntryMode(true);
         } else {
             multipleVaccineDatePickerView.setAlpha(1.0f);
             saveButton.setAlpha(1.0f);
-            setSingleEntryMode(!multiMode);
         }
     }
 

@@ -27,6 +27,7 @@ import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertNull;
 
 @PrepareForTest(JsonFormUtils.class)
@@ -123,8 +124,8 @@ public class BaseAncHomeVisitActionTest extends BaseUnitTest {
 
         // vaccine and services are only returned when not null
         action.setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
-        assertEquals(action.getServiceWrapper(), serviceWrapper);
-        assertEquals(action.getVaccineWrapper(), vaccineWrapper);
+        assertNotNull(action.getServiceWrapper());
+        assertNotNull(action.getVaccineWrapper());
     }
 
     @Test

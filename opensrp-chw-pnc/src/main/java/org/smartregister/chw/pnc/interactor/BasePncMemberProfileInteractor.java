@@ -14,11 +14,13 @@ import org.smartregister.chw.pnc.PncLibrary;
 import org.smartregister.chw.pnc.R;
 import org.smartregister.chw.pnc.contract.BasePncMemberProfileContract;
 import org.smartregister.chw.pnc.util.Constants;
+import org.smartregister.chw.pnc.util.PncUtil;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 
 import java.util.List;
 
 import de.hdodenhof.circleimageview.CircleImageView;
+import timber.log.Timber;
 
 import static org.smartregister.util.Utils.getName;
 
@@ -38,33 +40,39 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
     @Override
     public String getPncMotherNameDetails(MemberObject memberObject, TextView textView, CircleImageView imageView) {
 
-        List<CommonPersonObjectClient> children = PncLibrary.getInstance().profileRepository().getChildrenLessThan29DaysOld(memberObject.getBaseEntityId());
+        List<CommonPersonObjectClient> children = pncChildrenUnder29Days(memberObject.getBaseEntityId());
         String nameDetails = memberObject.getMemberName();
         textView.setText(nameDetails);
-        if (children.size() > 0) {
-            textView.setSingleLine(false);
-            char gender;
-            CommonPersonObjectClient childObject;
-            for (int i = 0; i < children.size(); i++) {
-                childObject = children.get(i);
-                gender = childObject.getColumnmaps().get(Constants.KEY.GENDER).charAt(0);
+        textView.setSingleLine(false);
+        for (CommonPersonObjectClient childObject : children) {
+            try {
+                char gender = childObject.getColumnmaps().get(Constants.KEY.GENDER).charAt(0);
                 textView.append(" +\n" + childNameDetails(childObject.getColumnmaps().get(DBConstants.KEY.FIRST_NAME),
                         childObject.getColumnmaps().get(DBConstants.KEY.MIDDLE_NAME),
                         childObject.getColumnmaps().get(DBConstants.KEY.LAST_NAME),
-                        childObject.getColumnmaps().get(DBConstants.KEY.DOB), gender));
+                        String.valueOf(PncUtil.getDaysDifference(childObject.getColumnmaps().get(DBConstants.KEY.DOB))),
+                        gender));
                 if (gender == 'M')
                     imageView.setBorderColor(PncLibrary.getInstance().context().getColorResource(R.color.light_blue));
                 else
                     imageView.setBorderColor(PncLibrary.getInstance().context().getColorResource(R.color.light_pink));
+            } catch (NullPointerException npe) {
+                Timber.e(npe);
             }
         }
 
         return nameDetails;
     }
 
+    @Override
+    public List<CommonPersonObjectClient> pncChildrenUnder29Days(String motherBaseID) {
+        return PncLibrary.getInstance().profileRepository().getChildrenLessThan29DaysOld(motherBaseID);
+    }
+
     private String childNameDetails(String firstName, String middleName, String surName, String age, char gender) {
         String dayCountString = PncLibrary.getInstance().context().getStringResource(R.string.pnc_day_count);
         String spacer = ", ";
+        middleName = middleName != null ? middleName : "";
         String name = getName(firstName, middleName);
         name = getName(name, surName);
 
@@ -73,4 +81,5 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
         }
         return null;
     }
+
 }

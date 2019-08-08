@@ -2,12 +2,17 @@ package org.smartregister.chw.anc.util;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
+import com.vijay.jsonwizard.constants.JsonFormConstants;
+
 import net.sqlcipher.database.SQLiteDatabase;
 
+import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.domain.Visit;
@@ -16,6 +21,7 @@ import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.clientandeventmodel.Obs;
 import org.smartregister.domain.db.EventClient;
+import org.smartregister.immunization.domain.VaccineWrapper;
 import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.sync.ClientProcessorForJava;
@@ -29,16 +35,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import timber.log.Timber;
 
 import static org.smartregister.chw.anc.AncLibrary.getInstance;
 import static org.smartregister.chw.anc.util.JsonFormUtils.cleanString;
+import static org.smartregister.util.JsonFormUtils.VALUE;
+import static org.smartregister.util.JsonFormUtils.getFieldJSONObject;
 import static org.smartregister.util.Utils.getAllSharedPreferences;
 
 public class Util {
 
     private static String[] default_obs = {"start", "end", "deviceid", "subscriberid", "simserial", "phonenumber"};
+    private static String[] vaccines = {"bcg_date", "opv0_date"};
+
 
     private static SimpleDateFormat getSourceDateFormat() {
         return new SimpleDateFormat(getInstance().getSourceDateFormat(), Locale.getDefault());
@@ -246,4 +257,123 @@ public class Util {
         return String.valueOf(ga);
     }
 
+    public static void saveVaccineEvents(JSONArray fields, String baseID) {
+
+        for (int i = 0; i < vaccines.length; i++) {
+            saveVaccineEvent(vaccines[i], getFieldJSONObject(fields, vaccines[i]), baseID);
+        }
+    }
+
+    private static void saveVaccineEvent(String vaccineName, JSONObject vaccineObject, String baseID) {
+        if (vaccineObject != null)
+            try {
+                String vaccineDate = vaccineObject.optString(VALUE);
+                SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+                SimpleDateFormat formatEventDate = new SimpleDateFormat("yyy-MM-dd");
+                Date date = formatter.parse(vaccineDate);
+
+                JSONObject vaccineEventObject = createVaccineEvent(vaccineName, formatEventDate.format(date));
+                Event baseEvent = new Gson().fromJson(vaccineEventObject.toString(), Event.class);
+                baseEvent.setDateCreated(new Date());
+                baseEvent.setEventDate(date);
+                baseEvent.setBaseEntityId(baseID);
+                baseEvent.setEventType("Vaccination");
+                baseEvent.setEntityType("vaccination");
+                baseEvent.setType("Event");
+                baseEvent.setFormSubmissionId(UUID.randomUUID().toString());
+                baseEvent.setEventId(UUID.randomUUID().toString());
+                addEvent(getAllSharedPreferences(), baseEvent);
+            } catch (Exception e) {
+                Timber.e(e);
+            }
+    }
+
+
+    private static JSONObject createVaccineEvent(String vaccineName, String vaccineDate) {
+
+        JSONObject vaccineEvent = new JSONObject();
+        try {
+            vaccineEvent.put("obs", makeObs(vaccineName, vaccineDate));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return vaccineEvent;
+    }
+
+    private static JSONArray makeObs(String vaccine, String vaccineDate) {
+        JSONArray dateValues = new JSONArray();
+        JSONArray obsArray = new JSONArray();
+        JSONArray calculateValues = new JSONArray();
+        JSONObject vaccineName = new JSONObject();
+        JSONObject vaccineDetails = new JSONObject();
+
+        String parentCode = null;
+        String formSubmissionField = null;
+        String countValue = null;
+
+        try {
+            dateValues.put(vaccineDate);
+            vaccineName.put("fieldType", "concept");
+            vaccineName.put("fieldDataType", "date");
+            vaccineName.put("fieldCode", "1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            vaccineName.put("values", dateValues);
+            if (vaccine.contains("BCG")) {
+                parentCode = "886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+                formSubmissionField = "bcg";
+                countValue = "0";
+            } else if (vaccine.equalsIgnoreCase("OPV")) {
+                parentCode = "783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+                formSubmissionField = "opv_0";
+                countValue = "0";
+            }
+            vaccineName.put("formSubmissionField", formSubmissionField);
+            vaccineName.put("parentCode", parentCode);
+
+            vaccineDetails.put("fieldType", "concept");
+            vaccineDetails.put("fieldDataType", "calculate");
+            vaccineDetails.put("fieldCode", "1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            vaccineDetails.put("parentCode", parentCode);
+            calculateValues.put(countValue);
+            vaccineDetails.put("values", calculateValues);
+            vaccineDetails.put("formSubmissionField", formSubmissionField + "_dose");
+            obsArray.put(vaccineName);
+            obsArray.put(vaccineDetails);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return obsArray;
+    }
+
+    @Nullable
+    public static JSONObject getVisitJSONFromWrapper(String entityID, Map<VaccineWrapper, String> vaccineWrapperDateMap) {
+
+        try {
+            JSONObject jsonObject = JsonFormUtils.getFormAsJson(Constants.FORMS.IMMUNIZATIOIN_VISIT);
+            jsonObject.put("entity_id", entityID);
+            JSONArray jsonArray = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
+
+
+            for (Map.Entry<VaccineWrapper, String> entry : vaccineWrapperDateMap.entrySet()) {
+                JSONObject field = new JSONObject();
+                field.put(JsonFormConstants.KEY, removeSpaces(entry.getKey().getName()));
+                field.put(JsonFormConstants.OPENMRS_ENTITY_PARENT, "");
+                field.put(JsonFormConstants.OPENMRS_ENTITY, "concept");
+                field.put(JsonFormConstants.OPENMRS_ENTITY_ID, removeSpaces(entry.getKey().getName()));
+                field.put(JsonFormConstants.VALUE, entry.getValue());
+
+                jsonArray.put(field);
+            }
+
+            return jsonObject;
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+        return null;
+    }
+
+    public static String removeSpaces(String s) {
+        return s.replace(" ", "_").toLowerCase();
+    }
 }

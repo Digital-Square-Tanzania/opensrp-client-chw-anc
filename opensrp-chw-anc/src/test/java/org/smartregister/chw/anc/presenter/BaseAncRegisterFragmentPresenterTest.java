@@ -27,7 +27,7 @@ public class BaseAncRegisterFragmentPresenterTest {
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        BaseAncRegisterFragmentPresenter objct = new BaseAncRegisterFragmentPresenter(view,model,"abc");
+        BaseAncRegisterFragmentPresenter objct = new BaseAncRegisterFragmentPresenter(view, model, "abc");
         presenter = Mockito.spy(objct);
     }
 
@@ -64,11 +64,11 @@ public class BaseAncRegisterFragmentPresenterTest {
 
     }
 
-   // @Test
-   // public void testInitializeQueries(){
-      //  presenter.initializeQueries("abc","abc","abc");
+    // @Test
+    // public void testInitializeQueries(){
+    //  presenter.initializeQueries("abc","abc","abc");
 
-   // }
+    // }
 
 
 }

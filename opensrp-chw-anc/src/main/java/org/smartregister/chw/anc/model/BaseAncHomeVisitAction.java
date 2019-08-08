@@ -10,6 +10,7 @@ import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.immunization.domain.ServiceWrapper;
 import org.smartregister.immunization.domain.VaccineWrapper;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -31,8 +32,8 @@ public class BaseAncHomeVisitAction {
     private String jsonPayload;
     private String selectedOption;
     private AncHomeVisitActionHelper ancHomeVisitActionHelper;
-    private VaccineWrapper vaccineWrapper;
-    private ServiceWrapper serviceWrapper;
+    private List<VaccineWrapper> vaccineWrapper;
+    private List<ServiceWrapper> serviceWrapper;
     private Map<String, List<VisitDetail>> details;
     private Context context;
 
@@ -53,87 +54,6 @@ public class BaseAncHomeVisitAction {
 
         validateMe();
         initialize();
-    }
-
-    public static class Builder {
-        private String baseEntityID;
-        private String title;
-        private String subTitle;
-        private Status actionStatus = Status.PENDING;
-        private ScheduleStatus scheduleStatus = ScheduleStatus.DUE;
-        private ProcessingMode processingMode = ProcessingMode.COMBINED;
-        private boolean optional = true;
-        private BaseHomeVisitFragment destinationFragment;
-        private String formName;
-        private AncHomeVisitActionHelper ancHomeVisitActionHelper;
-        private VaccineWrapper vaccineWrapper;
-        private ServiceWrapper serviceWrapper;
-        private Map<String, List<VisitDetail>> details = new HashMap<>();
-        private Context context;
-
-        public Builder(Context context, String title) {
-            this.context = context;
-            this.title = title;
-        }
-
-        public Builder withBaseEntityID(String baseEntityID) {
-            this.baseEntityID = baseEntityID;
-            return this;
-        }
-
-        public Builder withSubtitle(String subTitle) {
-            this.subTitle = subTitle;
-            return this;
-        }
-
-        public Builder withOptional(boolean optional) {
-            this.optional = optional;
-            return this;
-        }
-
-        public Builder withDestinationFragment(BaseHomeVisitFragment destinationFragment) {
-            this.destinationFragment = destinationFragment;
-            return this;
-        }
-
-        public Builder withFormName(String formName) {
-            this.formName = formName;
-            return this;
-        }
-
-        public Builder withDetails(Map<String, List<VisitDetail>> details) {
-            this.details = details;
-            return this;
-        }
-
-        public Builder withHelper(AncHomeVisitActionHelper ancHomeVisitActionHelper) {
-            this.ancHomeVisitActionHelper = ancHomeVisitActionHelper;
-            return this;
-        }
-
-        public Builder withScheduleStatus(ScheduleStatus scheduleStatus) {
-            this.scheduleStatus = scheduleStatus;
-            return this;
-        }
-
-        public Builder withProcessingMode(ProcessingMode processingMode) {
-            this.processingMode = processingMode;
-            return this;
-        }
-
-        public Builder withVaccineWrapper(VaccineWrapper vaccineWrapper) {
-            this.vaccineWrapper = vaccineWrapper;
-            return this;
-        }
-
-        public Builder withServiceWrapper(ServiceWrapper serviceWrapper) {
-            this.serviceWrapper = serviceWrapper;
-            return this;
-        }
-
-        public BaseAncHomeVisitAction build() throws ValidationException {
-            return new BaseAncHomeVisitAction(this);
-        }
     }
 
     private void initialize() {
@@ -276,7 +196,6 @@ public class BaseAncHomeVisitAction {
         evaluateStatus();
     }
 
-
     public void setProcessedJsonPayload(String jsonPayload) {
         this.jsonPayload = jsonPayload;
     }
@@ -333,20 +252,20 @@ public class BaseAncHomeVisitAction {
         }
     }
 
-    public VaccineWrapper getVaccineWrapper() {
+    public List<VaccineWrapper> getVaccineWrapper() {
         return (getActionStatus() == Status.COMPLETED) ? vaccineWrapper : null;
     }
 
     public void setVaccineWrapper(VaccineWrapper vaccineWrapper) {
-        this.vaccineWrapper = vaccineWrapper;
+        this.vaccineWrapper.add(vaccineWrapper);
     }
 
-    public ServiceWrapper getServiceWrapper() {
+    public List<ServiceWrapper> getServiceWrapper() {
         return (getActionStatus() == Status.COMPLETED) ? serviceWrapper : null;
     }
 
     public void setServiceWrapper(ServiceWrapper serviceWrapper) {
-        this.serviceWrapper = serviceWrapper;
+        this.serviceWrapper.add(serviceWrapper);
     }
 
     public enum Status {COMPLETED, PARTIALLY_COMPLETED, PENDING}
@@ -415,6 +334,97 @@ public class BaseAncHomeVisitAction {
          * Custom processing after payload is received
          */
         void onPayloadReceived(BaseAncHomeVisitAction ancHomeVisitAction);
+    }
+
+    public static class Builder {
+        private String baseEntityID;
+        private String title;
+        private String subTitle;
+        private Status actionStatus = Status.PENDING;
+        private ScheduleStatus scheduleStatus = ScheduleStatus.DUE;
+        private ProcessingMode processingMode = ProcessingMode.COMBINED;
+        private boolean optional = true;
+        private BaseHomeVisitFragment destinationFragment;
+        private String formName;
+        private AncHomeVisitActionHelper ancHomeVisitActionHelper;
+        private List<VaccineWrapper> vaccineWrapper = new ArrayList<>();
+        private List<ServiceWrapper> serviceWrapper = new ArrayList<>();
+        private Map<String, List<VisitDetail>> details = new HashMap<>();
+        private Context context;
+
+        public Builder(Context context, String title) {
+            this.context = context;
+            this.title = title;
+        }
+
+        public Builder withBaseEntityID(String baseEntityID) {
+            this.baseEntityID = baseEntityID;
+            return this;
+        }
+
+        public Builder withSubtitle(String subTitle) {
+            this.subTitle = subTitle;
+            return this;
+        }
+
+        public Builder withOptional(boolean optional) {
+            this.optional = optional;
+            return this;
+        }
+
+        public Builder withDestinationFragment(BaseHomeVisitFragment destinationFragment) {
+            this.destinationFragment = destinationFragment;
+            return this;
+        }
+
+        public Builder withFormName(String formName) {
+            this.formName = formName;
+            return this;
+        }
+
+        public Builder withDetails(Map<String, List<VisitDetail>> details) {
+            this.details = details;
+            return this;
+        }
+
+        public Builder withHelper(AncHomeVisitActionHelper ancHomeVisitActionHelper) {
+            this.ancHomeVisitActionHelper = ancHomeVisitActionHelper;
+            return this;
+        }
+
+        public Builder withScheduleStatus(ScheduleStatus scheduleStatus) {
+            this.scheduleStatus = scheduleStatus;
+            return this;
+        }
+
+        public Builder withProcessingMode(ProcessingMode processingMode) {
+            this.processingMode = processingMode;
+            return this;
+        }
+
+        public Builder withVaccineWrapper(VaccineWrapper vaccineWrapper) {
+            this.vaccineWrapper.add(vaccineWrapper);
+            return this;
+        }
+
+        public Builder withVaccineWrapper(List<VaccineWrapper> vaccineWrapper) {
+            this.vaccineWrapper.addAll(vaccineWrapper);
+            return this;
+        }
+
+        public Builder withServiceWrapper(ServiceWrapper serviceWrapper) {
+            this.serviceWrapper.add(serviceWrapper);
+            return this;
+        }
+
+        public Builder withServiceWrapper(List<ServiceWrapper> serviceWrapper) {
+            this.serviceWrapper.addAll(serviceWrapper);
+            return this;
+        }
+
+        public BaseAncHomeVisitAction build() throws ValidationException {
+            return new BaseAncHomeVisitAction(this);
+        }
     }
 
     public static class ValidationException extends Exception {

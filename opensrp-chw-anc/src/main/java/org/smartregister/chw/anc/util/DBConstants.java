@@ -30,7 +30,7 @@ public class DBConstants {
         public static final String PHONE_NUMBER = "phone_number";
         public static final String HAS_ANC_CARD = "has_anc_card";
         public static final String MOTHER_ENTITY_ID = "mother_entity_id";
-
+        public static final String DELIVERY_DATE = "delivery_date";
 
 
     }

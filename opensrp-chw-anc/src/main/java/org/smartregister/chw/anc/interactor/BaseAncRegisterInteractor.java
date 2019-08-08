@@ -54,7 +54,11 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
                 appExecutors.mainThread().execute(new Runnable() {
                     @Override
                     public void run() {
-                        callBack.onRegistrationSaved(isEditMode);
+                        try {
+                            callBack.onRegistrationSaved(isEditMode);
+                        } catch (Exception e) {
+                            e.printStackTrace();
+                        }
                     }
                 });
             }

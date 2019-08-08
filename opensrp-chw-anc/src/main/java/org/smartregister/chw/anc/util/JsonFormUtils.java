@@ -32,6 +32,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     public static final String METADATA = "metadata";
     public static final String IMAGE = "image";
     public static final String ANC_HOME_VISIT = "home_visit_group";
+    private static final String V_REQUIRED = "v_required";
 
     protected static Triple<Boolean, JSONObject, JSONArray> validateParameters(String jsonString) {
 
@@ -200,10 +201,14 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     }
 
     public static String getFirstObjectKey(JSONObject jsonObject) {
+        return getObjectKey(jsonObject, 0);
+    }
+
+    public static String getObjectKey(JSONObject jsonObject, int position) {
         try {
             JSONArray jsonArray = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
-            if (jsonArray.length() > 0) {
-                return jsonArray.getJSONObject(0).getString(JsonFormConstants.KEY);
+            if (jsonArray.length() > position && position > -1) {
+                return jsonArray.getJSONObject(position - 1).getString(JsonFormConstants.KEY);
 
             }
         } catch (Exception e) {
@@ -340,16 +345,6 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         return dirtyString.substring(1, dirtyString.length() - 1);
     }
 
-    private static class NameID {
-        private String name;
-        private int position;
-
-        public NameID(String name, int position) {
-            this.name = name;
-            this.position = position;
-        }
-    }
-
     public static JSONObject populatePNCForm(JSONObject form, JSONArray fields, String motherBaseId) {
         try {
             if (form != null) {
@@ -380,6 +375,51 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         }
 
         return null;
+    }
+
+    public static JSONObject setRequiredFieldsToFalseForPncChild(JSONObject form, String FamilyBaseEntityId, String membergetBaseEntityId) {
+
+        JSONArray fields = fields(form);
+        for (int i = 0; i < fields.length(); i++) {
+            try {
+                JSONObject formObject = fields.getJSONObject(i);
+                if (formObject.has(V_REQUIRED) && StringUtils.isBlank(formObject.optString(VALUE))) {
+                    formObject.remove(V_REQUIRED);
+                }
+            } catch (JSONException e) {
+                e.printStackTrace();
+            }
+        }
+        try {
+            form.put(RELATIONAL_ID, FamilyBaseEntityId);
+            form.put(MOTHER_ENTITY_ID, membergetBaseEntityId);
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return form;
+    }
+
+    public static void updateFormField(JSONArray formFieldArrays, String formFieldKey, String updateValue) {
+        if (updateValue != null) {
+            JSONObject formObject = org.smartregister.util.JsonFormUtils.getFieldJSONObject(formFieldArrays, formFieldKey);
+            if (formObject != null) {
+                try {
+                    formObject.put(org.smartregister.util.JsonFormUtils.VALUE, updateValue);
+                } catch (JSONException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    private static class NameID {
+        private String name;
+        private int position;
+
+        public NameID(String name, int position) {
+            this.name = name;
+            this.position = position;
+        }
     }
 
 }

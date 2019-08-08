@@ -22,7 +22,6 @@ import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
-
 import android.widget.Toast;
 
 import org.apache.commons.lang3.StringUtils;
@@ -36,7 +35,6 @@ import org.smartregister.util.PermissionUtils;
 import java.text.MessageFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 

@@ -60,19 +60,18 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     protected TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id, textview_record_anc_visit, textViewAncVisitNot, textViewNotVisitMonth, textViewUndo, tvEdit;
     protected LinearLayout layoutRecordView, record_reccuringvisit_done_bar;
     protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue, layoutRecordButtonDone, layoutNotRecordView;
+    protected TextView recordRecurringVisit, textview_record_visit;
+    protected View view_anc_record, view_last_visit_row, view_most_due_overdue_row, view_family_row;
+    protected CircleImageView imageView;
     private String familyHeadName;
-    protected TextView recordRecurringVisit;
     private String familyHeadPhoneNumber;
     private BaseAncFloatingMenu baseAncFloatingMenu;
     private ImageView imageViewCross;
-    protected View view_anc_record, view_last_visit_row, view_most_due_overdue_row, view_family_row;
     private TextView tvLastVisitDate;
     private TextView tvUpComingServices;
     private TextView tvFamilyStatus;
     private ProgressBar progressBar;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
-
-    protected CircleImageView imageView;
 
     public static void startMe(Activity activity, MemberObject memberObject, String familyHeadName, String familyHeadPhoneNumber) {
         Intent intent = new Intent(activity, BaseAncMemberProfileActivity.class);
@@ -127,6 +126,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         tvUpComingServices = findViewById(R.id.textview_name_due);
         tvFamilyStatus = findViewById(R.id.textview_family_has);
         record_reccuringvisit_done_bar = findViewById(R.id.record_reccuringvisit_done_bar);
+        textview_record_visit = findViewById(R.id.textview_record_visit);
 
         initializePresenter();
         setupViews();

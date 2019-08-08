@@ -11,20 +11,29 @@ import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
 import org.smartregister.chw.anc.fragment.BaseHomeVisitImmunizationFragment;
 import org.smartregister.chw.anc.util.DBConstants;
+import org.smartregister.chw.anc.util.VaccineScheduleUtil;
 import org.smartregister.chw.anc_sample.R;
 import org.smartregister.chw.anc_sample.utils.Constants;
 import org.smartregister.chw.pnc.activity.BasePncHomeVisitActivity;
 import org.smartregister.chw.pnc.activity.BasePncMemberProfileActivity;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
+import org.smartregister.immunization.db.VaccineRepo;
+import org.smartregister.immunization.domain.VaccineWrapper;
+import org.smartregister.immunization.domain.jsonmapping.Vaccine;
+import org.smartregister.immunization.domain.jsonmapping.VaccineGroup;
 import org.smartregister.view.activity.SecuredActivity;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
 import java.util.Map;
 
 import timber.log.Timber;
 
 public class EntryActivity extends SecuredActivity implements View.OnClickListener, BaseAncHomeVisitContract.VisitView {
 
+    private BaseHomeVisitImmunizationFragment immunizationFragment = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -73,7 +82,7 @@ public class EntryActivity extends SecuredActivity implements View.OnClickListen
                 BasePncMemberProfileActivity.startMe(this, EntryActivity.getSampleMember(), "Juma Family Head", "0976345634");
                 break;
             case R.id.immunization_fragment:
-                BaseHomeVisitImmunizationFragment.getInstance(this, "123345", null).show(getFragmentManager(), "HV");
+                openImmunizationFrag();
                 break;
             case R.id.home_visit_fragment:
                 BaseAncHomeVisitFragment.getInstance(this, Constants.HOME_VISIT_FORMS.IMMUNIZATION, null, null, null).show(getFragmentManager(), "HV");
@@ -81,6 +90,13 @@ public class EntryActivity extends SecuredActivity implements View.OnClickListen
             default:
                 break;
         }
+    }
+
+    private void openImmunizationFrag(){
+        if(immunizationFragment == null){
+            immunizationFragment = BaseHomeVisitImmunizationFragment.getInstance(this, "123345", null, getFakeVaccines());
+        }
+        immunizationFragment.show(getFragmentManager(), "HV");
     }
 
     public static MemberObject getSampleMember() {
@@ -102,6 +118,27 @@ public class EntryActivity extends SecuredActivity implements View.OnClickListen
         commonPersonObject.setColumnmaps(details);
 
         return new MemberObject(commonPersonObject);
+    }
+
+    private List<VaccineWrapper> getFakeVaccines() {
+        List<VaccineWrapper> vaccineWrappers = new ArrayList<>();
+
+        Map<String, VaccineGroup> groupMap = VaccineScheduleUtil.getVaccineGroups(this, "child");
+        Iterator<VaccineGroup> iterator = groupMap.values().iterator();
+
+        // get first group
+        for (Vaccine vaccine : iterator.next().vaccines) {
+            vaccineWrappers.add(getVaccineWrapper(VaccineRepo.getVaccine(vaccine.name, "child")));
+        }
+        return vaccineWrappers;
+    }
+
+    private VaccineWrapper getVaccineWrapper(VaccineRepo.Vaccine vaccine) {
+        VaccineWrapper vaccineWrapper = new VaccineWrapper();
+        vaccineWrapper.setVaccine(vaccine);
+        vaccineWrapper.setName(vaccine.display());
+        vaccineWrapper.setDefaultName(vaccine.display());
+        return vaccineWrapper;
     }
 
     @Override

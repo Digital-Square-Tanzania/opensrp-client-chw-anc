@@ -11,6 +11,7 @@
         android:id="@+id/record_visit_bar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:gravity="center"
         android:padding="10dp"
         android:visibility="visible"
         android:weightSum="2">
@@ -31,6 +32,7 @@
             android:text="@string/record_anc_visit"
             android:textColor="@color/white" />
 
+
         <org.smartregister.view.customcontrols.CustomFontTextView
             android:id="@+id/textview_anc_visit_not"
             style="@style/CustomFontTextViewStyle.ListView.Normal.MultipleLines"
@@ -47,8 +49,8 @@
             android:paddingBottom="10dp"
             android:text="@string/visit_not_done_btn_child_profile"
             android:textColor="@color/dark_grey" />
-    </LinearLayout>
 
+    </LinearLayout>
 
     <LinearLayout
         android:id="@+id/record_reccuringvisit_done_bar"
@@ -77,7 +79,6 @@
 
     </LinearLayout>
 
-
     <RelativeLayout
         android:id="@+id/record_visit_done_bar"
         android:layout_width="match_parent"
@@ -96,12 +97,6 @@
         android:padding="10dp"
         android:visibility="gone">
 
-        <ImageView
-            android:id="@+id/cross_image"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerVertical="true"
-            android:padding="10dp" />
 
         <org.smartregister.view.customcontrols.CustomFontTextView
             android:id="@+id/textview_not_visit_this_month"
@@ -144,4 +139,5 @@
         android:layout_height="1px"
         android:layout_marginTop="5dp"
         android:background="@color/light_grey" />
+
 </LinearLayout>

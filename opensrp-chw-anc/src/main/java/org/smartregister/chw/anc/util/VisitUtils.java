@@ -113,10 +113,11 @@ public class VisitUtils {
         context.startService(new Intent(context, RecurringIntentService.class));
     }
 
-    private static void processVisitDetails(VisitDetailsRepository visitDetailsRepository, String visitID, String baseEntityID) {
+    private static void processVisitDetails(VisitDetailsRepository visitDetailsRepository, String visitID, String baseEntityID) throws Exception {
         List<VisitDetail> visitDetailList = visitDetailsRepository.getVisits(visitID);
         List<VaccineWrapper> vaccineWrappers = new ArrayList<>();
         List<ServiceWrapper> serviceWrappers = new ArrayList<>();
+        List<Event> events = new ArrayList<>();
 
         Gson gson = Converters.registerDateTime(new GsonBuilder()).create();
         for (VisitDetail visitDetail : visitDetailList) {
@@ -129,6 +130,12 @@ public class VisitUtils {
                             break;
                         case "service":
                             serviceWrappers.add(gson.fromJson(visitDetail.getPreProcessedJson(), ServiceWrapper.class));
+                            break;
+                        case "subevent":
+                            MultiEvent multiEvent = gson.fromJson(visitDetail.getPreProcessedJson(), MultiEvent.class);
+                            events.add(multiEvent.getEvent());
+                            serviceWrappers.addAll(multiEvent.getServices());
+                            vaccineWrappers.addAll(multiEvent.getVaccines());
                             break;
                         default:
                             break;
@@ -144,6 +151,12 @@ public class VisitUtils {
         if (serviceWrappers.size() > 0)
             saveServices(serviceWrappers, baseEntityID);
 
+        if (events.size() > 0) {
+            for (Event subEvent : events) {
+                AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
+                Util.addEvent(allSharedPreferences, subEvent);
+            }
+        }
     }
 
     public static void saveVaccines(List<VaccineWrapper> tags, String baseEntityID) {

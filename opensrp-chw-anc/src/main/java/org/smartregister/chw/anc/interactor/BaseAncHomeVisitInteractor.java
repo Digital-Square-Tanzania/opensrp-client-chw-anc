@@ -229,6 +229,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
         try {
 
+            Gson gson = Converters.registerDateTime(new GsonBuilder()).create();
             for (Map.Entry<String, BaseAncHomeVisitAction> entry : externalVisits.entrySet()) {
                 BaseAncHomeVisitAction action = entry.getValue();
                 if (StringUtils.isNotBlank(action.getJsonPayload())) {
@@ -261,7 +262,8 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
                     VisitDetail d = new VisitDetail();
                     d.setVisitDetailsId(JsonFormUtils.generateRandomUUIDString());
                     d.setVisitKey("subevent");
-                    d.setPreProcessedJson(new Gson().toJson(multiEvent));
+                    d.setVisitId(parentVisit.getVisitId());
+                    d.setPreProcessedJson(gson.toJson(multiEvent));
                     d.setPreProcessedType("subevent");
                     d.setProcessed(false);
                     d.setCreatedAt(new Date());

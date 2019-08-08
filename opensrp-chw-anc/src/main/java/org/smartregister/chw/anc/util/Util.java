@@ -118,6 +118,8 @@ public class Util {
     public static Map<String, List<VisitDetail>> eventsObsToDetails(List<Obs> obsList, String visitID, String baseEntityID) throws JSONException {
         List<String> exceptions = Arrays.asList(default_obs);
         Map<String, List<VisitDetail>> details = new HashMap<>();
+        if (obsList == null)
+            return details;
 
         for (Obs obs : obsList) {
             if (!exceptions.contains(obs.getFormSubmissionField())) {

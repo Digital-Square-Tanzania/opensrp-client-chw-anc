@@ -60,10 +60,11 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
     // global maximum date
     private Date maxVaccineDate = ServiceSchedule.standardiseDateTime(DateTime.now()).toDate();
 
-    public static BaseHomeVisitImmunizationFragment getInstance(final BaseAncHomeVisitContract.VisitView view, String baseEntityID, Map<String, List<VisitDetail>> details, List<VaccineWrapper> vaccineWrappers) {
+    public static BaseHomeVisitImmunizationFragment getInstance(final BaseAncHomeVisitContract.VisitView view, String baseEntityID, Date minVaccineDate, Map<String, List<VisitDetail>> details, List<VaccineWrapper> vaccineWrappers) {
         BaseHomeVisitImmunizationFragment fragment = new BaseHomeVisitImmunizationFragment();
         fragment.visitView = view;
         fragment.baseEntityID = baseEntityID;
+        fragment.minVaccineDate = minVaccineDate;
         fragment.details = details;
         for (VaccineWrapper vaccineWrapper : vaccineWrappers) {
             fragment.vaccineWrappers.put(vaccineWrapper.getName(), vaccineWrapper);

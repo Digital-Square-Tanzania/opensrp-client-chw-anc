@@ -43,7 +43,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         return registrationFormParams;
     }
 
-    public static Event processAncJsonForm(AllSharedPreferences allSharedPreferences, String entityId, String encounterType, Map<String, String> jsonStrings) {
+    public static Event processVisitJsonForm(AllSharedPreferences allSharedPreferences, String entityId, String encounterType, Map<String, String> jsonStrings, String tableName) {
 
         // aggregate all the fields into 1 payload
 
@@ -84,7 +84,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
 
         JSONArray fields = new JSONArray(fields_obj);
 
-        return org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, encounterType, Constants.TABLES.ANC_MEMBERS);
+        return org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, encounterType, tableName);
     }
 
     public static Event createUntaggedEvent(String baseEntityId, String eventType, String table) {

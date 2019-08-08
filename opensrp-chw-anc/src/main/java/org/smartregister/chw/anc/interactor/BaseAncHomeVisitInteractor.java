@@ -150,7 +150,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
     ) throws Exception {
 
         AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
-        Event baseEvent = JsonFormUtils.processAncJsonForm(allSharedPreferences, memberID, encounterType, jsonString);
+        Event baseEvent = JsonFormUtils.processVisitJsonForm(allSharedPreferences, memberID, encounterType, jsonString, getTableName());
         prepareEvent(baseEvent);
         if (baseEvent != null) {
             baseEvent.setFormSubmissionId(JsonFormUtils.generateRandomUUIDString());
@@ -217,6 +217,10 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
     protected String getEncounterType() {
         return Constants.EVENT_TYPE.ANC_HOME_VISIT;
+    }
+
+    protected String getTableName() {
+        return Constants.TABLES.ANC_MEMBERS;
     }
 
 }

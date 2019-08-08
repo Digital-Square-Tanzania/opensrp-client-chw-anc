@@ -31,7 +31,7 @@ import static org.smartregister.chw.anc.util.DBConstants.KEY.RELATIONAL_ID;
 public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     public static final String METADATA = "metadata";
     public static final String IMAGE = "image";
-    public static final String ANC_HOME_VISIT = "home_visit_group";
+    public static final String HOME_VISIT_GROUP = "home_visit_group";
     private static final String V_REQUIRED = "v_required";
 
     protected static Triple<Boolean, JSONObject, JSONArray> validateParameters(String jsonString) {
@@ -39,14 +39,12 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         JSONObject jsonForm = toJSONObject(jsonString);
         JSONArray fields = fields(jsonForm);
 
-        Triple<Boolean, JSONObject, JSONArray> registrationFormParams = Triple.of(jsonForm != null && fields != null, jsonForm, fields);
-        return registrationFormParams;
+        return Triple.of(jsonForm != null && fields != null, jsonForm, fields);
     }
 
     public static Event processVisitJsonForm(AllSharedPreferences allSharedPreferences, String entityId, String encounterType, Map<String, String> jsonStrings, String tableName) {
 
         // aggregate all the fields into 1 payload
-
         JSONObject jsonForm = null;
         JSONObject metadata = null;
 
@@ -73,7 +71,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
             while (local_fields.length() > x) {
                 try {
                     JSONObject obj = local_fields.getJSONObject(x);
-                    obj.put(ANC_HOME_VISIT, map.getKey());
+                    obj.put(HOME_VISIT_GROUP, map.getKey());
                     fields_obj.add(obj);
                 } catch (JSONException e) {
                     Timber.e(e);
@@ -86,6 +84,23 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
 
         return org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, encounterType, tableName);
     }
+
+    public static Event prepareEvent(AllSharedPreferences allSharedPreferences, String entityId, String jsonString, String tableName) throws JSONException {
+
+        Triple<Boolean, JSONObject, JSONArray> registrationFormParams = validateParameters(jsonString);
+
+        if (!registrationFormParams.getLeft()) {
+            return null;
+        }
+
+        JSONObject jsonForm = registrationFormParams.getMiddle();
+        String encounterType = jsonForm.getString("encounter_type");
+        JSONObject metadata = getJSONObject(jsonForm, METADATA);
+        JSONArray fields = registrationFormParams.getRight();
+
+        return org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, encounterType, tableName);
+    }
+
 
     public static Event createUntaggedEvent(String baseEntityId, String eventType, String table) {
 

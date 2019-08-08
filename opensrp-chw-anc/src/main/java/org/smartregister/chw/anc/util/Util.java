@@ -94,8 +94,6 @@ public class Util {
     }
 
     public static Visit eventToVisit(Event event, String visitID) throws JSONException {
-        List<String> exceptions = Arrays.asList(default_obs);
-
         Visit visit = new Visit();
         visit.setVisitId(visitID);
         visit.setBaseEntityId(event.getBaseEntityId());
@@ -110,39 +108,49 @@ public class Util {
 
         Map<String, List<VisitDetail>> details = new HashMap<>();
         if (event.getObs() != null) {
-            for (Obs obs : event.getObs()) {
-                if (!exceptions.contains(obs.getFormSubmissionField())) {
-                    VisitDetail detail = new VisitDetail();
-                    detail.setVisitDetailsId(JsonFormUtils.generateRandomUUIDString());
-                    detail.setVisitId(visit.getVisitId());
-                    detail.setVisitKey(obs.getFormSubmissionField());
-
-                    if (detail.getVisitKey().contains("date")) {
-                        // parse the
-                        detail.setDetails(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getValues().toString())));
-                        detail.setHumanReadable(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getHumanReadableValues().toString())));
-                    } else {
-                        detail.setDetails(cleanString(obs.getValues().toString()));
-                        detail.setHumanReadable(cleanString(obs.getHumanReadableValues().toString()));
-                    }
-
-                    detail.setJsonDetails(new JSONObject(JsonFormUtils.gson.toJson(obs)).toString());
-                    detail.setProcessed(false);
-                    detail.setCreatedAt(new Date());
-                    detail.setUpdatedAt(new Date());
-
-                    List<VisitDetail> currentList = details.get(detail.getVisitKey());
-                    if (currentList == null)
-                        currentList = new ArrayList<>();
-
-                    currentList.add(detail);
-                    details.put(detail.getVisitKey(), currentList);
-                }
-            }
+            details = eventsObsToDetails(event.getObs(), visit.getVisitId(), null);
         }
 
         visit.setVisitDetails(details);
         return visit;
+    }
+
+    public static Map<String, List<VisitDetail>> eventsObsToDetails(List<Obs> obsList, String visitID, String baseEntityID) throws JSONException {
+        List<String> exceptions = Arrays.asList(default_obs);
+        Map<String, List<VisitDetail>> details = new HashMap<>();
+
+        for (Obs obs : obsList) {
+            if (!exceptions.contains(obs.getFormSubmissionField())) {
+                VisitDetail detail = new VisitDetail();
+                detail.setVisitDetailsId(JsonFormUtils.generateRandomUUIDString());
+                detail.setVisitId(visitID);
+                detail.setBaseEntityId(baseEntityID);
+                detail.setVisitKey(obs.getFormSubmissionField());
+
+                if (detail.getVisitKey().contains("date")) {
+                    // parse the
+                    detail.setDetails(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getValues().toString())));
+                    detail.setHumanReadable(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getHumanReadableValues().toString())));
+                } else {
+                    detail.setDetails(cleanString(obs.getValues().toString()));
+                    detail.setHumanReadable(cleanString(obs.getHumanReadableValues().toString()));
+                }
+
+                detail.setJsonDetails(new JSONObject(JsonFormUtils.gson.toJson(obs)).toString());
+                detail.setProcessed(false);
+                detail.setCreatedAt(new Date());
+                detail.setUpdatedAt(new Date());
+
+                List<VisitDetail> currentList = details.get(detail.getVisitKey());
+                if (currentList == null)
+                    currentList = new ArrayList<>();
+
+                currentList.add(detail);
+                details.put(detail.getVisitKey(), currentList);
+            }
+        }
+
+        return details;
     }
 
     public static String getFormattedDate(SimpleDateFormat source_sdf, SimpleDateFormat dest_sdf, String value) {

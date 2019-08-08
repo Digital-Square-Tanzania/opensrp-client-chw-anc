@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 
+import org.joda.time.LocalDate;
 import org.smartregister.chw.anc.activity.BaseAncMemberProfileActivity;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.domain.MemberObject;
@@ -92,9 +93,9 @@ public class EntryActivity extends SecuredActivity implements View.OnClickListen
         }
     }
 
-    private void openImmunizationFrag(){
-        if(immunizationFragment == null){
-            immunizationFragment = BaseHomeVisitImmunizationFragment.getInstance(this, "123345", null, getFakeVaccines());
+    private void openImmunizationFrag() {
+        if (immunizationFragment == null) {
+            immunizationFragment = BaseHomeVisitImmunizationFragment.getInstance(this, "123345", LocalDate.now().minusYears(5).toDate(), null, getFakeVaccines());
         }
         immunizationFragment.show(getFragmentManager(), "HV");
     }

@@ -2,6 +2,7 @@ package org.smartregister.chw.anc.util;
 
 import android.content.Context;
 
+import com.google.gson.Gson;
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 
 import net.sqlcipher.database.SQLiteDatabase;
@@ -34,16 +35,21 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import timber.log.Timber;
 
 import static org.smartregister.chw.anc.AncLibrary.getInstance;
 import static org.smartregister.chw.anc.util.JsonFormUtils.cleanString;
+import static org.smartregister.util.JsonFormUtils.VALUE;
+import static org.smartregister.util.JsonFormUtils.getFieldJSONObject;
 import static org.smartregister.util.Utils.getAllSharedPreferences;
 
 public class Util {
 
     private static String[] default_obs = {"start", "end", "deviceid", "subscriberid", "simserial", "phonenumber"};
+    private static String[] vaccines = {"bcg_date", "opv0_date"};
+
 
     private static SimpleDateFormat getSourceDateFormat() {
         return new SimpleDateFormat(getInstance().getSourceDateFormat(), Locale.getDefault());
@@ -249,6 +255,95 @@ public class Util {
         if (full)
             return String.format(context.getString(R.string.gest_age), String.valueOf(ga)) + " " + context.getString(R.string.gest_age_weeks);
         return String.valueOf(ga);
+    }
+
+    public static void saveVaccineEvents(JSONArray fields, String baseID) {
+
+        for (int i = 0; i < vaccines.length; i++) {
+            saveVaccineEvent(vaccines[i], getFieldJSONObject(fields, vaccines[i]), baseID);
+        }
+    }
+
+    private static void saveVaccineEvent(String vaccineName, JSONObject vaccineObject, String baseID) {
+        if (vaccineObject != null)
+            try {
+                String vaccineDate = vaccineObject.optString(VALUE);
+                SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+                SimpleDateFormat formatEventDate = new SimpleDateFormat("yyy-MM-dd");
+                Date date = formatter.parse(vaccineDate);
+
+                JSONObject vaccineEventObject = createVaccineEvent(vaccineName, formatEventDate.format(date));
+                Event baseEvent = new Gson().fromJson(vaccineEventObject.toString(), Event.class);
+                baseEvent.setDateCreated(new Date());
+                baseEvent.setEventDate(date);
+                baseEvent.setBaseEntityId(baseID);
+                baseEvent.setEventType("Vaccination");
+                baseEvent.setEntityType("vaccination");
+                baseEvent.setType("Event");
+                baseEvent.setFormSubmissionId(UUID.randomUUID().toString());
+                baseEvent.setEventId(UUID.randomUUID().toString());
+                addEvent(getAllSharedPreferences(), baseEvent);
+            } catch (Exception e) {
+                Timber.e(e);
+            }
+    }
+
+
+    private static JSONObject createVaccineEvent(String vaccineName, String vaccineDate) {
+
+        JSONObject vaccineEvent = new JSONObject();
+        try {
+            vaccineEvent.put("obs", makeObs(vaccineName, vaccineDate));
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return vaccineEvent;
+    }
+
+    private static JSONArray makeObs(String vaccine, String vaccineDate) {
+        JSONArray dateValues = new JSONArray();
+        JSONArray obsArray = new JSONArray();
+        JSONArray calculateValues = new JSONArray();
+        JSONObject vaccineName = new JSONObject();
+        JSONObject vaccineDetails = new JSONObject();
+
+        String parentCode = null;
+        String formSubmissionField = null;
+        String countValue = null;
+
+        try {
+            dateValues.put(vaccineDate);
+            vaccineName.put("fieldType", "concept");
+            vaccineName.put("fieldDataType", "date");
+            vaccineName.put("fieldCode", "1410AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            vaccineName.put("values", dateValues);
+            if (vaccine.contains("BCG")) {
+                parentCode = "886AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+                formSubmissionField = "bcg";
+                countValue = "0";
+            } else if (vaccine.equalsIgnoreCase("OPV")) {
+                parentCode = "783AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
+                formSubmissionField = "opv_0";
+                countValue = "0";
+            }
+            vaccineName.put("formSubmissionField", formSubmissionField);
+            vaccineName.put("parentCode", parentCode);
+
+            vaccineDetails.put("fieldType", "concept");
+            vaccineDetails.put("fieldDataType", "calculate");
+            vaccineDetails.put("fieldCode", "1418AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+            vaccineDetails.put("parentCode", parentCode);
+            calculateValues.put(countValue);
+            vaccineDetails.put("values", calculateValues);
+            vaccineDetails.put("formSubmissionField", formSubmissionField + "_dose");
+            obsArray.put(vaccineName);
+            obsArray.put(vaccineDetails);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+
+        return obsArray;
     }
 
     @Nullable

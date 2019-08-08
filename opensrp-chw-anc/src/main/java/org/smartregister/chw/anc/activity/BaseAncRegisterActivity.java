@@ -39,6 +39,7 @@ import timber.log.Timber;
 
 import static org.smartregister.chw.anc.util.Constants.EVENT_TYPE.PREGNANCY_OUTCOME;
 import static org.smartregister.chw.anc.util.Constants.EVENT_TYPE.UPDATE_EVENT_CONDITION;
+import static org.smartregister.chw.anc.util.Util.saveVaccineEvents;
 import static org.smartregister.immunization.ImmunizationLibrary.getInstance;
 import static org.smartregister.util.JsonFormUtils.fields;
 import static org.smartregister.util.JsonFormUtils.getFieldJSONObject;
@@ -246,6 +247,8 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
                         JSONObject familyIdObject = getFieldJSONObject(fields, DBConstants.KEY.RELATIONAL_ID);
                         String familyBaseEntityId = familyIdObject.getString(JsonFormUtils.VALUE);
                         pncForm = JsonFormUtils.populatePNCForm(pncForm, fields, familyBaseEntityId);
+
+                        saveVaccineEvents(fields, childBaseEntityId);
 
                         baseAncRegisterInteractor.processPncChild(fields, allSharedPreferences, childBaseEntityId,
                                 familyBaseEntityId, motherBaseId);

@@ -31,12 +31,7 @@ public class BaseAncMemberProfileInteractor implements BaseAncMemberProfileContr
 
     @Override
     public void refreshProfileView(final MemberObject memberObject, final boolean isForEdit, final BaseAncMemberProfileContract.InteractorCallBack callback) {
-        Runnable runnable = () -> appExecutors.mainThread().execute(new Runnable() {
-            @Override
-            public void run() {
-                callback.refreshProfileTopSection(memberObject);
-            }
-        });
+        Runnable runnable = () -> appExecutors.mainThread().execute(() -> callback.refreshProfileTopSection(memberObject));
         appExecutors.diskIO().execute(runnable);
     }
 

@@ -75,10 +75,16 @@
     <string name="anc_home_visit_danger_signs">Signes de danger</string>
     <string name="danger_signs_counselling">Conseils sur les signes de danger</string>
     <string name="not_done">Pas fait</string>
+    <string name="medical_history">Historique Médical</string>
+    <string name="upcoming_services">Prochains Services</string>
 
     <string name="vaccines_not_done">VACCINATION NON EFFECTUÉES</string>
     <string name="add_date_separately">+ AJOUTER UNE DATE POUR CHAQUE VACCIN</string>
     <string name="when_vaccines_given_text">Quand est-ce que ces vaccinations ont été effectuées?</string>
     <string name="which_vaccines_given_text">Quels vaccinations ont été effectuées?</string>
     <string name="record_vaccinations">Enregistrer les vaccinations</string>
+
+
+    <string name="when_vaccine">Quand est-ce que la vaccination de %s a été effectuée?</string>
+    <string name="no_vaccines_were_done">Aucun vaccinations n\'a été effectuée</string>
 </resources>

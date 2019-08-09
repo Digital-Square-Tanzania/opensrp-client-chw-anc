@@ -20,7 +20,7 @@ import org.smartregister.chw.anc.util.AppExecutors;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.anc.util.MultiEvent;
-import org.smartregister.chw.anc.util.Util;
+import org.smartregister.chw.anc.util.NCUtils;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.clientandeventmodel.Obs;
 import org.smartregister.immunization.domain.ServiceWrapper;
@@ -164,7 +164,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
                 AncLibrary.getInstance().visitDetailsRepository().deleteVisitDetails(visitID);
             }
 
-            Visit visit = Util.eventToVisit(baseEvent, visitID);
+            Visit visit = NCUtils.eventToVisit(baseEvent, visitID);
             visit.setPreProcessedJson(new Gson().toJson(baseEvent));
             AncLibrary.getInstance().visitRepository().addVisit(visit);
 
@@ -224,7 +224,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
                     JsonFormUtils.tagEvent(allSharedPreferences, subEvent);
 
                     Map<String, List<VisitDetail>> details =
-                            Util.eventsObsToDetails(subEvent.getObs(), parentVisit.getVisitId(), action.getBaseEntityID());
+                            NCUtils.eventsObsToDetails(subEvent.getObs(), parentVisit.getVisitId(), action.getBaseEntityID());
 
                     MultiEvent multiEvent = new MultiEvent();
                     multiEvent.setEvent(subEvent);

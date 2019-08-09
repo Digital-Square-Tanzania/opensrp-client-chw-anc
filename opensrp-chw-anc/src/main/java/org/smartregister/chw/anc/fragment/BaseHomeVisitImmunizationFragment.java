@@ -21,7 +21,7 @@ import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.anc.model.BaseHomeVisitImmunizationFragmentModel;
 import org.smartregister.chw.anc.presenter.BaseHomeVisitImmunizationFragmentPresenter;
 import org.smartregister.chw.anc.util.Constants;
-import org.smartregister.chw.anc.util.Util;
+import org.smartregister.chw.anc.util.NCUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.immunization.db.VaccineRepo;
 import org.smartregister.immunization.domain.ServiceSchedule;
@@ -244,7 +244,7 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         }
 
         // create a json object and write values to it that have the vaccine dates
-        jsonObject = Util.getVisitJSONFromWrapper(baseEntityID, vaccineDateMap);
+        jsonObject = NCUtils.getVisitJSONFromWrapper(baseEntityID, vaccineDateMap);
 
         // notify the view
         if (jsonObject != null) {
@@ -320,7 +320,7 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
 
         Map<String, VaccineView> lookup = new HashMap<>();
         for (VaccineView vaccineView : vaccineViews) {
-            lookup.put(Util.removeSpaces(vaccineView.vaccineName), vaccineView);
+            lookup.put(NCUtils.removeSpaces(vaccineView.vaccineName), vaccineView);
         }
 
         SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_FORMATS.NATIVE_FORMS, Locale.getDefault());

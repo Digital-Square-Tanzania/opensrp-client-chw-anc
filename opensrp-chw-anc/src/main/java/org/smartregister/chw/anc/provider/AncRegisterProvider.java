@@ -14,7 +14,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Years;
 import org.smartregister.chw.anc.fragment.BaseAncRegisterFragment;
 import org.smartregister.chw.anc.util.DBConstants;
-import org.smartregister.chw.anc.util.Util;
+import org.smartregister.chw.anc.util.NCUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.commonregistry.CommonPersonObject;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
@@ -88,7 +88,7 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
                     context.getString(R.string.age),
                     age,
                     context.getString(R.string.gestation_age_initial),
-                    Util.gestationAgeString(lmpString, context, false),
+                    NCUtils.gestationAgeString(lmpString, context, false),
                     context.getString(R.string.weeks)
             );
 

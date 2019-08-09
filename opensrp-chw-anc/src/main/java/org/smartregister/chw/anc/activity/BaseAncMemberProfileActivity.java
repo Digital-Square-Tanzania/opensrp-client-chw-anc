@@ -34,8 +34,7 @@ import org.smartregister.chw.anc.interactor.BaseAncMemberProfileInteractor;
 import org.smartregister.chw.anc.presenter.BaseAncMemberProfilePresenter;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.JsonFormUtils;
-import org.smartregister.chw.anc.util.Util;
-import org.smartregister.chw.anc.util.Utils;
+import org.smartregister.chw.anc.util.NCUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.helper.ImageRenderHelper;
@@ -270,7 +269,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     private void saveVisit(String eventType) {
         try {
             Event event = JsonFormUtils.createUntaggedEvent(MEMBER_OBJECT.getBaseEntityId(), eventType, Constants.TABLES.ANC_MEMBERS);
-            Visit visit = Util.eventToVisit(event, JsonFormUtils.generateRandomUUIDString());
+            Visit visit = NCUtils.eventToVisit(event, JsonFormUtils.generateRandomUUIDString());
             visit.setPreProcessedJson(new Gson().toJson(event));
             getInstance().visitRepository().addVisit(visit);
         } catch (JSONException e) {
@@ -325,7 +324,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     public void setProfileImage(String baseEntityId, String entityType) {
-        imageRenderHelper.refreshProfileImage(baseEntityId, imageView, Util.getMemberProfileImageResourceIDentifier(entityType));
+        imageRenderHelper.refreshProfileImage(baseEntityId, imageView, NCUtils.getMemberProfileImageResourceIDentifier(entityType));
     }
 
     @Override
@@ -354,9 +353,9 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         rlUpcomingServices.setVisibility(View.VISIBLE);
 
         if (status == AlertStatus.upcoming) {
-            tvUpComingServices.setText(Utils.fromHtml(getString(R.string.vaccine_service_upcoming, service, dateFormat.format(date))));
+            tvUpComingServices.setText(NCUtils.fromHtml(getString(R.string.vaccine_service_upcoming, service, dateFormat.format(date))));
         } else {
-            tvUpComingServices.setText(Utils.fromHtml(getString(R.string.vaccine_service_due, service, dateFormat.format(date))));
+            tvUpComingServices.setText(NCUtils.fromHtml(getString(R.string.vaccine_service_due, service, dateFormat.format(date))));
         }
     }
 
@@ -370,7 +369,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         } else if (status == AlertStatus.normal) {
             tvFamilyStatus.setText(getString(R.string.family_has_services_due));
         } else if (status == AlertStatus.urgent) {
-            tvFamilyStatus.setText(Utils.fromHtml(getString(R.string.family_has_service_overdue)));
+            tvFamilyStatus.setText(NCUtils.fromHtml(getString(R.string.family_has_service_overdue)));
         }
     }
 

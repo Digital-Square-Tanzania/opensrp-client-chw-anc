@@ -98,14 +98,14 @@ public class VisitUtils {
                 // persist to db
                 Event baseEvent = new Gson().fromJson(v.getPreProcessedJson(), Event.class);
                 AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
-                Util.addEvent(allSharedPreferences, baseEvent);
+                NCUtils.addEvent(allSharedPreferences, baseEvent);
 
                 visitRepository.completeProcessing(v.getVisitId());
             }
         }
 
         // process after all events are saved
-        Util.startClientProcessing();
+        NCUtils.startClientProcessing();
 
         // process vaccines and services
         Context context = AncLibrary.getInstance().context().applicationContext();
@@ -154,7 +154,7 @@ public class VisitUtils {
         if (events.size() > 0) {
             for (Event subEvent : events) {
                 AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
-                Util.addEvent(allSharedPreferences, subEvent);
+                NCUtils.addEvent(allSharedPreferences, subEvent);
             }
         }
     }
@@ -180,7 +180,7 @@ public class VisitUtils {
                 vaccine.setCalculation(-1);
             }
 
-            JsonFormUtils.tagSyncMetadata(Utils.context().allSharedPreferences(), vaccine);
+            JsonFormUtils.tagSyncMetadata(NCUtils.context().allSharedPreferences(), vaccine);
             getVaccineRepository().add(vaccine); // persist to local db
             tag.setDbKey(vaccine.getId());
         }
@@ -211,7 +211,7 @@ public class VisitUtils {
                     serviceRecord.setValue(tag.getValue());
                     serviceRecord.setCreatedAt(tag.getUpdatedVaccineDate().toDate());
 
-                    JsonFormUtils.tagSyncMetadata(Utils.context().allSharedPreferences(), serviceRecord);
+                    JsonFormUtils.tagSyncMetadata(NCUtils.context().allSharedPreferences(), serviceRecord);
                 } else {
                     serviceRecord.setDate(tag.getUpdatedVaccineDate().toDate());
                     serviceRecord.setValue(tag.getValue());
@@ -225,7 +225,7 @@ public class VisitUtils {
                 serviceRecord.setDate(tag.getUpdatedVaccineDate().toDate());
                 serviceRecord.setValue(tag.getValue());
 
-                JsonFormUtils.tagSyncMetadata(Utils.context().allSharedPreferences(), serviceRecord);
+                JsonFormUtils.tagSyncMetadata(NCUtils.context().allSharedPreferences(), serviceRecord);
             }
 
             recurringServiceRecordRepository.add(serviceRecord);

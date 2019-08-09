@@ -58,32 +58,24 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
     @Override
     public void calculateActions(final BaseAncHomeVisitContract.View view, MemberObject memberObject, final BaseAncHomeVisitContract.InteractorCallBack callBack) {
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                final LinkedHashMap<String, BaseAncHomeVisitAction> actionList = new LinkedHashMap<>();
+        final Runnable runnable = () -> {
+            final LinkedHashMap<String, BaseAncHomeVisitAction> actionList = new LinkedHashMap<>();
 
-                try {
-                    BaseAncHomeVisitAction ba =
-                            new BaseAncHomeVisitAction.Builder(view.getContext(), "Sample Action")
-                                    .withSubtitle("")
-                                    .withOptional(false)
-                                    .withFormName("anc")
-                                    .withHelper(new DangerSignsHelper())
-                                    .build();
-                    actionList.put("Sample Action", ba);
+            try {
+                BaseAncHomeVisitAction ba =
+                        new BaseAncHomeVisitAction.Builder(view.getContext(), "Sample Action")
+                                .withSubtitle("")
+                                .withOptional(false)
+                                .withFormName("anc")
+                                .withHelper(new DangerSignsHelper())
+                                .build();
+                actionList.put("Sample Action", ba);
 
-                } catch (BaseAncHomeVisitAction.ValidationException e) {
-                    Timber.e(e);
-                }
-
-                appExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        callBack.preloadActions(actionList);
-                    }
-                });
+            } catch (BaseAncHomeVisitAction.ValidationException e) {
+                Timber.e(e);
             }
+
+            appExecutors.mainThread().execute(() -> callBack.preloadActions(actionList));
         };
 
         appExecutors.diskIO().execute(runnable);
@@ -91,68 +83,59 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
     @Override
     public void submitVisit(final boolean editMode, final String memberID, final Map<String, BaseAncHomeVisitAction> map, final BaseAncHomeVisitContract.InteractorCallBack callBack) {
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
+        final Runnable runnable = () -> {
+            boolean result = true;
+            try {
 
-                boolean result = true;
-                try {
+                Map<String, BaseAncHomeVisitAction> externalVisits = new HashMap<>();
+                Map<String, String> jsons = new HashMap<>();
+                Map<String, VaccineWrapper> vaccineWrapperMap = new HashMap<>();
+                Map<String, ServiceWrapper> serviceWrapperMap = new HashMap<>();
 
-                    Map<String, BaseAncHomeVisitAction> externalVisits = new HashMap<>();
-                    Map<String, String> jsons = new HashMap<>();
-                    Map<String, VaccineWrapper> vaccineWrapperMap = new HashMap<>();
-                    Map<String, ServiceWrapper> serviceWrapperMap = new HashMap<>();
+                // aggregate forms to be processed
+                for (Map.Entry<String, BaseAncHomeVisitAction> entry : map.entrySet()) {
+                    String json = entry.getValue().getJsonPayload();
+                    if (StringUtils.isNotBlank(json)) {
 
-                    // aggregate forms to be processed
-                    for (Map.Entry<String, BaseAncHomeVisitAction> entry : map.entrySet()) {
-                        String json = entry.getValue().getJsonPayload();
-                        if (StringUtils.isNotBlank(json)) {
+                        // do not process events that are meant to be in detached mode
+                        // in a similar manner to the the aggregated events
+                        if (entry.getValue().getProcessingMode() == BaseAncHomeVisitAction.ProcessingMode.DETACHED
+                                || StringUtils.isNotBlank(entry.getValue().getBaseEntityID())) {
+                            externalVisits.put(entry.getKey(), entry.getValue());
+                            continue;
+                        }
 
-                            // do not process events that are meant to be in detached mode
-                            // in a similar manner to the the aggregated events
-                            if (entry.getValue().getProcessingMode() == BaseAncHomeVisitAction.ProcessingMode.DETACHED
-                                    || StringUtils.isNotBlank(entry.getValue().getBaseEntityID())) {
-                                externalVisits.put(entry.getKey(), entry.getValue());
-                                continue;
+                        jsons.put(entry.getKey(), json);
+                        JSONObject jsonObject = new JSONObject(json);
+                        if (entry.getValue().getVaccineWrapper() != null) {
+                            int position = 0;
+                            for (VaccineWrapper v : entry.getValue().getVaccineWrapper()) {
+                                vaccineWrapperMap.put(JsonFormUtils.getObjectKey(jsonObject, position), v);
+                                position++;
                             }
+                        }
 
-                            jsons.put(entry.getKey(), json);
-                            JSONObject jsonObject = new JSONObject(json);
-                            if (entry.getValue().getVaccineWrapper() != null) {
-                                int position = 0;
-                                for (VaccineWrapper v : entry.getValue().getVaccineWrapper()) {
-                                    vaccineWrapperMap.put(JsonFormUtils.getObjectKey(jsonObject, position), v);
-                                    position++;
-                                }
-                            }
-
-                            if (entry.getValue().getServiceWrapper() != null) {
-                                int position = 0;
-                                for (ServiceWrapper sw : entry.getValue().getServiceWrapper()) {
-                                    serviceWrapperMap.put(JsonFormUtils.getObjectKey(jsonObject, position), sw);
-                                    position++;
-                                }
+                        if (entry.getValue().getServiceWrapper() != null) {
+                            int position = 0;
+                            for (ServiceWrapper sw : entry.getValue().getServiceWrapper()) {
+                                serviceWrapperMap.put(JsonFormUtils.getObjectKey(jsonObject, position), sw);
+                                position++;
                             }
                         }
                     }
-
-                    Visit visit = saveVisit(editMode, memberID, getEncounterType(), jsons, vaccineWrapperMap, serviceWrapperMap);
-                    if (visit != null)
-                        saveDetachedEvents(visit, externalVisits);
-
-                } catch (Exception e) {
-                    Timber.e(e);
-                    result = false;
                 }
 
-                final boolean finalResult = result;
-                appExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        callBack.onSubmitted(finalResult);
-                    }
-                });
+                Visit visit = saveVisit(editMode, memberID, getEncounterType(), jsons, vaccineWrapperMap, serviceWrapperMap);
+                if (visit != null)
+                    saveDetachedEvents(visit, externalVisits);
+
+            } catch (Exception e) {
+                Timber.e(e);
+                result = false;
             }
+
+            final boolean finalResult = result;
+            appExecutors.mainThread().execute(() -> callBack.onSubmitted(finalResult));
         };
 
         appExecutors.diskIO().execute(runnable);

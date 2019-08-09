@@ -28,24 +28,16 @@ public class BaseAncUpcomingServicesInteractor implements BaseAncUpcomingService
 
     @Override
     public void getUpComingServices(final MemberObject memberObject, final Context context, final BaseAncUpcomingServicesContract.InteractorCallBack callBack) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                // save it
-                final List<BaseUpcomingService> services = new ArrayList<>();
-                try {
-                    services.addAll(getMemberServices(context, memberObject));
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
-
-                appExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        callBack.onDataFetched(services);
-                    }
-                });
+        Runnable runnable = () -> {
+            // save it
+            final List<BaseUpcomingService> services = new ArrayList<>();
+            try {
+                services.addAll(getMemberServices(context, memberObject));
+            } catch (Exception e) {
+                e.printStackTrace();
             }
+
+            appExecutors.mainThread().execute(() -> callBack.onDataFetched(services));
         };
         appExecutors.diskIO().execute(runnable);
     }

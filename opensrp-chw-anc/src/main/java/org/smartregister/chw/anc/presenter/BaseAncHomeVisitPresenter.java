@@ -32,9 +32,8 @@ public class BaseAncHomeVisitPresenter implements BaseAncHomeVisitContract.Prese
             JSONObject jsonObject = JsonFormUtils.getFormAsJson(formName);
             JsonFormUtils.getRegistrationForm(jsonObject, memberID, currentLocationId);
 
-            if (view.get() != null) {
+            if (view.get() != null)
                 view.get().startFormActivity(jsonObject);
-            }
         } catch (Exception e) {
             Timber.e(e);
         }
@@ -67,9 +66,8 @@ public class BaseAncHomeVisitPresenter implements BaseAncHomeVisitContract.Prese
 
     @Override
     public void preloadActions(LinkedHashMap<String, BaseAncHomeVisitAction> map) {
-        if (view.get() != null) {
+        if (view.get() != null)
             view.get().initializeActions(map);
-        }
     }
 
     @Override

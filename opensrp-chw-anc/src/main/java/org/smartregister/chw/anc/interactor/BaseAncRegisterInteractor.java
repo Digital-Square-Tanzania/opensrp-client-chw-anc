@@ -41,27 +41,21 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
     @Override
     public void saveRegistration(final String jsonString, final boolean isEditMode, final BaseAncRegisterContract.InteractorCallBack callBack, final String table) {
 
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                // save it
+        Runnable runnable = () -> {
+            // save it
+            try {
+                saveRegistration(jsonString, table);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            appExecutors.mainThread().execute(() -> {
                 try {
-                    saveRegistration(jsonString, table);
+                    callBack.onRegistrationSaved(isEditMode);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-                appExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            callBack.onRegistrationSaved(isEditMode);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
+            });
         };
         appExecutors.diskIO().execute(runnable);
     }

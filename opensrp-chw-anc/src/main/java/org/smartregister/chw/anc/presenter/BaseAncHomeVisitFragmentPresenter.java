@@ -20,44 +20,38 @@ public class BaseAncHomeVisitFragmentPresenter implements BaseAncHomeVisitFragme
 
     @Override
     public void initialize() {
-        if (view.get() != null) {
+        if (view.get() != null)
             model.processJson(view.get().getJsonObject(), this);
-        }
     }
 
     @Override
     public void setTitle(String title) {
-        if (view.get() != null) {
+        if (view.get() != null)
             view.get().setTitle(title);
-        }
     }
 
     @Override
     public void setQuestion(String question) {
-        if (view.get() != null) {
+        if (view.get() != null)
             view.get().setQuestion(question);
-        }
     }
 
     @Override
     public void setImageRes(int imageRes) {
-        if (view.get() != null) {
+        if (view.get() != null)
             view.get().setImageRes(imageRes);
-        }
     }
 
     @Override
     public void setQuestionType(BaseAncHomeVisitFragment.QuestionType questionType) {
-        if (view.get() != null) {
+        if (view.get() != null)
             view.get().setQuestionType(questionType);
-        }
     }
 
     @Override
     public void setInfoIconTitle(String infoIconTitle) {
-        if (view.get() != null) {
+        if (view.get() != null)
             view.get().setInfoIconTitle(infoIconTitle);
-        }
     }
 
     @Override
@@ -69,9 +63,9 @@ public class BaseAncHomeVisitFragmentPresenter implements BaseAncHomeVisitFragme
 
     @Override
     public BaseAncHomeVisitFragmentContract.View getView() {
-        if (view.get() != null) {
+        if (view.get() != null)
             return view.get();
-        }
+
         return null;
     }
 
@@ -82,9 +76,8 @@ public class BaseAncHomeVisitFragmentPresenter implements BaseAncHomeVisitFragme
 
     @Override
     public void setValue(String value) {
-        if (view.get() != null) {
+        if (view.get() != null)
             view.get().setValue(value);
-        }
     }
 
 }

@@ -125,13 +125,13 @@ public class VisitUtils {
 
                 if (StringUtils.isNotBlank(visitDetail.getPreProcessedType()) && StringUtils.isNotBlank(visitDetail.getPreProcessedJson())) {
                     switch (visitDetail.getPreProcessedType()) {
-                        case "vaccine":
+                        case Constants.HOME_VISIT_TASK.VACCINE:
                             vaccineWrappers.add(gson.fromJson(visitDetail.getPreProcessedJson(), VaccineWrapper.class));
                             break;
-                        case "service":
+                        case Constants.HOME_VISIT_TASK.SERVICE:
                             serviceWrappers.add(gson.fromJson(visitDetail.getPreProcessedJson(), ServiceWrapper.class));
                             break;
-                        case "subevent":
+                        case Constants.HOME_VISIT_TASK.SUB_EVENT:
                             MultiEvent multiEvent = gson.fromJson(visitDetail.getPreProcessedJson(), MultiEvent.class);
                             events.add(multiEvent.getEvent());
                             serviceWrappers.addAll(multiEvent.getServices());

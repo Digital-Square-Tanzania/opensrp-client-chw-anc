@@ -2,9 +2,9 @@ package org.smartregister.chw.anc.fragment;
 
 import android.app.AlertDialog;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.annotation.DrawableRes;
+import android.util.TypedValue;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -14,9 +14,12 @@ import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 
+import com.vijay.jsonwizard.constants.JsonFormConstants;
+
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitFragmentContract;
@@ -30,6 +33,7 @@ import org.smartregister.view.customcontrols.CustomFontTextView;
 
 import java.text.MessageFormat;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -57,6 +61,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
     private CustomFontTextView customFontTextViewTitle;
     private CustomFontTextView customFontTextViewQuestion;
     private ImageView imageViewMain;
+    private RadioGroup radioGroupDynamic;
     private RadioGroup radioGroupChoices;
     private RadioButton radioButtonYes;
     private RadioButton radioButtonNo;
@@ -65,6 +70,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
     private ImageView infoIcon;
     private DatePicker datePicker;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+    private List<JSONObject> optionList = new ArrayList<>();
 
     public static BaseAncHomeVisitFragment getInstance(final BaseAncHomeVisitContract.VisitView view, String form_name, JSONObject json, Map<String, List<VisitDetail>> details, String count) {
         JSONObject jsonObject = json;
@@ -104,6 +110,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
         imageViewMain.setImageResource(getImageRes());
 
         radioGroupChoices = view.findViewById(R.id.radioGroupChoices);
+        radioGroupDynamic = view.findViewById(R.id.radioGroupDynamic);
         radioButtonYes = view.findViewById(R.id.radioButtonYes);
         radioButtonYes.setOnClickListener(this);
         radioButtonNo = view.findViewById(R.id.radioButtonNo);
@@ -134,6 +141,8 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
         if (getQuestionType() == null) {
             return;
         }
+
+        resetViews();
         switch (getQuestionType()) {
             case BOOLEAN:
                 prepareBooleanView();
@@ -144,25 +153,31 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
             case MULTI_OPTIONS:
                 prepareOptionView();
                 break;
+            case RADIO:
+                prepareRadioView();
+                break;
             default:
                 prepareBooleanView();
                 break;
         }
     }
 
+    private void resetViews() {
+        radioGroupChoices.setVisibility(View.GONE);
+        radioGroupDynamic.setVisibility(View.GONE);
+        datePicker.setVisibility(View.GONE);
+        buttonCancel.setVisibility(View.GONE);
+        buttonSave.setVisibility(View.GONE);
+    }
+
     private void prepareBooleanView() {
         // hide date picker and cancel option. Enable radio group and save
         radioGroupChoices.setVisibility(View.VISIBLE);
         buttonSave.setVisibility(View.VISIBLE);
-
-        datePicker.setVisibility(View.GONE);
-        buttonCancel.setVisibility(View.GONE);
     }
 
     private void prepareDateView() {
         // hide date picker and cancel option. Enable radio group and save
-        radioGroupChoices.setVisibility(View.GONE);
-
         buttonSave.setVisibility(View.VISIBLE);
         datePicker.setVisibility(View.VISIBLE);
         buttonCancel.setVisibility(View.VISIBLE);
@@ -170,6 +185,35 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
 
     private void prepareOptionView() {
         Timber.v("prepareOptionView");
+    }
+
+    private void prepareRadioView() {
+        buttonSave.setVisibility(View.VISIBLE);
+        radioGroupDynamic.setVisibility(View.VISIBLE);
+        // add the custom choices in the
+        // inject the options in to view
+        radioGroupDynamic.removeAllViews();
+        for (JSONObject object : optionList) {
+            RadioButton rb = new RadioButton(getMyContext());
+            int padding = getResources().getDimensionPixelSize(R.dimen.ten_dp);
+            rb.setPadding(padding, padding, padding, padding);
+            rb.setTextSize(TypedValue.COMPLEX_UNIT_SP, 17);
+            rb.setTextColor(getResources().getColor(R.color.black));
+
+            try {
+                rb.setText(object.getString(JsonFormConstants.TEXT));
+
+                String key = object.getString(JsonFormConstants.KEY);
+                rb.setTag(R.id.home_visit_radio_key, key);
+                rb.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                    if (isChecked)
+                        onSelectOption(key);
+                });
+            } catch (JSONException e) {
+                Timber.e(e);
+            }
+            radioGroupDynamic.addView(rb); //the RadioButtons are added to the radioGroup instead of the layout
+        }
     }
 
     public String getTitle() {
@@ -267,12 +311,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
         builderSingle.setIcon(com.vijay.jsonwizard.R.drawable.dialog_info_filled);
 
         builderSingle.setNegativeButton(getView().getContext().getResources().getString(com.vijay.jsonwizard.R.string.ok),
-                new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                });
+                (dialog, which) -> dialog.dismiss());
 
         builderSingle.show();
     }
@@ -322,7 +361,28 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
                 datePicker.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
                 Timber.e(e);
             }
+        } else if (getQuestionType() == QuestionType.RADIO) {
+            //
+            int count = radioGroupDynamic.getChildCount();
+            int x = 0;
+            while (count > x) {
+                RadioButton rb = (RadioButton) radioGroupDynamic.getChildAt(x);
+                if (rb.getTag(R.id.home_visit_radio_key).toString().equalsIgnoreCase(value)) {
+                    rb.setChecked(true);
+                    return;
+                }
+                x++;
+            }
         }
+    }
+
+    @Override
+    public void setOptions(List<JSONObject> options) {
+        if (this.optionList == null)
+            this.optionList = new ArrayList<>();
+
+        this.optionList.clear();
+        this.optionList.addAll(options);
     }
 
     public void setFormName(String formName) {
@@ -405,6 +465,6 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
     }
 
     public enum QuestionType {
-        BOOLEAN, DATE_SELECTOR, MULTI_OPTIONS
+        BOOLEAN, RADIO, DATE_SELECTOR, MULTI_OPTIONS
     }
 }

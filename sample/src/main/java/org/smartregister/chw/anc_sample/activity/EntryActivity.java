@@ -48,6 +48,7 @@ public class EntryActivity extends SecuredActivity implements View.OnClickListen
         findViewById(R.id.pnc_home_visit).setOnClickListener(this);
         findViewById(R.id.pnc_profile).setOnClickListener(this);
         findViewById(R.id.immunization_fragment).setOnClickListener(this);
+        findViewById(R.id.home_visit_multi_option).setOnClickListener(this);
         findViewById(R.id.home_visit_fragment).setOnClickListener(this);
     }
 
@@ -84,6 +85,9 @@ public class EntryActivity extends SecuredActivity implements View.OnClickListen
                 break;
             case R.id.immunization_fragment:
                 openImmunizationFrag();
+                break;
+            case R.id.home_visit_multi_option:
+                BaseAncHomeVisitFragment.getInstance(this, "muac", null, null, null).show(getFragmentManager(), "HV");
                 break;
             case R.id.home_visit_fragment:
                 BaseAncHomeVisitFragment.getInstance(this, Constants.HOME_VISIT_FORMS.IMMUNIZATION, null, null, null).show(getFragmentManager(), "HV");

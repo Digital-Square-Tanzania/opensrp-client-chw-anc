@@ -5,12 +5,16 @@ import android.content.res.Resources;
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 
 import org.apache.commons.lang3.StringUtils;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitFragmentContract;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
+
+import java.util.ArrayList;
+import java.util.List;
 
 import timber.log.Timber;
 
@@ -29,6 +33,7 @@ public class BaseAncHomeVisitFragmentModel implements BaseAncHomeVisitFragmentCo
             String value = getValue(jsonObject);
             String infoIconTitle = getInfoIconTitle(jsonObject);
             String infoIconDetails = getInfoIconDetails(jsonObject);
+            List<JSONObject> options = getOptions(jsonObject);
 
             presenter.setTitle(title);
             presenter.setQuestion(question);
@@ -36,8 +41,10 @@ public class BaseAncHomeVisitFragmentModel implements BaseAncHomeVisitFragmentCo
             presenter.setQuestionType(questionType);
             presenter.setInfoIconTitle(infoIconTitle);
             presenter.setInfoIconDetails(infoIconDetails);
-            presenter.setValue(value);
+            presenter.setOptions(options);
 
+            // must always be the last
+            presenter.setValue(value);
         }
     }
 
@@ -101,6 +108,8 @@ public class BaseAncHomeVisitFragmentModel implements BaseAncHomeVisitFragmentCo
                     return BaseAncHomeVisitFragment.QuestionType.BOOLEAN;
                 case JsonFormConstants.CHECK_BOX:
                     return BaseAncHomeVisitFragment.QuestionType.MULTI_OPTIONS;
+                case JsonFormConstants.RADIO_BUTTON:
+                    return BaseAncHomeVisitFragment.QuestionType.RADIO;
                 case JsonFormConstants.DATE_PICKER:
                     return BaseAncHomeVisitFragment.QuestionType.DATE_SELECTOR;
                 default:
@@ -145,5 +154,26 @@ public class BaseAncHomeVisitFragmentModel implements BaseAncHomeVisitFragmentCo
             Timber.e(e);
         }
         return "";
+    }
+
+    private List<JSONObject> getOptions(JSONObject jsonObject) {
+        try {
+            JSONObject targetObject = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0);
+            if (targetObject.has(JsonFormConstants.OPTIONS_FIELD_NAME)) {
+                JSONArray array = targetObject.getJSONArray(JsonFormConstants.OPTIONS_FIELD_NAME);
+                List<JSONObject> objects = new ArrayList<>();
+                int count = array.length();
+                int x = 0;
+                while (x < count) {
+                    objects.add(array.getJSONObject(x));
+                    x++;
+                }
+
+                return objects;
+            }
+        } catch (JSONException e) {
+            Timber.e(e);
+        }
+        return new ArrayList<>();
     }
 }

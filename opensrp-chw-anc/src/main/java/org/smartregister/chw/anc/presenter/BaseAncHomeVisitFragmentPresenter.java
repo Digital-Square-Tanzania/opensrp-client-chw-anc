@@ -5,6 +5,7 @@ import org.smartregister.chw.anc.contract.BaseAncHomeVisitFragmentContract;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
 
 import java.lang.ref.WeakReference;
+import java.util.List;
 
 public class BaseAncHomeVisitFragmentPresenter implements BaseAncHomeVisitFragmentContract.Presenter {
 
@@ -78,6 +79,12 @@ public class BaseAncHomeVisitFragmentPresenter implements BaseAncHomeVisitFragme
     public void setValue(String value) {
         if (view.get() != null)
             view.get().setValue(value);
+    }
+
+    @Override
+    public void setOptions(List<JSONObject> options) {
+        if (view.get() != null)
+            view.get().setOptions(options);
     }
 
 }

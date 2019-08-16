@@ -51,6 +51,8 @@ public class BaseAncHomeVisitAction {
         this.serviceWrapper = builder.serviceWrapper;
         this.details = builder.details;
         this.context = builder.context;
+        this.processingMode = builder.processingMode;
+        this.jsonPayload = builder.jsonPayload;
 
         validateMe();
         initialize();
@@ -351,6 +353,7 @@ public class BaseAncHomeVisitAction {
         private List<ServiceWrapper> serviceWrapper = new ArrayList<>();
         private Map<String, List<VisitDetail>> details = new HashMap<>();
         private Context context;
+        private String jsonPayload;
 
         public Builder(Context context, String title) {
             this.context = context;
@@ -419,6 +422,11 @@ public class BaseAncHomeVisitAction {
 
         public Builder withServiceWrapper(List<ServiceWrapper> serviceWrapper) {
             this.serviceWrapper.addAll(serviceWrapper);
+            return this;
+        }
+
+        public Builder withJsonPayload(String jsonPayload) {
+            this.jsonPayload = jsonPayload;
             return this;
         }
 

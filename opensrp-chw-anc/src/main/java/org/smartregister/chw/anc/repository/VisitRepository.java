@@ -189,6 +189,23 @@ public class VisitRepository extends BaseRepository {
         }
         return visits;
     }
+    public List<Visit> getUniqueDayLatestThreeVisits(String baseEntityID, String visitType) {
+        List<Visit> visits = new ArrayList<>();
+        Cursor cursor = null;
+        try {
+            String query = "select STRFTIME('%Y%m%d', datetime(("+VISIT_DATE+")/1000,'unixepoch')) as d,* from "+VISIT_TABLE+" where "+VISIT_TYPE+" = '"+visitType+"' AND " +
+                    ""+BASE_ENTITY_ID+" = '"+baseEntityID+"'  group by d order by "+VISIT_DATE+" desc limit 3";
+            cursor = getReadableDatabase().rawQuery(query,null);
+            visits = readVisits(cursor);
+        } catch (Exception e) {
+            Timber.e(e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return visits;
+    }
 
     public Visit getVisitByFormSubmissionID(String formSubmissionID) {
         List<Visit> visits = new ArrayList<>();

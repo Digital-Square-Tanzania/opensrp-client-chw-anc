@@ -36,6 +36,7 @@ public class BaseAncHomeVisitAction {
     private List<ServiceWrapper> serviceWrapper;
     private Map<String, List<VisitDetail>> details;
     private Context context;
+    private Validator validator;
 
     private BaseAncHomeVisitAction(Builder builder) throws ValidationException {
         this.baseEntityID = builder.baseEntityID;
@@ -53,6 +54,7 @@ public class BaseAncHomeVisitAction {
         this.context = builder.context;
         this.processingMode = builder.processingMode;
         this.jsonPayload = builder.jsonPayload;
+        this.validator = builder.validator;
 
         validateMe();
         initialize();
@@ -109,6 +111,20 @@ public class BaseAncHomeVisitAction {
         if (StringUtils.isBlank(formName) && destinationFragment == null) {
             throw new ValidationException("This action object lacks a valid form or destination fragment");
         }
+    }
+
+    public boolean isValid() {
+        if (validator != null)
+            return validator.isValid(title);
+
+        return true;
+    }
+
+    public boolean isEnabled() {
+        if (validator != null)
+            return validator.isEnabled(title);
+
+        return true;
     }
 
     public String getBaseEntityID() {
@@ -354,6 +370,7 @@ public class BaseAncHomeVisitAction {
         private Map<String, List<VisitDetail>> details = new HashMap<>();
         private Context context;
         private String jsonPayload;
+        private Validator validator;
 
         public Builder(Context context, String title) {
             this.context = context;
@@ -430,6 +447,11 @@ public class BaseAncHomeVisitAction {
             return this;
         }
 
+        public Builder withValidator(Validator validator) {
+            this.validator = validator;
+            return this;
+        }
+
         public BaseAncHomeVisitAction build() throws ValidationException {
             return new BaseAncHomeVisitAction(this);
         }
@@ -439,5 +461,17 @@ public class BaseAncHomeVisitAction {
         public ValidationException(String message) {
             super(message);
         }
+    }
+
+    /**
+     * provides complex logic to validate is an object should be displayed
+     * and the state it should be displated
+     *
+     * @return
+     */
+    public interface Validator {
+        boolean isValid(String key);
+
+        boolean isEnabled(String key);
     }
 }

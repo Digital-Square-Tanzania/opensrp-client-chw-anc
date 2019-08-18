@@ -1,6 +1,7 @@
 package org.smartregister.chw.anc.contract;
 
 import org.json.JSONObject;
+import org.smartregister.chw.anc.domain.VaccineDisplay;
 
 import java.util.Map;
 
@@ -14,6 +15,10 @@ public interface BaseHomeVisitImmunizationFragmentContract {
         void updateSelectedVaccines(Map<String, String> selectedVaccines, boolean variedMode);
 
         JSONObject getJsonObject();
+
+        Map<String, VaccineDisplay> getVaccineDisplays();
+
+        void setVaccineDisplays(Map<String, VaccineDisplay> vaccineDisplays);
     }
 
     interface Presenter {

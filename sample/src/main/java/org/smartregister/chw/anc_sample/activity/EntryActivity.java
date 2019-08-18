@@ -9,6 +9,7 @@ import org.joda.time.LocalDate;
 import org.smartregister.chw.anc.activity.BaseAncMemberProfileActivity;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.domain.MemberObject;
+import org.smartregister.chw.anc.domain.VaccineDisplay;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
 import org.smartregister.chw.anc.fragment.BaseHomeVisitImmunizationFragment;
 import org.smartregister.chw.anc.util.DBConstants;
@@ -25,6 +26,7 @@ import org.smartregister.immunization.domain.jsonmapping.VaccineGroup;
 import org.smartregister.view.activity.SecuredActivity;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -99,7 +101,7 @@ public class EntryActivity extends SecuredActivity implements View.OnClickListen
 
     private void openImmunizationFrag() {
         if (immunizationFragment == null) {
-            immunizationFragment = BaseHomeVisitImmunizationFragment.getInstance(this, "123345", LocalDate.now().minusYears(5).toDate(), null, getFakeVaccines());
+            immunizationFragment = BaseHomeVisitImmunizationFragment.getInstance(this, "123345", null, getFakeVaccines());
         }
         immunizationFragment.show(getFragmentManager(), "HV");
     }
@@ -125,17 +127,21 @@ public class EntryActivity extends SecuredActivity implements View.OnClickListen
         return new MemberObject(commonPersonObject);
     }
 
-    private List<VaccineWrapper> getFakeVaccines() {
-        List<VaccineWrapper> vaccineWrappers = new ArrayList<>();
+    private List<VaccineDisplay> getFakeVaccines() {
+        List<VaccineDisplay> vaccineDisplays = new ArrayList<>();
 
         Map<String, VaccineGroup> groupMap = VaccineScheduleUtil.getVaccineGroups(this, "child");
         Iterator<VaccineGroup> iterator = groupMap.values().iterator();
 
         // get first group
         for (Vaccine vaccine : iterator.next().vaccines) {
-            vaccineWrappers.add(getVaccineWrapper(VaccineRepo.getVaccine(vaccine.name, "child")));
+            VaccineDisplay display = new VaccineDisplay();
+            display.setVaccineWrapper(getVaccineWrapper(VaccineRepo.getVaccine(vaccine.name, "child")));
+            display.setStartDate(new LocalDate().plusDays(-300).toDate());
+            display.setEndDate(new Date());
+            vaccineDisplays.add(display);
         }
-        return vaccineWrappers;
+        return vaccineDisplays;
     }
 
     private VaccineWrapper getVaccineWrapper(VaccineRepo.Vaccine vaccine) {

@@ -210,7 +210,11 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     public void redrawVisitUI() {
         boolean valid = actionList.size() > 0;
         for (Map.Entry<String, BaseAncHomeVisitAction> entry : actionList.entrySet()) {
-            if (!entry.getValue().isOptional() && entry.getValue().getActionStatus() == BaseAncHomeVisitAction.Status.PENDING) {
+            BaseAncHomeVisitAction action = entry.getValue();
+            if (!action.isOptional()
+                    && action.getActionStatus() == BaseAncHomeVisitAction.Status.PENDING
+                    && action.isValid()
+            ) {
                 valid = false;
                 break;
             }

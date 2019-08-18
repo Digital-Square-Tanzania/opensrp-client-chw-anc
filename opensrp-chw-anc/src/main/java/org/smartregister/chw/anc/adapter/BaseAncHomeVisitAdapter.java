@@ -6,6 +6,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
@@ -17,6 +18,7 @@ import org.smartregister.chw.opensrp_chw_anc.R;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
@@ -40,11 +42,33 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
         return new MyViewHolder(v);
     }
 
+    /**
+     * get the position of the the valid items in the data set
+     * @param position
+     * @return
+     */
+    private BaseAncHomeVisitAction getByPosition(int position) {
+        int count = -1;
+        for (Map.Entry<String, BaseAncHomeVisitAction> entry : ancHomeVisitActionList.entrySet()) {
+            if (entry.getValue().isValid())
+                count++;
+
+            if(count == position)
+                return entry.getValue();
+        }
+
+        return null;
+    }
+
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NotNull MyViewHolder holder, int position) {
 
-        BaseAncHomeVisitAction ancHomeVisitAction = new ArrayList<>(ancHomeVisitActionList.values()).get(position);
+        BaseAncHomeVisitAction ancHomeVisitAction = getByPosition(position);
+        if (!ancHomeVisitAction.isEnabled()) {
+
+        }
+
         String title = MessageFormat.format("{0}<i>{1}</i>",
                 ancHomeVisitAction.getTitle(),
                 ancHomeVisitAction.isOptional() ? " - " + context.getString(R.string.optional) : ""
@@ -53,11 +77,12 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
         if (StringUtils.isNotBlank(ancHomeVisitAction.getSubTitle())) {
             holder.descriptionText.setText(ancHomeVisitAction.getSubTitle());
             holder.descriptionText.setVisibility(View.VISIBLE);
-            if (ancHomeVisitAction.getScheduleStatus() == BaseAncHomeVisitAction.ScheduleStatus.OVERDUE) {
-                holder.descriptionText.setTextColor(context.getResources().getColor(R.color.alert_urgent_red));
-            } else {
-                holder.descriptionText.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
-            }
+
+            boolean isOverdue = ancHomeVisitAction.getScheduleStatus() == BaseAncHomeVisitAction.ScheduleStatus.OVERDUE;
+            holder.descriptionText.setTextColor(
+                    isOverdue ? context.getResources().getColor(R.color.alert_urgent_red) :
+                            context.getResources().getColor(android.R.color.darker_gray)
+            );
         } else {
             holder.descriptionText.setVisibility(View.GONE);
         }
@@ -97,36 +122,39 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
     }
 
     private void bindClickListener(View view, final BaseAncHomeVisitAction ancHomeVisitAction) {
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //ancHomeVisitActionList.get(ancHomeVisitAction.getTitle()).setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
-                if (StringUtils.isNotBlank(ancHomeVisitAction.getFormName())) {
-                    visitContractView.startForm(ancHomeVisitAction);
-                } else {
-                    visitContractView.startFragment(ancHomeVisitAction);
-                }
-                visitContractView.redrawVisitUI();
+        view.setOnClickListener(v -> {
+            //ancHomeVisitActionList.get(ancHomeVisitAction.getTitle()).setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
+            if (StringUtils.isNotBlank(ancHomeVisitAction.getFormName())) {
+                visitContractView.startForm(ancHomeVisitAction);
+            } else {
+                visitContractView.startFragment(ancHomeVisitAction);
             }
+            visitContractView.redrawVisitUI();
         });
     }
 
     @Override
     public int getItemCount() {
-        return ancHomeVisitActionList.size();
+        int count = 0;
+        for (Map.Entry<String, BaseAncHomeVisitAction> entry : ancHomeVisitActionList.entrySet()) {
+            if (entry.getValue().isValid())
+                count++;
+        }
+
+        return count;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView titleText, descriptionText;
         private CircleImageView circleImageView;
-        private View myView;
+        private LinearLayout myView;
 
         private MyViewHolder(View view) {
             super(view);
             titleText = view.findViewById(R.id.customFontTextViewTitle);
             descriptionText = view.findViewById(R.id.customFontTextViewDetails);
             circleImageView = view.findViewById(R.id.circleImageView);
-            myView = view;
+            myView = view.findViewById(R.id.linearLayoutHomeVisitItem);
         }
 
         public View getView() {

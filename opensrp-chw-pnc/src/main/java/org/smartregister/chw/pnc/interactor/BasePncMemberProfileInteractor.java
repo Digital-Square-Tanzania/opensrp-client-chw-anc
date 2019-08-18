@@ -7,6 +7,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.smartregister.chw.anc.contract.BaseAncMedicalHistoryContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.interactor.BaseAncMemberProfileInteractor;
 import org.smartregister.chw.anc.util.DBConstants;
@@ -26,6 +27,8 @@ import static org.smartregister.util.Utils.getName;
 
 public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteractor implements BasePncMemberProfileContract.Interactor {
 
+    protected BaseAncMedicalHistoryContract.InteractorCallBack interactorCallBack;
+
     @Override
     public String getPncDay(String motherBaseID) {
         String dayPnc = PncLibrary.getInstance().profileRepository().getDeliveryDate(motherBaseID);
@@ -36,6 +39,57 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
         }
         return dayPnc;
     }
+
+    public String getLastVisitDate(String motherBaseID) {
+
+        String pncLastVisitdate = PncLibrary.getInstance().profileRepository().getLastVisit(motherBaseID);
+
+        if (pncLastVisitdate != null) {
+
+
+            // Date pncLastVisitDateFormat;
+            // pncLastVisitdate = new java.sql.Date(Long.valueOf(pncLastVisitdate)).toString();
+            //pncLastVisitdate =
+
+            //  SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            //  SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
+            ///  try {
+            //  pncLastVisitDateFormat = sdf.parse(pncLastVisitdate);
+            //    pncLastVisitdate = format.format(pncLastVisitDateFormat);
+
+            //  }
+            //  catch (Exception e){
+            //      Timber.e(e.toString());
+            //   }
+
+
+          /*  DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
+            DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
+
+            dateFormat.
+            DateTime x = dateFormat.format(new DateTime(DateTimeFormat.shortDate(pncLastVisitdate)));
+                    parse(pncLastVisitdate);
+            arse(pncLastVisitdate);
+
+            DateFormat format = new SimpleDateFormat("d MMMM");
+            Date date = format.parse(pncLastVisitdateF)
+
+
+            DeliveryDateformatted = dateFormat.parse(deliveryDate);
+            VisitDateformattedString = dateFormat1.format(vst.getDate());
+
+
+            DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
+            DateTimeFormatter formatter1 = DateTimeFormat.forPattern("MMM-dd");
+
+            formatter.p
+
+            pncLastVisitdate = String.valueOf(new DateTime(formatter1.parseDateTime(x.toString())));*/
+
+        }
+        return pncLastVisitdate;
+    }
+
 
     @Override
     public String getPncMotherNameDetails(MemberObject memberObject, TextView textView, CircleImageView imageView) {
@@ -81,5 +135,6 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
         }
         return null;
     }
+
 
 }

@@ -16,7 +16,6 @@ import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
@@ -44,6 +43,7 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
 
     /**
      * get the position of the the valid items in the data set
+     *
      * @param position
      * @return
      */
@@ -53,7 +53,7 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
             if (entry.getValue().isValid())
                 count++;
 
-            if(count == position)
+            if (count == position)
                 return entry.getValue();
         }
 
@@ -65,8 +65,14 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
     public void onBindViewHolder(@NotNull MyViewHolder holder, int position) {
 
         BaseAncHomeVisitAction ancHomeVisitAction = getByPosition(position);
-        if (!ancHomeVisitAction.isEnabled()) {
+        if (ancHomeVisitAction == null)
+            return;
 
+        if (!ancHomeVisitAction.isEnabled()) {
+            holder.titleText.setTextColor(context.getResources().getColor(R.color.grey));
+            holder.descriptionText.setTextColor(context.getResources().getColor(R.color.grey));
+        } else {
+            holder.titleText.setTextColor(context.getResources().getColor(R.color.black));
         }
 
         String title = MessageFormat.format("{0}<i>{1}</i>",
@@ -75,7 +81,12 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
         );
         holder.titleText.setText(Html.fromHtml(title));
         if (StringUtils.isNotBlank(ancHomeVisitAction.getSubTitle())) {
-            holder.descriptionText.setText(ancHomeVisitAction.getSubTitle());
+
+            if (ancHomeVisitAction.isEnabled()) {
+                holder.descriptionText.setText(ancHomeVisitAction.getSubTitle());
+            } else {
+                holder.descriptionText.setText(Html.fromHtml("<i>" + ancHomeVisitAction.getSubTitle() + "</i>"));
+            }
             holder.descriptionText.setVisibility(View.VISIBLE);
 
             boolean isOverdue = ancHomeVisitAction.getScheduleStatus() == BaseAncHomeVisitAction.ScheduleStatus.OVERDUE;

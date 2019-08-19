@@ -212,6 +212,8 @@ public class BaseAncHomeVisitAction {
         }
 
         evaluateStatus();
+        if(validator != null)
+            validator.onChanged(title);
     }
 
     public void setProcessedJsonPayload(String jsonPayload) {
@@ -473,5 +475,12 @@ public class BaseAncHomeVisitAction {
         boolean isValid(String key);
 
         boolean isEnabled(String key);
+
+        /**
+         * notifies the validator that a change has occurred on this object
+         * @param key
+         * @return
+         */
+        void onChanged(String key);
     }
 }

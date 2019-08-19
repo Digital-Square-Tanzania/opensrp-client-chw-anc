@@ -67,7 +67,6 @@ import java.util.UUID;
 
 import timber.log.Timber;
 
-import static org.smartregister.chw.anc.AncLibrary.getInstance;
 import static org.smartregister.chw.anc.util.JsonFormUtils.cleanString;
 import static org.smartregister.util.JsonFormUtils.VALUE;
 import static org.smartregister.util.JsonFormUtils.getFieldJSONObject;
@@ -77,7 +76,6 @@ public class NCUtils {
 
     public static final SimpleDateFormat dd_MMM_yyyy = new SimpleDateFormat("dd MMM yyyy");
     public static final SimpleDateFormat yyyy_mm_dd = new SimpleDateFormat("yyyy-mm-dd");
-    private static String TAG = NCUtils.class.getCanonicalName();
     private static String[] default_obs = {"start", "end", "deviceid", "subscriberid", "simserial", "phonenumber"};
     private static String[] vaccines = {"bcg_date", "opv0_date"};
 
@@ -218,11 +216,11 @@ public class NCUtils {
     }
 
     private static SimpleDateFormat getSourceDateFormat() {
-        return new SimpleDateFormat(getInstance().getSourceDateFormat(), Locale.getDefault());
+        return new SimpleDateFormat(AncLibrary.getInstance().getSourceDateFormat(), Locale.getDefault());
     }
 
     private static SimpleDateFormat getSaveDateFormat() {
-        return new SimpleDateFormat(getInstance().getSaveDateFormat(), Locale.getDefault());
+        return new SimpleDateFormat(AncLibrary.getInstance().getSaveDateFormat(), Locale.getDefault());
     }
 
     public static void addEvent(AllSharedPreferences allSharedPreferences, Event baseEvent) throws Exception {
@@ -252,11 +250,11 @@ public class NCUtils {
     }
 
     public static ECSyncHelper getSyncHelper() {
-        return getInstance().getEcSyncHelper();
+        return AncLibrary.getInstance().getEcSyncHelper();
     }
 
     public static ClientProcessorForJava getClientProcessorForJava() {
-        return getInstance().getClientProcessorForJava();
+        return AncLibrary.getInstance().getClientProcessorForJava();
     }
 
     public static Visit eventToVisit(Event event, String visitID) throws JSONException {
@@ -342,22 +340,22 @@ public class NCUtils {
 
     public static void processAncHomeVisit(EventClient baseEvent, SQLiteDatabase database) {
         try {
-            Visit visit = getInstance().visitRepository().getVisitByFormSubmissionID(baseEvent.getEvent().getFormSubmissionId());
+            Visit visit = AncLibrary.getInstance().visitRepository().getVisitByFormSubmissionID(baseEvent.getEvent().getFormSubmissionId());
             if (visit == null) {
                 visit = eventToVisit(baseEvent.getEvent());
                 if (database != null) {
-                    getInstance().visitRepository().addVisit(visit, database);
+                    AncLibrary.getInstance().visitRepository().addVisit(visit, database);
                 } else {
-                    getInstance().visitRepository().addVisit(visit);
+                    AncLibrary.getInstance().visitRepository().addVisit(visit);
                 }
                 if (visit.getVisitDetails() != null) {
                     for (Map.Entry<String, List<VisitDetail>> entry : visit.getVisitDetails().entrySet()) {
                         if (entry.getValue() != null) {
                             for (VisitDetail detail : entry.getValue()) {
                                 if (database != null) {
-                                    getInstance().visitDetailsRepository().addVisitDetails(detail, database);
+                                    AncLibrary.getInstance().visitDetailsRepository().addVisitDetails(detail, database);
                                 } else {
-                                    getInstance().visitDetailsRepository().addVisitDetails(detail);
+                                    AncLibrary.getInstance().visitDetailsRepository().addVisitDetails(detail);
                                 }
                             }
                         }

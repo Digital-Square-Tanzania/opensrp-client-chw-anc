@@ -235,7 +235,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
                     JSONArray fields = fields(form);
 
                     JSONObject deliveryDate = getFieldJSONObject(fields, DBConstants.KEY.DELIVERY_DATE);
-                    hasChildRegistration = StringUtils.isNotBlank(deliveryDate.optString(JsonFormUtils.VALUE)) ? true : false;
+                    hasChildRegistration = StringUtils.isNotBlank(deliveryDate.optString(JsonFormUtils.VALUE));
 
                     JSONObject uniqueID = getFieldJSONObject(fields, DBConstants.KEY.UNIQUE_ID);
                     if (StringUtils.isNotBlank(uniqueID.optString(JsonFormUtils.VALUE))) {

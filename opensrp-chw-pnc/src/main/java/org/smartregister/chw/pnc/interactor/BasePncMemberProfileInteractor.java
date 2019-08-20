@@ -7,6 +7,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.smartregister.chw.anc.contract.BaseAncMedicalHistoryContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.interactor.BaseAncMemberProfileInteractor;
 import org.smartregister.chw.anc.util.DBConstants;
@@ -17,7 +18,10 @@ import org.smartregister.chw.pnc.util.Constants;
 import org.smartregister.chw.pnc.util.PncUtil;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import timber.log.Timber;
@@ -25,6 +29,8 @@ import timber.log.Timber;
 import static org.smartregister.util.Utils.getName;
 
 public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteractor implements BasePncMemberProfileContract.Interactor {
+
+    protected BaseAncMedicalHistoryContract.InteractorCallBack interactorCallBack;
 
     @Override
     public String getPncDay(String motherBaseID) {
@@ -36,6 +42,19 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
         }
         return dayPnc;
     }
+
+    public String getLastVisitDate(String motherBaseID) {
+
+        Long pncLastVisitdate = PncLibrary.getInstance().profileRepository().getLastVisit(motherBaseID);
+        if (pncLastVisitdate != null) {
+            Date pncDate = new Date(pncLastVisitdate);
+            SimpleDateFormat format = new SimpleDateFormat("dd MMM", Locale.getDefault());
+            return format.format(pncDate);
+        }
+
+        return null;
+    }
+
 
     @Override
     public String getPncMotherNameDetails(MemberObject memberObject, TextView textView, CircleImageView imageView) {
@@ -81,5 +100,6 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
         }
         return null;
     }
+
 
 }

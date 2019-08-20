@@ -23,6 +23,7 @@ public class BaseAncHomeVisitAction {
     private String baseEntityID;
     private String title;
     private String subTitle;
+    private String disabledMessage;
     private Status actionStatus;
     private ScheduleStatus scheduleStatus;
     private ProcessingMode processingMode;
@@ -55,6 +56,7 @@ public class BaseAncHomeVisitAction {
         this.processingMode = builder.processingMode;
         this.jsonPayload = builder.jsonPayload;
         this.validator = builder.validator;
+        this.disabledMessage = builder.disabledMessage;
 
         validateMe();
         initialize();
@@ -149,6 +151,14 @@ public class BaseAncHomeVisitAction {
 
     public void setSubTitle(String subTitle) {
         this.subTitle = subTitle;
+    }
+
+    public String getDisabledMessage() {
+        return disabledMessage;
+    }
+
+    public void setDisabledMessage(String disabledMessage) {
+        this.disabledMessage = disabledMessage;
     }
 
     public Status getActionStatus() {
@@ -364,6 +374,7 @@ public class BaseAncHomeVisitAction {
         private String baseEntityID;
         private String title;
         private String subTitle;
+        private String disabledMessage;
         private Status actionStatus = Status.PENDING;
         private ScheduleStatus scheduleStatus = ScheduleStatus.DUE;
         private ProcessingMode processingMode = ProcessingMode.COMBINED;
@@ -390,6 +401,11 @@ public class BaseAncHomeVisitAction {
 
         public Builder withSubtitle(String subTitle) {
             this.subTitle = subTitle;
+            return this;
+        }
+
+        public Builder withDisabledMessage(String disabledMessage) {
+            this.disabledMessage = disabledMessage;
             return this;
         }
 

@@ -83,10 +83,15 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
         if (StringUtils.isNotBlank(ancHomeVisitAction.getSubTitle())) {
 
             if (ancHomeVisitAction.isEnabled()) {
+                holder.descriptionText.setVisibility(View.VISIBLE);
+                holder.invalidText.setVisibility(View.GONE);
                 holder.descriptionText.setText(ancHomeVisitAction.getSubTitle());
             } else {
-                holder.descriptionText.setText(Html.fromHtml("<i>" + ancHomeVisitAction.getSubTitle() + "</i>"));
+                holder.descriptionText.setVisibility(View.GONE);
+                holder.invalidText.setVisibility(View.VISIBLE);
+                holder.invalidText.setText(Html.fromHtml("<i>" + ancHomeVisitAction.getDisabledMessage() + "</i>"));
             }
+
             holder.descriptionText.setVisibility(View.VISIBLE);
 
             boolean isOverdue = ancHomeVisitAction.getScheduleStatus() == BaseAncHomeVisitAction.ScheduleStatus.OVERDUE &&
@@ -139,7 +144,6 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
             view.setOnClickListener(null);
 
         view.setOnClickListener(v -> {
-            //ancHomeVisitActionList.get(ancHomeVisitAction.getTitle()).setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
             if (StringUtils.isNotBlank(ancHomeVisitAction.getFormName())) {
                 visitContractView.startForm(ancHomeVisitAction);
             } else {
@@ -161,7 +165,7 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView titleText, descriptionText;
+        private TextView titleText, invalidText, descriptionText;
         private CircleImageView circleImageView;
         private LinearLayout myView;
 
@@ -169,6 +173,7 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
             super(view);
             titleText = view.findViewById(R.id.customFontTextViewTitle);
             descriptionText = view.findViewById(R.id.customFontTextViewDetails);
+            invalidText = view.findViewById(R.id.customFontTextViewInvalid);
             circleImageView = view.findViewById(R.id.circleImageView);
             myView = view.findViewById(R.id.linearLayoutHomeVisitItem);
         }

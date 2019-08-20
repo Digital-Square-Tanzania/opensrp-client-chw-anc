@@ -89,7 +89,7 @@ public class BaseAncHomeVisitAdapterTest extends BaseUnitTest {
         while (count > x) {
             BaseAncHomeVisitAction action = Mockito.mock(BaseAncHomeVisitAction.class);
             Mockito.doReturn(true).when(action).isValid();
-            map.put(String.valueOf(count), action);
+            map.put(String.valueOf(x), action);
             x++;
         }
         return map;

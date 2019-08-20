@@ -189,31 +189,35 @@ public class BaseAncHomeVisitAction {
 
     public void setJsonPayload(String jsonPayload) {
         this.jsonPayload = jsonPayload;
-        if (StringUtils.isNotBlank(jsonPayload)) {
+        if (StringUtils.isNotBlank(jsonPayload))
             this.setScheduleStatus(ScheduleStatus.DUE);
-        }
 
         // helper processing
-        if (ancHomeVisitActionHelper != null) {
-            ancHomeVisitActionHelper.onPayloadReceived(jsonPayload);
+        onPayloadReceivedNotifyHelper(jsonPayload);
 
-            String sub_title = ancHomeVisitActionHelper.evaluateSubTitle();
-            if (sub_title != null) {
-                setSubTitle(sub_title);
-            }
-
-            String post_process = ancHomeVisitActionHelper.postProcess(jsonPayload);
-            if (post_process != null) {
-                this.jsonPayload = ancHomeVisitActionHelper.postProcess(jsonPayload);
-            }
-
-
-            ancHomeVisitActionHelper.onPayloadReceived(this);
-        }
+        if (validator != null)
+            validator.onChanged(title);
 
         evaluateStatus();
-        if(validator != null)
-            validator.onChanged(title);
+    }
+
+    private void onPayloadReceivedNotifyHelper(String jsonPayload) {
+        if (ancHomeVisitActionHelper == null)
+            return;
+
+        ancHomeVisitActionHelper.onPayloadReceived(jsonPayload);
+
+        String sub_title = ancHomeVisitActionHelper.evaluateSubTitle();
+        if (sub_title != null) {
+            setSubTitle(sub_title);
+        }
+
+        String post_process = ancHomeVisitActionHelper.postProcess(jsonPayload);
+        if (post_process != null) {
+            this.jsonPayload = ancHomeVisitActionHelper.postProcess(jsonPayload);
+        }
+
+        ancHomeVisitActionHelper.onPayloadReceived(this);
     }
 
     public void setProcessedJsonPayload(String jsonPayload) {
@@ -478,6 +482,7 @@ public class BaseAncHomeVisitAction {
 
         /**
          * notifies the validator that a change has occurred on this object
+         *
          * @param key
          * @return
          */

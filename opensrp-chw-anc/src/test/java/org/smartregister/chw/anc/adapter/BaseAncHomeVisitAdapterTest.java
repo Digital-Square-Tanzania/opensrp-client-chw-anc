@@ -16,6 +16,7 @@ import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import static org.junit.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.any;
@@ -80,10 +81,19 @@ public class BaseAncHomeVisitAdapterTest extends BaseUnitTest {
 
     @Test
     public void testGetItemCount() {
-        Mockito.doReturn(10).when(myDataset).size();
-        BaseAncHomeVisitAdapter ancHomeVisitAdapter = new BaseAncHomeVisitAdapter(context, view, myDataset);
+        BaseAncHomeVisitAdapter ancHomeVisitAdapter = new BaseAncHomeVisitAdapter(context, view, generateActions(10));
 
         assertEquals(10, ancHomeVisitAdapter.getItemCount());
     }
 
+    private LinkedHashMap<String, BaseAncHomeVisitAction> generateActions(int count) {
+        LinkedHashMap<String, BaseAncHomeVisitAction> map = new LinkedHashMap<>();
+        while (count > 0) {
+            BaseAncHomeVisitAction action = Mockito.mock(BaseAncHomeVisitAction.class);
+            Mockito.doReturn(true).when(action).isValid();
+            map.put(String.valueOf(count), action);
+            count--;
+        }
+        return map;
+    }
 }

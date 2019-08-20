@@ -22,7 +22,7 @@ import java.util.Map;
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVisitAdapter.MyViewHolder> {
-    private LinkedHashMap<String, BaseAncHomeVisitAction> ancHomeVisitActionList;
+    private Map<String, BaseAncHomeVisitAction> ancHomeVisitActionList;
     private Context context;
     private BaseAncHomeVisitContract.View visitContractView;
 
@@ -89,7 +89,9 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
             }
             holder.descriptionText.setVisibility(View.VISIBLE);
 
-            boolean isOverdue = ancHomeVisitAction.getScheduleStatus() == BaseAncHomeVisitAction.ScheduleStatus.OVERDUE;
+            boolean isOverdue = ancHomeVisitAction.getScheduleStatus() == BaseAncHomeVisitAction.ScheduleStatus.OVERDUE &&
+                    ancHomeVisitAction.isEnabled();
+
             holder.descriptionText.setTextColor(
                     isOverdue ? context.getResources().getColor(R.color.alert_urgent_red) :
                             context.getResources().getColor(android.R.color.darker_gray)
@@ -133,6 +135,9 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
     }
 
     private void bindClickListener(View view, final BaseAncHomeVisitAction ancHomeVisitAction) {
+        if (!ancHomeVisitAction.isEnabled())
+            view.setOnClickListener(null);
+
         view.setOnClickListener(v -> {
             //ancHomeVisitActionList.get(ancHomeVisitAction.getTitle()).setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
             if (StringUtils.isNotBlank(ancHomeVisitAction.getFormName())) {

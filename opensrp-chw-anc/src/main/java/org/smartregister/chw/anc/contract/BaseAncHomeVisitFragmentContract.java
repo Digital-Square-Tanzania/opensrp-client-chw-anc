@@ -5,6 +5,8 @@ import android.content.Context;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
 
+import java.util.List;
+
 public interface BaseAncHomeVisitFragmentContract {
 
     interface View {
@@ -35,6 +37,8 @@ public interface BaseAncHomeVisitFragmentContract {
          * Set the selected value
          */
         void setValue(String value);
+
+        void setOptions(List<JSONObject> options);
     }
 
     interface Presenter {
@@ -61,6 +65,8 @@ public interface BaseAncHomeVisitFragmentContract {
         void writeValue(JSONObject jsonObject, String value);
 
         void setValue(String value);
+
+        void setOptions(List<JSONObject> options);
     }
 
     interface Model {

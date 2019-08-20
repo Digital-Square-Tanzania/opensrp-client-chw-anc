@@ -16,32 +16,24 @@ public class AncHomeVisitInteractor extends BaseAncHomeVisitInteractor {
 
     @Override
     public void calculateActions(final BaseAncHomeVisitContract.View view, final MemberObject memberObject, final BaseAncHomeVisitContract.InteractorCallBack callBack) {
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                final LinkedHashMap<String, BaseAncHomeVisitAction> actionList = new LinkedHashMap<>();
+        final Runnable runnable = () -> {
+            final LinkedHashMap<String, BaseAncHomeVisitAction> actionList = new LinkedHashMap<>();
 
-                try {
+            try {
 
-                    Context context = view.getContext();
-                    BaseAncHomeVisitAction danger_signs = new BaseAncHomeVisitAction.Builder(context, context.getString(R.string.anc_home_visit_danger_signs))
-                            .withOptional(false)
-                            .withFormName(Constants.HOME_VISIT_FORMS.DANGER_SIGNS)
-                            .withHelper(new DangerSignsHelper())
-                            .build();
-                    actionList.put(context.getString(R.string.anc_home_visit_danger_signs), danger_signs);
+                Context context = view.getContext();
+                BaseAncHomeVisitAction danger_signs = new BaseAncHomeVisitAction.Builder(context, context.getString(R.string.anc_home_visit_danger_signs))
+                        .withOptional(false)
+                        .withFormName(Constants.HOME_VISIT_FORMS.DANGER_SIGNS)
+                        .withHelper(new DangerSignsHelper())
+                        .build();
+                actionList.put(context.getString(R.string.anc_home_visit_danger_signs), danger_signs);
 
-                } catch (BaseAncHomeVisitAction.ValidationException e) {
-                    e.printStackTrace();
-                }
-
-                appExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        callBack.preloadActions(actionList);
-                    }
-                });
+            } catch (BaseAncHomeVisitAction.ValidationException e) {
+                e.printStackTrace();
             }
+
+            appExecutors.mainThread().execute(() -> callBack.preloadActions(actionList));
         };
 
         appExecutors.diskIO().execute(runnable);

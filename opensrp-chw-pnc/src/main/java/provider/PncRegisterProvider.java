@@ -12,14 +12,12 @@ import android.widget.TextView;
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
-import org.joda.time.Period;
 import org.joda.time.Years;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
 import org.smartregister.chw.anc.fragment.BaseAncRegisterFragment;
 import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.chw.pnc.R;
-import org.smartregister.chw.pnc.util.Constants;
 import org.smartregister.commonregistry.CommonPersonObject;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 import org.smartregister.commonregistry.CommonRepository;
@@ -97,7 +95,7 @@ public class PncRegisterProvider implements RecyclerViewProvider<PncRegisterProv
 
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
         String dayPnc = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.DELIVERY_DATE, true);
-        if(StringUtils.isNotBlank(dayPnc)){
+        if (StringUtils.isNotBlank(dayPnc)) {
             int period = Days.daysBetween(new DateTime(formatter.parseDateTime(dayPnc)), new DateTime()).getDays();
             String pncDay = MessageFormat.format("{0} {1}",
                     context.getString(R.string.pnc_day),

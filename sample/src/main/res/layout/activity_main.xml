@@ -63,6 +63,13 @@
             android:text="Home Visit Fragment" />
 
         <Button
+            android:id="@+id/home_visit_multi_option"
+            style="@style/SampleList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Home Visit - Options fragment" />
+
+        <Button
             android:id="@+id/immunization_fragment"
             style="@style/SampleList"
             android:layout_width="match_parent"

@@ -6,6 +6,7 @@ import android.text.Html;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
@@ -15,13 +16,13 @@ import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
 import java.text.MessageFormat;
-import java.util.ArrayList;
 import java.util.LinkedHashMap;
+import java.util.Map;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 
 public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVisitAdapter.MyViewHolder> {
-    private LinkedHashMap<String, BaseAncHomeVisitAction> ancHomeVisitActionList;
+    private Map<String, BaseAncHomeVisitAction> ancHomeVisitActionList;
     private Context context;
     private BaseAncHomeVisitContract.View visitContractView;
 
@@ -40,24 +41,61 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
         return new MyViewHolder(v);
     }
 
+    /**
+     * get the position of the the valid items in the data set
+     *
+     * @param position
+     * @return
+     */
+    private BaseAncHomeVisitAction getByPosition(int position) {
+        int count = -1;
+        for (Map.Entry<String, BaseAncHomeVisitAction> entry : ancHomeVisitActionList.entrySet()) {
+            if (entry.getValue().isValid())
+                count++;
+
+            if (count == position)
+                return entry.getValue();
+        }
+
+        return null;
+    }
+
     // Replace the contents of a view (invoked by the layout manager)
     @Override
     public void onBindViewHolder(@NotNull MyViewHolder holder, int position) {
 
-        BaseAncHomeVisitAction ancHomeVisitAction = new ArrayList<>(ancHomeVisitActionList.values()).get(position);
+        BaseAncHomeVisitAction ancHomeVisitAction = getByPosition(position);
+        if (ancHomeVisitAction == null)
+            return;
+
+        if (!ancHomeVisitAction.isEnabled()) {
+            holder.titleText.setTextColor(context.getResources().getColor(R.color.grey));
+            holder.descriptionText.setTextColor(context.getResources().getColor(R.color.grey));
+        } else {
+            holder.titleText.setTextColor(context.getResources().getColor(R.color.black));
+        }
+
         String title = MessageFormat.format("{0}<i>{1}</i>",
                 ancHomeVisitAction.getTitle(),
                 ancHomeVisitAction.isOptional() ? " - " + context.getString(R.string.optional) : ""
         );
         holder.titleText.setText(Html.fromHtml(title));
         if (StringUtils.isNotBlank(ancHomeVisitAction.getSubTitle())) {
-            holder.descriptionText.setText(ancHomeVisitAction.getSubTitle());
-            holder.descriptionText.setVisibility(View.VISIBLE);
-            if (ancHomeVisitAction.getScheduleStatus() == BaseAncHomeVisitAction.ScheduleStatus.OVERDUE) {
-                holder.descriptionText.setTextColor(context.getResources().getColor(R.color.alert_urgent_red));
+
+            if (ancHomeVisitAction.isEnabled()) {
+                holder.descriptionText.setText(ancHomeVisitAction.getSubTitle());
             } else {
-                holder.descriptionText.setTextColor(context.getResources().getColor(android.R.color.darker_gray));
+                holder.descriptionText.setText(Html.fromHtml("<i>" + ancHomeVisitAction.getSubTitle() + "</i>"));
             }
+            holder.descriptionText.setVisibility(View.VISIBLE);
+
+            boolean isOverdue = ancHomeVisitAction.getScheduleStatus() == BaseAncHomeVisitAction.ScheduleStatus.OVERDUE &&
+                    ancHomeVisitAction.isEnabled();
+
+            holder.descriptionText.setTextColor(
+                    isOverdue ? context.getResources().getColor(R.color.alert_urgent_red) :
+                            context.getResources().getColor(android.R.color.darker_gray)
+            );
         } else {
             holder.descriptionText.setVisibility(View.GONE);
         }
@@ -97,36 +135,42 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
     }
 
     private void bindClickListener(View view, final BaseAncHomeVisitAction ancHomeVisitAction) {
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                //ancHomeVisitActionList.get(ancHomeVisitAction.getTitle()).setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
-                if (StringUtils.isNotBlank(ancHomeVisitAction.getFormName())) {
-                    visitContractView.startForm(ancHomeVisitAction);
-                } else {
-                    visitContractView.startFragment(ancHomeVisitAction);
-                }
-                visitContractView.redrawVisitUI();
+        if (!ancHomeVisitAction.isEnabled())
+            view.setOnClickListener(null);
+
+        view.setOnClickListener(v -> {
+            //ancHomeVisitActionList.get(ancHomeVisitAction.getTitle()).setActionStatus(BaseAncHomeVisitAction.Status.COMPLETED);
+            if (StringUtils.isNotBlank(ancHomeVisitAction.getFormName())) {
+                visitContractView.startForm(ancHomeVisitAction);
+            } else {
+                visitContractView.startFragment(ancHomeVisitAction);
             }
+            visitContractView.redrawVisitUI();
         });
     }
 
     @Override
     public int getItemCount() {
-        return ancHomeVisitActionList.size();
+        int count = 0;
+        for (Map.Entry<String, BaseAncHomeVisitAction> entry : ancHomeVisitActionList.entrySet()) {
+            if (entry.getValue().isValid())
+                count++;
+        }
+
+        return count;
     }
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
         private TextView titleText, descriptionText;
         private CircleImageView circleImageView;
-        private View myView;
+        private LinearLayout myView;
 
         private MyViewHolder(View view) {
             super(view);
             titleText = view.findViewById(R.id.customFontTextViewTitle);
             descriptionText = view.findViewById(R.id.customFontTextViewDetails);
             circleImageView = view.findViewById(R.id.circleImageView);
-            myView = view;
+            myView = view.findViewById(R.id.linearLayoutHomeVisitItem);
         }
 
         public View getView() {

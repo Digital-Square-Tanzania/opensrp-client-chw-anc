@@ -36,6 +36,7 @@ public class BaseAncHomeVisitAction {
     private List<ServiceWrapper> serviceWrapper;
     private Map<String, List<VisitDetail>> details;
     private Context context;
+    private Validator validator;
 
     private BaseAncHomeVisitAction(Builder builder) throws ValidationException {
         this.baseEntityID = builder.baseEntityID;
@@ -51,6 +52,9 @@ public class BaseAncHomeVisitAction {
         this.serviceWrapper = builder.serviceWrapper;
         this.details = builder.details;
         this.context = builder.context;
+        this.processingMode = builder.processingMode;
+        this.jsonPayload = builder.jsonPayload;
+        this.validator = builder.validator;
 
         validateMe();
         initialize();
@@ -107,6 +111,20 @@ public class BaseAncHomeVisitAction {
         if (StringUtils.isBlank(formName) && destinationFragment == null) {
             throw new ValidationException("This action object lacks a valid form or destination fragment");
         }
+    }
+
+    public boolean isValid() {
+        if (validator != null)
+            return validator.isValid(title);
+
+        return true;
+    }
+
+    public boolean isEnabled() {
+        if (validator != null)
+            return validator.isEnabled(title);
+
+        return true;
     }
 
     public String getBaseEntityID() {
@@ -171,29 +189,35 @@ public class BaseAncHomeVisitAction {
 
     public void setJsonPayload(String jsonPayload) {
         this.jsonPayload = jsonPayload;
-        if (StringUtils.isNotBlank(jsonPayload)) {
+        if (StringUtils.isNotBlank(jsonPayload))
             this.setScheduleStatus(ScheduleStatus.DUE);
-        }
 
         // helper processing
-        if (ancHomeVisitActionHelper != null) {
-            ancHomeVisitActionHelper.onPayloadReceived(jsonPayload);
+        onPayloadReceivedNotifyHelper(jsonPayload);
 
-            String sub_title = ancHomeVisitActionHelper.evaluateSubTitle();
-            if (sub_title != null) {
-                setSubTitle(sub_title);
-            }
-
-            String post_process = ancHomeVisitActionHelper.postProcess(jsonPayload);
-            if (post_process != null) {
-                this.jsonPayload = ancHomeVisitActionHelper.postProcess(jsonPayload);
-            }
-
-
-            ancHomeVisitActionHelper.onPayloadReceived(this);
-        }
+        if (validator != null)
+            validator.onChanged(title);
 
         evaluateStatus();
+    }
+
+    private void onPayloadReceivedNotifyHelper(String jsonPayload) {
+        if (ancHomeVisitActionHelper == null)
+            return;
+
+        ancHomeVisitActionHelper.onPayloadReceived(jsonPayload);
+
+        String sub_title = ancHomeVisitActionHelper.evaluateSubTitle();
+        if (sub_title != null) {
+            setSubTitle(sub_title);
+        }
+
+        String post_process = ancHomeVisitActionHelper.postProcess(jsonPayload);
+        if (post_process != null) {
+            this.jsonPayload = ancHomeVisitActionHelper.postProcess(jsonPayload);
+        }
+
+        ancHomeVisitActionHelper.onPayloadReceived(this);
     }
 
     public void setProcessedJsonPayload(String jsonPayload) {
@@ -351,6 +375,8 @@ public class BaseAncHomeVisitAction {
         private List<ServiceWrapper> serviceWrapper = new ArrayList<>();
         private Map<String, List<VisitDetail>> details = new HashMap<>();
         private Context context;
+        private String jsonPayload;
+        private Validator validator;
 
         public Builder(Context context, String title) {
             this.context = context;
@@ -422,6 +448,16 @@ public class BaseAncHomeVisitAction {
             return this;
         }
 
+        public Builder withJsonPayload(String jsonPayload) {
+            this.jsonPayload = jsonPayload;
+            return this;
+        }
+
+        public Builder withValidator(Validator validator) {
+            this.validator = validator;
+            return this;
+        }
+
         public BaseAncHomeVisitAction build() throws ValidationException {
             return new BaseAncHomeVisitAction(this);
         }
@@ -431,5 +467,25 @@ public class BaseAncHomeVisitAction {
         public ValidationException(String message) {
             super(message);
         }
+    }
+
+    /**
+     * provides complex logic to validate is an object should be displayed
+     * and the state it should be displated
+     *
+     * @return
+     */
+    public interface Validator {
+        boolean isValid(String key);
+
+        boolean isEnabled(String key);
+
+        /**
+         * notifies the validator that a change has occurred on this object
+         *
+         * @param key
+         * @return
+         */
+        void onChanged(String key);
     }
 }

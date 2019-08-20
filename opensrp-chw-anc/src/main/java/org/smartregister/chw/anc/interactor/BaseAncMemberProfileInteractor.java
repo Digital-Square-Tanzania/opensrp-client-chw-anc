@@ -31,35 +31,17 @@ public class BaseAncMemberProfileInteractor implements BaseAncMemberProfileContr
 
     @Override
     public void refreshProfileView(final MemberObject memberObject, final boolean isForEdit, final BaseAncMemberProfileContract.InteractorCallBack callback) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                appExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.refreshProfileTopSection(memberObject);
-                    }
-                });
-            }
-        };
+        Runnable runnable = () -> appExecutors.mainThread().execute(() -> callback.refreshProfileTopSection(memberObject));
         appExecutors.diskIO().execute(runnable);
     }
 
     @Override
     public void refreshProfileInfo(MemberObject memberObject, final BaseAncMemberProfileContract.InteractorCallBack callback) {
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                appExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        callback.refreshFamilyStatus(AlertStatus.normal);
-                        callback.refreshLastVisit(new Date());
-                        callback.refreshUpComingServicesStatus("ANC Visit", AlertStatus.normal, new Date());
-                    }
-                });
-            }
-        };
+        Runnable runnable = () -> appExecutors.mainThread().execute(() -> {
+            callback.refreshFamilyStatus(AlertStatus.normal);
+            callback.refreshLastVisit(new Date());
+            callback.refreshUpComingServicesStatus("ANC Visit", AlertStatus.normal, new Date());
+        });
         appExecutors.diskIO().execute(runnable);
     }
 

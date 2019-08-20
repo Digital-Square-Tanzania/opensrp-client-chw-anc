@@ -25,18 +25,10 @@ public class BaseAncMedicalHistoryInteractor implements BaseAncMedicalHistoryCon
 
     @Override
     public void getMemberHistory(final String memberID, final Context context, final BaseAncMedicalHistoryContract.InteractorCallBack callBack) {
-        final Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
+        final Runnable runnable = () -> {
 
-                final List<Visit> visits = VisitUtils.getVisits(memberID);
-                appExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        callBack.onDataFetched(visits);
-                    }
-                });
-            }
+            final List<Visit> visits = VisitUtils.getVisits(memberID);
+            appExecutors.mainThread().execute(() -> callBack.onDataFetched(visits));
         };
 
         appExecutors.diskIO().execute(runnable);

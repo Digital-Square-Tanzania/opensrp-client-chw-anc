@@ -9,7 +9,7 @@ import org.smartregister.chw.anc.contract.BaseAncRegisterContract;
 import org.smartregister.chw.anc.util.AppExecutors;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.JsonFormUtils;
-import org.smartregister.chw.anc.util.Util;
+import org.smartregister.chw.anc.util.NCUtils;
 import org.smartregister.clientandeventmodel.Client;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.repository.AllSharedPreferences;
@@ -18,7 +18,7 @@ import timber.log.Timber;
 
 import static org.smartregister.chw.anc.util.Constants.RELATIONSHIP.FAMILY;
 import static org.smartregister.chw.anc.util.Constants.TABLES.EC_CHILD;
-import static org.smartregister.chw.anc.util.Util.getSyncHelper;
+import static org.smartregister.chw.anc.util.NCUtils.getSyncHelper;
 
 public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Interactor {
 
@@ -41,27 +41,21 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
     @Override
     public void saveRegistration(final String jsonString, final boolean isEditMode, final BaseAncRegisterContract.InteractorCallBack callBack, final String table) {
 
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                // save it
+        Runnable runnable = () -> {
+            // save it
+            try {
+                saveRegistration(jsonString, table);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+
+            appExecutors.mainThread().execute(() -> {
                 try {
-                    saveRegistration(jsonString, table);
+                    callBack.onRegistrationSaved(isEditMode);
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
-
-                appExecutors.mainThread().execute(new Runnable() {
-                    @Override
-                    public void run() {
-                        try {
-                            callBack.onRegistrationSaved(isEditMode);
-                        } catch (Exception e) {
-                            e.printStackTrace();
-                        }
-                    }
-                });
-            }
+            });
         };
         appExecutors.diskIO().execute(runnable);
     }
@@ -71,8 +65,8 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
         AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
         Event baseEvent = JsonFormUtils.processJsonForm(allSharedPreferences, jsonString, table);
 
-        Util.addEvent(allSharedPreferences, baseEvent);
-        Util.startClientProcessing();
+        NCUtils.addEvent(allSharedPreferences, baseEvent);
+        NCUtils.startClientProcessing();
     }
 
     public void processPncChild(JSONArray fields, AllSharedPreferences allSharedPreferences, String entityId, String familyBaseEntityId, String motherBaseId) {
@@ -97,8 +91,8 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
         Event baseEvent = JsonFormUtils.processJsonForm(allSharedPreferences, pncForm.toString(), EC_CHILD);
 
         try {
-            Util.addEvent(allSharedPreferences, baseEvent);
-            Util.startClientProcessing();
+            NCUtils.addEvent(allSharedPreferences, baseEvent);
+            NCUtils.startClientProcessing();
         } catch (Exception e) {
             Timber.e(e);
         }

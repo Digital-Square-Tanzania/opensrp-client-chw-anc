@@ -32,7 +32,7 @@ public class BasePncRegisterFragmentPresenter extends BaseAncRegisterFragmentPre
 
     @Override
     public String getMainTable() {
-       return Constants.TABLES.PREGNANCY_OUTCOME;
+        return Constants.TABLES.PREGNANCY_OUTCOME;
     }
 
 

@@ -1,12 +1,35 @@
 package org.smartregister.chw.anc.util;
 
+import android.Manifest;
+import android.app.Activity;
+import android.content.ClipData;
+import android.content.ClipboardManager;
 import android.content.Context;
+import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.os.Build;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
+import android.telephony.TelephonyManager;
+import android.text.Html;
+import android.text.Spanned;
+import android.text.TextUtils;
+import android.util.DisplayMetrics;
+import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
+import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -15,6 +38,8 @@ import org.joda.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.smartregister.chw.anc.AncLibrary;
+import org.smartregister.chw.anc.contract.BaseAncWomanCallDialogContract;
 import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.opensrp_chw_anc.R;
@@ -26,7 +51,10 @@ import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.helper.ECSyncHelper;
+import org.smartregister.util.PermissionUtils;
 
+import java.text.MessageFormat;
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -39,24 +67,160 @@ import java.util.UUID;
 
 import timber.log.Timber;
 
-import static org.smartregister.chw.anc.AncLibrary.getInstance;
 import static org.smartregister.chw.anc.util.JsonFormUtils.cleanString;
 import static org.smartregister.util.JsonFormUtils.VALUE;
 import static org.smartregister.util.JsonFormUtils.getFieldJSONObject;
 import static org.smartregister.util.Utils.getAllSharedPreferences;
 
-public class Util {
+public class NCUtils {
 
+    public static final SimpleDateFormat dd_MMM_yyyy = new SimpleDateFormat("dd MMM yyyy");
+    public static final SimpleDateFormat yyyy_mm_dd = new SimpleDateFormat("yyyy-mm-dd");
     private static String[] default_obs = {"start", "end", "deviceid", "subscriberid", "simserial", "phonenumber"};
     private static String[] vaccines = {"bcg_date", "opv0_date"};
 
+    public static String firstCharacterUppercase(String str) {
+        if (TextUtils.isEmpty(str)) return "";
+        return str.substring(0, 1).toUpperCase() + str.substring(1).toLowerCase();
+    }
+
+    public static String convertToDateFormateString(String timeAsDDMMYYYY, SimpleDateFormat dateFormat) {
+        SimpleDateFormat sdf = new SimpleDateFormat("dd-mm-yyyy");//12-08-2018
+        try {
+            Date date = sdf.parse(timeAsDDMMYYYY);
+            return dateFormat.format(date);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        return "";
+    }
+
+    public static float convertDpToPixel(float dp, Context context) {
+        return dp * ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+    }
+
+    public static float convertPixelsToDp(float px, Context context) {
+        return px / ((float) context.getResources().getDisplayMetrics().densityDpi / DisplayMetrics.DENSITY_DEFAULT);
+    }
+
+    public static boolean areDrawablesIdentical(Drawable drawableA, Drawable drawableB) {
+        Drawable.ConstantState stateA = drawableA.getConstantState();
+        Drawable.ConstantState stateB = drawableB.getConstantState();
+        // If the constant state is identical, they are using the same drawable resource.
+        // However, the opposite is not necessarily true.
+        return (stateA != null && stateB != null && stateA.equals(stateB))
+                || getBitmap(drawableA).sameAs(getBitmap(drawableB));
+    }
+
+    public static Bitmap getBitmap(Drawable drawable) {
+        Bitmap result;
+        if (drawable instanceof BitmapDrawable) {
+            result = ((BitmapDrawable) drawable).getBitmap();
+        } else {
+            int width = drawable.getIntrinsicWidth();
+            int height = drawable.getIntrinsicHeight();
+            // Some drawables have no intrinsic width - e.g. solid colours.
+            if (width <= 0) {
+                width = 1;
+            }
+            if (height <= 0) {
+                height = 1;
+            }
+
+            result = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888);
+            Canvas canvas = new Canvas(result);
+            drawable.setBounds(0, 0, canvas.getWidth(), canvas.getHeight());
+            drawable.draw(canvas);
+        }
+        return result;
+    }
+
+    public static Integer daysBetweenDateAndNow(String date) {
+        DateTime duration;
+        if (StringUtils.isNotBlank(date)) {
+            try {
+                duration = new DateTime(new Date(Long.valueOf(date)));
+                Days days = Days.daysBetween(duration.withTimeAtStartOfDay(), DateTime.now().withTimeAtStartOfDay());
+                return days.getDays();
+            } catch (Exception e) {
+                Timber.e(e);
+            }
+        }
+        return null;
+    }
+
+    public static String getLocalForm(String jsonForm) {
+        String suffix = Locale.getDefault().getLanguage().equals("fr") ? "_fr" : "";
+        return MessageFormat.format("{0}{1}", jsonForm, suffix);
+    }
+
+    public static org.smartregister.Context context() {
+        return AncLibrary.getInstance().context();
+    }
+
+    public static boolean launchDialer(final Activity activity, final BaseAncWomanCallDialogContract.View callView, final String phoneNumber) {
+
+        if (ContextCompat.checkSelfPermission(activity, Manifest.permission.READ_PHONE_STATE) != PackageManager.PERMISSION_GRANTED) {
+
+            // set a pending call execution request
+            if (callView != null) {
+                callView.setPendingCallRequest(new BaseAncWomanCallDialogContract.Dialer() {
+                    @Override
+                    public void callMe() {
+                        NCUtils.launchDialer(activity, callView, phoneNumber);
+                    }
+                });
+            }
+
+            ActivityCompat.requestPermissions(activity, new String[]{Manifest.permission.READ_PHONE_STATE}, PermissionUtils.PHONE_STATE_PERMISSION_REQUEST_CODE);
+
+            return false;
+        } else {
+
+            if (((TelephonyManager) activity.getSystemService(Context.TELEPHONY_SERVICE)).getLine1Number()
+                    == null) {
+
+                Timber.i("No dial application so we launch copy to clipboard...");
+
+                ClipboardManager clipboard = (ClipboardManager) activity.getSystemService(Context.CLIPBOARD_SERVICE);
+                ClipData clip = ClipData.newPlainText(activity.getText(R.string.copied_phone_number), phoneNumber);
+                clipboard.setPrimaryClip(clip);
+
+                CopyToClipboardDialog copyToClipboardDialog = new CopyToClipboardDialog(activity, R.style.copy_clipboard_dialog);
+                copyToClipboardDialog.setContent(phoneNumber);
+                copyToClipboardDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                copyToClipboardDialog.show();
+                // no phone
+                Toast.makeText(activity, activity.getText(R.string.copied_phone_number), Toast.LENGTH_SHORT).show();
+
+            } else {
+                Intent intent = new Intent(Intent.ACTION_DIAL, Uri.fromParts("tel", phoneNumber, null));
+                activity.startActivity(intent);
+            }
+            return true;
+        }
+    }
+
+    public static Spanned fromHtml(String text) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
+            return Html.fromHtml(text, Html.FROM_HTML_MODE_LEGACY);
+        } else {
+            return Html.fromHtml(text);
+        }
+    }
+
+    public static String getTodayDate() {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        Date date = new Date(System.currentTimeMillis());
+        return formatter.format(date);
+    }
 
     private static SimpleDateFormat getSourceDateFormat() {
-        return new SimpleDateFormat(getInstance().getSourceDateFormat(), Locale.getDefault());
+        return new SimpleDateFormat(AncLibrary.getInstance().getSourceDateFormat(), Locale.getDefault());
     }
 
     private static SimpleDateFormat getSaveDateFormat() {
-        return new SimpleDateFormat(getInstance().getSaveDateFormat(), Locale.getDefault());
+        return new SimpleDateFormat(AncLibrary.getInstance().getSaveDateFormat(), Locale.getDefault());
     }
 
     public static void addEvent(AllSharedPreferences allSharedPreferences, Event baseEvent) throws Exception {
@@ -86,16 +250,14 @@ public class Util {
     }
 
     public static ECSyncHelper getSyncHelper() {
-        return getInstance().getEcSyncHelper();
+        return AncLibrary.getInstance().getEcSyncHelper();
     }
 
     public static ClientProcessorForJava getClientProcessorForJava() {
-        return getInstance().getClientProcessorForJava();
+        return AncLibrary.getInstance().getClientProcessorForJava();
     }
 
     public static Visit eventToVisit(Event event, String visitID) throws JSONException {
-        List<String> exceptions = Arrays.asList(default_obs);
-
         Visit visit = new Visit();
         visit.setVisitId(visitID);
         visit.setBaseEntityId(event.getBaseEntityId());
@@ -110,39 +272,51 @@ public class Util {
 
         Map<String, List<VisitDetail>> details = new HashMap<>();
         if (event.getObs() != null) {
-            for (Obs obs : event.getObs()) {
-                if (!exceptions.contains(obs.getFormSubmissionField())) {
-                    VisitDetail detail = new VisitDetail();
-                    detail.setVisitDetailsId(JsonFormUtils.generateRandomUUIDString());
-                    detail.setVisitId(visit.getVisitId());
-                    detail.setVisitKey(obs.getFormSubmissionField());
-
-                    if (detail.getVisitKey().contains("date")) {
-                        // parse the
-                        detail.setDetails(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getValues().toString())));
-                        detail.setHumanReadable(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getHumanReadableValues().toString())));
-                    } else {
-                        detail.setDetails(cleanString(obs.getValues().toString()));
-                        detail.setHumanReadable(cleanString(obs.getHumanReadableValues().toString()));
-                    }
-
-                    detail.setJsonDetails(new JSONObject(JsonFormUtils.gson.toJson(obs)).toString());
-                    detail.setProcessed(false);
-                    detail.setCreatedAt(new Date());
-                    detail.setUpdatedAt(new Date());
-
-                    List<VisitDetail> currentList = details.get(detail.getVisitKey());
-                    if (currentList == null)
-                        currentList = new ArrayList<>();
-
-                    currentList.add(detail);
-                    details.put(detail.getVisitKey(), currentList);
-                }
-            }
+            details = eventsObsToDetails(event.getObs(), visit.getVisitId(), null);
         }
 
         visit.setVisitDetails(details);
         return visit;
+    }
+
+    public static Map<String, List<VisitDetail>> eventsObsToDetails(List<Obs> obsList, String visitID, String baseEntityID) throws JSONException {
+        List<String> exceptions = Arrays.asList(default_obs);
+        Map<String, List<VisitDetail>> details = new HashMap<>();
+        if (obsList == null)
+            return details;
+
+        for (Obs obs : obsList) {
+            if (!exceptions.contains(obs.getFormSubmissionField())) {
+                VisitDetail detail = new VisitDetail();
+                detail.setVisitDetailsId(JsonFormUtils.generateRandomUUIDString());
+                detail.setVisitId(visitID);
+                detail.setBaseEntityId(baseEntityID);
+                detail.setVisitKey(obs.getFormSubmissionField());
+
+                if (detail.getVisitKey().contains("date")) {
+                    // parse the
+                    detail.setDetails(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getValues().toString())));
+                    detail.setHumanReadable(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getHumanReadableValues().toString())));
+                } else {
+                    detail.setDetails(cleanString(obs.getValues().toString()));
+                    detail.setHumanReadable(cleanString(obs.getHumanReadableValues().toString()));
+                }
+
+                detail.setJsonDetails(new JSONObject(JsonFormUtils.gson.toJson(obs)).toString());
+                detail.setProcessed(false);
+                detail.setCreatedAt(new Date());
+                detail.setUpdatedAt(new Date());
+
+                List<VisitDetail> currentList = details.get(detail.getVisitKey());
+                if (currentList == null)
+                    currentList = new ArrayList<>();
+
+                currentList.add(detail);
+                details.put(detail.getVisitKey(), currentList);
+            }
+        }
+
+        return details;
     }
 
     public static String getFormattedDate(SimpleDateFormat source_sdf, SimpleDateFormat dest_sdf, String value) {
@@ -166,22 +340,22 @@ public class Util {
 
     public static void processAncHomeVisit(EventClient baseEvent, SQLiteDatabase database) {
         try {
-            Visit visit = getInstance().visitRepository().getVisitByFormSubmissionID(baseEvent.getEvent().getFormSubmissionId());
+            Visit visit = AncLibrary.getInstance().visitRepository().getVisitByFormSubmissionID(baseEvent.getEvent().getFormSubmissionId());
             if (visit == null) {
                 visit = eventToVisit(baseEvent.getEvent());
                 if (database != null) {
-                    getInstance().visitRepository().addVisit(visit, database);
+                    AncLibrary.getInstance().visitRepository().addVisit(visit, database);
                 } else {
-                    getInstance().visitRepository().addVisit(visit);
+                    AncLibrary.getInstance().visitRepository().addVisit(visit);
                 }
                 if (visit.getVisitDetails() != null) {
                     for (Map.Entry<String, List<VisitDetail>> entry : visit.getVisitDetails().entrySet()) {
                         if (entry.getValue() != null) {
                             for (VisitDetail detail : entry.getValue()) {
                                 if (database != null) {
-                                    getInstance().visitDetailsRepository().addVisitDetails(detail, database);
+                                    AncLibrary.getInstance().visitDetailsRepository().addVisitDetails(detail, database);
                                 } else {
-                                    getInstance().visitDetailsRepository().addVisitDetails(detail);
+                                    AncLibrary.getInstance().visitDetailsRepository().addVisitDetails(detail);
                                 }
                             }
                         }
@@ -287,7 +461,6 @@ public class Util {
                 Timber.e(e);
             }
     }
-
 
     private static JSONObject createVaccineEvent(String vaccineName, String vaccineDate) {
 

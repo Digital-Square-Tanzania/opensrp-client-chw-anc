@@ -41,6 +41,7 @@ public interface Constants {
     }
 
     interface CONFIGURATION {
+
         String ANC_REGISTER = "anc_register";
     }
 
@@ -77,5 +78,11 @@ public interface Constants {
 
     interface HOME_VISIT {
         String VACCINE_NOT_GIVEN = "Vaccine not given";
+    }
+
+    interface HOME_VISIT_TASK {
+        String VACCINE = "vaccine";
+        String SERVICE = "service";
+        String SUB_EVENT = "subevent";
     }
 }

@@ -146,6 +146,25 @@
                             android:textSize="@dimen/register_list_desc_size" />
                     </RadioGroup>
 
+                    <RadioGroup
+                        android:id="@+id/radioGroupDynamic"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="10dp"
+                        android:paddingLeft="20dp"
+                        android:paddingRight="20dp"
+                        android:paddingBottom="20dp">
+
+                        <RadioButton
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="10dp"
+                            android:text="@string/yes"
+                            android:textColor="@color/text_black"
+                            android:textSize="@dimen/register_list_desc_size" />
+
+                    </RadioGroup>
+
                 </LinearLayout>
             </RelativeLayout>
         </android.support.v4.widget.NestedScrollView>

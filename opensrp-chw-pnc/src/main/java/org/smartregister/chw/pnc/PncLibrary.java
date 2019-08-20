@@ -7,13 +7,10 @@ import org.smartregister.repository.Repository;
 
 public class PncLibrary {
     private static PncLibrary instance;
-
-    protected int applicationVersion;
-    protected int databaseVersion;
-
     private final Context context;
     private final Repository repository;
-
+    protected int applicationVersion;
+    protected int databaseVersion;
     private ProfileRepository profileRepository;
     private PncCloseDateRepository pncCloseDateRepository;
 
@@ -22,10 +19,6 @@ public class PncLibrary {
         this.repository = repositoryArg;
         this.applicationVersion = applicationVersion;
         this.databaseVersion = databaseVersion;
-    }
-
-    public Context context() {
-        return context;
     }
 
     public static void init(Context context, Repository repository, int applicationVersion, int databaseVersion) {
@@ -42,6 +35,10 @@ public class PncLibrary {
                     + "your Application class ");
         }
         return instance;
+    }
+
+    public Context context() {
+        return context;
     }
 
     public PncCloseDateRepository getPncCloseDateRepository() {

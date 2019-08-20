@@ -145,12 +145,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     @Override
     public void onClick(View v) {
         if (v.getId() == R.id.close) {
-            displayExitDialog(new Runnable() {
-                @Override
-                public void run() {
-                    close();
-                }
-            });
+            displayExitDialog(() -> close());
         } else if (v.getId() == R.id.customFontTextViewSubmit) {
             submitVisit();
         }
@@ -215,7 +210,11 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     public void redrawVisitUI() {
         boolean valid = actionList.size() > 0;
         for (Map.Entry<String, BaseAncHomeVisitAction> entry : actionList.entrySet()) {
-            if (!entry.getValue().isOptional() && entry.getValue().getActionStatus() == BaseAncHomeVisitAction.Status.PENDING) {
+            BaseAncHomeVisitAction action = entry.getValue();
+            if (!action.isOptional()
+                    && action.getActionStatus() == BaseAncHomeVisitAction.Status.PENDING
+                    && action.isValid()
+            ) {
                 valid = false;
                 break;
             }
@@ -303,12 +302,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     @Override
     public void onBackPressed() {
-        displayExitDialog(new Runnable() {
-            @Override
-            public void run() {
-                BaseAncHomeVisitActivity.this.finish();
-            }
-        });
+        displayExitDialog(() -> BaseAncHomeVisitActivity.this.finish());
     }
 
     protected void displayExitDialog(final Runnable onConfirm) {

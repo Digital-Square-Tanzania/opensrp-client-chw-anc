@@ -32,7 +32,7 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 @PrepareForTest({VisitUtils.class, AncLibrary.class, JsonFormUtils.class, ImmunizationLibrary.class})
-public class VisitUtilsTest {
+public class VisitNCUtilsTest {
     @Rule
     public PowerMockRule rule = new PowerMockRule();
 
@@ -73,7 +73,7 @@ public class VisitUtilsTest {
         Mockito.doReturn(visitDetailsRepository).when(ancLibrary).visitDetailsRepository();
 
         BDDMockito.given(ImmunizationLibrary.getInstance()).willReturn(immunizationLibrary);
-        BDDMockito.given(Utils.context()).willReturn(context);
+        BDDMockito.given(NCUtils.context()).willReturn(context);
         Mockito.doReturn(allSharedPreferences).when(context).allSharedPreferences();
         Mockito.doReturn(recurringServiceRecordRepository).when(immunizationLibrary).recurringServiceRecordRepository();
         Mockito.doReturn(vaccineRepository).when(immunizationLibrary).vaccineRepository();

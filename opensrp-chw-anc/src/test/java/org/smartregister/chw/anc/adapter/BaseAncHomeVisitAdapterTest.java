@@ -87,11 +87,12 @@ public class BaseAncHomeVisitAdapterTest extends BaseUnitTest {
 
     private LinkedHashMap<String, BaseAncHomeVisitAction> generateActions(int count) {
         LinkedHashMap<String, BaseAncHomeVisitAction> map = new LinkedHashMap<>();
-        while (count > 0) {
+        int x = 0;
+        while (count > x) {
             BaseAncHomeVisitAction action = Mockito.mock(BaseAncHomeVisitAction.class);
             Mockito.doReturn(true).when(action).isValid();
             map.put(String.valueOf(count), action);
-            count--;
+            x++;
         }
         return map;
     }

@@ -18,7 +18,10 @@ import org.smartregister.chw.pnc.util.Constants;
 import org.smartregister.chw.pnc.util.PncUtil;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import timber.log.Timber;
@@ -42,52 +45,14 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
 
     public String getLastVisitDate(String motherBaseID) {
 
-        String pncLastVisitdate = PncLibrary.getInstance().profileRepository().getLastVisit(motherBaseID);
-
+        Long pncLastVisitdate = PncLibrary.getInstance().profileRepository().getLastVisit(motherBaseID);
         if (pncLastVisitdate != null) {
-
-
-            // Date pncLastVisitDateFormat;
-            // pncLastVisitdate = new java.sql.Date(Long.valueOf(pncLastVisitdate)).toString();
-            //pncLastVisitdate =
-
-            //  SimpleDateFormat sdf = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-            //  SimpleDateFormat format = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
-            ///  try {
-            //  pncLastVisitDateFormat = sdf.parse(pncLastVisitdate);
-            //    pncLastVisitdate = format.format(pncLastVisitDateFormat);
-
-            //  }
-            //  catch (Exception e){
-            //      Timber.e(e.toString());
-            //   }
-
-
-          /*  DateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy");
-            DateFormat dateFormat1 = new SimpleDateFormat("yyyy-MM-dd");
-
-            dateFormat.
-            DateTime x = dateFormat.format(new DateTime(DateTimeFormat.shortDate(pncLastVisitdate)));
-                    parse(pncLastVisitdate);
-            arse(pncLastVisitdate);
-
-            DateFormat format = new SimpleDateFormat("d MMMM");
-            Date date = format.parse(pncLastVisitdateF)
-
-
-            DeliveryDateformatted = dateFormat.parse(deliveryDate);
-            VisitDateformattedString = dateFormat1.format(vst.getDate());
-
-
-            DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
-            DateTimeFormatter formatter1 = DateTimeFormat.forPattern("MMM-dd");
-
-            formatter.p
-
-            pncLastVisitdate = String.valueOf(new DateTime(formatter1.parseDateTime(x.toString())));*/
-
+            Date pncDate = new Date(pncLastVisitdate);
+            SimpleDateFormat format = new SimpleDateFormat("dd MMM", Locale.getDefault());
+            return format.format(pncDate);
         }
-        return pncLastVisitdate;
+
+        return null;
     }
 
 

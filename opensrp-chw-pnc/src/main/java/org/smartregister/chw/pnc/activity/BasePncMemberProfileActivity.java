@@ -78,7 +78,6 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
 
     @Override
     public void setLastVisit(Date lastVisitDate) {
-        lastVisitDate = null;
         view_last_visit_row.setVisibility(View.VISIBLE);
 
 

@@ -103,12 +103,11 @@ public class ProfileRepository extends BaseRepository {
         return delivery_date;
     }
 
-
-    public String getLastVisit(String motherBaseEntityID) {
+    public Long getLastVisit(String motherBaseEntityID) {
 
         SQLiteDatabase database = getReadableDatabase();
 
-        String lastVisitDate = null;
+        Long lastVisitDate = null;
 
         net.sqlcipher.Cursor cursor = null;
 
@@ -118,7 +117,7 @@ public class ProfileRepository extends BaseRepository {
             }
             cursor = database.rawQuery("SELECT visit_date FROM visits where  visit_type = ? AND base_entity_id = ?", new String[]{"PNC Home Visit",motherBaseEntityID});
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
-                lastVisitDate = cursor.getString(cursor.getColumnIndex("visit_date"));
+                lastVisitDate = cursor.getLong(cursor.getColumnIndex("visit_date"));
             }
         } catch (Exception e) {
             Timber.e(e);

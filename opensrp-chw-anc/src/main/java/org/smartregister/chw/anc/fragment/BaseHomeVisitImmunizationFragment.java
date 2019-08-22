@@ -120,9 +120,10 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         this.vaccineDisplays = vaccineDisplays;
 
         // redraw all vaccine views
-        if (vaccineDisplays.size() > 0)
+        if (vaccineDisplays.size() > 0 && singleDatePicker != null) {
             initializeDatePicker(singleDatePicker, vaccineDisplays.entrySet().iterator().next().getValue());
-        addVaccineViews();
+            addVaccineViews();
+        }
     }
 
     @Override
@@ -172,6 +173,10 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
             datePicker.setMinDate(vaccineDisplay.getStartDate().getTime());
             datePicker.setMaxDate(vaccineDisplay.getEndDate().getTime());
         }
+    }
+
+    private void initializeDatePicker(@NotNull DatePicker datePicker, @NotNull Date startDate, @NotNull Date endDate) {
+
     }
 
     private Date getDateFromDatePicker(DatePicker datePicker) {
@@ -236,16 +241,21 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         boolean multiModeActive = multipleVaccineDatePickerView.getVisibility() == View.GONE;
 
         for (VaccineView vaccineView : vaccineViews) {
-            VaccineWrapper wrapper = vaccineDisplays.get(vaccineView.getVaccineName()).getVaccineWrapper();
+            VaccineDisplay display = vaccineDisplays.get(vaccineView.getVaccineName());
+            VaccineWrapper wrapper = display.getVaccineWrapper();
             if (wrapper != null) {
                 if (!checkBoxNoVaccinesDone.isChecked() && vaccineView.getCheckBox().isChecked()) {
                     if (vaccineView.getDatePickerView() != null && multiModeActive) {
-                        vaccineDateMap.put(wrapper, dateFormat.format(getDateFromDatePicker(vaccineView.getDatePickerView())));
+                        Date dateGiven = getDateFromDatePicker(vaccineView.getDatePickerView());
+                        vaccineDateMap.put(wrapper, dateFormat.format(dateGiven));
+                        display.setDateGiven(dateGiven);
                     } else if (vaccineDate != null) {
                         vaccineDateMap.put(wrapper, dateFormat.format(vaccineDate));
+                        display.setDateGiven(vaccineDate);
                     }
                 } else {
                     vaccineDateMap.put(wrapper, Constants.HOME_VISIT.VACCINE_NOT_GIVEN);
+                    display.setDateGiven(null);
                 }
             }
         }

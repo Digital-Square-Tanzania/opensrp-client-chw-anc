@@ -309,7 +309,7 @@ public class BaseAncHomeVisitAction {
     /**
      * Detached processing generates separate event when form is submitted
      */
-    public enum ProcessingMode {COMBINED, DETACHED}
+    public enum ProcessingMode {COMBINED, DETACHED, SEPARATE}
 
     public interface AncHomeVisitActionHelper {
 

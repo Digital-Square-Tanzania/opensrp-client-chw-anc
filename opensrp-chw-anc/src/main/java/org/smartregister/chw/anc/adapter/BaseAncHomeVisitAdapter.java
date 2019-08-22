@@ -86,21 +86,20 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
                 holder.descriptionText.setVisibility(View.VISIBLE);
                 holder.invalidText.setVisibility(View.GONE);
                 holder.descriptionText.setText(ancHomeVisitAction.getSubTitle());
+
+                boolean isOverdue = ancHomeVisitAction.getScheduleStatus() == BaseAncHomeVisitAction.ScheduleStatus.OVERDUE &&
+                        ancHomeVisitAction.isEnabled();
+
+                holder.descriptionText.setTextColor(
+                        isOverdue ? context.getResources().getColor(R.color.alert_urgent_red) :
+                                context.getResources().getColor(android.R.color.darker_gray)
+                );
+
             } else {
                 holder.descriptionText.setVisibility(View.GONE);
                 holder.invalidText.setVisibility(View.VISIBLE);
                 holder.invalidText.setText(Html.fromHtml("<i>" + ancHomeVisitAction.getDisabledMessage() + "</i>"));
             }
-
-            holder.descriptionText.setVisibility(View.VISIBLE);
-
-            boolean isOverdue = ancHomeVisitAction.getScheduleStatus() == BaseAncHomeVisitAction.ScheduleStatus.OVERDUE &&
-                    ancHomeVisitAction.isEnabled();
-
-            holder.descriptionText.setTextColor(
-                    isOverdue ? context.getResources().getColor(R.color.alert_urgent_red) :
-                            context.getResources().getColor(android.R.color.darker_gray)
-            );
         } else {
             holder.descriptionText.setVisibility(View.GONE);
         }

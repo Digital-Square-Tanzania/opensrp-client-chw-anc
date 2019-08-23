@@ -280,7 +280,6 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     }
 
     public static void populateForm(JSONObject jsonObject, Map<String, List<VisitDetail>> details) {
-        Timber.v("populateForm");
         try {
             // x steps
             String count_str = jsonObject.getString(JsonFormConstants.COUNT);
@@ -293,13 +292,18 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
                 while (field_count >= 0) {
 
                     JSONObject jo = jsonArray.getJSONObject(field_count);
-                    List<VisitDetail> detailList = details.get(jo.getString(JsonFormConstants.KEY));
+                    String key = jo.getString(JsonFormConstants.KEY);
+                    List<VisitDetail> detailList = details.get(key);
 
                     if (detailList != null) {
                         if (jo.getString(JsonFormConstants.TYPE).equalsIgnoreCase(JsonFormConstants.CHECK_BOX)) {
                             jo.put(JsonFormConstants.VALUE, getValue(jo, detailList));
                         } else {
-                            jo.put(JsonFormConstants.VALUE, getValue(detailList.get(0)));
+                            String value = getValue(detailList.get(0));
+                            if (key.contains("date")) {
+                                value = NCUtils.getFormattedDate(NCUtils.getSaveDateFormat(), NCUtils.getSourceDateFormat(), value);
+                            }
+                            jo.put(JsonFormConstants.VALUE, value);
                         }
                     }
 

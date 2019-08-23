@@ -215,11 +215,11 @@ public class NCUtils {
         return formatter.format(date);
     }
 
-    private static SimpleDateFormat getSourceDateFormat() {
+    public static SimpleDateFormat getSourceDateFormat() {
         return new SimpleDateFormat(AncLibrary.getInstance().getSourceDateFormat(), Locale.getDefault());
     }
 
-    private static SimpleDateFormat getSaveDateFormat() {
+    public static SimpleDateFormat getSaveDateFormat() {
         return new SimpleDateFormat(AncLibrary.getInstance().getSaveDateFormat(), Locale.getDefault());
     }
 

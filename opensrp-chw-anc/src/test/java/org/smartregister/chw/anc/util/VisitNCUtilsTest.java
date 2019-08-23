@@ -27,11 +27,14 @@ import org.smartregister.immunization.repository.VaccineRepository;
 import org.smartregister.repository.AllSharedPreferences;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
-@PrepareForTest({VisitUtils.class, AncLibrary.class, JsonFormUtils.class, ImmunizationLibrary.class})
+@PrepareForTest({AncLibrary.class, JsonFormUtils.class, ImmunizationLibrary.class})
 public class VisitNCUtilsTest {
     @Rule
     public PowerMockRule rule = new PowerMockRule();
@@ -101,6 +104,14 @@ public class VisitNCUtilsTest {
             x--;
         }
         return details;
+    }
+
+    @Test
+    public void testIsVisitWithin24HoursReturnsAppropriateBoolean() {
+        assertFalse(VisitUtils.isVisitWithin24Hours(null));
+        Visit visit = new Visit();
+        visit.setDate(new Date());
+        assertTrue(VisitUtils.isVisitWithin24Hours(visit));
     }
 
     @Test

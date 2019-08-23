@@ -155,7 +155,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
             for (Map.Entry<String, BaseAncHomeVisitAction> entry : externalVisits.entrySet()) {
                 Map<String, BaseAncHomeVisitAction> subEvent = new HashMap<>();
                 subEvent.put(entry.getKey(), entry.getValue());
-                submitVisit(editMode, memberID, subEvent, visit.getVisitType());
+                submitVisit(false, memberID, subEvent, visit.getVisitType());
             }
         }
 

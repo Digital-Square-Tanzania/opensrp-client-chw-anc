@@ -249,13 +249,16 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
                         Date dateGiven = getDateFromDatePicker(vaccineView.getDatePickerView());
                         vaccineDateMap.put(wrapper, dateFormat.format(dateGiven));
                         display.setDateGiven(dateGiven);
+                        display.setValid(true);
                     } else if (vaccineDate != null) {
                         vaccineDateMap.put(wrapper, dateFormat.format(vaccineDate));
                         display.setDateGiven(vaccineDate);
+                        display.setValid(true);
                     }
                 } else {
                     vaccineDateMap.put(wrapper, Constants.HOME_VISIT.VACCINE_NOT_GIVEN);
                     display.setDateGiven(null);
+                    display.setValid(false);
                 }
             }
         }
@@ -270,6 +273,14 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
             // save the view
             dismiss();
         }
+    }
+
+    /**
+     * reset the view payload
+     */
+    public void resetViewPayload() {
+        jsonObject = null;
+        visitView.onDialogOptionUpdated("");
     }
 
     /**

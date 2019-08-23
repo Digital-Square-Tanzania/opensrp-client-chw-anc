@@ -338,11 +338,29 @@ public class NCUtils {
         processAncHomeVisit(baseEvent, null);
     }
 
+    public static void processSubHomeVisit(EventClient baseEvent, String parentEventType) {
+        processAncHomeVisit(baseEvent, null, parentEventType);
+    }
+
+    public static void processSubHomeVisit(EventClient baseEvent, SQLiteDatabase database, String parentEventType) {
+        processAncHomeVisit(baseEvent, database, parentEventType);
+    }
+
     public static void processAncHomeVisit(EventClient baseEvent, SQLiteDatabase database) {
+        processAncHomeVisit(baseEvent, database, null);
+    }
+
+    public static void processAncHomeVisit(EventClient baseEvent, SQLiteDatabase database, String parentEventType) {
         try {
             Visit visit = AncLibrary.getInstance().visitRepository().getVisitByFormSubmissionID(baseEvent.getEvent().getFormSubmissionId());
             if (visit == null) {
                 visit = eventToVisit(baseEvent.getEvent());
+
+                if (StringUtils.isNotBlank(parentEventType) && !parentEventType.equalsIgnoreCase(visit.getVisitType())) {
+                    String parentVisitID = AncLibrary.getInstance().visitRepository().getParentVisitEventID(visit.getBaseEntityId(), parentEventType, visit.getDate());
+                    visit.setParentVisitID(parentVisitID);
+                }
+
                 if (database != null) {
                     AncLibrary.getInstance().visitRepository().addVisit(visit, database);
                 } else {

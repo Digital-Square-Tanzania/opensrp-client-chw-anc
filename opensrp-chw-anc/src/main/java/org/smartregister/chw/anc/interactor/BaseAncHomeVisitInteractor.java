@@ -86,49 +86,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         final Runnable runnable = () -> {
             boolean result = true;
             try {
-
-                Map<String, BaseAncHomeVisitAction> externalVisits = new HashMap<>();
-                Map<String, String> jsons = new HashMap<>();
-                Map<String, VaccineWrapper> vaccineWrapperMap = new HashMap<>();
-                Map<String, ServiceWrapper> serviceWrapperMap = new HashMap<>();
-
-                // aggregate forms to be processed
-                for (Map.Entry<String, BaseAncHomeVisitAction> entry : map.entrySet()) {
-                    String json = entry.getValue().getJsonPayload();
-                    if (StringUtils.isNotBlank(json)) {
-
-                        // do not process events that are meant to be in detached mode
-                        // in a similar manner to the the aggregated events
-                        if (entry.getValue().getProcessingMode() == BaseAncHomeVisitAction.ProcessingMode.DETACHED
-                                || StringUtils.isNotBlank(entry.getValue().getBaseEntityID())) {
-                            externalVisits.put(entry.getKey(), entry.getValue());
-                            continue;
-                        }
-
-                        jsons.put(entry.getKey(), json);
-                        JSONObject jsonObject = new JSONObject(json);
-                        if (entry.getValue().getVaccineWrapper() != null) {
-                            int position = 0;
-                            for (VaccineWrapper v : entry.getValue().getVaccineWrapper()) {
-                                vaccineWrapperMap.put(JsonFormUtils.getObjectKey(jsonObject, position), v);
-                                position++;
-                            }
-                        }
-
-                        if (entry.getValue().getServiceWrapper() != null) {
-                            int position = 0;
-                            for (ServiceWrapper sw : entry.getValue().getServiceWrapper()) {
-                                serviceWrapperMap.put(JsonFormUtils.getObjectKey(jsonObject, position), sw);
-                                position++;
-                            }
-                        }
-                    }
-                }
-
-                Visit visit = saveVisit(editMode, memberID, getEncounterType(), jsons, vaccineWrapperMap, serviceWrapperMap);
-                if (visit != null)
-                    saveDetachedEvents(visit, externalVisits);
-
+                submitVisit(editMode, memberID, map, "");
             } catch (Exception e) {
                 Timber.e(e);
                 result = false;
@@ -141,14 +99,82 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         appExecutors.diskIO().execute(runnable);
     }
 
+    private void submitVisit(final boolean editMode, final String memberID, final Map<String, BaseAncHomeVisitAction> map, String parentEventType) throws Exception {
+
+        Map<String, BaseAncHomeVisitAction> externalVisits = new HashMap<>();
+        Map<String, BaseAncHomeVisitAction> detachedVisits = new HashMap<>();
+        Map<String, String> jsons = new HashMap<>();
+        Map<String, VaccineWrapper> vaccineWrapperMap = new HashMap<>();
+        Map<String, ServiceWrapper> serviceWrapperMap = new HashMap<>();
+
+        // aggregate forms to be processed
+        for (Map.Entry<String, BaseAncHomeVisitAction> entry : map.entrySet()) {
+            String json = entry.getValue().getJsonPayload();
+            if (StringUtils.isNotBlank(json)) {
+
+                // do not process events that are meant to be in detached mode
+                // in a similar manner to the the aggregated events
+                BaseAncHomeVisitAction.ProcessingMode mode = entry.getValue().getProcessingMode();
+                if (mode == BaseAncHomeVisitAction.ProcessingMode.DETACHED
+                        && StringUtils.isNotBlank(entry.getValue().getBaseEntityID())) {
+                    detachedVisits.put(entry.getKey(), entry.getValue());
+                    continue;
+                }
+
+                if (mode == BaseAncHomeVisitAction.ProcessingMode.SEPARATE
+                        && StringUtils.isNotBlank(entry.getValue().getBaseEntityID())
+                        && StringUtils.isBlank(parentEventType)
+                ) {
+                    externalVisits.put(entry.getKey(), entry.getValue());
+                    continue;
+                }
+
+                jsons.put(entry.getKey(), json);
+                JSONObject jsonObject = new JSONObject(json);
+                if (entry.getValue().getVaccineWrapper() != null) {
+                    int position = 0;
+                    for (VaccineWrapper v : entry.getValue().getVaccineWrapper()) {
+                        vaccineWrapperMap.put(JsonFormUtils.getObjectKey(jsonObject, position), v);
+                        position++;
+                    }
+                }
+
+                if (entry.getValue().getServiceWrapper() != null) {
+                    int position = 0;
+                    for (ServiceWrapper sw : entry.getValue().getServiceWrapper()) {
+                        serviceWrapperMap.put(JsonFormUtils.getObjectKey(jsonObject, position), sw);
+                        position++;
+                    }
+                }
+            }
+        }
+
+        String type = StringUtils.isBlank(parentEventType) ? getEncounterType() : getEncounterType();
+        Visit visit = saveVisit(editMode, memberID, type, jsons, vaccineWrapperMap, serviceWrapperMap, parentEventType);
+        if (visit != null && !externalVisits.isEmpty()) {
+            for (Map.Entry<String, BaseAncHomeVisitAction> entry : externalVisits.entrySet()) {
+                Map<String, BaseAncHomeVisitAction> subEvent = new HashMap<>();
+                subEvent.put(entry.getKey(), entry.getValue());
+                submitVisit(editMode, memberID, subEvent, visit.getVisitType());
+            }
+        }
+
+        if (visit != null && detachedVisits.size() > 0)
+            saveDetachedEvents(visit, detachedVisits);
+    }
+
     private Visit saveVisit(boolean editMode, String memberID, String encounterType,
                             final Map<String, String> jsonString,
                             Map<String, VaccineWrapper> vaccineWrapperMap,
-                            Map<String, ServiceWrapper> serviceWrapperMap
+                            Map<String, ServiceWrapper> serviceWrapperMap,
+                            String parentEventType
     ) throws Exception {
 
         AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
-        Event baseEvent = JsonFormUtils.processVisitJsonForm(allSharedPreferences, memberID, encounterType, jsonString, getTableName());
+
+        String derivedEncounterType = StringUtils.isBlank(parentEventType) ? encounterType : "";
+        Event baseEvent = JsonFormUtils.processVisitJsonForm(allSharedPreferences, memberID, derivedEncounterType, jsonString, getTableName());
+
         prepareEvent(baseEvent);
         if (baseEvent != null) {
             baseEvent.setFormSubmissionId(JsonFormUtils.generateRandomUUIDString());
@@ -162,10 +188,20 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
             if (editMode) {
                 AncLibrary.getInstance().visitRepository().deleteVisit(visitID);
                 AncLibrary.getInstance().visitDetailsRepository().deleteVisitDetails(visitID);
+
+                List<Visit> childVisits = AncLibrary.getInstance().visitRepository().getChildEvents(visitID);
+                for (Visit v : childVisits) {
+                    AncLibrary.getInstance().visitRepository().deleteVisit(v.getVisitId());
+                    AncLibrary.getInstance().visitDetailsRepository().deleteVisitDetails(v.getVisitId());
+                }
             }
 
             Visit visit = NCUtils.eventToVisit(baseEvent, visitID);
             visit.setPreProcessedJson(new Gson().toJson(baseEvent));
+            if (StringUtils.isNotBlank(parentEventType)) {
+                String parentVisitID = AncLibrary.getInstance().visitRepository().getParentVisitEventID(visit.getBaseEntityId(), parentEventType, visit.getDate());
+                visit.setParentVisitID(parentVisitID);
+            }
             AncLibrary.getInstance().visitRepository().addVisit(visit);
 
             // create the visit details

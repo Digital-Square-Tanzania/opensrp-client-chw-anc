@@ -139,8 +139,10 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
     }
 
     private void bindClickListener(View view, final BaseAncHomeVisitAction ancHomeVisitAction) {
-        if (!ancHomeVisitAction.isEnabled())
+        if (!ancHomeVisitAction.isEnabled() || !ancHomeVisitAction.isValid()) {
             view.setOnClickListener(null);
+            return;
+        }
 
         view.setOnClickListener(v -> {
             if (StringUtils.isNotBlank(ancHomeVisitAction.getFormName())) {

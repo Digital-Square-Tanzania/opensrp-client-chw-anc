@@ -81,8 +81,9 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         }
 
         JSONArray fields = new JSONArray(fields_obj);
+        String derivedEncounterType = StringUtils.isBlank(encounterType) ? getString(jsonForm, ENCOUNTER_TYPE) : encounterType;
 
-        return org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, encounterType, tableName);
+        return org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, derivedEncounterType, tableName);
     }
 
     public static Event prepareEvent(AllSharedPreferences allSharedPreferences, String entityId, String jsonString, String tableName) throws JSONException {

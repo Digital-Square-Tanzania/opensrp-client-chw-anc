@@ -11,9 +11,11 @@ import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.Repository;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -54,8 +56,7 @@ public class VisitRepository extends BaseRepository {
     public static final String PARENT_VISIT_ID_INDEX = "CREATE INDEX " + VISIT_TABLE + "_" + PARENT_VISIT_ID + "_index ON " + VISIT_TABLE
             + "(" + PARENT_VISIT_ID + " COLLATE NOCASE );";
 
-    private String[] VISIT_COLUMNS = {VISIT_ID, VISIT_TYPE, BASE_ENTITY_ID, VISIT_DATE, VISIT_JSON, PRE_PROCESSED, FORM_SUBMISSION_ID, PROCESSED, UPDATED_AT, CREATED_AT};
-
+    private String[] VISIT_COLUMNS = {VISIT_ID, VISIT_TYPE, PARENT_VISIT_ID, BASE_ENTITY_ID, VISIT_DATE, VISIT_JSON, PRE_PROCESSED, FORM_SUBMISSION_ID, PROCESSED, UPDATED_AT, CREATED_AT};
 
     public VisitRepository(Repository repository) {
         super(repository);
@@ -93,6 +94,30 @@ public class VisitRepository extends BaseRepository {
         }
         // Handle updated home visit details
         database.insert(VISIT_TABLE, null, createValues(visit));
+    }
+
+    public String getParentVisitEventID(String baseEntityID, String parentEventType, Date eventDate) {
+        String visitID = null;
+        Cursor cursor = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String sql = "select " + VISIT_ID + " from visits where strftime('%Y-%m-%d',visit_date / 1000, 'unixepoch') = ? and visit_type = ? and base_entity_id = ? ";
+        try {
+            cursor = getReadableDatabase().rawQuery(sql, new String[]{sdf.format(eventDate), parentEventType, baseEntityID});
+            if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    visitID = cursor.getString(cursor.getColumnIndex(VISIT_ID));
+                    cursor.moveToNext();
+                }
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return visitID;
     }
 
     public void deleteVisit(String visitID) {

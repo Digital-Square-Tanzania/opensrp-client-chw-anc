@@ -26,9 +26,13 @@ import org.smartregister.immunization.repository.RecurringServiceRecordRepositor
 import org.smartregister.immunization.repository.VaccineRepository;
 import org.smartregister.repository.AllSharedPreferences;
 
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
@@ -108,10 +112,20 @@ public class VisitNCUtilsTest {
 
     @Test
     public void testIsVisitWithin24HoursReturnsAppropriateBoolean() {
+        Date visitDate = new Date();
         assertFalse(VisitUtils.isVisitWithin24Hours(null));
         Visit visit = new Visit();
-        visit.setDate(new Date());
+        visit.setDate(visitDate);
         assertTrue(VisitUtils.isVisitWithin24Hours(visit));
+        String dateString = "January 2, 2019";
+        DateFormat dateFormat = new SimpleDateFormat("MMM d, yyyy", Locale.ENGLISH);
+        try {
+            visitDate = dateFormat.parse(dateString);
+        } catch (ParseException pe) {
+            pe.printStackTrace();
+        }
+        visit.setDate(visitDate);
+        assertFalse(VisitUtils.isVisitWithin24Hours(visit));
     }
 
     @Test

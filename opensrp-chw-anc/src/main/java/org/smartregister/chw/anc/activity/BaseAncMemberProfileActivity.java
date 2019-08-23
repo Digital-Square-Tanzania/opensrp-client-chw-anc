@@ -35,6 +35,7 @@ import org.smartregister.chw.anc.presenter.BaseAncMemberProfilePresenter;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.anc.util.NCUtils;
+import org.smartregister.chw.anc.util.VisitUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.helper.ImageRenderHelper;
@@ -226,16 +227,8 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
         Visit lastVisit = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT);
         if (lastVisit != null) {
-            setUpEditViews(true, isVisitWithin24Hours(lastVisit), lastVisit.getDate().getTime());
+            setUpEditViews(true, VisitUtils.isVisitWithin24Hours(lastVisit), lastVisit.getDate().getTime());
         }
-    }
-
-    public boolean isVisitWithin24Hours(Visit lastVisit) {
-        if (lastVisit != null) {
-            return (Days.daysBetween(new DateTime(lastVisit.getCreatedAt()), new DateTime()).getDays() < 1) &&
-                    (Days.daysBetween(new DateTime(lastVisit.getDate()), new DateTime()).getDays() <= 1);
-        }
-        return false;
     }
 
     private void setUpEditViews(boolean enable, boolean within24Hours, Long longDate) {

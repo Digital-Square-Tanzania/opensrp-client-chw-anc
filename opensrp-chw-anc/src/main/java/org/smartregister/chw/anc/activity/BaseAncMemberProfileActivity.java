@@ -66,11 +66,12 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     private String familyHeadPhoneNumber;
     private BaseAncFloatingMenu baseAncFloatingMenu;
     private ImageView imageViewCross;
-    private TextView tvLastVisitDate;
+    protected TextView tvLastVisitDate;
     private TextView tvUpComingServices;
     private TextView tvFamilyStatus;
     private ProgressBar progressBar;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
+
 
     public static void startMe(Activity activity, MemberObject memberObject, String familyHeadName, String familyHeadPhoneNumber) {
         Intent intent = new Intent(activity, BaseAncMemberProfileActivity.class);
@@ -201,9 +202,9 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     private boolean ancHomeVisitNotDoneEvent(Visit visit) {
 
-        return (visit != null
+        return visit != null
                 && (new DateTime(visit.getDate()).getMonthOfYear() == new DateTime().getMonthOfYear())
-                && (new DateTime(visit.getDate()).getYear() == new DateTime().getYear())) ? true : false;
+                && (new DateTime(visit.getDate()).getYear() == new DateTime().getYear());
     }
 
     public Visit getVisit(String eventType) {

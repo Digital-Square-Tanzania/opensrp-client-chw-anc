@@ -33,9 +33,9 @@ import java.util.Map;
 
 public class VisitUtils {
 
-    public static List<Visit> getVisits(String memberID) {
+    public static List<Visit> getVisits(String memberID, String... eventTypes) {
 
-        List<Visit> visits = getVisitsOnly(memberID);
+        List<Visit> visits = (eventTypes != null && eventTypes.length > 0) ? getVisitsOnly(memberID, eventTypes[0]) : getVisitsOnly(memberID, Constants.EVENT_TYPE.ANC_HOME_VISIT);
 
         int x = 0;
         while (visits.size() > x) {
@@ -48,8 +48,8 @@ public class VisitUtils {
         return visits;
     }
 
-    public static List<Visit> getVisitsOnly(String memberID) {
-        return new ArrayList<>(AncLibrary.getInstance().visitRepository().getVisits(memberID, Constants.EVENT_TYPE.ANC_HOME_VISIT));
+    public static List<Visit> getVisitsOnly(String memberID, String visitName) {
+        return new ArrayList<>(AncLibrary.getInstance().visitRepository().getVisits(memberID, visitName));
     }
 
     public static List<VisitDetail> getVisitDetailsOnly(String visitID) {

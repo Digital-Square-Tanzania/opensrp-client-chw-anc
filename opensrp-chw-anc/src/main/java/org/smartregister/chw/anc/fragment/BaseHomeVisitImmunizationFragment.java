@@ -85,7 +85,7 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         singleDatePicker = view.findViewById(R.id.earlier_date_picker);
 
         if (vaccineDisplays.size() > 0)
-            initializeDatePicker(singleDatePicker, vaccineDisplays.entrySet().iterator().next().getValue());
+            initializeDatePicker(singleDatePicker, vaccineDisplays);
 
         checkBoxNoVaccinesDone = view.findViewById(R.id.select);
         checkBoxNoVaccinesDone.setOnClickListener(this);
@@ -121,7 +121,7 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
 
         // redraw all vaccine views
         if (vaccineDisplays.size() > 0 && singleDatePicker != null) {
-            initializeDatePicker(singleDatePicker, vaccineDisplays.entrySet().iterator().next().getValue());
+            initializeDatePicker(singleDatePicker, vaccineDisplays);
             addVaccineViews();
         }
     }
@@ -166,17 +166,42 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
     }
 
     private void initializeDatePicker(@NotNull DatePicker datePicker, @NotNull VaccineDisplay vaccineDisplay) {
-        if (vaccineDisplay.getStartDate().getTime() > vaccineDisplay.getEndDate().getTime()) {
-            datePicker.setMinDate(vaccineDisplay.getStartDate().getTime());
-            datePicker.setMaxDate(vaccineDisplay.getStartDate().getTime());
+        Date startDate = vaccineDisplay.getStartDate();
+        Date endDate = (vaccineDisplay.getEndDate() != null && vaccineDisplay.getEndDate().getTime() < new Date().getTime()) ?
+                vaccineDisplay.getEndDate() : new Date();
+
+        if (startDate.getTime() > endDate.getTime()) {
+            datePicker.setMinDate(endDate.getTime());
+            datePicker.setMaxDate(endDate.getTime());
         } else {
-            datePicker.setMinDate(vaccineDisplay.getStartDate().getTime());
-            datePicker.setMaxDate(vaccineDisplay.getEndDate().getTime());
+            datePicker.setMinDate(startDate.getTime());
+            datePicker.setMaxDate(endDate.getTime());
         }
     }
 
-    private void initializeDatePicker(@NotNull DatePicker datePicker, @NotNull Date startDate, @NotNull Date endDate) {
+    private void initializeDatePicker(@NotNull DatePicker datePicker, @NotNull Map<String, VaccineDisplay> vaccineDisplays) {
+        //compute the start date and the end date
+        Date startDate = null;
+        Date endDate = new Date();
+        for (Map.Entry<String, VaccineDisplay> entry : vaccineDisplays.entrySet()) {
+            VaccineDisplay display = entry.getValue();
 
+            // get the largest start date
+            if (startDate == null || display.getStartDate().getTime() < startDate.getTime())
+                startDate = display.getStartDate();
+
+            // get the lowest end date
+            if (display.getEndDate() != null && display.getEndDate().getTime() < endDate.getTime())
+                endDate = display.getEndDate();
+        }
+
+        if (startDate != null && startDate.getTime() > endDate.getTime()) {
+            datePicker.setMinDate(endDate.getTime());
+            datePicker.setMaxDate(endDate.getTime());
+        } else {
+            datePicker.setMinDate(startDate != null ? startDate.getTime() : endDate.getTime());
+            datePicker.setMaxDate(endDate.getTime());
+        }
     }
 
     private Date getDateFromDatePicker(DatePicker datePicker) {

@@ -180,7 +180,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         layoutNotRecordView = findViewById(R.id.record_visit_status_bar);
         recordRecurringVisit = findViewById(R.id.textview_record_reccuring_visit);
 
-
         textview_record_anc_visit.setOnClickListener(this);
         rlLastVisit.setOnClickListener(this);
         rlUpcomingServices.setOnClickListener(this);

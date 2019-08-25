@@ -32,6 +32,8 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
 
     protected BaseAncMedicalHistoryContract.InteractorCallBack interactorCallBack;
 
+
+
     @Override
     public String getPncDay(String motherBaseID) {
         String dayPnc = PncLibrary.getInstance().profileRepository().getDeliveryDate(motherBaseID);
@@ -100,6 +102,5 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
         }
         return null;
     }
-
 
 }

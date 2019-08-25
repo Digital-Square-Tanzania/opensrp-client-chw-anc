@@ -10,6 +10,7 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.joda.time.DateTime;
 import org.joda.time.Years;
 import org.smartregister.chw.anc.fragment.BaseAncRegisterFragment;
@@ -66,7 +67,7 @@ public class AncRegisterProvider implements RecyclerViewProvider<AncRegisterProv
         }
     }
 
-    private void populatePatientColumn(CommonPersonObjectClient pc, SmartRegisterClient client, final RegisterViewHolder viewHolder) {
+    protected void populatePatientColumn(@NotNull CommonPersonObjectClient pc, SmartRegisterClient client, @NotNull final RegisterViewHolder viewHolder) {
 
 
         String fname = getName(

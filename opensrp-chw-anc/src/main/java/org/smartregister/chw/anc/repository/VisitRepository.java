@@ -5,6 +5,7 @@ import android.database.Cursor;
 
 import net.sqlcipher.database.SQLiteDatabase;
 
+import org.apache.commons.lang3.StringUtils;
 import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.DBConstants;
@@ -25,6 +26,8 @@ public class VisitRepository extends BaseRepository {
     private static final String VISIT_ID = "visit_id";
     private static final String VISIT_TYPE = "visit_type";
     private static final String PARENT_VISIT_ID = "parent_visit_id";
+    public static final String PARENT_VISIT_ID_INDEX = "CREATE INDEX " + VISIT_TABLE + "_" + PARENT_VISIT_ID + "_index ON " + VISIT_TABLE
+            + "(" + PARENT_VISIT_ID + " COLLATE NOCASE );";
     private static final String BASE_ENTITY_ID = "base_entity_id";
     private static final String VISIT_DATE = "visit_date";
     private static final String VISIT_JSON = "visit_json";
@@ -52,10 +55,6 @@ public class VisitRepository extends BaseRepository {
             + VISIT_TYPE + " COLLATE NOCASE , "
             + VISIT_DATE + " COLLATE NOCASE"
             + ");";
-
-    public static final String PARENT_VISIT_ID_INDEX = "CREATE INDEX " + VISIT_TABLE + "_" + PARENT_VISIT_ID + "_index ON " + VISIT_TABLE
-            + "(" + PARENT_VISIT_ID + " COLLATE NOCASE );";
-
     private String[] VISIT_COLUMNS = {VISIT_ID, VISIT_TYPE, PARENT_VISIT_ID, BASE_ENTITY_ID, VISIT_DATE, VISIT_JSON, PRE_PROCESSED, FORM_SUBMISSION_ID, PROCESSED, UPDATED_AT, CREATED_AT};
 
     public VisitRepository(Repository repository) {
@@ -276,6 +275,9 @@ public class VisitRepository extends BaseRepository {
     }
 
     public Visit getVisitByFormSubmissionID(String formSubmissionID) {
+        if (StringUtils.isBlank(formSubmissionID))
+            return null;
+
         List<Visit> visits = new ArrayList<>();
         Cursor cursor = null;
         try {

@@ -6,6 +6,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import org.joda.time.DateTime;
@@ -21,6 +22,7 @@ public class BaseUpcomingServiceAdapter extends RecyclerView.Adapter<BaseUpcomin
 
     private List<BaseUpcomingService> serviceList;
     private Context context;
+    private LayoutInflater layoutInflater;
 
     public BaseUpcomingServiceAdapter(Context context, List<BaseUpcomingService> serviceList) {
         this.serviceList = serviceList;
@@ -30,19 +32,51 @@ public class BaseUpcomingServiceAdapter extends RecyclerView.Adapter<BaseUpcomin
     @NonNull
     @Override
     public BaseUpcomingServiceAdapter.MyViewHolder onCreateViewHolder(@NonNull ViewGroup viewGroup, int i) {
-        View v = LayoutInflater.from(viewGroup.getContext())
-                .inflate(R.layout.upcoming_service_item, viewGroup, false);
+        this.layoutInflater = LayoutInflater.from(viewGroup.getContext());
+        View v = layoutInflater.inflate(R.layout.upcoming_service_item, viewGroup, false);
         return new MyViewHolder(v);
     }
 
     @Override
     public void onBindViewHolder(@NonNull BaseUpcomingServiceAdapter.MyViewHolder holder, int i) {
         BaseUpcomingService service = serviceList.get(i);
-        holder.tvName.setText(service.getServiceName());
-        holder.tvDue.setText(new SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(service.getServiceDate()));
 
+        holder.tvDue.setText(new SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(service.getServiceDate()));
         int period = Days.daysBetween(new DateTime(service.getServiceDate()).toLocalDate(), new DateTime().toLocalDate()).getDays();
-        holder.tvOverdue.setText(context.getString(R.string.days_overdue, String.valueOf(period)));
+
+        if(period > 0 ){
+            holder.tvOverdue.setText(context.getString(R.string.days_overdue, String.valueOf(period)));
+            holder.tvOverdue.setTextColor(context.getResources().getColor(R.color.vaccine_red_bg_end));
+        }else {
+            holder.tvOverdue.setText(context.getString(R.string.days_until_due, String.valueOf(Math.abs(period))));
+            holder.tvOverdue.setTextColor(context.getResources().getColor(R.color.grey));
+        }
+
+        // add the titles
+        inflateTitles(holder.linearLayoutTitle, service.getServiceNames());
+        inflateSubtext(holder.linearLayoutSubTitles, service.getUpcomingServiceList());
+    }
+
+    private void inflateTitles(LinearLayout parent, List<String> titles){
+        if(titles == null || titles.size() == 0)
+            return;
+
+        for(String s : titles){
+            TextView textView = (TextView) layoutInflater.inflate(R.layout.upcoming_service_item_name, null);
+            textView.setText(s);
+            parent.addView(textView);
+        }
+    }
+
+    private void inflateSubtext(LinearLayout parent, List<BaseUpcomingService> subtexts){
+        if(subtexts == null || subtexts.size() == 0)
+            return;
+
+        for(BaseUpcomingService service : subtexts){
+            TextView textView = (TextView) layoutInflater.inflate(R.layout.upcoming_service_item_subtext, null);
+            textView.setText(service.getServiceName());
+            parent.addView(textView);
+        }
     }
 
     @Override
@@ -52,14 +86,16 @@ public class BaseUpcomingServiceAdapter extends RecyclerView.Adapter<BaseUpcomin
 
 
     public class MyViewHolder extends RecyclerView.ViewHolder {
-        private TextView tvDue, tvOverdue, tvName;
+        private TextView tvDue, tvOverdue;
+        private LinearLayout linearLayoutTitle, linearLayoutSubTitles;
         private View myView;
 
         private MyViewHolder(View view) {
             super(view);
             tvDue = view.findViewById(R.id.due_date);
             tvOverdue = view.findViewById(R.id.overdue_state);
-            tvName = view.findViewById(R.id.name);
+            linearLayoutTitle = view.findViewById(R.id.linearLayoutTitle);
+            linearLayoutSubTitles = view.findViewById(R.id.linearLayoutSubTitles);
             myView = view;
         }
 

@@ -37,6 +37,8 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
         titleView.setText(getString(R.string.return_to_all_pnc_women));
         record_reccuringvisit_done_bar.setVisibility(View.GONE);
         textViewAncVisitNot.setVisibility(View.GONE);
+        imageView = findViewById(org.smartregister.chw.opensrp_chw_anc.R.id.imageview_profile);
+
     }
 
     @Override
@@ -71,8 +73,6 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
     @Override
     public void setLastVisit(Date lastVisitDate) {
         view_last_visit_row.setVisibility(View.VISIBLE);
-
-
         if (basePncMemberProfileInteractor.getLastVisitDate(MEMBER_OBJECT.getBaseEntityId()) != null) {
             rlLastVisit.setVisibility(View.VISIBLE);
             String x = basePncMemberProfileInteractor.getLastVisitDate(MEMBER_OBJECT.getBaseEntityId());

@@ -9,6 +9,7 @@ import com.google.gson.GsonBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
+import org.joda.time.Days;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.domain.VisitDetail;
@@ -217,6 +218,20 @@ public class VisitUtils {
             getVaccineRepository().add(vaccine); // persist to local db
             tag.setDbKey(vaccine.getId());
         }
+    }
+
+    /**
+     * Check whether a visit occurred in the last 24 hours
+     *
+     * @param lastVisit The Visit instance for which you wish to check
+     * @return true or false based on whether the visit was between 24 hours
+     */
+    public static boolean isVisitWithin24Hours(Visit lastVisit) {
+        if (lastVisit != null) {
+            return (Days.daysBetween(new DateTime(lastVisit.getCreatedAt()), new DateTime()).getDays() < 1) &&
+                    (Days.daysBetween(new DateTime(lastVisit.getDate()), new DateTime()).getDays() <= 1);
+        }
+        return false;
     }
 
     public static VaccineRepository getVaccineRepository() {

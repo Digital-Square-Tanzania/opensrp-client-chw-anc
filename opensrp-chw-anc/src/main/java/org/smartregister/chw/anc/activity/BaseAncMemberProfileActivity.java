@@ -35,6 +35,7 @@ import org.smartregister.chw.anc.presenter.BaseAncMemberProfilePresenter;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.anc.util.NCUtils;
+import org.smartregister.chw.anc.util.VisitUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.helper.ImageRenderHelper;
@@ -221,10 +222,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
         Visit lastVisit = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT);
         if (lastVisit != null) {
-            boolean within24Hours =
-                    (Days.daysBetween(new DateTime(lastVisit.getCreatedAt()), new DateTime()).getDays() < 1) &&
-                            (Days.daysBetween(new DateTime(lastVisit.getDate()), new DateTime()).getDays() <= 1);
-            setUpEditViews(true, within24Hours, lastVisit.getDate().getTime());
+            setUpEditViews(true, VisitUtils.isVisitWithin24Hours(lastVisit), lastVisit.getDate().getTime());
         }
     }
 
@@ -236,6 +234,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
                 int offset = cal.getTimeZone().getOffset(cal.getTimeInMillis());
                 Date date = new Date(longDate - (long) offset);
                 String monthString = (String) DateFormat.format("MMMM", date);
+                layoutRecordView.setVisibility(View.GONE);
                 tvEdit.setVisibility(View.VISIBLE);
                 textViewNotVisitMonth.setText(getContext().getString(R.string.anc_visit_done, monthString));
                 imageViewCross.setImageResource(R.drawable.activityrow_visited);

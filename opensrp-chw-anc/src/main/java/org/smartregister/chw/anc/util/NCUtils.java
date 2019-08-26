@@ -422,6 +422,7 @@ public class NCUtils {
                     detail.setVisitDetailsId(org.smartregister.chw.anc.util.JsonFormUtils.generateRandomUUIDString());
                     detail.setVisitId(visit.getVisitId());
                     detail.setVisitKey(obs.getFormSubmissionField());
+                    detail.setParentCode(obs.getParentCode());
 
                     if (detail.getVisitKey().contains("date")) {
                         // parse the

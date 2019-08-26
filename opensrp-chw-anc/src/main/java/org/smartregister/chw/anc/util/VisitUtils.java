@@ -8,6 +8,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import org.apache.commons.lang3.StringUtils;
+import org.joda.time.DateTime;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.domain.VisitDetail;
@@ -25,10 +26,14 @@ import org.smartregister.immunization.service.intent.RecurringIntentService;
 import org.smartregister.immunization.service.intent.VaccineIntentService;
 import org.smartregister.repository.AllSharedPreferences;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class VisitUtils {
@@ -141,6 +146,11 @@ public class VisitUtils {
                             break;
                     }
                 }
+                VaccineWrapper wrapper = getVaccineWrapperFromDetails(visitDetail);
+                if (wrapper != null)
+                    vaccineWrappers.add(wrapper);
+
+
                 visitDetailsRepository.completeProcessing(visitDetail.getVisitDetailsId());
             }
         }
@@ -156,6 +166,35 @@ public class VisitUtils {
                 AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
                 NCUtils.addEvent(allSharedPreferences, subEvent);
             }
+        }
+    }
+
+    private static VaccineWrapper getVaccineWrapperFromDetails(VisitDetail detail) {
+        if (!"vaccine".equalsIgnoreCase(detail.getParentCode()))
+            return null;
+        Date vacDate = getDateFromString(detail.getDetails());
+        if (vacDate == null) return null;
+
+        VaccineWrapper vaccineWrapper = new VaccineWrapper();
+        vaccineWrapper.setName(detail.getVisitKey());
+        vaccineWrapper.setUpdatedVaccineDate(new DateTime(vacDate), false);
+
+        return vaccineWrapper;
+    }
+
+    public static Date getDateFromString(String dateStr) {
+        Date date = getDateFromString(dateStr, "yyyy-MM-dd");
+        if (date == null)
+            date = getDateFromString(dateStr, "dd-MM-yyyy");
+
+        return date;
+    }
+
+    public static Date getDateFromString(String strDate, String format) {
+        try {
+            return new SimpleDateFormat(format, Locale.getDefault()).parse(strDate);
+        } catch (ParseException e) {
+            return null;
         }
     }
 

@@ -295,16 +295,8 @@ public class NCUtils {
                 detail.setBaseEntityId(baseEntityID);
                 detail.setVisitKey(obs.getFormSubmissionField());
                 detail.setParentCode(obs.getParentCode());
-
-                if (detail.getVisitKey().contains("date")) {
-                    // parse the
-                    detail.setDetails(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getValues().toString())));
-                    detail.setHumanReadable(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getHumanReadableValues().toString())));
-                } else {
-                    detail.setDetails(cleanString(obs.getValues().toString()));
-                    detail.setHumanReadable(cleanString(obs.getHumanReadableValues().toString()));
-                }
-
+                detail.setDetails(getDetailsValue(detail, obs.getValues().toString()));
+                detail.setHumanReadable(getDetailsValue(detail, obs.getHumanReadableValues().toString()));
                 detail.setJsonDetails(new JSONObject(JsonFormUtils.gson.toJson(obs)).toString());
                 detail.setProcessed(false);
                 detail.setCreatedAt(new Date());
@@ -423,16 +415,8 @@ public class NCUtils {
                     detail.setVisitId(visit.getVisitId());
                     detail.setVisitKey(obs.getFormSubmissionField());
                     detail.setParentCode(obs.getParentCode());
-
-                    if (detail.getVisitKey().contains("date")) {
-                        // parse the
-                        detail.setDetails(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getValues().toString())));
-                        detail.setHumanReadable(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getHumanReadableValues().toString())));
-                    } else {
-                        detail.setDetails(cleanString(obs.getValues().toString()));
-                        detail.setHumanReadable(cleanString(obs.getHumanReadableValues().toString()));
-                    }
-
+                    detail.setDetails(getDetailsValue(detail, obs.getValues().toString()));
+                    detail.setHumanReadable(getDetailsValue(detail, obs.getHumanReadableValues().toString()));
                     detail.setProcessed(true);
                     detail.setCreatedAt(new Date());
                     detail.setUpdatedAt(new Date());
@@ -451,6 +435,17 @@ public class NCUtils {
         return visit;
     }
 
+    public static String getDetailsValue(VisitDetail detail, String val) {
+        String clean_val = cleanString(val);
+        if (detail.getVisitKey().contains("date")) {
+            return getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), clean_val);
+        } else if ("vaccine".equalsIgnoreCase(detail.getParentCode()) && !Constants.HOME_VISIT.VACCINE_NOT_GIVEN.equalsIgnoreCase(clean_val)) {
+            return getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), clean_val);
+        }
+
+        return clean_val;
+    }
+
     public static int getMemberProfileImageResourceIDentifier(String entityType) {
         return R.mipmap.ic_member;
     }
@@ -464,7 +459,6 @@ public class NCUtils {
     }
 
     public static void saveVaccineEvents(JSONArray fields, String baseID) {
-
         for (int i = 0; i < vaccines.length; i++) {
             saveVaccineEvent(vaccines[i], getFieldJSONObject(fields, vaccines[i]), baseID);
         }
@@ -608,7 +602,6 @@ public class NCUtils {
         }
         return null;
     }
-
 
     public static String removeSpaces(String s) {
         return s.replace(" ", "_").toLowerCase();

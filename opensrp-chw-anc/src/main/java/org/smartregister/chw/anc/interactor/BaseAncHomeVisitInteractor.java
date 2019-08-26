@@ -112,29 +112,22 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         for (Map.Entry<String, BaseAncHomeVisitAction> entry : map.entrySet()) {
             String json = entry.getValue().getJsonPayload();
             if (StringUtils.isNotBlank(json)) {
-
                 // do not process events that are meant to be in detached mode
                 // in a similar manner to the the aggregated events
                 BaseAncHomeVisitAction.ProcessingMode mode = entry.getValue().getProcessingMode();
-                if (mode == BaseAncHomeVisitAction.ProcessingMode.DETACHED
-                        && StringUtils.isNotBlank(entry.getValue().getBaseEntityID())) {
+                if (mode == BaseAncHomeVisitAction.ProcessingMode.DETACHED) {
+
                     detachedVisits.put(entry.getKey(), entry.getValue());
-                    continue;
-                }
+                } else if (mode == BaseAncHomeVisitAction.ProcessingMode.SEPARATE && StringUtils.isBlank(parentEventType)) {
 
-                if (mode == BaseAncHomeVisitAction.ProcessingMode.SEPARATE
-                        && StringUtils.isNotBlank(entry.getValue().getBaseEntityID())
-                        && StringUtils.isBlank(parentEventType)
-                ) {
                     externalVisits.put(entry.getKey(), entry.getValue());
-                    continue;
+                } else {
+                    jsons.put(entry.getKey(), json);
+                    JSONObject jsonObject = new JSONObject(json);
+
+                    extractVaccineWrappers(entry, vaccineWrapperMap, jsonObject);
+                    extractServiceWrappers(entry, serviceWrapperMap, jsonObject);
                 }
-
-                jsons.put(entry.getKey(), json);
-                JSONObject jsonObject = new JSONObject(json);
-
-                extractVaccineWrappers(entry, vaccineWrapperMap, jsonObject);
-                extractServiceWrappers(entry, serviceWrapperMap, jsonObject);
             }
         }
 
@@ -180,6 +173,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
     /**
      * recursively persist visits to the db
+     *
      * @param visit
      * @param externalVisits
      * @param memberID
@@ -229,7 +223,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         return null;
     }
 
-    private VisitRepository visitRepository(){
+    private VisitRepository visitRepository() {
         return AncLibrary.getInstance().visitRepository();
     }
 

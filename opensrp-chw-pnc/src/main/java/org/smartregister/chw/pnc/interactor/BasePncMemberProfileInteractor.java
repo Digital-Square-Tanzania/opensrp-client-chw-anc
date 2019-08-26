@@ -73,10 +73,15 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
                         childObject.getColumnmaps().get(DBConstants.KEY.LAST_NAME),
                         String.valueOf(PncUtil.getDaysDifference(childObject.getColumnmaps().get(DBConstants.KEY.DOB))),
                         gender));
-                if (gender == 'M')
+                if (gender == 'M'){
                     imageView.setBorderColor(PncLibrary.getInstance().context().getColorResource(R.color.light_blue));
-                else
+                    imageView.setBorderWidth(12);
+                }
+                else{
                     imageView.setBorderColor(PncLibrary.getInstance().context().getColorResource(R.color.light_pink));
+                    imageView.setBorderWidth(12);
+                }
+
             } catch (NullPointerException npe) {
                 Timber.e(npe);
             }

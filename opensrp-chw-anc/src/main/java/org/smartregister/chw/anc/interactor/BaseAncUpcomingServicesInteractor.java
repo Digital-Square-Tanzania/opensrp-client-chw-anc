@@ -27,7 +27,7 @@ public class BaseAncUpcomingServicesInteractor implements BaseAncUpcomingService
     }
 
     @Override
-    public void getUpComingServices(final MemberObject memberObject, final Context context, final BaseAncUpcomingServicesContract.InteractorCallBack callBack) {
+    public final void getUpComingServices(final MemberObject memberObject, final Context context, final BaseAncUpcomingServicesContract.InteractorCallBack callBack) {
         Runnable runnable = () -> {
             // save it
             final List<BaseUpcomingService> services = new ArrayList<>();

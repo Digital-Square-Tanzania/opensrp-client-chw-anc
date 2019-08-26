@@ -97,7 +97,7 @@ public class VisitUtils {
             if (!v.getProcessed()) {
 
                 // process details
-                processVisitDetails(visitDetailsRepository, v.getVisitId(), v.getBaseEntityId());
+                processVisitDetails(v, visitDetailsRepository, v.getVisitId(), v.getBaseEntityId());
 
                 // persist to db
                 Event baseEvent = new Gson().fromJson(v.getPreProcessedJson(), Event.class);
@@ -117,7 +117,7 @@ public class VisitUtils {
         context.startService(new Intent(context, RecurringIntentService.class));
     }
 
-    private static void processVisitDetails(VisitDetailsRepository visitDetailsRepository, String visitID, String baseEntityID) throws Exception {
+    private static void processVisitDetails(Visit visit, VisitDetailsRepository visitDetailsRepository, String visitID, String baseEntityID) throws Exception {
         List<VisitDetail> visitDetailList = visitDetailsRepository.getVisits(visitID);
         List<VaccineWrapper> vaccineWrappers = new ArrayList<>();
         List<ServiceWrapper> serviceWrappers = new ArrayList<>();
@@ -145,10 +145,7 @@ public class VisitUtils {
                             break;
                     }
                 }
-                VaccineWrapper wrapper = getVaccineWrapperFromDetails(visitDetail);
-                if (wrapper != null)
-                    vaccineWrappers.add(wrapper);
-
+                saveVisitDetailsAsVaccine(visitDetail, baseEntityID, visit.getDate());
 
                 visitDetailsRepository.completeProcessing(visitDetail.getVisitDetailsId());
             }
@@ -168,7 +165,7 @@ public class VisitUtils {
         }
     }
 
-    private static VaccineWrapper getVaccineWrapperFromDetails(VisitDetail detail) {
+    private static Vaccine saveVisitDetailsAsVaccine(VisitDetail detail, String baseEntityID, Date eventDate) {
         if (!"vaccine".equalsIgnoreCase(detail.getParentCode()))
             return null;
 
@@ -178,11 +175,23 @@ public class VisitUtils {
         Date vacDate = getDateFromString(detail.getDetails());
         if (vacDate == null) return null;
 
-        VaccineWrapper vaccineWrapper = new VaccineWrapper();
-        vaccineWrapper.setName(detail.getVisitKey());
-        vaccineWrapper.setUpdatedVaccineDate(new DateTime(vacDate), false);
+        Vaccine vaccine = new Vaccine();
+        vaccine.setBaseEntityId(baseEntityID);
+        vaccine.setName(detail.getVisitKey());
+        vaccine.setDate(vacDate);
+        vaccine.setCreatedAt(eventDate);
 
-        return vaccineWrapper;
+        String lastChar = vaccine.getName().substring(vaccine.getName().length() - 1);
+        if (StringUtils.isNumeric(lastChar)) {
+            vaccine.setCalculation(Integer.valueOf(lastChar));
+        } else {
+            vaccine.setCalculation(0);
+        }
+
+        JsonFormUtils.tagSyncMetadata(NCUtils.context().allSharedPreferences(), vaccine);
+        getVaccineRepository().add(vaccine); // persist to local db
+
+        return vaccine;
     }
 
     public static Date getDateFromString(String dateStr) {

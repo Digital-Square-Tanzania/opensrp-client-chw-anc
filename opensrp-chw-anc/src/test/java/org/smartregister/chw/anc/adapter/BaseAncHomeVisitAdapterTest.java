@@ -39,6 +39,8 @@ public class BaseAncHomeVisitAdapterTest extends BaseUnitTest {
     public void testGetCircleColorComplete() throws Exception {
         BaseAncHomeVisitAdapter ancHomeVisitAdapter = new BaseAncHomeVisitAdapter(context, view, myDataset);
         BaseAncHomeVisitAction ancHomeVisitAction = Mockito.mock(BaseAncHomeVisitAction.class);
+        Mockito.doReturn(true).when(ancHomeVisitAction).isEnabled();
+        Mockito.doReturn(true).when(ancHomeVisitAction).isValid();
         Mockito.doReturn(BaseAncHomeVisitAction.Status.COMPLETED).when(ancHomeVisitAction).getActionStatus();
 
         int res = Whitebox.invokeMethod(ancHomeVisitAdapter, "getCircleColor", ancHomeVisitAction);
@@ -49,6 +51,8 @@ public class BaseAncHomeVisitAdapterTest extends BaseUnitTest {
     public void testGetCircleColorPending() throws Exception {
         BaseAncHomeVisitAdapter ancHomeVisitAdapter = new BaseAncHomeVisitAdapter(context, view, myDataset);
         BaseAncHomeVisitAction ancHomeVisitAction = Mockito.mock(BaseAncHomeVisitAction.class);
+        Mockito.doReturn(true).when(ancHomeVisitAction).isEnabled();
+        Mockito.doReturn(true).when(ancHomeVisitAction).isValid();
         Mockito.doReturn(BaseAncHomeVisitAction.Status.PENDING).when(ancHomeVisitAction).getActionStatus();
 
         int res = Whitebox.invokeMethod(ancHomeVisitAdapter, "getCircleColor", ancHomeVisitAction);
@@ -59,6 +63,8 @@ public class BaseAncHomeVisitAdapterTest extends BaseUnitTest {
     public void testGetCircleColorPartial() throws Exception {
         BaseAncHomeVisitAdapter ancHomeVisitAdapter = new BaseAncHomeVisitAdapter(context, view, myDataset);
         BaseAncHomeVisitAction ancHomeVisitAction = Mockito.mock(BaseAncHomeVisitAction.class);
+        Mockito.doReturn(true).when(ancHomeVisitAction).isEnabled();
+        Mockito.doReturn(true).when(ancHomeVisitAction).isValid();
         Mockito.doReturn(BaseAncHomeVisitAction.Status.PARTIALLY_COMPLETED).when(ancHomeVisitAction).getActionStatus();
 
         int res = Whitebox.invokeMethod(ancHomeVisitAdapter, "getCircleColor", ancHomeVisitAction);
@@ -66,10 +72,12 @@ public class BaseAncHomeVisitAdapterTest extends BaseUnitTest {
     }
 
     @Test
-    public void testBindClickListener() throws Exception {
+    public void testBindClickListenerOnValidObject() throws Exception {
         BaseAncHomeVisitAdapter ancHomeVisitAdapter = new BaseAncHomeVisitAdapter(context, view, myDataset);
         View view = Mockito.mock(View.class);
         BaseAncHomeVisitAction ancHomeVisitAction = Mockito.mock(BaseAncHomeVisitAction.class);
+        Mockito.doReturn(true).when(ancHomeVisitAction).isValid();
+        Mockito.doReturn(true).when(ancHomeVisitAction).isEnabled();
 
         Whitebox.invokeMethod(ancHomeVisitAdapter, "bindClickListener", view, ancHomeVisitAction);
 

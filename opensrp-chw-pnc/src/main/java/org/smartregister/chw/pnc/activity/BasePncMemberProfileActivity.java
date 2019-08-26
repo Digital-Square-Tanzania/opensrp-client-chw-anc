@@ -28,10 +28,7 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
         intent.putExtra(FAMILY_HEAD_NAME, familyHeadName);
         intent.putExtra(FAMILY_HEAD_PHONE, familyHeadPhoneNumber);
         activity.startActivity(intent);
-
-
     }
-
 
     @Override
     protected void setupViews() {
@@ -40,10 +37,7 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
         titleView.setText(getString(R.string.return_to_all_pnc_women));
         record_reccuringvisit_done_bar.setVisibility(View.GONE);
         textViewAncVisitNot.setVisibility(View.GONE);
-
-
     }
-
 
     @Override
     public void setMemberName(String memberName) {
@@ -58,7 +52,6 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
         }
     }
 
-
     @Override
     protected String getProfileType() {
         return Constants.MEMBER_PROFILE_TYPES.PNC;
@@ -68,7 +61,6 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
     public void setRecordVisitTitle(String title) {
         textview_record_anc_visit.setText(getString(R.string.record_pnc_visit));
     }
-
 
     @Override
     public void openMedicalHistory() {

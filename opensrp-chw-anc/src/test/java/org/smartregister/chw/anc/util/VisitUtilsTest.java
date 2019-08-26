@@ -39,7 +39,7 @@ import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 @PrepareForTest({AncLibrary.class, JsonFormUtils.class, ImmunizationLibrary.class})
-public class VisitNCUtilsTest {
+public class VisitUtilsTest {
     @Rule
     public PowerMockRule rule = new PowerMockRule();
 

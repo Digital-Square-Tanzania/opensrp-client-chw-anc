@@ -644,9 +644,9 @@ public class NCUtils {
         if (list.size() > 0) {
             StringBuilder sb = new StringBuilder();
             for (String s : list) {
-                sb.append(s).append(",");
+                sb.append(s).append(", ");
             }
-            result = sb.deleteCharAt(sb.length() - 1).toString();
+            result = sb.deleteCharAt(sb.length() - 2).toString();
         }
         return result;
     }

@@ -30,7 +30,6 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
         activity.startActivity(intent);
     }
 
-
     @Override
     protected void setupViews() {
         super.setupViews();
@@ -41,7 +40,6 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
         imageView = findViewById(org.smartregister.chw.opensrp_chw_anc.R.id.imageview_profile);
 
     }
-
 
     @Override
     public void setMemberName(String memberName) {
@@ -65,7 +63,6 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
     public void setRecordVisitTitle(String title) {
         textview_record_anc_visit.setText(getString(R.string.record_pnc_visit));
     }
-
 
     @Override
     public void openMedicalHistory() {

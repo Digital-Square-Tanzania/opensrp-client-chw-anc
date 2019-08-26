@@ -43,6 +43,7 @@ public class BaseAncHomeVisitAction {
         this.baseEntityID = builder.baseEntityID;
         this.title = builder.title;
         this.subTitle = builder.subTitle;
+        this.disabledMessage = builder.disabledMessage;
         this.actionStatus = builder.actionStatus;
         this.scheduleStatus = builder.scheduleStatus;
         this.optional = builder.optional;
@@ -56,7 +57,6 @@ public class BaseAncHomeVisitAction {
         this.processingMode = builder.processingMode;
         this.jsonPayload = builder.jsonPayload;
         this.validator = builder.validator;
-        this.disabledMessage = builder.disabledMessage;
 
         validateMe();
         initialize();
@@ -309,7 +309,7 @@ public class BaseAncHomeVisitAction {
     /**
      * Detached processing generates separate event when form is submitted
      */
-    public enum ProcessingMode {COMBINED, DETACHED}
+    public enum ProcessingMode {COMBINED, DETACHED, SEPARATE}
 
     public interface AncHomeVisitActionHelper {
 
@@ -331,7 +331,6 @@ public class BaseAncHomeVisitAction {
          * @param jsonPayload
          */
         void onPayloadReceived(String jsonPayload);
-
 
         /**
          * executed after form is loaded on start

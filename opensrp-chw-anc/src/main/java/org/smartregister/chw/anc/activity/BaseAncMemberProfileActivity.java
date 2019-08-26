@@ -106,12 +106,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             upArrow.setColorFilter(getResources().getColor(R.color.text_blue), PorterDuff.Mode.SRC_ATOP);
             actionBar.setHomeAsUpIndicator(upArrow);
         }
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> finish());
         appBarLayout = findViewById(R.id.collapsing_toolbar_appbarlayout);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             appBarLayout.setOutlineProvider(null);
@@ -371,7 +366,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             tvFamilyStatus.setText(NCUtils.fromHtml(getString(R.string.family_has_service_overdue)));
         }
     }
-
 
     @Override
     public void setMemberName(String memberName) {

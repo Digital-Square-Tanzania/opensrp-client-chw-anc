@@ -30,6 +30,7 @@ import com.vijay.jsonwizard.constants.JsonFormConstants;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -40,6 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.contract.BaseAncWomanCallDialogContract;
+import org.smartregister.chw.anc.domain.VaccineDisplay;
 import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.opensrp_chw_anc.R;
@@ -215,11 +217,11 @@ public class NCUtils {
         return formatter.format(date);
     }
 
-    private static SimpleDateFormat getSourceDateFormat() {
+    public static SimpleDateFormat getSourceDateFormat() {
         return new SimpleDateFormat(AncLibrary.getInstance().getSourceDateFormat(), Locale.getDefault());
     }
 
-    private static SimpleDateFormat getSaveDateFormat() {
+    public static SimpleDateFormat getSaveDateFormat() {
         return new SimpleDateFormat(AncLibrary.getInstance().getSaveDateFormat(), Locale.getDefault());
     }
 
@@ -292,16 +294,9 @@ public class NCUtils {
                 detail.setVisitId(visitID);
                 detail.setBaseEntityId(baseEntityID);
                 detail.setVisitKey(obs.getFormSubmissionField());
-
-                if (detail.getVisitKey().contains("date")) {
-                    // parse the
-                    detail.setDetails(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getValues().toString())));
-                    detail.setHumanReadable(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getHumanReadableValues().toString())));
-                } else {
-                    detail.setDetails(cleanString(obs.getValues().toString()));
-                    detail.setHumanReadable(cleanString(obs.getHumanReadableValues().toString()));
-                }
-
+                detail.setParentCode(obs.getParentCode());
+                detail.setDetails(getDetailsValue(detail, obs.getValues().toString()));
+                detail.setHumanReadable(getDetailsValue(detail, obs.getHumanReadableValues().toString()));
                 detail.setJsonDetails(new JSONObject(JsonFormUtils.gson.toJson(obs)).toString());
                 detail.setProcessed(false);
                 detail.setCreatedAt(new Date());
@@ -320,10 +315,20 @@ public class NCUtils {
     }
 
     public static String getFormattedDate(SimpleDateFormat source_sdf, SimpleDateFormat dest_sdf, String value) {
+        if (StringUtils.isBlank(value))
+            return "";
+
         try {
             Date date = source_sdf.parse(value);
             return dest_sdf.format(date);
         } catch (Exception e) {
+            try {
+                // fallback for long datetypes
+                Date date = new Date(Long.parseLong(value));
+                return dest_sdf.format(date);
+            } catch (NumberFormatException | NullPointerException nfe) {
+                Timber.e(e);
+            }
             Timber.e(e);
         }
         return value;
@@ -338,11 +343,29 @@ public class NCUtils {
         processAncHomeVisit(baseEvent, null);
     }
 
+    public static void processSubHomeVisit(EventClient baseEvent, String parentEventType) {
+        processAncHomeVisit(baseEvent, null, parentEventType);
+    }
+
+    public static void processSubHomeVisit(EventClient baseEvent, SQLiteDatabase database, String parentEventType) {
+        processAncHomeVisit(baseEvent, database, parentEventType);
+    }
+
     public static void processAncHomeVisit(EventClient baseEvent, SQLiteDatabase database) {
+        processAncHomeVisit(baseEvent, database, null);
+    }
+
+    public static void processAncHomeVisit(EventClient baseEvent, SQLiteDatabase database, String parentEventType) {
         try {
             Visit visit = AncLibrary.getInstance().visitRepository().getVisitByFormSubmissionID(baseEvent.getEvent().getFormSubmissionId());
             if (visit == null) {
                 visit = eventToVisit(baseEvent.getEvent());
+
+                if (StringUtils.isNotBlank(parentEventType) && !parentEventType.equalsIgnoreCase(visit.getVisitType())) {
+                    String parentVisitID = AncLibrary.getInstance().visitRepository().getParentVisitEventID(visit.getBaseEntityId(), parentEventType, visit.getDate());
+                    visit.setParentVisitID(parentVisitID);
+                }
+
                 if (database != null) {
                     AncLibrary.getInstance().visitRepository().addVisit(visit, database);
                 } else {
@@ -391,16 +414,9 @@ public class NCUtils {
                     detail.setVisitDetailsId(org.smartregister.chw.anc.util.JsonFormUtils.generateRandomUUIDString());
                     detail.setVisitId(visit.getVisitId());
                     detail.setVisitKey(obs.getFormSubmissionField());
-
-                    if (detail.getVisitKey().contains("date")) {
-                        // parse the
-                        detail.setDetails(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getValues().toString())));
-                        detail.setHumanReadable(getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), cleanString(obs.getHumanReadableValues().toString())));
-                    } else {
-                        detail.setDetails(cleanString(obs.getValues().toString()));
-                        detail.setHumanReadable(cleanString(obs.getHumanReadableValues().toString()));
-                    }
-
+                    detail.setParentCode(obs.getParentCode());
+                    detail.setDetails(getDetailsValue(detail, obs.getValues().toString()));
+                    detail.setHumanReadable(getDetailsValue(detail, obs.getHumanReadableValues().toString()));
                     detail.setProcessed(true);
                     detail.setCreatedAt(new Date());
                     detail.setUpdatedAt(new Date());
@@ -419,6 +435,17 @@ public class NCUtils {
         return visit;
     }
 
+    public static String getDetailsValue(VisitDetail detail, String val) {
+        String clean_val = cleanString(val);
+        if (detail.getVisitKey().contains("date")) {
+            return getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), clean_val);
+        } else if ("vaccine".equalsIgnoreCase(detail.getParentCode()) && !Constants.HOME_VISIT.VACCINE_NOT_GIVEN.equalsIgnoreCase(clean_val)) {
+            return getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), clean_val);
+        }
+
+        return clean_val;
+    }
+
     public static int getMemberProfileImageResourceIDentifier(String entityType) {
         return R.mipmap.ic_member;
     }
@@ -432,7 +459,6 @@ public class NCUtils {
     }
 
     public static void saveVaccineEvents(JSONArray fields, String baseID) {
-
         for (int i = 0; i < vaccines.length; i++) {
             saveVaccineEvent(vaccines[i], getFieldJSONObject(fields, vaccines[i]), baseID);
         }
@@ -531,8 +557,9 @@ public class NCUtils {
             for (Map.Entry<VaccineWrapper, String> entry : vaccineWrapperDateMap.entrySet()) {
                 JSONObject field = new JSONObject();
                 field.put(JsonFormConstants.KEY, removeSpaces(entry.getKey().getName()));
-                field.put(JsonFormConstants.OPENMRS_ENTITY_PARENT, "");
+                field.put(JsonFormConstants.OPENMRS_ENTITY_PARENT, "vaccine");
                 field.put(JsonFormConstants.OPENMRS_ENTITY, "concept");
+                field.put(JsonFormConstants.TYPE, JsonFormConstants.EDIT_TEXT);
                 field.put(JsonFormConstants.OPENMRS_ENTITY_ID, removeSpaces(entry.getKey().getName()));
                 field.put(JsonFormConstants.VALUE, entry.getValue());
 
@@ -546,7 +573,81 @@ public class NCUtils {
         return null;
     }
 
+    @Nullable
+    public static JSONObject getVisitJSONFromVisitDetails(String entityID, Map<String, List<VisitDetail>> detailsMap, List<VaccineDisplay> vaccineDisplays) {
+        try {
+            JSONObject jsonObject = JsonFormUtils.getFormAsJson(Constants.FORMS.IMMUNIZATIOIN_VISIT);
+            jsonObject.put("entity_id", entityID);
+            JSONArray jsonArray = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
+
+            for (VaccineDisplay vaccineDisplay : vaccineDisplays) {
+                JSONObject field = new JSONObject();
+
+                String name = removeSpaces(vaccineDisplay.getVaccineWrapper().getName());
+                String value = getText(detailsMap.get(name));
+
+                field.put(JsonFormConstants.KEY, name);
+                field.put(JsonFormConstants.OPENMRS_ENTITY_PARENT, "vaccine");
+                field.put(JsonFormConstants.OPENMRS_ENTITY, "concept");
+                field.put(JsonFormConstants.TYPE, JsonFormConstants.EDIT_TEXT);
+                field.put(JsonFormConstants.OPENMRS_ENTITY_ID, name);
+                field.put(JsonFormConstants.VALUE, value);
+
+                jsonArray.put(field);
+            }
+
+            return jsonObject;
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+        return null;
+    }
+
     public static String removeSpaces(String s) {
         return s.replace(" ", "_").toLowerCase();
+    }
+
+    /**
+     * Extract value from VisitDetail
+     *
+     * @return
+     */
+    @NotNull
+    public static String getText(@Nullable VisitDetail visitDetail) {
+        if (visitDetail == null)
+            return "";
+
+        String val = visitDetail.getHumanReadable();
+        if (StringUtils.isNotBlank(val))
+            return val.trim();
+
+        return (StringUtils.isNotBlank(visitDetail.getDetails())) ? visitDetail.getDetails().trim() : "";
+    }
+
+    @NotNull
+    public static String getText(@Nullable List<VisitDetail> visitDetails) {
+        if (visitDetails == null)
+            return "";
+
+        List<String> vals = new ArrayList<>();
+        for (VisitDetail vd : visitDetails) {
+            String val = getText(vd);
+            if (StringUtils.isNotBlank(val))
+                vals.add(val);
+        }
+
+        return toCSV(vals);
+    }
+
+    public static String toCSV(List<String> list) {
+        String result = "";
+        if (list.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            for (String s : list) {
+                sb.append(s).append(", ");
+            }
+            result = sb.deleteCharAt(sb.length() - 2).toString();
+        }
+        return result;
     }
 }

@@ -205,8 +205,8 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
 
                 String key = object.getString(JsonFormConstants.KEY);
                 rb.setTag(R.id.home_visit_radio_key, key);
-                rb.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                    if (isChecked)
+                rb.setOnClickListener(v -> {
+                    if (rb.isChecked())
                         onSelectOption(key);
                 });
             } catch (JSONException e) {
@@ -342,6 +342,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
     public void setValue(String value) {
         if (getQuestionType() == QuestionType.BOOLEAN) {
             if (radioButtonNo != null && radioButtonYes != null) {
+                setYesNoListenersActive(false);
                 if (value.equalsIgnoreCase("Yes")) {
                     radioButtonYes.setChecked(true);
                     radioButtonNo.setChecked(false);
@@ -349,6 +350,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
                     radioButtonYes.setChecked(false);
                     radioButtonNo.setChecked(true);
                 }
+                setYesNoListenersActive(true);
             }
         } else if (getQuestionType() == QuestionType.DATE_SELECTOR) {
             // datePicker.updateDate();
@@ -363,6 +365,9 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
             }
         } else if (getQuestionType() == QuestionType.RADIO) {
             //
+            if (radioGroupDynamic.getChildCount() == 0)
+                prepareRadioView();
+
             int count = radioGroupDynamic.getChildCount();
             int x = 0;
             while (count > x) {
@@ -373,6 +378,16 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
                 }
                 x++;
             }
+        }
+    }
+
+    private void setYesNoListenersActive(boolean active) {
+        if (active) {
+            radioButtonYes.setOnClickListener(this);
+            radioButtonNo.setOnClickListener(this);
+        } else {
+            radioButtonYes.setOnClickListener(null);
+            radioButtonNo.setOnClickListener(null);
         }
     }
 

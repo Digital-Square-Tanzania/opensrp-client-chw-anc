@@ -11,9 +11,11 @@ import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.repository.Repository;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 import timber.log.Timber;
 
@@ -22,6 +24,7 @@ public class VisitRepository extends BaseRepository {
     public static final String VISIT_TABLE = "visits";
     private static final String VISIT_ID = "visit_id";
     private static final String VISIT_TYPE = "visit_type";
+    private static final String PARENT_VISIT_ID = "parent_visit_id";
     private static final String BASE_ENTITY_ID = "base_entity_id";
     private static final String VISIT_DATE = "visit_date";
     private static final String VISIT_JSON = "visit_json";
@@ -34,6 +37,7 @@ public class VisitRepository extends BaseRepository {
             "CREATE TABLE " + VISIT_TABLE + "("
                     + VISIT_ID + " VARCHAR NULL, "
                     + VISIT_TYPE + " VARCHAR NULL, "
+                    + PARENT_VISIT_ID + " VARCHAR NULL, "
                     + BASE_ENTITY_ID + " VARCHAR NULL, "
                     + VISIT_DATE + " VARCHAR NULL, "
                     + VISIT_JSON + " VARCHAR NULL, "
@@ -48,8 +52,11 @@ public class VisitRepository extends BaseRepository {
             + VISIT_TYPE + " COLLATE NOCASE , "
             + VISIT_DATE + " COLLATE NOCASE"
             + ");";
-    private String[] VISIT_COLUMNS = {VISIT_ID, VISIT_TYPE, BASE_ENTITY_ID, VISIT_DATE, VISIT_JSON, PRE_PROCESSED, FORM_SUBMISSION_ID, PROCESSED, UPDATED_AT, CREATED_AT};
 
+    public static final String PARENT_VISIT_ID_INDEX = "CREATE INDEX " + VISIT_TABLE + "_" + PARENT_VISIT_ID + "_index ON " + VISIT_TABLE
+            + "(" + PARENT_VISIT_ID + " COLLATE NOCASE );";
+
+    private String[] VISIT_COLUMNS = {VISIT_ID, VISIT_TYPE, PARENT_VISIT_ID, BASE_ENTITY_ID, VISIT_DATE, VISIT_JSON, PRE_PROCESSED, FORM_SUBMISSION_ID, PROCESSED, UPDATED_AT, CREATED_AT};
 
     public VisitRepository(Repository repository) {
         super(repository);
@@ -58,12 +65,14 @@ public class VisitRepository extends BaseRepository {
     public static void createTable(SQLiteDatabase database) {
         database.execSQL(CREATE_VISIT_TABLE);
         database.execSQL(BASE_ENTITY_ID_INDEX);
+        database.execSQL(PARENT_VISIT_ID_INDEX);
     }
 
     private ContentValues createValues(Visit visit) {
         ContentValues values = new ContentValues();
         values.put(VISIT_ID, visit.getVisitId());
         values.put(VISIT_TYPE, visit.getVisitType());
+        values.put(PARENT_VISIT_ID, visit.getParentVisitID());
         values.put(BASE_ENTITY_ID, visit.getBaseEntityId());
         values.put(VISIT_DATE, visit.getDate() != null ? visit.getDate().getTime() : null);
         values.put(VISIT_JSON, visit.getJson());
@@ -85,6 +94,30 @@ public class VisitRepository extends BaseRepository {
         }
         // Handle updated home visit details
         database.insert(VISIT_TABLE, null, createValues(visit));
+    }
+
+    public String getParentVisitEventID(String baseEntityID, String parentEventType, Date eventDate) {
+        String visitID = null;
+        Cursor cursor = null;
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
+        String sql = "select " + VISIT_ID + " from visits where base_entity_id = ? COLLATE NOCASE and visit_type = ? COLLATE NOCASE strftime('%Y-%m-%d',visit_date / 1000, 'unixepoch') = ? ";
+        try {
+            cursor = getReadableDatabase().rawQuery(sql, new String[]{sdf.format(eventDate), parentEventType, baseEntityID});
+            if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
+                while (!cursor.isAfterLast()) {
+                    visitID = cursor.getString(cursor.getColumnIndex(VISIT_ID));
+                    cursor.moveToNext();
+                }
+            }
+        } catch (Exception e) {
+            Timber.e(e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+
+        return visitID;
     }
 
     public void deleteVisit(String visitID) {
@@ -118,6 +151,7 @@ public class VisitRepository extends BaseRepository {
                     Visit visit = new Visit();
                     visit.setVisitId(cursor.getString(cursor.getColumnIndex(VISIT_ID)));
                     visit.setVisitType(cursor.getString(cursor.getColumnIndex(VISIT_TYPE)));
+                    visit.setParentVisitID(cursor.getString(cursor.getColumnIndex(PARENT_VISIT_ID)));
                     visit.setPreProcessedJson(cursor.getString(cursor.getColumnIndex(PRE_PROCESSED)));
                     visit.setBaseEntityId(cursor.getString(cursor.getColumnIndex(BASE_ENTITY_ID)));
                     visit.setDate(new Date(Long.parseLong(cursor.getString(cursor.getColumnIndex(VISIT_DATE)))));
@@ -134,7 +168,8 @@ public class VisitRepository extends BaseRepository {
         } catch (Exception e) {
             Timber.e(e);
         } finally {
-            cursor.close();
+            if (cursor != null)
+                cursor.close();
         }
         return visits;
     }
@@ -189,13 +224,14 @@ public class VisitRepository extends BaseRepository {
         }
         return visits;
     }
+
     public List<Visit> getUniqueDayLatestThreeVisits(String baseEntityID, String visitType) {
         List<Visit> visits = new ArrayList<>();
         Cursor cursor = null;
         try {
-            String query = "select STRFTIME('%Y%m%d', datetime(("+VISIT_DATE+")/1000,'unixepoch')) as d,* from "+VISIT_TABLE+" where "+VISIT_TYPE+" = '"+visitType+"' AND " +
-                    ""+BASE_ENTITY_ID+" = '"+baseEntityID+"'  group by d order by "+VISIT_DATE+" desc limit 3";
-            cursor = getReadableDatabase().rawQuery(query,null);
+            String query = "select STRFTIME('%Y%m%d', datetime((" + VISIT_DATE + ")/1000,'unixepoch')) as d,* from " + VISIT_TABLE + " where " + VISIT_TYPE + " = '" + visitType + "' AND " +
+                    "" + BASE_ENTITY_ID + " = '" + baseEntityID + "'  group by d order by " + VISIT_DATE + " desc limit 3";
+            cursor = getReadableDatabase().rawQuery(query, null);
             visits = readVisits(cursor);
         } catch (Exception e) {
             Timber.e(e);
@@ -206,11 +242,28 @@ public class VisitRepository extends BaseRepository {
         }
         return visits;
     }
-    public List<Visit> getVisitsByVisitId(String homeVisitId) {
+
+    public List<Visit> getVisitsByVisitId(String visitID) {
         List<Visit> visits = new ArrayList<>();
         Cursor cursor = null;
         try {
-            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, VISIT_ID + " = ? ", new String[]{homeVisitId}, null, null, VISIT_DATE + " DESC ", null);
+            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, VISIT_ID + " = ? ", new String[]{visitID}, null, null, VISIT_DATE + " DESC ", null);
+            visits = readVisits(cursor);
+        } catch (Exception e) {
+            Timber.e(e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return visits;
+    }
+
+    public List<Visit> getChildEvents(String visitID) {
+        List<Visit> visits = new ArrayList<>();
+        Cursor cursor = null;
+        try {
+            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, PARENT_VISIT_ID + " = ? ", new String[]{visitID}, null, null, VISIT_DATE + " DESC ", null);
             visits = readVisits(cursor);
         } catch (Exception e) {
             Timber.e(e);

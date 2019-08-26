@@ -81,8 +81,9 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         }
 
         JSONArray fields = new JSONArray(fields_obj);
+        String derivedEncounterType = StringUtils.isBlank(encounterType) ? getString(jsonForm, ENCOUNTER_TYPE) : encounterType;
 
-        return org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, encounterType, tableName);
+        return org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, derivedEncounterType, tableName);
     }
 
     public static Event prepareEvent(AllSharedPreferences allSharedPreferences, String entityId, String jsonString, String tableName) throws JSONException {
@@ -100,7 +101,6 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
 
         return org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, encounterType, tableName);
     }
-
 
     public static Event createUntaggedEvent(String baseEntityId, String eventType, String table) {
 
@@ -279,7 +279,6 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     }
 
     public static void populateForm(JSONObject jsonObject, Map<String, List<VisitDetail>> details) {
-        Timber.v("populateForm");
         try {
             // x steps
             String count_str = jsonObject.getString(JsonFormConstants.COUNT);
@@ -292,13 +291,18 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
                 while (field_count >= 0) {
 
                     JSONObject jo = jsonArray.getJSONObject(field_count);
-                    List<VisitDetail> detailList = details.get(jo.getString(JsonFormConstants.KEY));
+                    String key = jo.getString(JsonFormConstants.KEY);
+                    List<VisitDetail> detailList = details.get(key);
 
                     if (detailList != null) {
                         if (jo.getString(JsonFormConstants.TYPE).equalsIgnoreCase(JsonFormConstants.CHECK_BOX)) {
                             jo.put(JsonFormConstants.VALUE, getValue(jo, detailList));
                         } else {
-                            jo.put(JsonFormConstants.VALUE, getValue(detailList.get(0)));
+                            String value = getValue(detailList.get(0));
+                            if (key.contains("date")) {
+                                value = NCUtils.getFormattedDate(NCUtils.getSaveDateFormat(), NCUtils.getSourceDateFormat(), value);
+                            }
+                            jo.put(JsonFormConstants.VALUE, value);
                         }
                     }
 

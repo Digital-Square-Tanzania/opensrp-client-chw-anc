@@ -27,8 +27,10 @@ import org.smartregister.immunization.service.intent.RecurringIntentService;
 import org.smartregister.immunization.service.intent.VaccineIntentService;
 import org.smartregister.repository.AllSharedPreferences;
 
+import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -95,7 +97,7 @@ public class VisitUtils {
             if (!v.getProcessed()) {
 
                 // process details
-                processVisitDetails(visitDetailsRepository, v.getVisitId(), v.getBaseEntityId());
+                processVisitDetails(v, visitDetailsRepository, v.getVisitId(), v.getBaseEntityId());
 
                 // persist to db
                 Event baseEvent = new Gson().fromJson(v.getPreProcessedJson(), Event.class);
@@ -115,7 +117,7 @@ public class VisitUtils {
         context.startService(new Intent(context, RecurringIntentService.class));
     }
 
-    private static void processVisitDetails(VisitDetailsRepository visitDetailsRepository, String visitID, String baseEntityID) throws Exception {
+    private static void processVisitDetails(Visit visit, VisitDetailsRepository visitDetailsRepository, String visitID, String baseEntityID) throws Exception {
         List<VisitDetail> visitDetailList = visitDetailsRepository.getVisits(visitID);
         List<VaccineWrapper> vaccineWrappers = new ArrayList<>();
         List<ServiceWrapper> serviceWrappers = new ArrayList<>();
@@ -143,6 +145,8 @@ public class VisitUtils {
                             break;
                     }
                 }
+                saveVisitDetailsAsVaccine(visitDetail, baseEntityID, visit.getDate());
+
                 visitDetailsRepository.completeProcessing(visitDetail.getVisitDetailsId());
             }
         }
@@ -158,6 +162,43 @@ public class VisitUtils {
                 AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
                 NCUtils.addEvent(allSharedPreferences, subEvent);
             }
+        }
+    }
+
+    private static Vaccine saveVisitDetailsAsVaccine(VisitDetail detail, String baseEntityID, Date eventDate) {
+        if (!"vaccine".equalsIgnoreCase(detail.getParentCode()))
+            return null;
+
+        if (Constants.HOME_VISIT.VACCINE_NOT_GIVEN.equalsIgnoreCase(detail.getParentCode()))
+            return null;
+
+        Date vacDate = getDateFromString(detail.getDetails());
+        if (vacDate == null) return null;
+
+        Vaccine vaccine = new Vaccine();
+        vaccine.setBaseEntityId(baseEntityID);
+        vaccine.setName(detail.getVisitKey());
+        vaccine.setDate(vacDate);
+        vaccine.setCreatedAt(eventDate);
+
+        String lastChar = vaccine.getName().substring(vaccine.getName().length() - 1);
+        if (StringUtils.isNumeric(lastChar)) {
+            vaccine.setCalculation(Integer.valueOf(lastChar));
+        } else {
+            vaccine.setCalculation(0);
+        }
+
+        JsonFormUtils.tagSyncMetadata(NCUtils.context().allSharedPreferences(), vaccine);
+        getVaccineRepository().add(vaccine); // persist to local db
+
+        return vaccine;
+    }
+
+    public static Date getDateFromString(String dateStr) {
+        try {
+            return NCUtils.getSaveDateFormat().parse(dateStr);
+        } catch (ParseException e) {
+            return null;
         }
     }
 
@@ -179,7 +220,7 @@ public class VisitUtils {
             if (StringUtils.isNumeric(lastChar)) {
                 vaccine.setCalculation(Integer.valueOf(lastChar));
             } else {
-                vaccine.setCalculation(-1);
+                vaccine.setCalculation(0);
             }
 
             JsonFormUtils.tagSyncMetadata(NCUtils.context().allSharedPreferences(), vaccine);
@@ -190,6 +231,7 @@ public class VisitUtils {
 
     /**
      * Check whether a visit occurred in the last 24 hours
+     *
      * @param lastVisit The Visit instance for which you wish to check
      * @return true or false based on whether the visit was between 24 hours
      */

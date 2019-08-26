@@ -62,7 +62,7 @@ public class BaseUpcomingServiceAdapterTest extends BaseUnitTest {
 
         Whitebox.setInternalState(holder, "tvDue", Mockito.mock(TextView.class));
         Whitebox.setInternalState(holder, "tvOverdue", Mockito.mock(TextView.class));
-        Whitebox.setInternalState(holder, "tvName", Mockito.mock(TextView.class));
+       // Whitebox.setInternalState(holder, "tvName", Mockito.mock(TextView.class));
         Whitebox.setInternalState(holder, "myView", Mockito.mock(View.class));
 
         BaseUpcomingServiceAdapter adapter = new BaseUpcomingServiceAdapter(context, serviceList);

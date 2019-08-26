@@ -7,6 +7,7 @@ public class VisitDetail {
     private String visitId;
     private String baseEntityId;
     private String visitKey;
+    private String parentCode;
     private String details; //
     private String humanReadable; //
     private String jsonDetails;
@@ -46,6 +47,14 @@ public class VisitDetail {
 
     public void setVisitKey(String visitKey) {
         this.visitKey = visitKey;
+    }
+
+    public String getParentCode() {
+        return parentCode;
+    }
+
+    public void setParentCode(String parentCode) {
+        this.parentCode = parentCode;
     }
 
     public String getDetails() {

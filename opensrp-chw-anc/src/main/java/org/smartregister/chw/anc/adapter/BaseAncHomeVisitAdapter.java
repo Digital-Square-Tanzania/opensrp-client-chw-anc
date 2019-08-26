@@ -86,21 +86,20 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
                 holder.descriptionText.setVisibility(View.VISIBLE);
                 holder.invalidText.setVisibility(View.GONE);
                 holder.descriptionText.setText(ancHomeVisitAction.getSubTitle());
+
+                boolean isOverdue = ancHomeVisitAction.getScheduleStatus() == BaseAncHomeVisitAction.ScheduleStatus.OVERDUE &&
+                        ancHomeVisitAction.isEnabled();
+
+                holder.descriptionText.setTextColor(
+                        isOverdue ? context.getResources().getColor(R.color.alert_urgent_red) :
+                                context.getResources().getColor(android.R.color.darker_gray)
+                );
+
             } else {
                 holder.descriptionText.setVisibility(View.GONE);
                 holder.invalidText.setVisibility(View.VISIBLE);
                 holder.invalidText.setText(Html.fromHtml("<i>" + ancHomeVisitAction.getDisabledMessage() + "</i>"));
             }
-
-            holder.descriptionText.setVisibility(View.VISIBLE);
-
-            boolean isOverdue = ancHomeVisitAction.getScheduleStatus() == BaseAncHomeVisitAction.ScheduleStatus.OVERDUE &&
-                    ancHomeVisitAction.isEnabled();
-
-            holder.descriptionText.setTextColor(
-                    isOverdue ? context.getResources().getColor(R.color.alert_urgent_red) :
-                            context.getResources().getColor(android.R.color.darker_gray)
-            );
         } else {
             holder.descriptionText.setVisibility(View.GONE);
         }
@@ -122,6 +121,10 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
 
     private int getCircleColor(BaseAncHomeVisitAction ancHomeVisitAction) {
         int color_res;
+        boolean valid = ancHomeVisitAction.isValid() && ancHomeVisitAction.isEnabled();
+        if (!valid)
+            return R.color.transparent_gray;
+
         switch (ancHomeVisitAction.getActionStatus()) {
             case PENDING:
                 color_res = R.color.transparent_gray;
@@ -140,8 +143,10 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
     }
 
     private void bindClickListener(View view, final BaseAncHomeVisitAction ancHomeVisitAction) {
-        if (!ancHomeVisitAction.isEnabled())
+        if (!ancHomeVisitAction.isEnabled() || !ancHomeVisitAction.isValid()) {
             view.setOnClickListener(null);
+            return;
+        }
 
         view.setOnClickListener(v -> {
             if (StringUtils.isNotBlank(ancHomeVisitAction.getFormName())) {

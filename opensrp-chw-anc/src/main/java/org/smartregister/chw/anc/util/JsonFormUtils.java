@@ -102,7 +102,6 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         return org.smartregister.util.JsonFormUtils.createEvent(fields, metadata, formTag(allSharedPreferences), entityId, encounterType, tableName);
     }
 
-
     public static Event createUntaggedEvent(String baseEntityId, String eventType, String table) {
 
         try {

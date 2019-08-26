@@ -294,6 +294,7 @@ public class NCUtils {
                 detail.setVisitId(visitID);
                 detail.setBaseEntityId(baseEntityID);
                 detail.setVisitKey(obs.getFormSubmissionField());
+                detail.setParentCode(obs.getParentCode());
 
                 if (detail.getVisitKey().contains("date")) {
                     // parse the
@@ -322,10 +323,20 @@ public class NCUtils {
     }
 
     public static String getFormattedDate(SimpleDateFormat source_sdf, SimpleDateFormat dest_sdf, String value) {
+        if (StringUtils.isBlank(value))
+            return "";
+
         try {
             Date date = source_sdf.parse(value);
             return dest_sdf.format(date);
         } catch (Exception e) {
+            try {
+                // fallback for long datetypes
+                Date date = new Date(Long.parseLong(value));
+                return dest_sdf.format(date);
+            } catch (NumberFormatException | NullPointerException nfe) {
+                Timber.e(e);
+            }
             Timber.e(e);
         }
         return value;
@@ -551,9 +562,9 @@ public class NCUtils {
             for (Map.Entry<VaccineWrapper, String> entry : vaccineWrapperDateMap.entrySet()) {
                 JSONObject field = new JSONObject();
                 field.put(JsonFormConstants.KEY, removeSpaces(entry.getKey().getName()));
-                field.put(JsonFormConstants.OPENMRS_ENTITY_PARENT, "");
+                field.put(JsonFormConstants.OPENMRS_ENTITY_PARENT, "vaccine");
                 field.put(JsonFormConstants.OPENMRS_ENTITY, "concept");
-                field.put(JsonFormConstants.TYPE, "edit_text");
+                field.put(JsonFormConstants.TYPE, JsonFormConstants.EDIT_TEXT);
                 field.put(JsonFormConstants.OPENMRS_ENTITY_ID, removeSpaces(entry.getKey().getName()));
                 field.put(JsonFormConstants.VALUE, entry.getValue());
 
@@ -574,16 +585,16 @@ public class NCUtils {
             jsonObject.put("entity_id", entityID);
             JSONArray jsonArray = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
 
-            for (VaccineDisplay vaccineDisplay: vaccineDisplays){
+            for (VaccineDisplay vaccineDisplay : vaccineDisplays) {
                 JSONObject field = new JSONObject();
 
                 String name = removeSpaces(vaccineDisplay.getVaccineWrapper().getName());
                 String value = getText(detailsMap.get(name));
 
                 field.put(JsonFormConstants.KEY, name);
-                field.put(JsonFormConstants.OPENMRS_ENTITY_PARENT, "");
+                field.put(JsonFormConstants.OPENMRS_ENTITY_PARENT, "vaccine");
                 field.put(JsonFormConstants.OPENMRS_ENTITY, "concept");
-                field.put(JsonFormConstants.TYPE, "edit_text");
+                field.put(JsonFormConstants.TYPE, JsonFormConstants.EDIT_TEXT);
                 field.put(JsonFormConstants.OPENMRS_ENTITY_ID, name);
                 field.put(JsonFormConstants.VALUE, value);
 

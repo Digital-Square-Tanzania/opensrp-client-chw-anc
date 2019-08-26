@@ -234,12 +234,12 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
     }
 
     private void deleteOldVisit(String visitID) {
-        AncLibrary.getInstance().visitRepository().deleteVisit(visitID);
+        visitRepository().deleteVisit(visitID);
         AncLibrary.getInstance().visitDetailsRepository().deleteVisitDetails(visitID);
 
-        List<Visit> childVisits = AncLibrary.getInstance().visitRepository().getChildEvents(visitID);
+        List<Visit> childVisits = visitRepository().getChildEvents(visitID);
         for (Visit v : childVisits) {
-            AncLibrary.getInstance().visitRepository().deleteVisit(v.getVisitId());
+            visitRepository().deleteVisit(v.getVisitId());
             AncLibrary.getInstance().visitDetailsRepository().deleteVisitDetails(v.getVisitId());
         }
     }

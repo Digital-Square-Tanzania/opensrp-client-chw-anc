@@ -66,10 +66,12 @@ public class BaseAncHomeVisitAdapterTest extends BaseUnitTest {
     }
 
     @Test
-    public void testBindClickListener() throws Exception {
+    public void testBindClickListenerOnValidObject() throws Exception {
         BaseAncHomeVisitAdapter ancHomeVisitAdapter = new BaseAncHomeVisitAdapter(context, view, myDataset);
         View view = Mockito.mock(View.class);
         BaseAncHomeVisitAction ancHomeVisitAction = Mockito.mock(BaseAncHomeVisitAction.class);
+        Mockito.doReturn(true).when(ancHomeVisitAction).isValid();
+        Mockito.doReturn(true).when(ancHomeVisitAction).isEnabled();
 
         Whitebox.invokeMethod(ancHomeVisitAdapter, "bindClickListener", view, ancHomeVisitAction);
 

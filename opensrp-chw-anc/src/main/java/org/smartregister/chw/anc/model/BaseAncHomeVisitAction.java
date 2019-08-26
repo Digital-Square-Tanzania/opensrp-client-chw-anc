@@ -24,6 +24,7 @@ public class BaseAncHomeVisitAction {
     private String title;
     private String subTitle;
     private String disabledMessage;
+    private PayloadType payloadType;
     private Status actionStatus;
     private ScheduleStatus scheduleStatus;
     private ProcessingMode processingMode;
@@ -43,6 +44,8 @@ public class BaseAncHomeVisitAction {
         this.baseEntityID = builder.baseEntityID;
         this.title = builder.title;
         this.subTitle = builder.subTitle;
+        this.disabledMessage = builder.disabledMessage;
+        this.payloadType = builder.payloadType;
         this.actionStatus = builder.actionStatus;
         this.scheduleStatus = builder.scheduleStatus;
         this.optional = builder.optional;
@@ -56,7 +59,6 @@ public class BaseAncHomeVisitAction {
         this.processingMode = builder.processingMode;
         this.jsonPayload = builder.jsonPayload;
         this.validator = builder.validator;
-        this.disabledMessage = builder.disabledMessage;
 
         validateMe();
         initialize();
@@ -159,6 +161,14 @@ public class BaseAncHomeVisitAction {
 
     public void setDisabledMessage(String disabledMessage) {
         this.disabledMessage = disabledMessage;
+    }
+
+    public PayloadType getPayloadType() {
+        return payloadType;
+    }
+
+    public void setPayloadType(PayloadType payloadType) {
+        this.payloadType = payloadType;
     }
 
     public Status getActionStatus() {
@@ -311,6 +321,8 @@ public class BaseAncHomeVisitAction {
      */
     public enum ProcessingMode {COMBINED, DETACHED, SEPARATE}
 
+    public enum PayloadType {JSON, VACCINE, SERVICE}
+
     public interface AncHomeVisitActionHelper {
 
         /**
@@ -331,7 +343,6 @@ public class BaseAncHomeVisitAction {
          * @param jsonPayload
          */
         void onPayloadReceived(String jsonPayload);
-
 
         /**
          * executed after form is loaded on start
@@ -375,6 +386,7 @@ public class BaseAncHomeVisitAction {
         private String title;
         private String subTitle;
         private String disabledMessage;
+        private PayloadType payloadType = PayloadType.JSON;
         private Status actionStatus = Status.PENDING;
         private ScheduleStatus scheduleStatus = ScheduleStatus.DUE;
         private ProcessingMode processingMode = ProcessingMode.COMBINED;
@@ -406,6 +418,11 @@ public class BaseAncHomeVisitAction {
 
         public Builder withDisabledMessage(String disabledMessage) {
             this.disabledMessage = disabledMessage;
+            return this;
+        }
+
+        public Builder withPayloadType(PayloadType payloadType) {
+            this.payloadType = payloadType;
             return this;
         }
 

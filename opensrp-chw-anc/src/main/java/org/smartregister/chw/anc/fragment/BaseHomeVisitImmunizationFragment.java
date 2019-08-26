@@ -19,6 +19,7 @@ import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.anc.model.BaseHomeVisitImmunizationFragmentModel;
 import org.smartregister.chw.anc.presenter.BaseHomeVisitImmunizationFragmentPresenter;
 import org.smartregister.chw.anc.util.Constants;
+import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.anc.util.NCUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.immunization.db.VaccineRepo;
@@ -51,6 +52,7 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
     private CheckBox checkBoxNoVaccinesDone;
     private DatePicker singleDatePicker;
     private Button saveButton;
+    private SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMATS.NATIVE_FORMS, Locale.getDefault());
 
     public static BaseHomeVisitImmunizationFragment getInstance(final BaseAncHomeVisitContract.VisitView view, String baseEntityID, Map<String, List<VisitDetail>> details, List<VaccineDisplay> vaccineDisplays) {
         BaseHomeVisitImmunizationFragment fragment = new BaseHomeVisitImmunizationFragment();
@@ -60,6 +62,12 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         for (VaccineDisplay vaccineDisplay : vaccineDisplays) {
             fragment.vaccineDisplays.put(vaccineDisplay.getVaccineWrapper().getName(), vaccineDisplay);
         }
+
+        if (details != null && details.size() > 0) {
+            fragment.jsonObject = NCUtils.getVisitJSONFromVisitDetails(baseEntityID, details, vaccineDisplays);
+            JsonFormUtils.populateForm(fragment.jsonObject, details);
+        }
+
         return fragment;
     }
 
@@ -124,6 +132,9 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
             initializeDatePicker(singleDatePicker, vaccineDisplays);
             addVaccineViews();
         }
+
+        // reset the json payload if the vaccine view was updated manually
+        this.jsonObject = null;
     }
 
     @Override
@@ -260,7 +271,6 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         // notify the view (write to json file then dismiss)
 
         Date vaccineDate = getDateFromDatePicker(singleDatePicker);
-        SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMATS.NATIVE_FORMS, Locale.getDefault());
         HashMap<VaccineWrapper, String> vaccineDateMap = new HashMap<>();
 
         boolean multiModeActive = multipleVaccineDatePickerView.getVisibility() == View.GONE;

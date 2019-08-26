@@ -211,9 +211,9 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         boolean valid = actionList.size() > 0;
         for (Map.Entry<String, BaseAncHomeVisitAction> entry : actionList.entrySet()) {
             BaseAncHomeVisitAction action = entry.getValue();
-            if (!action.isOptional()
-                    && action.getActionStatus() == BaseAncHomeVisitAction.Status.PENDING
-                    && action.isValid()
+            if (
+                    (!action.isOptional() && (action.getActionStatus() == BaseAncHomeVisitAction.Status.PENDING && action.isValid()))
+                            || !action.isEnabled()
             ) {
                 valid = false;
                 break;

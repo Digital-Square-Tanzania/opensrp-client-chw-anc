@@ -121,6 +121,10 @@ public class BaseAncHomeVisitAdapter extends RecyclerView.Adapter<BaseAncHomeVis
 
     private int getCircleColor(BaseAncHomeVisitAction ancHomeVisitAction) {
         int color_res;
+        boolean valid = ancHomeVisitAction.isValid() && ancHomeVisitAction.isEnabled();
+        if (!valid)
+            return R.color.transparent_gray;
+
         switch (ancHomeVisitAction.getActionStatus()) {
             case PENDING:
                 color_res = R.color.transparent_gray;

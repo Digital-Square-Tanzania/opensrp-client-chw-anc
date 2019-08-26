@@ -30,6 +30,7 @@ import com.vijay.jsonwizard.constants.JsonFormConstants;
 import net.sqlcipher.database.SQLiteDatabase;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
@@ -40,6 +41,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.contract.BaseAncWomanCallDialogContract;
+import org.smartregister.chw.anc.domain.VaccineDisplay;
 import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.opensrp_chw_anc.R;
@@ -551,6 +553,7 @@ public class NCUtils {
                 field.put(JsonFormConstants.KEY, removeSpaces(entry.getKey().getName()));
                 field.put(JsonFormConstants.OPENMRS_ENTITY_PARENT, "");
                 field.put(JsonFormConstants.OPENMRS_ENTITY, "concept");
+                field.put(JsonFormConstants.TYPE, "edit_text");
                 field.put(JsonFormConstants.OPENMRS_ENTITY_ID, removeSpaces(entry.getKey().getName()));
                 field.put(JsonFormConstants.VALUE, entry.getValue());
 
@@ -564,7 +567,82 @@ public class NCUtils {
         return null;
     }
 
+    @Nullable
+    public static JSONObject getVisitJSONFromVisitDetails(String entityID, Map<String, List<VisitDetail>> detailsMap, List<VaccineDisplay> vaccineDisplays) {
+        try {
+            JSONObject jsonObject = JsonFormUtils.getFormAsJson(Constants.FORMS.IMMUNIZATIOIN_VISIT);
+            jsonObject.put("entity_id", entityID);
+            JSONArray jsonArray = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
+
+            for (VaccineDisplay vaccineDisplay: vaccineDisplays){
+                JSONObject field = new JSONObject();
+
+                String name = removeSpaces(vaccineDisplay.getVaccineWrapper().getName());
+                String value = getText(detailsMap.get(name));
+
+                field.put(JsonFormConstants.KEY, name);
+                field.put(JsonFormConstants.OPENMRS_ENTITY_PARENT, "");
+                field.put(JsonFormConstants.OPENMRS_ENTITY, "concept");
+                field.put(JsonFormConstants.TYPE, "edit_text");
+                field.put(JsonFormConstants.OPENMRS_ENTITY_ID, name);
+                field.put(JsonFormConstants.VALUE, value);
+
+                jsonArray.put(field);
+            }
+
+            return jsonObject;
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+        return null;
+    }
+
+
     public static String removeSpaces(String s) {
         return s.replace(" ", "_").toLowerCase();
+    }
+
+    /**
+     * Extract value from VisitDetail
+     *
+     * @return
+     */
+    @NotNull
+    public static String getText(@Nullable VisitDetail visitDetail) {
+        if (visitDetail == null)
+            return "";
+
+        String val = visitDetail.getHumanReadable();
+        if (StringUtils.isNotBlank(val))
+            return val.trim();
+
+        return (StringUtils.isNotBlank(visitDetail.getDetails())) ? visitDetail.getDetails().trim() : "";
+    }
+
+    @NotNull
+    public static String getText(@Nullable List<VisitDetail> visitDetails) {
+        if (visitDetails == null)
+            return "";
+
+        List<String> vals = new ArrayList<>();
+        for (VisitDetail vd : visitDetails) {
+            String val = getText(vd);
+            if (StringUtils.isNotBlank(val))
+                vals.add(val);
+        }
+
+        return toCSV(vals);
+    }
+
+    public static String toCSV(List<String> list) {
+        String result = "";
+        if (list.size() > 0) {
+            StringBuilder sb = new StringBuilder();
+            for (String s : list) {
+                sb.append(s).append(",");
+            }
+            result = sb.deleteCharAt(sb.length() - 1).toString();
+        }
+        return result;
     }
 }

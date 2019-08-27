@@ -650,4 +650,18 @@ public class NCUtils {
         }
         return result;
     }
+
+    public static String getStringResourceByName(String name, Context context) {
+        if (context == null || name == null)
+            return name;
+
+        String packageName = context.getPackageName();
+        int resId = context.getResources().getIdentifier(name, "string", packageName);
+        if (resId == 0) {
+            return name;
+        } else {
+            return context.getString(resId);
+        }
+    }
+
 }

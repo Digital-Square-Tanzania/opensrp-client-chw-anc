@@ -1,6 +1,5 @@
 package org.smartregister.chw.anc.fragment;
 
-import android.content.Context;
 import android.os.Bundle;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -156,7 +155,7 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
             final VaccineView view = new VaccineView(vaccineWrapper.getName(), null, checkBox);
 
             String name = (vaccineWrapper.getVaccine() != null) ? vaccine.display() : vaccineWrapper.getName();
-            String translated_name = NCUtils.getStringResourceByName(name.toLowerCase().replace(" ","_"), getActivity());
+            String translated_name = NCUtils.getStringResourceByName(name.toLowerCase().replace(" ", "_"), getActivity());
             vaccineView.setText(translated_name);
 
             checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {

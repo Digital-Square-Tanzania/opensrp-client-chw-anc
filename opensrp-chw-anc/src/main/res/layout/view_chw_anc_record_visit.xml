@@ -97,6 +97,14 @@
         android:padding="10dp"
         android:visibility="gone">
 
+        <ImageView
+            android:id="@+id/tick_image"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="10dp"
+            android:src="@drawable/childrow_upcoming" />
+
 
         <org.smartregister.view.customcontrols.CustomFontTextView
             android:id="@+id/textview_not_visit_this_month"
@@ -105,7 +113,7 @@
             android:layout_height="wrap_content"
             android:layout_centerVertical="true"
             android:layout_toLeftOf="@+id/textview_undo"
-            android:layout_toRightOf="@+id/cross_image"
+            android:layout_toRightOf="@+id/tick_image"
             android:padding="10dp"
             android:text="@string/not_visiting_this_month"
             android:textColor="@color/black" />

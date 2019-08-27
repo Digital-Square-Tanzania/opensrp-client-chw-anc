@@ -171,7 +171,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         textViewAncVisitNot = findViewById(R.id.textview_anc_visit_not);
         layoutRecordButtonDone = findViewById(R.id.record_visit_done_bar);
         textViewUndo = findViewById(R.id.textview_undo);
-        imageViewCross = findViewById(R.id.cross_image);
+        imageViewCross = findViewById(R.id.tick_image);
         layoutNotRecordView = findViewById(R.id.record_visit_status_bar);
         recordRecurringVisit = findViewById(R.id.textview_record_reccuring_visit);
 

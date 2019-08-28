@@ -6,5 +6,5 @@
     <string name="return_to_all_pnc_women">Return to all PNC women</string>
     <string name="pnc_day_count">d</string>
     <string name="pnc_last_visit_text">Last visit {0}</string>
-
+    <string name="pnc_visit_done">PNC day {0} visit done</string>
 </resources>

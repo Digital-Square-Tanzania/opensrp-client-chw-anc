@@ -35,6 +35,7 @@ import org.smartregister.chw.anc.presenter.BaseAncMemberProfilePresenter;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.anc.util.NCUtils;
+import org.smartregister.chw.anc.util.VisitUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.helper.ImageRenderHelper;
@@ -82,30 +83,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         activity.startActivity(intent);
     }
 
-    public String getFamilyHeadName() {
-        return familyHeadName;
-    }
-
-    public void setFamilyHeadName(String familyHeadName) {
-        this.familyHeadName = familyHeadName;
-    }
-
-    public String getFamilyHeadPhoneNumber() {
-        return familyHeadPhoneNumber;
-    }
-
-    public void setFamilyHeadPhoneNumber(String familyHeadPhoneNumber) {
-        this.familyHeadPhoneNumber = familyHeadPhoneNumber;
-    }
-
-    public String getAncWomanName() {
-        return ancWomanName;
-    }
-
-    public void setAncWomanName(String ancWomanName) {
-        this.ancWomanName = ancWomanName;
-    }
-
     @Override
     protected void onCreation() {
         setContentView(R.layout.activity_anc_member_profile);
@@ -126,12 +103,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             upArrow.setColorFilter(getResources().getColor(R.color.text_blue), PorterDuff.Mode.SRC_ATOP);
             actionBar.setHomeAsUpIndicator(upArrow);
         }
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> finish());
         appBarLayout = findViewById(R.id.collapsing_toolbar_appbarlayout);
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
             appBarLayout.setOutlineProvider(null);
@@ -176,10 +148,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
         Visit lastVisit = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT);
         if (lastVisit != null) {
-            boolean within24Hours =
-                    (Days.daysBetween(new DateTime(lastVisit.getCreatedAt()), new DateTime()).getDays() < 1) &&
-                            (Days.daysBetween(new DateTime(lastVisit.getDate()), new DateTime()).getDays() <= 1);
-            setUpEditViews(true, within24Hours, lastVisit.getDate().getTime());
+            setUpEditViews(true, VisitUtils.isVisitWithin24Hours(lastVisit), lastVisit.getDate().getTime());
         }
     }
 
@@ -210,6 +179,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
                 int offset = cal.getTimeZone().getOffset(cal.getTimeInMillis());
                 Date date = new Date(longDate - (long) offset);
                 String monthString = (String) DateFormat.format("MMMM", date);
+                layoutRecordView.setVisibility(View.GONE);
                 tvEdit.setVisibility(View.VISIBLE);
                 textViewNotVisitMonth.setText(getContext().getString(R.string.anc_visit_done, monthString));
                 imageViewCross.setImageResource(R.drawable.activityrow_visited);
@@ -427,10 +397,9 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         textViewAncVisitNot = findViewById(R.id.textview_anc_visit_not);
         layoutRecordButtonDone = findViewById(R.id.record_visit_done_bar);
         textViewUndo = findViewById(R.id.textview_undo);
-        imageViewCross = findViewById(R.id.cross_image);
+        imageViewCross = findViewById(R.id.tick_image);
         layoutNotRecordView = findViewById(R.id.record_visit_status_bar);
         recordRecurringVisit = findViewById(R.id.textview_record_reccuring_visit);
-
 
         textview_record_anc_visit.setOnClickListener(this);
         rlLastVisit.setOnClickListener(this);
@@ -460,6 +429,30 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     @Override
     protected void fetchProfileData() {
         presenter().fetchProfileData();
+    }
+
+    public String getFamilyHeadName() {
+        return familyHeadName;
+    }
+
+    public void setFamilyHeadName(String familyHeadName) {
+        this.familyHeadName = familyHeadName;
+    }
+
+    public String getFamilyHeadPhoneNumber() {
+        return familyHeadPhoneNumber;
+    }
+
+    public void setFamilyHeadPhoneNumber(String familyHeadPhoneNumber) {
+        this.familyHeadPhoneNumber = familyHeadPhoneNumber;
+    }
+
+    public String getAncWomanName() {
+        return ancWomanName;
+    }
+
+    public void setAncWomanName(String ancWomanName) {
+        this.ancWomanName = ancWomanName;
     }
 
 }

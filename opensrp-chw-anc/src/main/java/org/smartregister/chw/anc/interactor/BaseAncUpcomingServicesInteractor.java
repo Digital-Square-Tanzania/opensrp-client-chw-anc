@@ -27,7 +27,7 @@ public class BaseAncUpcomingServicesInteractor implements BaseAncUpcomingService
     }
 
     @Override
-    public void getUpComingServices(final MemberObject memberObject, final Context context, final BaseAncUpcomingServicesContract.InteractorCallBack callBack) {
+    public final void getUpComingServices(final MemberObject memberObject, final Context context, final BaseAncUpcomingServicesContract.InteractorCallBack callBack) {
         Runnable runnable = () -> {
             // save it
             final List<BaseUpcomingService> services = new ArrayList<>();
@@ -52,11 +52,24 @@ public class BaseAncUpcomingServicesInteractor implements BaseAncUpcomingService
     protected List<BaseUpcomingService> getMemberServices(Context context, MemberObject memberObject) {
         List<BaseUpcomingService> services = new ArrayList<>();
         long DAY_IN_MS = 1000 * 60 * 60 * 24;
-        BaseUpcomingService s = new BaseUpcomingService();
-        s.setServiceName(context.getString(R.string.anc_home_visit));
-        s.setServiceDate(new Date(System.currentTimeMillis() - (7 * DAY_IN_MS)));
-        services.add(s);
-        services.add(s);
+        BaseUpcomingService service1 = new BaseUpcomingService();
+        service1.setServiceName(context.getString(R.string.anc_home_visit));
+        service1.setServiceDate(new Date(System.currentTimeMillis() - (7 * DAY_IN_MS)));
+        services.add(service1);
+
+        List<String> names = new ArrayList<>();
+        names.add("Vitamin A 10");
+        names.add("Deworming");
+        List<BaseUpcomingService> upcomingServices = new ArrayList<>();
+        upcomingServices.add(new BaseUpcomingService("BCG"));
+        upcomingServices.add(new BaseUpcomingService("Penta 1"));
+
+        BaseUpcomingService service2 = new BaseUpcomingService();
+        service2.setServiceName(names);
+        service2.setUpcomingServiceList(upcomingServices);
+        service2.setServiceDate(new Date(System.currentTimeMillis() + (7 * DAY_IN_MS)));
+        services.add(service2);
+
         try {
             Thread.sleep(2000);
         } catch (InterruptedException e) {

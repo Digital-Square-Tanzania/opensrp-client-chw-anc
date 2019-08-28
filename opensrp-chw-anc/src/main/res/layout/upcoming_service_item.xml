@@ -32,21 +32,31 @@
             android:layout_height="wrap_content"
             android:padding="10dp"
             android:text="Overdue"
-            android:textColor="@color/vaccine_red_bg_end"
             android:textSize="18sp"
             android:textStyle="bold" />
 
     </LinearLayout>
 
-    <org.smartregister.view.customcontrols.CustomFontTextView
-        android:id="@+id/name"
-        style="@style/CustomFontTextViewStyle.ListView.Normal.MultipleLines"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:padding="10dp"
-        android:text="Name"
-        android:textAppearance="@style/TextAppearance.AppCompat.Medium"
-        android:textColor="@color/black"
-        android:textSize="16sp" />
+    <LinearLayout
+        android:id="@+id/linearLayoutTitle"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="10dp">
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/linearLayoutSubTitles"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical"
+        android:layout_marginRight="5dp"
+        android:layout_marginLeft="5dp"
+        android:layout_marginBottom="10dp">
+
+    </LinearLayout>
 
 </LinearLayout>

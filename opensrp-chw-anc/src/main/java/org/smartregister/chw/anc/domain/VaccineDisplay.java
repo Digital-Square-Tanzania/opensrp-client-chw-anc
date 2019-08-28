@@ -8,6 +8,7 @@ public class VaccineDisplay {
     private VaccineWrapper vaccineWrapper;
     private Date startDate;
     private Date endDate;
+    private Date dateGiven;
     private Boolean isValid;
 
     public VaccineWrapper getVaccineWrapper() {
@@ -32,6 +33,14 @@ public class VaccineDisplay {
 
     public void setEndDate(Date endDate) {
         this.endDate = endDate;
+    }
+
+    public Date getDateGiven() {
+        return dateGiven;
+    }
+
+    public void setDateGiven(Date dateGiven) {
+        this.dateGiven = dateGiven;
     }
 
     public Boolean getValid() {

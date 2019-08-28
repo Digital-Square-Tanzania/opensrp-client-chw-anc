@@ -81,7 +81,7 @@ public class BaseAncHomeVisitPresenterTest extends BaseUnitTest {
 
         presenter.onSubmitted(true);
         Mockito.verify(view).displayProgressBar(false);
-        Mockito.verify(view).close();
+        Mockito.verify(view).submittedAndClose();
     }
 
 }

@@ -3,6 +3,7 @@ package org.smartregister.chw.anc.util;
 public interface Constants {
 
     int REQUEST_CODE_GET_JSON = 2244;
+    int REQUEST_CODE_HOME_VISIT = 3344;
     String ENCOUNTER_TYPE = "encounter_type";
 
     interface JSON_FORM_EXTRA {

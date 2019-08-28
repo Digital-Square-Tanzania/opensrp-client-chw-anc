@@ -1,8 +1,8 @@
 <resources>
-    <string name="app_name">OpenSRP CHW ANC</string>
+    <string name="app_name">OpenSRP CHW Wajawazito</string>
 
-    <string name="error_unable_to_start_form">Hitilafu wakati wa kufungua fomu</string>
-    <string name="error_unable_save_home_visit">Hitilafu wakati wa kuhifadhi hudhurio</string>
+    <string name="error_unable_to_start_form">Hitilafu imejitokeza wakati wa kuanza kufungua fomu</string>
+    <string name="error_unable_save_home_visit">Hitilafu imejitokeza wakati wa kuhifadhi taarifa za tembeleo</string>
     <string name="anc">Wateja wa huduma ya Wajawazito ANC</string>
 
     <!-- menu -->
@@ -22,20 +22,20 @@
     <string name="saving_dialog_title">Kuhifadhi</string>
 
     <!-- anc home visit -->
-    <string name="optional">Ya hiari</string>
-    <string name="anc_visit">Hudhurio la Huduma ya wajawazito ANC</string>
-    <string name="anc_home_visit">Hudhurio la nyumba</string>
-    <string name="dose_not_given">Dozi haijatolewa</string>
+    <string name="optional">hiari</string>
+    <string name="anc_visit">Hudhurio wakati wa ujauzito</string>
+    <string name="anc_home_visit">Tembeleo</string>
+    <string name="dose_not_given">DOZI HAIJATOLEWA</string>
 
 
     <string name="return_to_family_members">Rudi kwa wanafamilia</string>
-    <string name="return_to_all_anc_women">Rudi kwa wanawake walioko kwenye huduma ya wajawazito ANC</string>
-    <string name="record_pnc_visit">Rekodi hudhurio la huduma ya mtoto na mama baada ya kujifungua PNC</string>
-    <string name="record_anc_visit">Rekodi hudhurio la huduma ya wajawazito ANC</string>
-    <string name="visit_not_done_btn_child_profile">Hajatembelewa</string>
-    <string name="not_visiting_this_month">Hatembelei mwezi huu</string>
-    <string name="undo">Futa</string>
-    <string name="edit">Hariri</string>
+    <string name="return_to_all_anc_women">Rudi kwa wanawake wajawazito wote</string>
+    <string name="record_pnc_visit">Rekodi hudhurio la mtoto na mama baada ya kujifungua</string>
+    <string name="record_anc_visit">Rekodi hudhurio la mjamzito</string>
+    <string name="visit_not_done_btn_child_profile">Tembeleo halijafanyika</string>
+    <string name="not_visiting_this_month">Hajatembelea mwezi huu</string>
+    <string name="undo">UNDO</string>
+    <string name="edit">HARIRI</string>
 
     <string name="unique_id_text">ID: %1$s</string>
 
@@ -43,23 +43,23 @@
     <string name="confirm_form_close_explanation">Unauwakika unataka kurudi nyuma?Data zote ulizoingiza kwenye fomu zitafutika</string>
 
     <!-- anc profile -->
-    <string name="gest_age">GA: %1$s</string>
-    <string name="gest_age_weeks">Wiki</string>
+    <string name="gest_age">UMRI WA MIMBA: %1$s</string>
+    <string name="gest_age_weeks">wiki</string>
 
-    <string name="call_anc_woman">Piga simu kwa mama mjamzito</string>
+    <string name="call_anc_woman">Piga simu kwa mjamzito</string>
     <string name="call_pnc_woman">Piga simu kwa mama aliyejifungua</string>
     <string name="anc_call">Piga simu</string>
     <string name="copy_to_clipboard">Nakili namba ya simu</string>
     <string name="copied_phone_number">Namba ya simu imenakiliwa</string>
-    <string name="head_of_family">Kichwa cha familia</string>
-    <string name="anc_woman">Mama mjamzito</string>
+    <string name="head_of_family">Mkuu wa kaya</string>
+    <string name="anc_woman">Mjamzito</string>
 
-    <string name="last_visit_40_days_ago">Hudhurio la mwisho %1$s iliyopita</string>
+    <string name="last_visit_40_days_ago">Tembeleo la mwisho %1$s iliyopita</string>
     <string name="view_medical_history">Angalia historia ya matibabu</string>
     <string name="view_upcoming_services">Angalia huduma zinazokaribia</string>
-    <string name="family_has_nothing_due">Muda wa huduma kwenye kaya haujafika</string>
-    <string name="go_to_family_s_profile">Elekea kwenye taarifa binafsi za kaya</string>
-    <string name="family_has_services_due">Muda wa huduma kwenye kaya umefika</string>
+    <string name="family_has_nothing_due">Muda haujafikia</string>
+    <string name="go_to_family_s_profile">Fungua wasifu wa kaya</string>
+    <string name="family_has_services_due">Muda haujafikia</string>
     <string name="family_has_service_overdue"><![CDATA[Kaya ina <font color=#FF0000> huduma zilizopitiliza muda wake </font> </b>]]></string>
     <string name="vaccine_service_upcoming"><![CDATA[%1$s <font color=#7f7f7f> inakaribia (%2$s) </font> </b>]]></string>
     <string name="vaccine_service_overdue"><![CDATA[%1$s <font color=#f04646> muda umepita (%2$s)</font> </b>]]></string>
@@ -67,18 +67,48 @@
 
     <string name="back_to">Rudi kwenye taarifa za msingi za %1$s</string>
     <string name="days_overdue">Siku  %1$s zimezidi</string>
+    <string name="days_until_due">%1$s siku mpaka kufikia</string>
     <string name="anc_visit_done">%1$s tembeleo limefanyika</string>
-    <string name="less_than_twenty_four">Chini ya masaa 24</string>
+    <string name="less_than_twenty_four">chini ya masaa 24</string>
     <string name="primary_care_giver">Mlezi</string>
-    <string name="family_head">Kichwa cha Familia</string>
+    <string name="family_head">Mkuu wa kaya</string>
 
     <string name="anc_home_visit_danger_signs">Dalili za hatari</string>
-    <string name="danger_signs_counselling">Ushauri wa dalili za hatari</string>
+    <string name="danger_signs_counselling">Ushauri juu ya dalili za hatari</string>
     <string name="not_done">Haijafanyika</string>
+    <string name="medical_history">Historia ya matibabu</string>
+    <string name="upcoming_services">Huduma zinazokaribia</string>
 
-    <string name="vaccines_not_done">Chanjo hazijatolewa</string>
-    <string name="add_date_separately">ONGEZA TAREHE YA KILA CHANJO</string>
-    <string name="when_vaccines_given_text">Chanjo zilitolewa lini?</string>
-    <string name="which_vaccines_given_text">Chanjo zipi zilitolewa?</string>
+    <string name="vaccines_not_done">CHANJO HAZIJATOLEWA</string>
+    <string name="add_date_separately">+ONGEZA TAREHE YA KILA CHANJO</string>
+    <string name="when_vaccines_given_text">Chanjo zimetolewa lini?</string>
+    <string name="which_vaccines_given_text">Chanjo zipi zimetolewa?</string>
     <string name="record_vaccinations">Rekodi chanjo</string>
+
+
+    <string name="when_vaccine">Chanjo %s ilitolewa lini?</string>
+    <string name="no_vaccines_were_done">Hakuna chanjo iliyotolewa</string>
+
+    <string name="opv_0">OPV 0</string>
+    <string name="opv_1">OPV 1</string>
+    <string name="opv_2">OPV 2</string>
+    <string name="bcg">BCG</string>
+    <string name="penta_1">Penta 1</string>
+    <string name="penta_2">Penta 2</string>
+    <string name="penta_3">Penta 3</string>
+    <string name="pcv_1">PCV 1</string>
+    <string name="pcv_2">PCV 2</string>
+    <string name="pcv_3">PCV 3</string>
+    <string name="rota_1">Rota 1</string>
+    <string name="rota_2">Rota 2</string>
+    <string name="rota_3">Rota 3</string>
+    <string name="ipv">IPV</string>
+    <string name="mcv_1">MCV 1</string>
+    <string name="mcv_2">MCV 2</string>
+    <string name="mcv_3">MCV 3</string>
+    <string name="yellow_fever">Homa ya manjano</string>
+    <string name="rubella_1">Rubella 1</string>
+    <string name="rubella_2">Rubella 2</string>
+    <string name="mena">MenA</string>
+
 </resources>

@@ -44,4 +44,24 @@ public class BaseAncFloatingMenu extends LinearLayout implements View.OnClickLis
             BaseAncWomanCallDialogFragment.launchDialog(activity, womanName, phoneNumber, familyHeadName, familyHeadPhone, womanProfileType);
         }
     }
+
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
+
+    public String getFamilyHeadName() {
+        return familyHeadName;
+    }
+
+    public String getFamilyHeadPhone() {
+        return familyHeadPhone;
+    }
+
+    public String getWomanName() {
+        return womanName;
+    }
+
+    public String getWomanProfileType() {
+        return womanProfileType;
+    }
 }

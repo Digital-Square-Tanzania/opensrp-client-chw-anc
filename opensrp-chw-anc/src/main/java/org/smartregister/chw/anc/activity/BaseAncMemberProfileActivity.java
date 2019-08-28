@@ -129,8 +129,15 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         presenter = new BaseAncMemberProfilePresenter(this, new BaseAncMemberProfileInteractor(), MEMBER_OBJECT);
     }
 
-    protected String getProfileType() {
-        return Constants.MEMBER_PROFILE_TYPES.ANC;
+    public void initializeFloatingMenu() {
+        if (StringUtils.isNotBlank(MEMBER_OBJECT.getPhoneNumber()) || StringUtils.isNotBlank(familyHeadPhoneNumber)) {
+            baseAncFloatingMenu = new BaseAncFloatingMenu(this, ancWomanName, MEMBER_OBJECT.getPhoneNumber(), familyHeadName, familyHeadPhoneNumber, getProfileType());
+            baseAncFloatingMenu.setGravity(Gravity.BOTTOM | Gravity.RIGHT);
+            LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(
+                    LinearLayout.LayoutParams.MATCH_PARENT,
+                    LinearLayout.LayoutParams.MATCH_PARENT);
+            addContentView(baseAncFloatingMenu, linearLayoutParams);
+        }
     }
 
     private void displayView() {
@@ -150,6 +157,10 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         if (lastVisit != null) {
             setUpEditViews(true, VisitUtils.isVisitWithin24Hours(lastVisit), lastVisit.getDate().getTime());
         }
+    }
+
+    protected String getProfileType() {
+        return Constants.MEMBER_PROFILE_TYPES.ANC;
     }
 
     public Visit getVisit(String eventType) {
@@ -371,14 +382,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             findViewById(R.id.primary_anc_caregiver).setVisibility(View.VISIBLE);
         }
 
-        if (StringUtils.isNotBlank(MEMBER_OBJECT.getPhoneNumber()) || StringUtils.isNotBlank(familyHeadPhoneNumber)) {
-            baseAncFloatingMenu = new BaseAncFloatingMenu(this, ancWomanName, MEMBER_OBJECT.getPhoneNumber(), familyHeadName, familyHeadPhoneNumber, getProfileType());
-            baseAncFloatingMenu.setGravity(Gravity.BOTTOM | Gravity.RIGHT);
-            LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(
-                    LinearLayout.LayoutParams.MATCH_PARENT,
-                    LinearLayout.LayoutParams.MATCH_PARENT);
-            addContentView(baseAncFloatingMenu, linearLayoutParams);
-        }
+        initializeFloatingMenu();
         text_view_anc_member_name = findViewById(R.id.text_view_anc_member_name);
         text_view_ga = findViewById(R.id.text_view_ga);
         text_view_address = findViewById(R.id.text_view_address);

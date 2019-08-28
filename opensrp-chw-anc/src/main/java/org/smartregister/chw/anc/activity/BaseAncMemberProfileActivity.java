@@ -62,14 +62,15 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     protected TextView recordRecurringVisit, textview_record_visit;
     protected View view_anc_record, view_last_visit_row, view_most_due_overdue_row, view_family_row;
     protected CircleImageView imageView;
+    protected BaseAncFloatingMenu baseAncFloatingMenu;
+    protected TextView tvLastVisitDate;
     private String familyHeadName;
     private String familyHeadPhoneNumber;
-    private BaseAncFloatingMenu baseAncFloatingMenu;
     private ImageView imageViewCross;
-    protected TextView tvLastVisitDate;
     private TextView tvUpComingServices;
     private TextView tvFamilyStatus;
     private ProgressBar progressBar;
+    private String ancWomanName;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
 
 
@@ -81,8 +82,28 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         activity.startActivity(intent);
     }
 
-    protected void registerPresenter() {
-        presenter = new BaseAncMemberProfilePresenter(this, new BaseAncMemberProfileInteractor(), MEMBER_OBJECT);
+    public String getFamilyHeadName() {
+        return familyHeadName;
+    }
+
+    public void setFamilyHeadName(String familyHeadName) {
+        this.familyHeadName = familyHeadName;
+    }
+
+    public String getFamilyHeadPhoneNumber() {
+        return familyHeadPhoneNumber;
+    }
+
+    public void setFamilyHeadPhoneNumber(String familyHeadPhoneNumber) {
+        this.familyHeadPhoneNumber = familyHeadPhoneNumber;
+    }
+
+    public String getAncWomanName() {
+        return ancWomanName;
+    }
+
+    public void setAncWomanName(String ancWomanName) {
+        this.ancWomanName = ancWomanName;
     }
 
     @Override
@@ -132,9 +153,240 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         setupViews();
     }
 
+    protected void registerPresenter() {
+        presenter = new BaseAncMemberProfilePresenter(this, new BaseAncMemberProfileInteractor(), MEMBER_OBJECT);
+    }
+
+    protected String getProfileType() {
+        return Constants.MEMBER_PROFILE_TYPES.ANC;
+    }
+
+    private void displayView() {
+
+        Visit lastAncHomeVisitNotDoneEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE);
+        Visit lastAncHomeVisitNotDoneUndoEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE_UNDO);
+
+        if (lastAncHomeVisitNotDoneUndoEvent != null
+                && lastAncHomeVisitNotDoneUndoEvent.getDate().before(lastAncHomeVisitNotDoneEvent.getDate())
+                && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
+            setVisitViews();
+        } else if (lastAncHomeVisitNotDoneUndoEvent == null && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
+            setVisitViews();
+        }
+
+        Visit lastVisit = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT);
+        if (lastVisit != null) {
+            boolean within24Hours =
+                    (Days.daysBetween(new DateTime(lastVisit.getCreatedAt()), new DateTime()).getDays() < 1) &&
+                            (Days.daysBetween(new DateTime(lastVisit.getDate()), new DateTime()).getDays() <= 1);
+            setUpEditViews(true, within24Hours, lastVisit.getDate().getTime());
+        }
+    }
+
+    public Visit getVisit(String eventType) {
+        return getInstance().visitRepository().getLatestVisit(MEMBER_OBJECT.getBaseEntityId(), eventType);
+    }
+
+    private boolean ancHomeVisitNotDoneEvent(Visit visit) {
+
+        return visit != null
+                && (new DateTime(visit.getDate()).getMonthOfYear() == new DateTime().getMonthOfYear())
+                && (new DateTime(visit.getDate()).getYear() == new DateTime().getYear());
+    }
+
+    private void setVisitViews() {
+        openVisitMonthView();
+        textViewNotVisitMonth.setText(getString(R.string.not_visiting_this_month));
+        textViewUndo.setText(getString(R.string.undo));
+        textViewUndo.setVisibility(View.VISIBLE);
+        imageViewCross.setImageResource(R.drawable.activityrow_notvisited);
+    }
+
+    private void setUpEditViews(boolean enable, boolean within24Hours, Long longDate) {
+        openVisitMonthView();
+        if (enable) {
+            if (within24Hours) {
+                Calendar cal = Calendar.getInstance();
+                int offset = cal.getTimeZone().getOffset(cal.getTimeInMillis());
+                Date date = new Date(longDate - (long) offset);
+                String monthString = (String) DateFormat.format("MMMM", date);
+                tvEdit.setVisibility(View.VISIBLE);
+                textViewNotVisitMonth.setText(getContext().getString(R.string.anc_visit_done, monthString));
+                imageViewCross.setImageResource(R.drawable.activityrow_visited);
+            } else {
+                record_reccuringvisit_done_bar.setVisibility(View.VISIBLE);
+                layoutNotRecordView.setVisibility(View.GONE);
+            }
+            textViewUndo.setVisibility(View.GONE);
+        } else
+            tvEdit.setVisibility(View.GONE);
+    }
+
+    public void openVisitMonthView() {
+        layoutNotRecordView.setVisibility(View.VISIBLE);
+        layoutRecordButtonDone.setVisibility(View.GONE);
+        layoutRecordView.setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
+    @Override
+    public void setMemberName(String memberName) {
+        text_view_anc_member_name.setText(memberName);
+    }
+
+    @Override
+    public void setRecordVisitTitle(String title) {
+        textview_record_anc_visit.setText(title);
+    }
+
+    @Override
+    public void setMemberGA(String memberGA) {
+        String gest_age = String.format(getString(R.string.gest_age), String.valueOf(memberGA)) + " " + getString(R.string.gest_age_weeks);
+        text_view_ga.setText(gest_age);
+    }
+
+    @Override
+    public void setMemberAddress(String memberAddress) {
+        text_view_address.setText(memberAddress);
+    }
+
+    public void setMemberChwMemberId(String memberChwMemberId) {
+        String uniqueId = String.format(getString(R.string.unique_id_text), memberChwMemberId);
+        text_view_id.setText(uniqueId);
+    }
+
+    @Override
+    public BaseAncMemberProfileContract.Presenter presenter() {
+        return (BaseAncMemberProfileContract.Presenter) presenter;
+    }
+
+    @Override
+    public void openMedicalHistory() {
+        BaseAncMedicalHistoryActivity.startMe(this, MEMBER_OBJECT);
+    }
+
+    @Override
+    public void openUpcomingService() {
+        BaseAncUpcomingServicesActivity.startMe(this, MEMBER_OBJECT);
+    }
+
+    @Override
+    public void openFamilyDueServices() {
+        // TODO implement
+    }
+
+    @Override
+    public void setProfileImage(String baseEntityId, String entityType) {
+        imageRenderHelper.refreshProfileImage(baseEntityId, imageView, NCUtils.getMemberProfileImageResourceIDentifier(entityType));
+    }
+
+    @Override
+    public void setVisitNotDoneThisMonth() {
+        setVisitViews();
+        saveVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE);
+    }
+
+    private void saveVisit(String eventType) {
+        try {
+            Event event = JsonFormUtils.createUntaggedEvent(MEMBER_OBJECT.getBaseEntityId(), eventType, Constants.TABLES.ANC_MEMBERS);
+            Visit visit = NCUtils.eventToVisit(event, JsonFormUtils.generateRandomUUIDString());
+            visit.setPreProcessedJson(new Gson().toJson(event));
+            getInstance().visitRepository().addVisit(visit);
+        } catch (JSONException e) {
+            Timber.e(e);
+        }
+    }
+
+    @Override
+    public void updateVisitNotDone(long value) {
+        textViewUndo.setVisibility(View.GONE);
+        layoutNotRecordView.setVisibility(View.GONE);
+        layoutRecordButtonDone.setVisibility(View.VISIBLE);
+        layoutRecordView.setVisibility(View.VISIBLE);
+        saveVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE_UNDO);
+    }
+
+    @Override
+    public void showProgressBar(boolean status) {
+        progressBar.setVisibility(status ? View.VISIBLE : View.GONE);
+    }
+
+    @Override
+    public void setLastVisit(Date lastVisitDate) {
+        if (lastVisitDate == null)
+            return;
+
+        view_last_visit_row.setVisibility(View.VISIBLE);
+        rlLastVisit.setVisibility(View.VISIBLE);
+
+        int days = Days.daysBetween(new DateTime(lastVisitDate).toLocalDate(), new DateTime().toLocalDate()).getDays();
+        tvLastVisitDate.setText(getString(R.string.last_visit_40_days_ago, (days <= 1) ? getString(R.string.less_than_twenty_four) : String.valueOf(days)));
+    }
+
+    @Override
+    public void setUpComingServicesStatus(String service, AlertStatus status, Date date) {
+        if (status == AlertStatus.complete)
+            return;
+
+        view_most_due_overdue_row.setVisibility(View.VISIBLE);
+        rlUpcomingServices.setVisibility(View.VISIBLE);
+
+        if (status == AlertStatus.upcoming) {
+            tvUpComingServices.setText(NCUtils.fromHtml(getString(R.string.vaccine_service_upcoming, service, dateFormat.format(date))));
+        } else {
+            tvUpComingServices.setText(NCUtils.fromHtml(getString(R.string.vaccine_service_due, service, dateFormat.format(date))));
+        }
+    }
+
+    @Override
+    public void setFamilyStatus(AlertStatus status) {
+        view_family_row.setVisibility(View.VISIBLE);
+        rlFamilyServicesDue.setVisibility(View.VISIBLE);
+
+        if (status == AlertStatus.complete) {
+            tvFamilyStatus.setText(getString(R.string.family_has_nothing_due));
+        } else if (status == AlertStatus.normal) {
+            tvFamilyStatus.setText(getString(R.string.family_has_services_due));
+        } else if (status == AlertStatus.urgent) {
+            tvFamilyStatus.setText(NCUtils.fromHtml(getString(R.string.family_has_service_overdue)));
+        }
+    }
+
+    @Override
+    protected void onResumption() {
+        Timber.v("Empty onResumption");
+    }
+
+    @Override
+    public void onClick(View v) {
+        if (v.getId() == R.id.rlLastVisit) {
+            this.openMedicalHistory();
+        } else if (v.getId() == R.id.rlUpcomingServices) {
+            this.openUpcomingService();
+        } else if (v.getId() == R.id.rlFamilyServicesDue) {
+            this.openFamilyDueServices();
+        } else if (v.getId() == R.id.textview_anc_visit_not) {
+            presenter().getView().setVisitNotDoneThisMonth();
+        } else if (v.getId() == R.id.textview_undo) {
+            presenter().getView().updateVisitNotDone(0);
+        }
+    }
+
+    @Override
+    protected void initializePresenter() {
+        showProgressBar(true);
+        registerPresenter();
+        fetchProfileData();
+        presenter().refreshProfileBottom();
+    }
+
     @Override
     protected void setupViews() {
-        String ancWomanName;
         if (StringUtils.isNotBlank(MEMBER_OBJECT.getMiddleName())) {
             ancWomanName = getName(MEMBER_OBJECT.getFirstName(), MEMBER_OBJECT.getMiddleName());
             ancWomanName = getName(ancWomanName, MEMBER_OBJECT.getMiddleName());
@@ -200,207 +452,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         displayView();
     }
 
-    private boolean ancHomeVisitNotDoneEvent(Visit visit) {
-
-        return visit != null
-                && (new DateTime(visit.getDate()).getMonthOfYear() == new DateTime().getMonthOfYear())
-                && (new DateTime(visit.getDate()).getYear() == new DateTime().getYear());
-    }
-
-    public Visit getVisit(String eventType) {
-        return getInstance().visitRepository().getLatestVisit(MEMBER_OBJECT.getBaseEntityId(), eventType);
-    }
-
-    private void displayView() {
-
-        Visit lastAncHomeVisitNotDoneEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE);
-        Visit lastAncHomeVisitNotDoneUndoEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE_UNDO);
-
-        if (lastAncHomeVisitNotDoneUndoEvent != null
-                && lastAncHomeVisitNotDoneUndoEvent.getDate().before(lastAncHomeVisitNotDoneEvent.getDate())
-                && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
-            setVisitViews();
-        } else if (lastAncHomeVisitNotDoneUndoEvent == null && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
-            setVisitViews();
-        }
-
-        Visit lastVisit = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT);
-        if (lastVisit != null) {
-            boolean within24Hours =
-                    (Days.daysBetween(new DateTime(lastVisit.getCreatedAt()), new DateTime()).getDays() < 1) &&
-                            (Days.daysBetween(new DateTime(lastVisit.getDate()), new DateTime()).getDays() <= 1);
-            setUpEditViews(true, within24Hours, lastVisit.getDate().getTime());
-        }
-    }
-
-    private void setUpEditViews(boolean enable, boolean within24Hours, Long longDate) {
-        openVisitMonthView();
-        if (enable) {
-            if (within24Hours) {
-                Calendar cal = Calendar.getInstance();
-                int offset = cal.getTimeZone().getOffset(cal.getTimeInMillis());
-                Date date = new Date(longDate - (long) offset);
-                String monthString = (String) DateFormat.format("MMMM", date);
-                tvEdit.setVisibility(View.VISIBLE);
-                textViewNotVisitMonth.setText(getContext().getString(R.string.anc_visit_done, monthString));
-                imageViewCross.setImageResource(R.drawable.activityrow_visited);
-            } else {
-                record_reccuringvisit_done_bar.setVisibility(View.VISIBLE);
-                layoutNotRecordView.setVisibility(View.GONE);
-            }
-            textViewUndo.setVisibility(View.GONE);
-        } else
-            tvEdit.setVisibility(View.GONE);
-    }
-
-    private void setVisitViews() {
-        openVisitMonthView();
-        textViewNotVisitMonth.setText(getString(R.string.not_visiting_this_month));
-        textViewUndo.setText(getString(R.string.undo));
-        textViewUndo.setVisibility(View.VISIBLE);
-        imageViewCross.setImageResource(R.drawable.activityrow_notvisited);
-    }
-
-    @Override
-    public void setVisitNotDoneThisMonth() {
-        setVisitViews();
-        saveVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE);
-    }
-
-    private void saveVisit(String eventType) {
-        try {
-            Event event = JsonFormUtils.createUntaggedEvent(MEMBER_OBJECT.getBaseEntityId(), eventType, Constants.TABLES.ANC_MEMBERS);
-            Visit visit = NCUtils.eventToVisit(event, JsonFormUtils.generateRandomUUIDString());
-            visit.setPreProcessedJson(new Gson().toJson(event));
-            getInstance().visitRepository().addVisit(visit);
-        } catch (JSONException e) {
-            Timber.e(e);
-        }
-    }
-
-    @Override
-    public void updateVisitNotDone(long value) {
-        textViewUndo.setVisibility(View.GONE);
-        layoutNotRecordView.setVisibility(View.GONE);
-        layoutRecordButtonDone.setVisibility(View.VISIBLE);
-        layoutRecordView.setVisibility(View.VISIBLE);
-        saveVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE_UNDO);
-    }
-
-
-    public void openVisitMonthView() {
-        layoutNotRecordView.setVisibility(View.VISIBLE);
-        layoutRecordButtonDone.setVisibility(View.GONE);
-        layoutRecordView.setVisibility(View.GONE);
-
-    }
-
-    @Override
-    protected void onResumption() {
-        Timber.v("Empty onResumption");
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.rlLastVisit) {
-            this.openMedicalHistory();
-        } else if (v.getId() == R.id.rlUpcomingServices) {
-            this.openUpcomingService();
-        } else if (v.getId() == R.id.rlFamilyServicesDue) {
-            this.openFamilyDueServices();
-        } else if (v.getId() == R.id.textview_anc_visit_not) {
-            presenter().getView().setVisitNotDoneThisMonth();
-        } else if (v.getId() == R.id.textview_undo) {
-            presenter().getView().updateVisitNotDone(0);
-        }
-    }
-
-    @Override
-    protected void initializePresenter() {
-        showProgressBar(true);
-        registerPresenter();
-        fetchProfileData();
-        presenter().refreshProfileBottom();
-    }
-
-    @Override
-    public void setProfileImage(String baseEntityId, String entityType) {
-        imageRenderHelper.refreshProfileImage(baseEntityId, imageView, NCUtils.getMemberProfileImageResourceIDentifier(entityType));
-    }
-
-    @Override
-    public void showProgressBar(boolean status) {
-        progressBar.setVisibility(status ? View.VISIBLE : View.GONE);
-    }
-
-    @Override
-    public void setLastVisit(Date lastVisitDate) {
-        if (lastVisitDate == null)
-            return;
-
-        view_last_visit_row.setVisibility(View.VISIBLE);
-        rlLastVisit.setVisibility(View.VISIBLE);
-
-        int days = Days.daysBetween(new DateTime(lastVisitDate).toLocalDate(), new DateTime().toLocalDate()).getDays();
-        tvLastVisitDate.setText(getString(R.string.last_visit_40_days_ago, (days <= 1) ? getString(R.string.less_than_twenty_four) : String.valueOf(days)));
-    }
-
-    @Override
-    public void setUpComingServicesStatus(String service, AlertStatus status, Date date) {
-        if (status == AlertStatus.complete)
-            return;
-
-        view_most_due_overdue_row.setVisibility(View.VISIBLE);
-        rlUpcomingServices.setVisibility(View.VISIBLE);
-
-        if (status == AlertStatus.upcoming) {
-            tvUpComingServices.setText(NCUtils.fromHtml(getString(R.string.vaccine_service_upcoming, service, dateFormat.format(date))));
-        } else {
-            tvUpComingServices.setText(NCUtils.fromHtml(getString(R.string.vaccine_service_due, service, dateFormat.format(date))));
-        }
-    }
-
-    @Override
-    public void setFamilyStatus(AlertStatus status) {
-        view_family_row.setVisibility(View.VISIBLE);
-        rlFamilyServicesDue.setVisibility(View.VISIBLE);
-
-        if (status == AlertStatus.complete) {
-            tvFamilyStatus.setText(getString(R.string.family_has_nothing_due));
-        } else if (status == AlertStatus.normal) {
-            tvFamilyStatus.setText(getString(R.string.family_has_services_due));
-        } else if (status == AlertStatus.urgent) {
-            tvFamilyStatus.setText(NCUtils.fromHtml(getString(R.string.family_has_service_overdue)));
-        }
-    }
-
-
-    @Override
-    public void setMemberName(String memberName) {
-        text_view_anc_member_name.setText(memberName);
-    }
-
-    @Override
-    public void setRecordVisitTitle(String title) {
-        textview_record_anc_visit.setText(title);
-    }
-
-    @Override
-    public void setMemberGA(String memberGA) {
-        String gest_age = String.format(getString(R.string.gest_age), String.valueOf(memberGA)) + " " + getString(R.string.gest_age_weeks);
-        text_view_ga.setText(gest_age);
-    }
-
-    @Override
-    public void setMemberAddress(String memberAddress) {
-        text_view_address.setText(memberAddress);
-    }
-
-    public void setMemberChwMemberId(String memberChwMemberId) {
-        String uniqueId = String.format(getString(R.string.unique_id_text), memberChwMemberId);
-        text_view_id.setText(uniqueId);
-    }
-
     @Override
     protected ViewPager setupViewPager(ViewPager viewPager) {
         return null;
@@ -409,35 +460,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     @Override
     protected void fetchProfileData() {
         presenter().fetchProfileData();
-    }
-
-    @Override
-    public Context getContext() {
-        return this;
-    }
-
-    @Override
-    public BaseAncMemberProfileContract.Presenter presenter() {
-        return (BaseAncMemberProfileContract.Presenter) presenter;
-    }
-
-    @Override
-    public void openMedicalHistory() {
-        BaseAncMedicalHistoryActivity.startMe(this, MEMBER_OBJECT);
-    }
-
-    @Override
-    public void openUpcomingService() {
-        BaseAncUpcomingServicesActivity.startMe(this, MEMBER_OBJECT);
-    }
-
-    @Override
-    public void openFamilyDueServices() {
-        // TODO implement
-    }
-
-    protected String getProfileType() {
-        return Constants.MEMBER_PROFILE_TYPES.ANC;
     }
 
 }

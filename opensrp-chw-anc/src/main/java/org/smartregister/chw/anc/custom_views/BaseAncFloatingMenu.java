@@ -22,6 +22,11 @@ public class BaseAncFloatingMenu extends LinearLayout implements View.OnClickLis
         womanProfileType = profileType;
     }
 
+    protected void initUi() {
+        inflate(getContext(), R.layout.view_anc_call_woma_floating_menu, this);
+        findViewById(R.id.anc_fab).setOnClickListener(this);
+    }
+
     public BaseAncFloatingMenu(Context context, AttributeSet attrs) {
         super(context, attrs);
         initUi();
@@ -32,20 +37,11 @@ public class BaseAncFloatingMenu extends LinearLayout implements View.OnClickLis
         initUi();
     }
 
-    private void initUi() {
-        inflate(getContext(), R.layout.view_anc_call_woma_floating_menu, this);
-
-        findViewById(R.id.anc_fab).setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Activity activity = (Activity) getContext();
-                BaseAncWomanCallDialogFragment.launchDialog(activity, womanName, phoneNumber, familyHeadName, familyHeadPhone, womanProfileType);
-            }
-        });
-    }
-
     @Override
-    public void onClick(View v) {
-//        implement
+    public void onClick(View view) {
+        if (view.getId() == R.id.anc_fab) {
+            Activity activity = (Activity) getContext();
+            BaseAncWomanCallDialogFragment.launchDialog(activity, womanName, phoneNumber, familyHeadName, familyHeadPhone, womanProfileType);
+        }
     }
 }

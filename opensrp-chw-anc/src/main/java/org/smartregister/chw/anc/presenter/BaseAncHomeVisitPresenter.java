@@ -75,7 +75,7 @@ public class BaseAncHomeVisitPresenter implements BaseAncHomeVisitContract.Prese
         if (view.get() != null) {
             view.get().displayProgressBar(false);
             if (successful) {
-                view.get().close();
+                view.get().submittedAndClose();
             } else {
                 view.get().displayToast(view.get().getContext().getString(R.string.error_unable_save_home_visit));
             }

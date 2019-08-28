@@ -35,6 +35,8 @@ public interface BaseAncHomeVisitContract {
 
         void close();
 
+        void submittedAndClose();
+
         Presenter getPresenter();
 
         /**

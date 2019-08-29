@@ -22,7 +22,6 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 
 import org.apache.commons.lang3.StringUtils;
-import org.ei.drishti.dto.AlertStatus;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.json.JSONException;
@@ -38,6 +37,7 @@ import org.smartregister.chw.anc.util.NCUtils;
 import org.smartregister.chw.anc.util.VisitUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.clientandeventmodel.Event;
+import org.smartregister.domain.AlertStatus;
 import org.smartregister.helper.ImageRenderHelper;
 import org.smartregister.view.activity.BaseProfileActivity;
 

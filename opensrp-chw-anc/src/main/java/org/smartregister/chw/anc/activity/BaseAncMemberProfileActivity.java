@@ -140,7 +140,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         }
     }
 
-    private void displayView() {
+    protected void displayView() {
 
         Visit lastAncHomeVisitNotDoneEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE);
         Visit lastAncHomeVisitNotDoneUndoEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE_UNDO);
@@ -167,14 +167,14 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         return getInstance().visitRepository().getLatestVisit(MEMBER_OBJECT.getBaseEntityId(), eventType);
     }
 
-    private boolean ancHomeVisitNotDoneEvent(Visit visit) {
+    protected boolean ancHomeVisitNotDoneEvent(Visit visit) {
 
         return visit != null
                 && (new DateTime(visit.getDate()).getMonthOfYear() == new DateTime().getMonthOfYear())
                 && (new DateTime(visit.getDate()).getYear() == new DateTime().getYear());
     }
 
-    private void setVisitViews() {
+    protected void setVisitViews() {
         openVisitMonthView();
         textViewNotVisitMonth.setText(getString(R.string.not_visiting_this_month));
         textViewUndo.setText(getString(R.string.undo));
@@ -182,7 +182,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         imageViewCross.setImageResource(R.drawable.activityrow_notvisited);
     }
 
-    private void setUpEditViews(boolean enable, boolean within24Hours, Long longDate) {
+    protected void setUpEditViews(boolean enable, boolean within24Hours, Long longDate) {
         openVisitMonthView();
         if (enable) {
             if (within24Hours) {

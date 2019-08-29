@@ -7,6 +7,7 @@ import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.joda.time.format.DateTimeFormat;
 import org.joda.time.format.DateTimeFormatter;
+import org.smartregister.Context;
 import org.smartregister.chw.anc.contract.BaseAncMedicalHistoryContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.interactor.BaseAncMemberProfileInteractor;
@@ -57,10 +58,8 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
         return null;
     }
 
-
     @Override
     public String getPncMotherNameDetails(MemberObject memberObject, TextView textView, CircleImageView imageView) {
-
         List<CommonPersonObjectClient> children = pncChildrenUnder29Days(memberObject.getBaseEntityId());
         String nameDetails = memberObject.getMemberName();
         textView.setText(nameDetails);
@@ -73,13 +72,13 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
                         childObject.getColumnmaps().get(DBConstants.KEY.LAST_NAME),
                         String.valueOf(PncUtil.getDaysDifference(childObject.getColumnmaps().get(DBConstants.KEY.DOB))),
                         gender));
+                imageView.setBorderWidth(12);
+                imageView.setImageResource(R.drawable.pnc_less_twenty_nine_days);
                 if (gender == 'M'){
                     imageView.setBorderColor(PncLibrary.getInstance().context().getColorResource(R.color.light_blue));
-                    imageView.setBorderWidth(12);
                 }
                 else{
                     imageView.setBorderColor(PncLibrary.getInstance().context().getColorResource(R.color.light_pink));
-                    imageView.setBorderWidth(12);
                 }
 
             } catch (NullPointerException npe) {

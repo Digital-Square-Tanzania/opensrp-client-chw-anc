@@ -55,6 +55,10 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
     }
 
     @Override
+    public void setProfileImage(String baseEntityId, String entityType) {
+    }
+
+    @Override
     protected String getProfileType() {
         return Constants.MEMBER_PROFILE_TYPES.PNC;
     }

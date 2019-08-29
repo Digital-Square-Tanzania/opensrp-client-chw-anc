@@ -63,14 +63,15 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     protected TextView recordRecurringVisit, textview_record_visit;
     protected View view_anc_record, view_last_visit_row, view_most_due_overdue_row, view_family_row;
     protected CircleImageView imageView;
+    protected BaseAncFloatingMenu baseAncFloatingMenu;
+    protected TextView tvLastVisitDate;
     private String familyHeadName;
     private String familyHeadPhoneNumber;
-    private BaseAncFloatingMenu baseAncFloatingMenu;
     private ImageView imageViewCross;
-    protected TextView tvLastVisitDate;
     private TextView tvUpComingServices;
     private TextView tvFamilyStatus;
     private ProgressBar progressBar;
+    private String ancWomanName;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
 
 
@@ -80,10 +81,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         intent.putExtra(FAMILY_HEAD_NAME, familyHeadName);
         intent.putExtra(FAMILY_HEAD_PHONE, familyHeadPhoneNumber);
         activity.startActivity(intent);
-    }
-
-    protected void registerPresenter() {
-        presenter = new BaseAncMemberProfilePresenter(this, new BaseAncMemberProfileInteractor(), MEMBER_OBJECT);
     }
 
     @Override
@@ -128,23 +125,11 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         setupViews();
     }
 
-    @Override
-    protected void setupViews() {
-        String ancWomanName;
-        if (StringUtils.isNotBlank(MEMBER_OBJECT.getMiddleName())) {
-            ancWomanName = getName(MEMBER_OBJECT.getFirstName(), MEMBER_OBJECT.getMiddleName());
-            ancWomanName = getName(ancWomanName, MEMBER_OBJECT.getMiddleName());
-        } else {
-            ancWomanName = getName(MEMBER_OBJECT.getFirstName(), MEMBER_OBJECT.getLastName());
-        }
+    protected void registerPresenter() {
+        presenter = new BaseAncMemberProfilePresenter(this, new BaseAncMemberProfileInteractor(), MEMBER_OBJECT);
+    }
 
-        if (StringUtils.isNotBlank(MEMBER_OBJECT.getFamilyHead()) && MEMBER_OBJECT.getFamilyHead().equals(MEMBER_OBJECT.getBaseEntityId())) {
-            findViewById(R.id.family_anc_head).setVisibility(View.VISIBLE);
-        }
-        if (StringUtils.isNotBlank(MEMBER_OBJECT.getPrimaryCareGiver()) && MEMBER_OBJECT.getPrimaryCareGiver().equals(MEMBER_OBJECT.getBaseEntityId())) {
-            findViewById(R.id.primary_anc_caregiver).setVisibility(View.VISIBLE);
-        }
-
+    public void initializeFloatingMenu() {
         if (StringUtils.isNotBlank(MEMBER_OBJECT.getPhoneNumber()) || StringUtils.isNotBlank(familyHeadPhoneNumber)) {
             baseAncFloatingMenu = new BaseAncFloatingMenu(this, ancWomanName, MEMBER_OBJECT.getPhoneNumber(), familyHeadName, familyHeadPhoneNumber, getProfileType());
             baseAncFloatingMenu.setGravity(Gravity.BOTTOM | Gravity.RIGHT);
@@ -153,60 +138,9 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
                     LinearLayout.LayoutParams.MATCH_PARENT);
             addContentView(baseAncFloatingMenu, linearLayoutParams);
         }
-        text_view_anc_member_name = findViewById(R.id.text_view_anc_member_name);
-        text_view_ga = findViewById(R.id.text_view_ga);
-        text_view_address = findViewById(R.id.text_view_address);
-        text_view_id = findViewById(R.id.text_view_id);
-        textview_record_anc_visit = findViewById(R.id.textview_record_visit);
-        view_anc_record = findViewById(R.id.view_record);
-        layoutRecordView = findViewById(R.id.record_visit_bar);
-        textViewNotVisitMonth = findViewById(R.id.textview_not_visit_this_month);
-        tvEdit = findViewById(R.id.textview_edit);
-
-
-        rlLastVisit = findViewById(R.id.rlLastVisit);
-        rlUpcomingServices = findViewById(R.id.rlUpcomingServices);
-
-        rlFamilyServicesDue = findViewById(R.id.rlFamilyServicesDue);
-        textViewAncVisitNot = findViewById(R.id.textview_anc_visit_not);
-        layoutRecordButtonDone = findViewById(R.id.record_visit_done_bar);
-        textViewUndo = findViewById(R.id.textview_undo);
-        imageViewCross = findViewById(R.id.tick_image);
-        layoutNotRecordView = findViewById(R.id.record_visit_status_bar);
-        recordRecurringVisit = findViewById(R.id.textview_record_reccuring_visit);
-
-        textview_record_anc_visit.setOnClickListener(this);
-        rlLastVisit.setOnClickListener(this);
-        rlUpcomingServices.setOnClickListener(this);
-        rlFamilyServicesDue.setOnClickListener(this);
-        tvEdit.setOnClickListener(this);
-
-        textViewAncVisitNot.setOnClickListener(this);
-        textViewUndo.setOnClickListener(this);
-        imageViewCross.setOnClickListener(this);
-        layoutRecordButtonDone.setOnClickListener(this);
-        recordRecurringVisit.setOnClickListener(this);
-
-
-        imageView = findViewById(R.id.imageview_profile);
-        imageView.setBorderWidth(2);
-        setRecordVisitTitle(getString(R.string.record_anc_visit));
-
-        displayView();
     }
 
-    private boolean ancHomeVisitNotDoneEvent(Visit visit) {
-
-        return visit != null
-                && (new DateTime(visit.getDate()).getMonthOfYear() == new DateTime().getMonthOfYear())
-                && (new DateTime(visit.getDate()).getYear() == new DateTime().getYear());
-    }
-
-    public Visit getVisit(String eventType) {
-        return getInstance().visitRepository().getLatestVisit(MEMBER_OBJECT.getBaseEntityId(), eventType);
-    }
-
-    private void displayView() {
+    protected void displayView() {
 
         Visit lastAncHomeVisitNotDoneEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE);
         Visit lastAncHomeVisitNotDoneUndoEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE_UNDO);
@@ -225,7 +159,30 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         }
     }
 
-    private void setUpEditViews(boolean enable, boolean within24Hours, Long longDate) {
+    protected String getProfileType() {
+        return Constants.MEMBER_PROFILE_TYPES.ANC;
+    }
+
+    public Visit getVisit(String eventType) {
+        return getInstance().visitRepository().getLatestVisit(MEMBER_OBJECT.getBaseEntityId(), eventType);
+    }
+
+    protected boolean ancHomeVisitNotDoneEvent(Visit visit) {
+
+        return visit != null
+                && (new DateTime(visit.getDate()).getMonthOfYear() == new DateTime().getMonthOfYear())
+                && (new DateTime(visit.getDate()).getYear() == new DateTime().getYear());
+    }
+
+    protected void setVisitViews() {
+        openVisitMonthView();
+        textViewNotVisitMonth.setText(getString(R.string.not_visiting_this_month));
+        textViewUndo.setText(getString(R.string.undo));
+        textViewUndo.setVisibility(View.VISIBLE);
+        imageViewCross.setImageResource(R.drawable.activityrow_notvisited);
+    }
+
+    protected void setUpEditViews(boolean enable, boolean within24Hours, Long longDate) {
         openVisitMonthView();
         if (enable) {
             if (within24Hours) {
@@ -246,12 +203,67 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             tvEdit.setVisibility(View.GONE);
     }
 
-    private void setVisitViews() {
-        openVisitMonthView();
-        textViewNotVisitMonth.setText(getString(R.string.not_visiting_this_month));
-        textViewUndo.setText(getString(R.string.undo));
-        textViewUndo.setVisibility(View.VISIBLE);
-        imageViewCross.setImageResource(R.drawable.activityrow_notvisited);
+    public void openVisitMonthView() {
+        layoutNotRecordView.setVisibility(View.VISIBLE);
+        layoutRecordButtonDone.setVisibility(View.GONE);
+        layoutRecordView.setVisibility(View.GONE);
+
+    }
+
+    @Override
+    public Context getContext() {
+        return this;
+    }
+
+    @Override
+    public void setMemberName(String memberName) {
+        text_view_anc_member_name.setText(memberName);
+    }
+
+    @Override
+    public void setRecordVisitTitle(String title) {
+        textview_record_anc_visit.setText(title);
+    }
+
+    @Override
+    public void setMemberGA(String memberGA) {
+        String gest_age = String.format(getString(R.string.gest_age), String.valueOf(memberGA)) + " " + getString(R.string.gest_age_weeks);
+        text_view_ga.setText(gest_age);
+    }
+
+    @Override
+    public void setMemberAddress(String memberAddress) {
+        text_view_address.setText(memberAddress);
+    }
+
+    public void setMemberChwMemberId(String memberChwMemberId) {
+        String uniqueId = String.format(getString(R.string.unique_id_text), memberChwMemberId);
+        text_view_id.setText(uniqueId);
+    }
+
+    @Override
+    public BaseAncMemberProfileContract.Presenter presenter() {
+        return (BaseAncMemberProfileContract.Presenter) presenter;
+    }
+
+    @Override
+    public void openMedicalHistory() {
+        BaseAncMedicalHistoryActivity.startMe(this, MEMBER_OBJECT);
+    }
+
+    @Override
+    public void openUpcomingService() {
+        BaseAncUpcomingServicesActivity.startMe(this, MEMBER_OBJECT);
+    }
+
+    @Override
+    public void openFamilyDueServices() {
+        // TODO implement
+    }
+
+    @Override
+    public void setProfileImage(String baseEntityId, String entityType) {
+        imageRenderHelper.refreshProfileImage(baseEntityId, imageView, NCUtils.getMemberProfileImageResourceIDentifier(entityType));
     }
 
     @Override
@@ -278,47 +290,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         layoutRecordButtonDone.setVisibility(View.VISIBLE);
         layoutRecordView.setVisibility(View.VISIBLE);
         saveVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE_UNDO);
-    }
-
-
-    public void openVisitMonthView() {
-        layoutNotRecordView.setVisibility(View.VISIBLE);
-        layoutRecordButtonDone.setVisibility(View.GONE);
-        layoutRecordView.setVisibility(View.GONE);
-
-    }
-
-    @Override
-    protected void onResumption() {
-        Timber.v("Empty onResumption");
-    }
-
-    @Override
-    public void onClick(View v) {
-        if (v.getId() == R.id.rlLastVisit) {
-            this.openMedicalHistory();
-        } else if (v.getId() == R.id.rlUpcomingServices) {
-            this.openUpcomingService();
-        } else if (v.getId() == R.id.rlFamilyServicesDue) {
-            this.openFamilyDueServices();
-        } else if (v.getId() == R.id.textview_anc_visit_not) {
-            presenter().getView().setVisitNotDoneThisMonth();
-        } else if (v.getId() == R.id.textview_undo) {
-            presenter().getView().updateVisitNotDone(0);
-        }
-    }
-
-    @Override
-    protected void initializePresenter() {
-        showProgressBar(true);
-        registerPresenter();
-        fetchProfileData();
-        presenter().refreshProfileBottom();
-    }
-
-    @Override
-    public void setProfileImage(String baseEntityId, String entityType) {
-        imageRenderHelper.refreshProfileImage(baseEntityId, imageView, NCUtils.getMemberProfileImageResourceIDentifier(entityType));
     }
 
     @Override
@@ -368,29 +339,90 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     @Override
-    public void setMemberName(String memberName) {
-        text_view_anc_member_name.setText(memberName);
+    protected void onResumption() {
+        Timber.v("Empty onResumption");
     }
 
     @Override
-    public void setRecordVisitTitle(String title) {
-        textview_record_anc_visit.setText(title);
+    public void onClick(View v) {
+        if (v.getId() == R.id.rlLastVisit) {
+            this.openMedicalHistory();
+        } else if (v.getId() == R.id.rlUpcomingServices) {
+            this.openUpcomingService();
+        } else if (v.getId() == R.id.rlFamilyServicesDue) {
+            this.openFamilyDueServices();
+        } else if (v.getId() == R.id.textview_anc_visit_not) {
+            presenter().getView().setVisitNotDoneThisMonth();
+        } else if (v.getId() == R.id.textview_undo) {
+            presenter().getView().updateVisitNotDone(0);
+        }
     }
 
     @Override
-    public void setMemberGA(String memberGA) {
-        String gest_age = String.format(getString(R.string.gest_age), String.valueOf(memberGA)) + " " + getString(R.string.gest_age_weeks);
-        text_view_ga.setText(gest_age);
+    protected void initializePresenter() {
+        showProgressBar(true);
+        registerPresenter();
+        fetchProfileData();
+        presenter().refreshProfileBottom();
     }
 
     @Override
-    public void setMemberAddress(String memberAddress) {
-        text_view_address.setText(memberAddress);
-    }
+    protected void setupViews() {
+        if (StringUtils.isNotBlank(MEMBER_OBJECT.getMiddleName())) {
+            ancWomanName = getName(MEMBER_OBJECT.getFirstName(), MEMBER_OBJECT.getMiddleName());
+            ancWomanName = getName(ancWomanName, MEMBER_OBJECT.getMiddleName());
+        } else {
+            ancWomanName = getName(MEMBER_OBJECT.getFirstName(), MEMBER_OBJECT.getLastName());
+        }
 
-    public void setMemberChwMemberId(String memberChwMemberId) {
-        String uniqueId = String.format(getString(R.string.unique_id_text), memberChwMemberId);
-        text_view_id.setText(uniqueId);
+        if (StringUtils.isNotBlank(MEMBER_OBJECT.getFamilyHead()) && MEMBER_OBJECT.getFamilyHead().equals(MEMBER_OBJECT.getBaseEntityId())) {
+            findViewById(R.id.family_anc_head).setVisibility(View.VISIBLE);
+        }
+        if (StringUtils.isNotBlank(MEMBER_OBJECT.getPrimaryCareGiver()) && MEMBER_OBJECT.getPrimaryCareGiver().equals(MEMBER_OBJECT.getBaseEntityId())) {
+            findViewById(R.id.primary_anc_caregiver).setVisibility(View.VISIBLE);
+        }
+
+        initializeFloatingMenu();
+        text_view_anc_member_name = findViewById(R.id.text_view_anc_member_name);
+        text_view_ga = findViewById(R.id.text_view_ga);
+        text_view_address = findViewById(R.id.text_view_address);
+        text_view_id = findViewById(R.id.text_view_id);
+        textview_record_anc_visit = findViewById(R.id.textview_record_visit);
+        view_anc_record = findViewById(R.id.view_record);
+        layoutRecordView = findViewById(R.id.record_visit_bar);
+        textViewNotVisitMonth = findViewById(R.id.textview_not_visit_this_month);
+        tvEdit = findViewById(R.id.textview_edit);
+
+
+        rlLastVisit = findViewById(R.id.rlLastVisit);
+        rlUpcomingServices = findViewById(R.id.rlUpcomingServices);
+
+        rlFamilyServicesDue = findViewById(R.id.rlFamilyServicesDue);
+        textViewAncVisitNot = findViewById(R.id.textview_anc_visit_not);
+        layoutRecordButtonDone = findViewById(R.id.record_visit_done_bar);
+        textViewUndo = findViewById(R.id.textview_undo);
+        imageViewCross = findViewById(R.id.tick_image);
+        layoutNotRecordView = findViewById(R.id.record_visit_status_bar);
+        recordRecurringVisit = findViewById(R.id.textview_record_reccuring_visit);
+
+        textview_record_anc_visit.setOnClickListener(this);
+        rlLastVisit.setOnClickListener(this);
+        rlUpcomingServices.setOnClickListener(this);
+        rlFamilyServicesDue.setOnClickListener(this);
+        tvEdit.setOnClickListener(this);
+
+        textViewAncVisitNot.setOnClickListener(this);
+        textViewUndo.setOnClickListener(this);
+        imageViewCross.setOnClickListener(this);
+        layoutRecordButtonDone.setOnClickListener(this);
+        recordRecurringVisit.setOnClickListener(this);
+
+
+        imageView = findViewById(R.id.imageview_profile);
+        imageView.setBorderWidth(2);
+        setRecordVisitTitle(getString(R.string.record_anc_visit));
+
+        displayView();
     }
 
     @Override
@@ -403,33 +435,28 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         presenter().fetchProfileData();
     }
 
-    @Override
-    public Context getContext() {
-        return this;
+    public String getFamilyHeadName() {
+        return familyHeadName;
     }
 
-    @Override
-    public BaseAncMemberProfileContract.Presenter presenter() {
-        return (BaseAncMemberProfileContract.Presenter) presenter;
+    public void setFamilyHeadName(String familyHeadName) {
+        this.familyHeadName = familyHeadName;
     }
 
-    @Override
-    public void openMedicalHistory() {
-        BaseAncMedicalHistoryActivity.startMe(this, MEMBER_OBJECT);
+    public String getFamilyHeadPhoneNumber() {
+        return familyHeadPhoneNumber;
     }
 
-    @Override
-    public void openUpcomingService() {
-        BaseAncUpcomingServicesActivity.startMe(this, MEMBER_OBJECT);
+    public void setFamilyHeadPhoneNumber(String familyHeadPhoneNumber) {
+        this.familyHeadPhoneNumber = familyHeadPhoneNumber;
     }
 
-    @Override
-    public void openFamilyDueServices() {
-        // TODO implement
+    public String getAncWomanName() {
+        return ancWomanName;
     }
 
-    protected String getProfileType() {
-        return Constants.MEMBER_PROFILE_TYPES.ANC;
+    public void setAncWomanName(String ancWomanName) {
+        this.ancWomanName = ancWomanName;
     }
 
 }

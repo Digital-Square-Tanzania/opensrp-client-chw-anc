@@ -61,7 +61,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         Intent intent = new Intent(activity, BaseAncHomeVisitActivity.class);
         intent.putExtra(MEMBER_PROFILE_OBJECT, memberObject);
         intent.putExtra(EDIT_MODE, isEditMode);
-        activity.startActivity(intent);
+        activity.startActivityForResult(intent,Constants.REQUEST_CODE_HOME_VISIT);
     }
 
     @Override
@@ -240,6 +240,13 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     @Override
     public void close() {
         finish();
+    }
+
+    @Override
+    public void submittedAndClose() {
+        Intent returnIntent = new Intent();
+        setResult(Activity.RESULT_OK,returnIntent);
+        close();
     }
 
     @Override

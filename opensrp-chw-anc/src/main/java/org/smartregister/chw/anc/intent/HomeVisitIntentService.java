@@ -10,7 +10,7 @@ import org.smartregister.chw.anc.util.VisitUtils;
 
 import timber.log.Timber;
 
-public class HomeVisitIntent extends IntentService {
+public class HomeVisitIntentService extends IntentService {
     /**
      * Creates an IntentService.  Invoked by your subclass's constructor.
      *
@@ -20,8 +20,15 @@ public class HomeVisitIntent extends IntentService {
     private VisitRepository visitRepository;
     private VisitDetailsRepository visitDetailsRepository;
 
-    public HomeVisitIntent() {
+    public HomeVisitIntentService() {
         super("HomeVisitService");
+    }
+
+    @Override
+    public int onStartCommand(Intent intent, int flags, int startId) {
+        visitRepository = AncLibrary.getInstance().visitRepository();
+        visitDetailsRepository = AncLibrary.getInstance().visitDetailsRepository();
+        return super.onStartCommand(intent, flags, startId);
     }
 
     @Override
@@ -31,13 +38,6 @@ public class HomeVisitIntent extends IntentService {
         } catch (Exception e) {
             Timber.e(e);
         }
-    }
-
-    @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
-        visitRepository = AncLibrary.getInstance().visitRepository();
-        visitDetailsRepository = AncLibrary.getInstance().visitDetailsRepository();
-        return super.onStartCommand(intent, flags, startId);
     }
 
     /**

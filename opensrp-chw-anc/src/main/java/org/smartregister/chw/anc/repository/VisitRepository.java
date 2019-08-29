@@ -102,9 +102,9 @@ public class VisitRepository extends BaseRepository {
         String visitID = null;
         Cursor cursor = null;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        String sql = "select " + VISIT_ID + " from visits where base_entity_id = ? COLLATE NOCASE and visit_type = ? COLLATE NOCASE strftime('%Y-%m-%d',visit_date / 1000, 'unixepoch') = ? ";
+        String sql = "select " + VISIT_ID + " from visits where base_entity_id = ? COLLATE NOCASE and visit_type = ? COLLATE NOCASE and strftime('%Y-%m-%d',visit_date / 1000, 'unixepoch') = ? ";
         try {
-            cursor = getReadableDatabase().rawQuery(sql, new String[]{sdf.format(eventDate), parentEventType, baseEntityID});
+            cursor = getReadableDatabase().rawQuery(sql, new String[]{baseEntityID, parentEventType, sdf.format(eventDate)});
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
                     visitID = cursor.getString(cursor.getColumnIndex(VISIT_ID));

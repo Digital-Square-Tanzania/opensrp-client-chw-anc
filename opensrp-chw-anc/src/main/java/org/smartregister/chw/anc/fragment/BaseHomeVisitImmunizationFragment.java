@@ -52,7 +52,7 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
     private CheckBox checkBoxNoVaccinesDone;
     private DatePicker singleDatePicker;
     private Button saveButton;
-    private SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMATS.NATIVE_FORMS, Locale.getDefault());
+    private SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMATS.DOB, Locale.getDefault());
 
     public static BaseHomeVisitImmunizationFragment getInstance(final BaseAncHomeVisitContract.VisitView view, String baseEntityID, Map<String, List<VisitDetail>> details, List<VaccineDisplay> vaccineDisplays) {
         BaseHomeVisitImmunizationFragment fragment = new BaseHomeVisitImmunizationFragment();
@@ -389,7 +389,7 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
             lookup.put(NCUtils.removeSpaces(vaccineView.vaccineName), vaccineView);
         }
 
-        SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_FORMATS.NATIVE_FORMS, Locale.getDefault());
+        SimpleDateFormat sdf = new SimpleDateFormat(Constants.DATE_FORMATS.DOB, Locale.getDefault());
         for (Map.Entry<String, String> entry : selectedVaccines.entrySet()) {
             VaccineView vaccineView = lookup.get(entry.getKey());
             if (vaccineView != null) {

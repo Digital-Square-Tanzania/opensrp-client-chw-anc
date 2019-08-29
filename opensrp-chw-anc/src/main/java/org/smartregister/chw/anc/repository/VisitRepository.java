@@ -96,6 +96,9 @@ public class VisitRepository extends BaseRepository {
     }
 
     public String getParentVisitEventID(String baseEntityID, String parentEventType, Date eventDate) {
+        if (StringUtils.isBlank(baseEntityID) || StringUtils.isBlank(parentEventType) || eventDate == null)
+            return null;
+
         String visitID = null;
         Cursor cursor = null;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());

@@ -439,8 +439,6 @@ public class NCUtils {
         String clean_val = cleanString(val);
         if (detail.getVisitKey().contains("date")) {
             return getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), clean_val);
-        } else if ("vaccine".equalsIgnoreCase(detail.getParentCode()) && !Constants.HOME_VISIT.VACCINE_NOT_GIVEN.equalsIgnoreCase(clean_val)) {
-            return getFormattedDate(getSourceDateFormat(), getSaveDateFormat(), clean_val);
         }
 
         return clean_val;
@@ -637,6 +635,20 @@ public class NCUtils {
         }
 
         return toCSV(vals);
+    }
+
+    public static List<String> getTexts(@Nullable List<VisitDetail> visitDetails) {
+        if (visitDetails == null)
+            return null;
+
+        List<String> texts = new ArrayList<>();
+        for (VisitDetail vd : visitDetails) {
+            String val = getText(vd);
+            if (StringUtils.isNotBlank(val))
+                texts.add(val);
+        }
+
+        return texts;
     }
 
     public static String toCSV(List<String> list) {

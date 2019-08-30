@@ -76,15 +76,17 @@ public interface Constants {
 
     interface DATE_FORMATS {
         String NATIVE_FORMS = "dd-MM-yyyy";
+        String DOB = "yyyy-MM-dd";
     }
 
     interface HOME_VISIT {
         String VACCINE_NOT_GIVEN = "Vaccine not given";
+        String DOSE_NOT_GIVEN = "Dose not given";
     }
 
     interface HOME_VISIT_TASK {
-        String VACCINE = "vaccine";
-        String SERVICE = "service";
+        String VACCINE = "VACCINE";
+        String SERVICE = "SERVICE";
         String SUB_EVENT = "subevent";
     }
 }

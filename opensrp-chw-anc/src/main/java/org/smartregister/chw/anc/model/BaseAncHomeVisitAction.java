@@ -25,6 +25,8 @@ public class BaseAncHomeVisitAction {
     private String subTitle;
     private String disabledMessage;
     private Status actionStatus;
+    private PayloadType payloadType;
+    private String payloadDetails;
     private ScheduleStatus scheduleStatus;
     private ProcessingMode processingMode;
     private boolean optional;
@@ -33,8 +35,6 @@ public class BaseAncHomeVisitAction {
     private String jsonPayload;
     private String selectedOption;
     private AncHomeVisitActionHelper ancHomeVisitActionHelper;
-    private List<VaccineWrapper> vaccineWrapper;
-    private List<ServiceWrapper> serviceWrapper;
     private Map<String, List<VisitDetail>> details;
     private Context context;
     private Validator validator;
@@ -45,13 +45,13 @@ public class BaseAncHomeVisitAction {
         this.subTitle = builder.subTitle;
         this.disabledMessage = builder.disabledMessage;
         this.actionStatus = builder.actionStatus;
+        this.payloadType = builder.payloadType;
+        this.payloadDetails = builder.payloadDetails;
         this.scheduleStatus = builder.scheduleStatus;
         this.optional = builder.optional;
         this.destinationFragment = builder.destinationFragment;
         this.formName = builder.formName;
         this.ancHomeVisitActionHelper = builder.ancHomeVisitActionHelper;
-        this.vaccineWrapper = builder.vaccineWrapper;
-        this.serviceWrapper = builder.serviceWrapper;
         this.details = builder.details;
         this.context = builder.context;
         this.processingMode = builder.processingMode;
@@ -167,6 +167,22 @@ public class BaseAncHomeVisitAction {
 
     public void setActionStatus(Status actionStatus) {
         this.actionStatus = actionStatus;
+    }
+
+    public PayloadType getPayloadType() {
+        return payloadType;
+    }
+
+    public void setPayloadType(PayloadType payloadType) {
+        this.payloadType = payloadType;
+    }
+
+    public String getPayloadDetails() {
+        return payloadDetails;
+    }
+
+    public void setPayloadDetails(String payloadDetails) {
+        this.payloadDetails = payloadDetails;
     }
 
     public ScheduleStatus getScheduleStatus() {
@@ -286,30 +302,16 @@ public class BaseAncHomeVisitAction {
         }
     }
 
-    public List<VaccineWrapper> getVaccineWrapper() {
-        return (getActionStatus() == Status.COMPLETED) ? vaccineWrapper : null;
-    }
-
-    public void setVaccineWrapper(VaccineWrapper vaccineWrapper) {
-        this.vaccineWrapper.add(vaccineWrapper);
-    }
-
-    public List<ServiceWrapper> getServiceWrapper() {
-        return (getActionStatus() == Status.COMPLETED) ? serviceWrapper : null;
-    }
-
-    public void setServiceWrapper(ServiceWrapper serviceWrapper) {
-        this.serviceWrapper.add(serviceWrapper);
-    }
-
     public enum Status {COMPLETED, PARTIALLY_COMPLETED, PENDING}
 
     public enum ScheduleStatus {DUE, OVERDUE}
 
+    public enum PayloadType {JSON, SERVICE, VACCINE}
+
     /**
      * Detached processing generates separate event when form is submitted
      */
-    public enum ProcessingMode {COMBINED, DETACHED, SEPARATE}
+    public enum ProcessingMode {COMBINED, SEPARATE}
 
     public interface AncHomeVisitActionHelper {
 
@@ -375,6 +377,8 @@ public class BaseAncHomeVisitAction {
         private String subTitle;
         private String disabledMessage;
         private Status actionStatus = Status.PENDING;
+        private PayloadType payloadType = PayloadType.JSON;
+        private String payloadDetails;
         private ScheduleStatus scheduleStatus = ScheduleStatus.DUE;
         private ProcessingMode processingMode = ProcessingMode.COMBINED;
         private boolean optional = true;
@@ -405,6 +409,16 @@ public class BaseAncHomeVisitAction {
 
         public Builder withDisabledMessage(String disabledMessage) {
             this.disabledMessage = disabledMessage;
+            return this;
+        }
+
+        public Builder withPayloadType(PayloadType payloadType) {
+            this.payloadType = payloadType;
+            return this;
+        }
+
+        public Builder withPayloadDetails(String payloadDetails) {
+            this.payloadDetails = payloadDetails;
             return this;
         }
 

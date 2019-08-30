@@ -48,7 +48,8 @@ public class VisitDetailsRepository extends BaseRepository {
 
     private static final String VISIT_ID_INDEX = "CREATE INDEX " + VISIT_DETAILS_TABLE + "_" + VISIT_ID + "_index ON " + VISIT_DETAILS_TABLE
             + "("
-            + VISIT_ID + " COLLATE NOCASE "
+            + VISIT_ID + " COLLATE NOCASE , "
+            + VISIT_KEY + " COLLATE NOCASE "
             + ");";
 
 

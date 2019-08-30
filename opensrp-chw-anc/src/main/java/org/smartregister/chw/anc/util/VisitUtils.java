@@ -3,9 +3,7 @@ package org.smartregister.chw.anc.util;
 import android.content.Context;
 import android.content.Intent;
 
-import com.fatboyindustrial.gsonjodatime.Converters;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
@@ -18,10 +16,11 @@ import org.smartregister.chw.anc.repository.VisitRepository;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.immunization.ImmunizationLibrary;
 import org.smartregister.immunization.domain.ServiceRecord;
-import org.smartregister.immunization.domain.ServiceWrapper;
+import org.smartregister.immunization.domain.ServiceType;
 import org.smartregister.immunization.domain.Vaccine;
 import org.smartregister.immunization.domain.VaccineWrapper;
 import org.smartregister.immunization.repository.RecurringServiceRecordRepository;
+import org.smartregister.immunization.repository.RecurringServiceTypeRepository;
 import org.smartregister.immunization.repository.VaccineRepository;
 import org.smartregister.immunization.service.intent.RecurringIntentService;
 import org.smartregister.immunization.service.intent.VaccineIntentService;
@@ -96,13 +95,13 @@ public class VisitUtils {
         for (Visit v : visits) {
             if (!v.getProcessed()) {
 
-                // process details
-                processVisitDetails(v, visitDetailsRepository, v.getVisitId(), v.getBaseEntityId());
-
                 // persist to db
                 Event baseEvent = new Gson().fromJson(v.getPreProcessedJson(), Event.class);
                 AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
                 NCUtils.addEvent(allSharedPreferences, baseEvent);
+
+                // process details
+                processVisitDetails(v, visitDetailsRepository, v.getVisitId(), v.getBaseEntityId());
 
                 visitRepository.completeProcessing(v.getVisitId());
             }
@@ -119,53 +118,27 @@ public class VisitUtils {
 
     private static void processVisitDetails(Visit visit, VisitDetailsRepository visitDetailsRepository, String visitID, String baseEntityID) throws Exception {
         List<VisitDetail> visitDetailList = visitDetailsRepository.getVisits(visitID);
-        List<VaccineWrapper> vaccineWrappers = new ArrayList<>();
-        List<ServiceWrapper> serviceWrappers = new ArrayList<>();
-        List<Event> events = new ArrayList<>();
-
-        Gson gson = Converters.registerDateTime(new GsonBuilder()).create();
         for (VisitDetail visitDetail : visitDetailList) {
             if (!visitDetail.getProcessed()) {
-
-                if (StringUtils.isNotBlank(visitDetail.getPreProcessedType()) && StringUtils.isNotBlank(visitDetail.getPreProcessedJson())) {
-                    switch (visitDetail.getPreProcessedType()) {
-                        case Constants.HOME_VISIT_TASK.VACCINE:
-                            vaccineWrappers.add(gson.fromJson(visitDetail.getPreProcessedJson(), VaccineWrapper.class));
-                            break;
-                        case Constants.HOME_VISIT_TASK.SERVICE:
-                            serviceWrappers.add(gson.fromJson(visitDetail.getPreProcessedJson(), ServiceWrapper.class));
-                            break;
-                        case Constants.HOME_VISIT_TASK.SUB_EVENT:
-                            MultiEvent multiEvent = gson.fromJson(visitDetail.getPreProcessedJson(), MultiEvent.class);
-                            events.add(multiEvent.getEvent());
-                            serviceWrappers.addAll(multiEvent.getServices());
-                            vaccineWrappers.addAll(multiEvent.getVaccines());
-                            break;
-                        default:
-                            break;
-                    }
+                if (Constants.HOME_VISIT_TASK.SERVICE.equalsIgnoreCase(visitDetail.getPreProcessedType())) {
+                    saveVisitDetailsAsServiceRecord(visitDetail, baseEntityID, visit.getDate());
+                    visitDetailsRepository.completeProcessing(visitDetail.getVisitDetailsId());
+                    continue;
                 }
-                saveVisitDetailsAsVaccine(visitDetail, baseEntityID, visit.getDate());
+
+
+                if (Constants.HOME_VISIT_TASK.VACCINE.equalsIgnoreCase(visitDetail.getParentCode())) {
+                    saveVisitDetailsAsVaccine(visitDetail, baseEntityID, visit.getDate());
+                    visitDetailsRepository.completeProcessing(visitDetail.getVisitDetailsId());
+                    continue;
+                }
 
                 visitDetailsRepository.completeProcessing(visitDetail.getVisitDetailsId());
             }
         }
-
-        if (vaccineWrappers.size() > 0)
-            saveVaccines(vaccineWrappers, baseEntityID);
-
-        if (serviceWrappers.size() > 0)
-            saveServices(serviceWrappers, baseEntityID);
-
-        if (events.size() > 0) {
-            for (Event subEvent : events) {
-                AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
-                NCUtils.addEvent(allSharedPreferences, subEvent);
-            }
-        }
     }
 
-    private static Vaccine saveVisitDetailsAsVaccine(VisitDetail detail, String baseEntityID, Date eventDate) {
+    public static Vaccine saveVisitDetailsAsVaccine(VisitDetail detail, String baseEntityID, Date eventDate) {
         if (!"vaccine".equalsIgnoreCase(detail.getParentCode()))
             return null;
 
@@ -192,6 +165,31 @@ public class VisitUtils {
         getVaccineRepository().add(vaccine); // persist to local db
 
         return vaccine;
+    }
+
+    public static ServiceRecord saveVisitDetailsAsServiceRecord(VisitDetail detail, String baseEntityID, Date eventDate) {
+        String val = NCUtils.getText(detail).trim();
+        if (Constants.HOME_VISIT.DOSE_NOT_GIVEN.equalsIgnoreCase(val)) return null;
+
+        RecurringServiceTypeRepository recurringServiceTypeRepository = ImmunizationLibrary.getInstance().recurringServiceTypeRepository();
+        List<ServiceType> serviceTypes = recurringServiceTypeRepository.searchByName(detail.getPreProcessedJson());
+        if (serviceTypes.size() != 1) return null;
+
+        ServiceType serviceType = serviceTypes.get(0);
+
+        RecurringServiceRecordRepository recurringServiceRecordRepository = ImmunizationLibrary.getInstance().recurringServiceRecordRepository();
+
+        ServiceRecord serviceRecord = new ServiceRecord();
+        serviceRecord.setDate(eventDate);
+
+        serviceRecord.setBaseEntityId(baseEntityID);
+        serviceRecord.setRecurringServiceId(serviceType.getId());
+        serviceRecord.setValue("yes");
+
+        JsonFormUtils.tagSyncMetadata(NCUtils.context().allSharedPreferences(), serviceRecord);
+        recurringServiceRecordRepository.add(serviceRecord);
+
+        return serviceRecord;
     }
 
     public static Date getDateFromString(String dateStr) {
@@ -229,6 +227,10 @@ public class VisitUtils {
         }
     }
 
+    public static VaccineRepository getVaccineRepository() {
+        return ImmunizationLibrary.getInstance().vaccineRepository();
+    }
+
     /**
      * Check whether a visit occurred in the last 24 hours
      *
@@ -241,52 +243,5 @@ public class VisitUtils {
                     (Days.daysBetween(new DateTime(lastVisit.getDate()), new DateTime()).getDays() <= 1);
         }
         return false;
-    }
-
-    public static VaccineRepository getVaccineRepository() {
-        return ImmunizationLibrary.getInstance().vaccineRepository();
-    }
-
-    public static void saveServices(List<ServiceWrapper> tags, String baseEntityId) {
-        for (ServiceWrapper tag : tags) {
-            if (tag.getUpdatedVaccineDate() == null) {
-                return;
-            }
-
-            RecurringServiceRecordRepository recurringServiceRecordRepository = ImmunizationLibrary.getInstance().recurringServiceRecordRepository();
-
-            ServiceRecord serviceRecord = new ServiceRecord();
-            if (tag.getDbKey() != null) {
-                serviceRecord = recurringServiceRecordRepository.find(tag.getDbKey());
-                if (serviceRecord == null) {
-                    serviceRecord = new ServiceRecord();
-                    serviceRecord.setDate(tag.getUpdatedVaccineDate().toDate());
-
-                    serviceRecord.setBaseEntityId(baseEntityId);
-                    serviceRecord.setRecurringServiceId(tag.getTypeId());
-                    serviceRecord.setDate(tag.getUpdatedVaccineDate().toDate());
-                    serviceRecord.setValue(tag.getValue());
-                    serviceRecord.setCreatedAt(tag.getUpdatedVaccineDate().toDate());
-
-                    JsonFormUtils.tagSyncMetadata(NCUtils.context().allSharedPreferences(), serviceRecord);
-                } else {
-                    serviceRecord.setDate(tag.getUpdatedVaccineDate().toDate());
-                    serviceRecord.setValue(tag.getValue());
-                }
-
-            } else {
-                serviceRecord.setDate(tag.getUpdatedVaccineDate().toDate());
-
-                serviceRecord.setBaseEntityId(baseEntityId);
-                serviceRecord.setRecurringServiceId(tag.getTypeId());
-                serviceRecord.setDate(tag.getUpdatedVaccineDate().toDate());
-                serviceRecord.setValue(tag.getValue());
-
-                JsonFormUtils.tagSyncMetadata(NCUtils.context().allSharedPreferences(), serviceRecord);
-            }
-
-            recurringServiceRecordRepository.add(serviceRecord);
-            tag.setDbKey(serviceRecord.getId());
-        }
     }
 }

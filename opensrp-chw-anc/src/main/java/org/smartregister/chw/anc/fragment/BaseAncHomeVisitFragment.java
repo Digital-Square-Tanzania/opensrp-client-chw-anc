@@ -26,6 +26,7 @@ import org.smartregister.chw.anc.contract.BaseAncHomeVisitFragmentContract;
 import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitFragmentModel;
 import org.smartregister.chw.anc.presenter.BaseAncHomeVisitFragmentPresenter;
+import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.util.DatePickerUtils;
@@ -463,7 +464,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
     }
 
     protected void onCancel() {
-        onSelectOption("Dose not given");
+        onSelectOption(Constants.HOME_VISIT.DOSE_NOT_GIVEN);
         getHomeVisitView().onDialogOptionUpdated(getJsonObject().toString());
         dismiss();
     }

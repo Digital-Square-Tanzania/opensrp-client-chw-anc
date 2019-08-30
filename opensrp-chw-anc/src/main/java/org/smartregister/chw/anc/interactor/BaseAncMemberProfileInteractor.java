@@ -2,17 +2,16 @@ package org.smartregister.chw.anc.interactor;
 
 import android.support.annotation.VisibleForTesting;
 
-import org.ei.drishti.dto.AlertStatus;
 import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.util.AppExecutors;
+import org.smartregister.domain.AlertStatus;
 
 import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
 public class BaseAncMemberProfileInteractor implements BaseAncMemberProfileContract.Interactor {
-    public static final String TAG = BaseAncMemberProfileInteractor.class.getName();
     protected AppExecutors appExecutors;
     private Map<String, Date> vaccineList = new LinkedHashMap<>();
 

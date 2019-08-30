@@ -18,7 +18,6 @@ import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.anc.repository.VisitDetailsRepository;
 import org.smartregister.chw.anc.repository.VisitRepository;
 import org.smartregister.immunization.ImmunizationLibrary;
-import org.smartregister.immunization.domain.ServiceRecord;
 import org.smartregister.immunization.domain.ServiceWrapper;
 import org.smartregister.immunization.domain.Vaccine;
 import org.smartregister.immunization.domain.VaccineWrapper;
@@ -154,23 +153,6 @@ public class VisitUtilsTest {
             x--;
         }
         return details;
-    }
-
-    @Test
-    public void testSaveServicesCreatesInServicesRepository() {
-        List<ServiceWrapper> wrappers = getRandomWrappers(null);
-
-        VisitUtils.saveServices(wrappers, "12345");
-        Mockito.verify(recurringServiceRecordRepository, Mockito.times(wrappers.size())).add(Mockito.any(ServiceRecord.class));
-    }
-
-    @Test
-    public void testSaveServicesUpdatesInServicesRepository() {
-        List<ServiceWrapper> wrappers = getRandomWrappers(0L);
-
-        VisitUtils.saveServices(wrappers, "12345");
-        Mockito.verify(recurringServiceRecordRepository, Mockito.times(wrappers.size())).find(0L);
-        Mockito.verify(recurringServiceRecordRepository, Mockito.times(wrappers.size())).add(Mockito.any(ServiceRecord.class));
     }
 
     private List<VaccineWrapper> getRandomVaccineWrappers(Long dbKey) {

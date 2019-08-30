@@ -96,12 +96,15 @@ public class VisitRepository extends BaseRepository {
     }
 
     public String getParentVisitEventID(String baseEntityID, String parentEventType, Date eventDate) {
+        if (StringUtils.isBlank(baseEntityID) || StringUtils.isBlank(parentEventType) || eventDate == null)
+            return null;
+
         String visitID = null;
         Cursor cursor = null;
         SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault());
-        String sql = "select " + VISIT_ID + " from visits where base_entity_id = ? COLLATE NOCASE and visit_type = ? COLLATE NOCASE strftime('%Y-%m-%d',visit_date / 1000, 'unixepoch') = ? ";
+        String sql = "select " + VISIT_ID + " from visits where base_entity_id = ? COLLATE NOCASE and visit_type = ? COLLATE NOCASE and strftime('%Y-%m-%d',visit_date / 1000, 'unixepoch') = ? ";
         try {
-            cursor = getReadableDatabase().rawQuery(sql, new String[]{sdf.format(eventDate), parentEventType, baseEntityID});
+            cursor = getReadableDatabase().rawQuery(sql, new String[]{baseEntityID, parentEventType, sdf.format(eventDate)});
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {
                     visitID = cursor.getString(cursor.getColumnIndex(VISIT_ID));
@@ -196,7 +199,7 @@ public class VisitRepository extends BaseRepository {
             cursor = getReadableDatabase().query(
                     VISIT_TABLE, VISIT_COLUMNS, PROCESSED + " = ? AND UPDATED_AT <= ? AND " + BASE_ENTITY_ID + " = ? ",
                     new String[]{"0", last_edit_time.toString(), baseEntityID}, null, null,
-                    VISIT_DATE + " DESC ", null);
+                    CREATED_AT + " ASC ", null);
             visits = readVisits(cursor);
         } catch (Exception e) {
             Timber.e(e);
@@ -212,7 +215,7 @@ public class VisitRepository extends BaseRepository {
         List<Visit> visits = new ArrayList<>();
         Cursor cursor = null;
         try {
-            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, BASE_ENTITY_ID + " = ? AND " + VISIT_TYPE + " = ? ", new String[]{baseEntityID, visitType}, null, null, VISIT_DATE + " DESC ", null);
+            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, BASE_ENTITY_ID + " = ? AND " + VISIT_TYPE + " = ? ", new String[]{baseEntityID, visitType}, null, null, CREATED_AT + " ASC ", null);
             visits = readVisits(cursor);
         } catch (Exception e) {
             Timber.e(e);

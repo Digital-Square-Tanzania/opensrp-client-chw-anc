@@ -2,8 +2,8 @@ package org.smartregister.chw.anc.contract;
 
 import android.content.Context;
 
-import org.ei.drishti.dto.AlertStatus;
 import org.smartregister.chw.anc.domain.MemberObject;
+import org.smartregister.domain.AlertStatus;
 import org.smartregister.view.contract.BaseProfileContract;
 
 import java.util.Date;

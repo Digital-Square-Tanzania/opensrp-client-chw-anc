@@ -2,13 +2,9 @@ package org.smartregister.chw.anc.interactor;
 
 import android.support.annotation.VisibleForTesting;
 
-import com.fatboyindustrial.gsonjodatime.Converters;
 import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 
 import org.apache.commons.lang3.StringUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.actionhelper.DangerSignsHelper;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
@@ -20,12 +16,9 @@ import org.smartregister.chw.anc.repository.VisitRepository;
 import org.smartregister.chw.anc.util.AppExecutors;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.JsonFormUtils;
-import org.smartregister.chw.anc.util.MultiEvent;
 import org.smartregister.chw.anc.util.NCUtils;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.clientandeventmodel.Obs;
-import org.smartregister.immunization.domain.ServiceWrapper;
-import org.smartregister.immunization.domain.VaccineWrapper;
 import org.smartregister.repository.AllSharedPreferences;
 
 import java.text.SimpleDateFormat;
@@ -101,12 +94,12 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
     }
 
     private void submitVisit(final boolean editMode, final String memberID, final Map<String, BaseAncHomeVisitAction> map, String parentEventType) throws Exception {
+        // create a map of the different types
 
         Map<String, BaseAncHomeVisitAction> externalVisits = new HashMap<>();
-        Map<String, BaseAncHomeVisitAction> detachedVisits = new HashMap<>();
-        Map<String, String> jsons = new HashMap<>();
-        Map<String, VaccineWrapper> vaccineWrapperMap = new HashMap<>();
-        Map<String, ServiceWrapper> serviceWrapperMap = new HashMap<>();
+        Map<String, String> combinedJsons = new HashMap<>();
+        String payloadType = null;
+        String payloadDetails = null;
 
         // aggregate forms to be processed
         for (Map.Entry<String, BaseAncHomeVisitAction> entry : map.entrySet()) {
@@ -114,60 +107,28 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
             if (StringUtils.isNotBlank(json)) {
                 // do not process events that are meant to be in detached mode
                 // in a similar manner to the the aggregated events
-                BaseAncHomeVisitAction.ProcessingMode mode = entry.getValue().getProcessingMode();
-                if (mode == BaseAncHomeVisitAction.ProcessingMode.DETACHED) {
 
-                    detachedVisits.put(entry.getKey(), entry.getValue());
-                } else if (mode == BaseAncHomeVisitAction.ProcessingMode.SEPARATE && StringUtils.isBlank(parentEventType)) {
+                BaseAncHomeVisitAction action = entry.getValue();
+                BaseAncHomeVisitAction.ProcessingMode mode = action.getProcessingMode();
 
+                if (mode == BaseAncHomeVisitAction.ProcessingMode.SEPARATE && StringUtils.isBlank(parentEventType)) {
                     externalVisits.put(entry.getKey(), entry.getValue());
                 } else {
-                    jsons.put(entry.getKey(), json);
-                    JSONObject jsonObject = new JSONObject(json);
-
-                    extractVaccineWrappers(entry, vaccineWrapperMap, jsonObject);
-                    extractServiceWrappers(entry, serviceWrapperMap, jsonObject);
+                    combinedJsons.put(entry.getKey(), json);
                 }
+
+                payloadType = action.getPayloadType().name();
+                payloadDetails = action.getPayloadDetails();
             }
         }
 
         String type = StringUtils.isBlank(parentEventType) ? getEncounterType() : getEncounterType();
 
         // persist to database
-        Visit visit = saveVisit(editMode, memberID, type, jsons, parentEventType);
+        Visit visit = saveVisit(editMode, memberID, type, combinedJsons, parentEventType);
         if (visit != null) {
-            saveVisitDetails(visit, vaccineWrapperMap, serviceWrapperMap);
+            saveVisitDetails(visit, payloadType, payloadDetails);
             processExternalVisits(visit, externalVisits, memberID);
-            if (detachedVisits.size() > 0)
-                saveDetachedEvents(visit, detachedVisits);
-        }
-    }
-
-    private void extractVaccineWrappers(
-            Map.Entry<String, BaseAncHomeVisitAction> entry,
-            Map<String, VaccineWrapper> vaccineWrapperMap,
-            JSONObject jsonObject
-    ) {
-        if (entry.getValue().getVaccineWrapper() != null) {
-            int position = 0;
-            for (VaccineWrapper v : entry.getValue().getVaccineWrapper()) {
-                vaccineWrapperMap.put(JsonFormUtils.getObjectKey(jsonObject, position), v);
-                position++;
-            }
-        }
-    }
-
-    private void extractServiceWrappers(
-            Map.Entry<String, BaseAncHomeVisitAction> entry,
-            Map<String, ServiceWrapper> serviceWrapperMap,
-            JSONObject jsonObject
-    ) {
-        if (entry.getValue().getServiceWrapper() != null) {
-            int position = 0;
-            for (ServiceWrapper sw : entry.getValue().getServiceWrapper()) {
-                serviceWrapperMap.put(JsonFormUtils.getObjectKey(jsonObject, position), sw);
-                position++;
-            }
         }
     }
 
@@ -198,7 +159,9 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
         String derivedEncounterType = StringUtils.isBlank(parentEventType) ? encounterType : "";
         Event baseEvent = JsonFormUtils.processVisitJsonForm(allSharedPreferences, memberID, derivedEncounterType, jsonString, getTableName());
-        prepareEvent(baseEvent);
+
+        if (StringUtils.isBlank(parentEventType))
+            prepareEvent(baseEvent);
 
         if (baseEvent != null) {
             baseEvent.setFormSubmissionId(JsonFormUtils.generateRandomUUIDString());
@@ -214,8 +177,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
             Visit visit = NCUtils.eventToVisit(baseEvent, visitID);
             visit.setPreProcessedJson(new Gson().toJson(baseEvent));
-            if (StringUtils.isNotBlank(parentEventType))
-                visit.setParentVisitID(visitRepository().getParentVisitEventID(visit.getBaseEntityId(), parentEventType, visit.getDate()));
+            visit.setParentVisitID(visitRepository().getParentVisitEventID(visit.getBaseEntityId(), parentEventType, visit.getDate()));
 
             visitRepository().addVisit(visit);
             return visit;
@@ -238,92 +200,17 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         }
     }
 
-    private void saveVisitDetails(Visit visit, Map<String, VaccineWrapper> vaccineWrapperMap, Map<String, ServiceWrapper> serviceWrapperMap) {
-        if (visit.getVisitDetails() != null) {
-            Gson gson = Converters.registerDateTime(new GsonBuilder()).create();
+    private void saveVisitDetails(Visit visit, String payloadType, String payloadDetails) {
+        if (visit.getVisitDetails() == null) return;
 
-            for (Map.Entry<String, List<VisitDetail>> entry : visit.getVisitDetails().entrySet()) {
-                if (entry.getValue() != null) {
-                    for (VisitDetail d : entry.getValue()) {
-
-                        VaccineWrapper vaccineWrapper = vaccineWrapperMap.get(d.getVisitKey());
-                        if (vaccineWrapper != null) {
-                            String json = gson.toJson(vaccineWrapper);
-                            d.setPreProcessedJson(json);
-                            d.setPreProcessedType("vaccine");
-                        }
-
-                        ServiceWrapper serviceWrapper = serviceWrapperMap.get(d.getVisitKey());
-                        if (serviceWrapper != null) {
-                            String json = gson.toJson(serviceWrapper);
-                            d.setPreProcessedJson(json);
-                            d.setPreProcessedType("service");
-                        }
-
-                        AncLibrary.getInstance().visitDetailsRepository().addVisitDetails(d);
-                    }
-                }
-            }
-        }
-    }
-
-    /**
-     * Add the detached events to the database
-     * link the detached events to the primary visit
-     */
-    private void saveDetachedEvents(Visit parentVisit, Map<String, BaseAncHomeVisitAction> externalVisits) {
-        // save these events to the db
-        // extract all the event payload and map the event to the very first key
-        // if the events
-
-        AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
-        try {
-
-            Gson gson = Converters.registerDateTime(new GsonBuilder()).create();
-            for (Map.Entry<String, BaseAncHomeVisitAction> entry : externalVisits.entrySet()) {
-                BaseAncHomeVisitAction action = entry.getValue();
-                if (StringUtils.isNotBlank(action.getJsonPayload())) {
-                    Event subEvent = JsonFormUtils.prepareEvent(allSharedPreferences, action.getBaseEntityID(), action.getJsonPayload(), getTableName());
-                    if (subEvent == null)
-                        continue;
-
-                    subEvent.setFormSubmissionId(JsonFormUtils.generateRandomUUIDString());
-                    JsonFormUtils.tagEvent(allSharedPreferences, subEvent);
-
-                    Map<String, List<VisitDetail>> details =
-                            NCUtils.eventsObsToDetails(subEvent.getObs(), parentVisit.getVisitId(), action.getBaseEntityID());
-
-                    MultiEvent multiEvent = new MultiEvent();
-                    multiEvent.setEvent(subEvent);
-
-                    if (entry.getValue().getServiceWrapper() != null)
-                        multiEvent.getServices().addAll(entry.getValue().getServiceWrapper());
-
-                    if (entry.getValue().getVaccineWrapper() != null)
-                        multiEvent.getVaccines().addAll(entry.getValue().getVaccineWrapper());
-
-                    for (Map.Entry<String, List<VisitDetail>> detailsEntry : details.entrySet()) {
-                        for (VisitDetail d : detailsEntry.getValue()) {
-                            AncLibrary.getInstance().visitDetailsRepository().addVisitDetails(d);
-                        }
-                    }
-
-
-                    VisitDetail d = new VisitDetail();
-                    d.setVisitDetailsId(JsonFormUtils.generateRandomUUIDString());
-                    d.setVisitKey("subevent");
-                    d.setVisitId(parentVisit.getVisitId());
-                    d.setPreProcessedJson(gson.toJson(multiEvent));
-                    d.setPreProcessedType("subevent");
-                    d.setProcessed(false);
-                    d.setCreatedAt(new Date());
-                    d.setUpdatedAt(new Date());
+        for (Map.Entry<String, List<VisitDetail>> entry : visit.getVisitDetails().entrySet()) {
+            if (entry.getValue() != null) {
+                for (VisitDetail d : entry.getValue()) {
+                    d.setPreProcessedJson(payloadDetails);
+                    d.setPreProcessedType(payloadType);
                     AncLibrary.getInstance().visitDetailsRepository().addVisitDetails(d);
                 }
             }
-
-        } catch (JSONException e) {
-            Timber.e(e);
         }
     }
 

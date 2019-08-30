@@ -1,8 +1,8 @@
 package org.smartregister.chw.anc.presenter;
 
-import org.ei.drishti.dto.AlertStatus;
 import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.domain.MemberObject;
+import org.smartregister.domain.AlertStatus;
 import org.smartregister.view.contract.BaseProfileContract;
 
 import java.lang.ref.WeakReference;

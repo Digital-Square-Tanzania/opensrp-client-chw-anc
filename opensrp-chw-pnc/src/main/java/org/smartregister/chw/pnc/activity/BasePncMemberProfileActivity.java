@@ -7,6 +7,7 @@ import android.view.View;
 import org.smartregister.chw.anc.activity.BaseAncMemberProfileActivity;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.util.Constants;
+import org.smartregister.chw.anc.util.NCUtils;
 import org.smartregister.chw.pnc.R;
 import org.smartregister.chw.pnc.interactor.BasePncMemberProfileInteractor;
 import org.smartregister.view.customcontrols.CustomFontTextView;
@@ -53,8 +54,16 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
         }
     }
 
-   @Override
+    @Override
     public void setProfileImage(String baseEntityId, String entityType) {
+        String pncDay = basePncMemberProfileInteractor.getPncDay(MEMBER_OBJECT.getBaseEntityId());
+        if(Integer.parseInt(pncDay) >= 29){
+            imageRenderHelper.refreshProfileImage(baseEntityId, imageView, NCUtils.getMemberProfileImageResourceIDentifier(entityType));
+        }
+        else {
+            imageRenderHelper.refreshProfileImage(baseEntityId, imageView, R.drawable.pnc_less_twenty_nine_days);
+        }
+
     }
 
     @Override

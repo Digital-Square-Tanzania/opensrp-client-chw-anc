@@ -95,13 +95,13 @@ public class VisitUtils {
         for (Visit v : visits) {
             if (!v.getProcessed()) {
 
-                // process details
-                processVisitDetails(v, visitDetailsRepository, v.getVisitId(), v.getBaseEntityId());
-
                 // persist to db
                 Event baseEvent = new Gson().fromJson(v.getPreProcessedJson(), Event.class);
                 AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
                 NCUtils.addEvent(allSharedPreferences, baseEvent);
+
+                // process details
+                processVisitDetails(v, visitDetailsRepository, v.getVisitId(), v.getBaseEntityId());
 
                 visitRepository.completeProcessing(v.getVisitId());
             }

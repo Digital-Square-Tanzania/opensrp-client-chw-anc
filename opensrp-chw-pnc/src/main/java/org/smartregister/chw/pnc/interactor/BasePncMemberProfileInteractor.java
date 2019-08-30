@@ -12,6 +12,7 @@ import org.smartregister.chw.anc.contract.BaseAncMedicalHistoryContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.interactor.BaseAncMemberProfileInteractor;
 import org.smartregister.chw.anc.util.DBConstants;
+import org.smartregister.chw.anc.util.NCUtils;
 import org.smartregister.chw.pnc.PncLibrary;
 import org.smartregister.chw.pnc.R;
 import org.smartregister.chw.pnc.contract.BasePncMemberProfileContract;
@@ -64,6 +65,7 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
         String nameDetails = memberObject.getMemberName();
         textView.setText(nameDetails);
         textView.setSingleLine(false);
+        imageView.setImageResource(NCUtils.getMemberProfileImageResourceIDentifier(""));
         for (CommonPersonObjectClient childObject : children) {
             try {
                 char gender = childObject.getColumnmaps().get(Constants.KEY.GENDER).charAt(0);
@@ -76,6 +78,8 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
                 imageView.setImageResource(R.drawable.pnc_less_twenty_nine_days);
                 if (gender == 'M'){
                     imageView.setBorderColor(PncLibrary.getInstance().context().getColorResource(R.color.light_blue));
+
+
                 }
                 else{
                     imageView.setBorderColor(PncLibrary.getInstance().context().getColorResource(R.color.light_pink));

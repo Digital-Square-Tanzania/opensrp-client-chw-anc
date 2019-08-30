@@ -37,7 +37,6 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
         titleView.setText(getString(R.string.return_to_all_pnc_women));
         record_reccuringvisit_done_bar.setVisibility(View.GONE);
         textViewAncVisitNot.setVisibility(View.GONE);
-        imageView = findViewById(org.smartregister.chw.opensrp_chw_anc.R.id.imageview_profile);
 
     }
 
@@ -52,6 +51,10 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
         if (pncDay != null) {
             text_view_ga.setText(getName(getString(R.string.pnc_day), pncDay));
         }
+    }
+
+   @Override
+    public void setProfileImage(String baseEntityId, String entityType) {
     }
 
     @Override

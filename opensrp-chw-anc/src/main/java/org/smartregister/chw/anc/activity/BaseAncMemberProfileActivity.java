@@ -305,8 +305,8 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         view_last_visit_row.setVisibility(View.VISIBLE);
         rlLastVisit.setVisibility(View.VISIBLE);
 
-        int days = Days.daysBetween(new DateTime(lastVisitDate).toLocalDate(), new DateTime().toLocalDate()).getDays();
-        tvLastVisitDate.setText(getString(R.string.last_visit_40_days_ago, (days <= 1) ? getString(R.string.less_than_twenty_four) : String.valueOf(days)));
+        int numOfDays = Days.daysBetween(new DateTime(lastVisitDate).toLocalDate(), new DateTime().toLocalDate()).getDays();
+        tvLastVisitDate.setText(getString(R.string.last_visit_40_days_ago, (numOfDays <= 1) ? getString(R.string.less_than_twenty_four) : String.valueOf(numOfDays) + " " + getString(R.string.days)));
     }
 
     @Override

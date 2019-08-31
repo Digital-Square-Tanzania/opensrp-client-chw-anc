@@ -319,6 +319,8 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
         if (status == AlertStatus.upcoming) {
             tvUpComingServices.setText(NCUtils.fromHtml(getString(R.string.vaccine_service_upcoming, service, dateFormat.format(date))));
+        } else if (status == AlertStatus.urgent) {
+            tvUpComingServices.setText(NCUtils.fromHtml(getString(R.string.vaccine_service_overdue, service, dateFormat.format(date))));
         } else {
             tvUpComingServices.setText(NCUtils.fromHtml(getString(R.string.vaccine_service_due, service, dateFormat.format(date))));
         }

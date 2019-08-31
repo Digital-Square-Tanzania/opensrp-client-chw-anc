@@ -68,7 +68,7 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
                 JSONObject form = new JSONObject(jsonString);
                 encounterType = form.optString(Constants.JSON_FORM_EXTRA.ENCOUNTER_TYPE);
 
-                if (encounterType.equals(Constants.EVENT_TYPE.PREGNANCY_OUTCOME)) {
+                if (encounterType.equalsIgnoreCase(Constants.EVENT_TYPE.PREGNANCY_OUTCOME)) {
 
                     String motherBaseId = form.optString(Constants.JSON_FORM_EXTRA.ENTITY_TYPE);
                     JSONArray fields = org.smartregister.util.JsonFormUtils.fields(form);
@@ -92,7 +92,7 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
                             saveRegistration(pncForm.toString(), Constants.TABLES.EC_CHILD);
                     }
 
-                } else if (encounterType.equals(Constants.EVENT_TYPE.ANC_REGISTRATION)) {
+                } else if (encounterType.equalsIgnoreCase(Constants.EVENT_TYPE.ANC_REGISTRATION)) {
 
                     JSONArray fields = org.smartregister.util.JsonFormUtils.fields(form);
                     JSONObject lmp = org.smartregister.util.JsonFormUtils.getFieldJSONObject(fields, DBConstants.KEY.LAST_MENSTRUAL_PERIOD);

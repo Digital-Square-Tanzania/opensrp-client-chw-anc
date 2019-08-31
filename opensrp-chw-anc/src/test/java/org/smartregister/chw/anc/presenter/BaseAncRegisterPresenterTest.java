@@ -44,7 +44,7 @@ public class BaseAncRegisterPresenterTest extends BaseUnitTest {
 
     @Test
     public void testOnRegistrationSaved() {
-        presenter.onRegistrationSaved(false);
+        presenter.onRegistrationSaved("", false, false);
         Mockito.verify(view).hideProgressDialog();
     }
 }

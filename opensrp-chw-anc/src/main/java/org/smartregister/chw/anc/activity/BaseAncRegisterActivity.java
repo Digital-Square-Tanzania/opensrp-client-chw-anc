@@ -100,16 +100,12 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
 
     @Override
     public void onRegistrationSaved(String encounterType, boolean isEdit, boolean hasChildren) {
-        switch (encounterType) {
-            case Constants.EVENT_TYPE.ANC_REGISTRATION:
-                startRegisterActivity(getAncRegisterActivity());
-                break;
-            case Constants.EVENT_TYPE.PREGNANCY_OUTCOME:
-                startRegisterActivity(getPncRegisterActivity());
-                break;
-            default:
-                finish();
-                break;
+        if (encounterType.equalsIgnoreCase(Constants.EVENT_TYPE.ANC_REGISTRATION)) {
+            startRegisterActivity(getAncRegisterActivity());
+        } else if (encounterType.equalsIgnoreCase(Constants.EVENT_TYPE.PREGNANCY_OUTCOME)) {
+            startRegisterActivity(getPncRegisterActivity());
+        } else {
+            finish();
         }
     }
 

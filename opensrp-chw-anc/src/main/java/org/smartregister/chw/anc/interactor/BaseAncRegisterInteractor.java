@@ -25,6 +25,8 @@ import org.smartregister.repository.AllSharedPreferences;
 
 import timber.log.Timber;
 
+import static org.smartregister.chw.anc.util.Constants.TABLES.EC_CHILD;
+
 public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Interactor {
 
     protected AppExecutors appExecutors;
@@ -89,8 +91,10 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
 
                         processPncChild(fields, allSharedPreferences, childBaseEntityId, familyBaseEntityId, motherBaseId);
                         if (pncForm != null)
-                            saveRegistration(pncForm.toString(), Constants.TABLES.EC_CHILD);
+                            saveRegistration(pncForm.toString(), EC_CHILD);
+                        processPncEvent(allSharedPreferences, pncForm);
                     }
+                    saveRegistration(form.toString(), table);
 
                 } else if (encounterType.equalsIgnoreCase(Constants.EVENT_TYPE.ANC_REGISTRATION)) {
 
@@ -150,6 +154,18 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
 
             NCUtils.getSyncHelper().addClient(pncChild.getBaseEntityId(), eventJson);
 
+        } catch (Exception e) {
+            Timber.e(e);
+        }
+    }
+
+    public void processPncEvent(AllSharedPreferences allSharedPreferences, JSONObject pncForm) {
+
+        Event baseEvent = JsonFormUtils.processJsonForm(allSharedPreferences, pncForm.toString(), EC_CHILD);
+
+        try {
+            NCUtils.addEvent(allSharedPreferences, baseEvent);
+            NCUtils.startClientProcessing();
         } catch (Exception e) {
             Timber.e(e);
         }

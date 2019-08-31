@@ -11,11 +11,8 @@ import org.smartregister.util.Utils;
 
 import java.io.Serializable;
 
-import static org.smartregister.util.Utils.getName;
-
 @SuppressWarnings("serial")
 public class MemberObject implements Serializable {
-    protected String memberName;
     protected String lastMenstrualPeriod;
     protected String address;
     protected String chwMemberId;
@@ -56,11 +53,6 @@ public class MemberObject implements Serializable {
         familyName = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.FAMILY_NAME, false);
         phoneNumber = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.PHONE_NUMBER, false);
         hasAncCard = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.HAS_ANC_CARD, false);
-        memberName = getAncMemberNameAndAge(
-                firstName == null ? "" : firstName,
-                middleName == null ? "" : middleName,
-                lastName == null ? "" : lastName,
-                dob == null ? "" : dob);
 
         String visits = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.CONFIRMED_VISITS, false);
         if (StringUtils.isNotBlank(visits)) {
@@ -71,8 +63,8 @@ public class MemberObject implements Serializable {
     private String getAncMemberNameAndAge(String firstName, String middleName, String surName, String age) {
         int integerAge = new Period(new DateTime(age), new DateTime()).getYears();
 
-        String name = getName(firstName, middleName);
-        name = getName(name, surName);
+        String name = Utils.getName(firstName, middleName);
+        name = Utils.getName(name, surName);
 
         if (StringUtils.isNotBlank(firstName) && StringUtils.isNotBlank(age)) {
             return name + ", " + integerAge;
@@ -84,9 +76,12 @@ public class MemberObject implements Serializable {
         return phoneNumber;
     }
 
-
     public String getMemberName() {
-        return memberName;
+        return getAncMemberNameAndAge(
+                firstName == null ? "" : firstName,
+                middleName == null ? "" : middleName,
+                lastName == null ? "" : lastName,
+                dob == null ? "" : dob);
     }
 
     public String getLastMenstrualPeriod() {
@@ -166,10 +161,83 @@ public class MemberObject implements Serializable {
     }
 
     public String getFullName() {
-        return getName(getName(getFirstName(), getMiddleName()), getLastName());
+        return Utils.getName(Utils.getName(getFirstName(), getMiddleName()), getLastName());
     }
 
     public String getLastInteractedWith() {
         return lastInteractedWith;
     }
+
+    public void setLastMenstrualPeriod(String lastMenstrualPeriod) {
+        this.lastMenstrualPeriod = lastMenstrualPeriod;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setChwMemberId(String chwMemberId) {
+        this.chwMemberId = chwMemberId;
+    }
+
+    public void setBaseEntityId(String baseEntityId) {
+        this.baseEntityId = baseEntityId;
+    }
+
+    public void setFamilyBaseEntityId(String familyBaseEntityId) {
+        this.familyBaseEntityId = familyBaseEntityId;
+    }
+
+    public void setFamilyHead(String familyHead) {
+        this.familyHead = familyHead;
+    }
+
+    public void setPrimaryCareGiver(String primaryCareGiver) {
+        this.primaryCareGiver = primaryCareGiver;
+    }
+
+    public void setFamilyName(String familyName) {
+        this.familyName = familyName;
+    }
+
+    public void setLastContactVisit(String lastContactVisit) {
+        this.lastContactVisit = lastContactVisit;
+    }
+
+    public void setLastInteractedWith(String lastInteractedWith) {
+        this.lastInteractedWith = lastInteractedWith;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setConfirmedContacts(int confirmedContacts) {
+        this.confirmedContacts = confirmedContacts;
+    }
+
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public void setHasAncCard(String hasAncCard) {
+        this.hasAncCard = hasAncCard;
+    }
+
 }

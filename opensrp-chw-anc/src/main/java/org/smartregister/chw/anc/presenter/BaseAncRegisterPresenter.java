@@ -15,8 +15,6 @@ import timber.log.Timber;
 
 public class BaseAncRegisterPresenter implements BaseAncRegisterContract.Presenter, BaseAncRegisterContract.InteractorCallBack {
 
-    public static final String TAG = BaseAncRegisterPresenter.class.getName();
-
     protected WeakReference<BaseAncRegisterContract.View> viewReference;
     protected BaseAncRegisterContract.Interactor interactor;
     protected BaseAncRegisterContract.Model model;
@@ -46,8 +44,8 @@ public class BaseAncRegisterPresenter implements BaseAncRegisterContract.Present
     @Override
     public void saveForm(String jsonString, boolean isEditMode, String table) {
         try {
-
-            getView().showProgressDialog(R.string.saving_dialog_title);
+            if (getView() != null)
+                getView().showProgressDialog(R.string.saving_dialog_title);
             interactor.saveRegistration(jsonString, isEditMode, this, table);
         } catch (Exception e) {
             Timber.e(e);
@@ -55,9 +53,9 @@ public class BaseAncRegisterPresenter implements BaseAncRegisterContract.Present
     }
 
     @Override
-    public void onRegistrationSaved(boolean isEdit) {
+    public void onRegistrationSaved(String encounterType, boolean isEdit, boolean hasChildren) {
         if (getView() != null) {
-            getView().onRegistrationSaved(isEdit);
+            getView().onRegistrationSaved(encounterType, isEdit, hasChildren);
             getView().hideProgressDialog();
         }
     }
@@ -89,7 +87,7 @@ public class BaseAncRegisterPresenter implements BaseAncRegisterContract.Present
     @Override
     public void updateInitials() {
         String initials = Utils.getUserInitials();
-        if (initials != null && getView() != null) {
+        if (getView() != null) {
             getView().updateInitialsText(initials);
         }
     }

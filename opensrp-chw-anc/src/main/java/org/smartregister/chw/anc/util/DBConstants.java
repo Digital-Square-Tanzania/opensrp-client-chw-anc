@@ -13,6 +13,7 @@ public class DBConstants {
         public static final String RELATIONAL_ID = "relational_id";
         public static final String DOB = "dob";//Date Of Birth
         public static final String LAST_MENSTRUAL_PERIOD = "last_menstrual_period";
+        public static final String EDD = "edd";
         public static final String DOD = "dod";
         public static final String UNIQUE_ID = "unique_id";
         public static final String TEMP_UNIQUE_ID = "temp_unique_id";

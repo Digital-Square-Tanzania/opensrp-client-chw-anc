@@ -13,7 +13,7 @@ public interface BaseAncRegisterContract {
 
         Form getFormConfig();
 
-        void onRegistrationSaved(boolean isEdit);
+        void onRegistrationSaved(String encounterType, boolean isEdit, boolean hasChildren);
 
     }
 
@@ -37,11 +37,12 @@ public interface BaseAncRegisterContract {
 
         void saveRegistration(String jsonString, boolean isEditMode, final InteractorCallBack callBack, String table);
 
+        void setModel(BaseAncRegisterContract.Model model);
     }
 
     interface InteractorCallBack {
 
-        void onRegistrationSaved(boolean isEdit);
+        void onRegistrationSaved(String encounterType, boolean isEdit, boolean hasChildren);
 
     }
 }

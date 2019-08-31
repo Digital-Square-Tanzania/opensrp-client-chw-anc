@@ -18,10 +18,13 @@ import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.anc.repository.VisitDetailsRepository;
 import org.smartregister.chw.anc.repository.VisitRepository;
 import org.smartregister.immunization.ImmunizationLibrary;
+import org.smartregister.immunization.domain.ServiceRecord;
+import org.smartregister.immunization.domain.ServiceType;
 import org.smartregister.immunization.domain.ServiceWrapper;
 import org.smartregister.immunization.domain.Vaccine;
 import org.smartregister.immunization.domain.VaccineWrapper;
 import org.smartregister.immunization.repository.RecurringServiceRecordRepository;
+import org.smartregister.immunization.repository.RecurringServiceTypeRepository;
 import org.smartregister.immunization.repository.VaccineRepository;
 import org.smartregister.repository.AllSharedPreferences;
 
@@ -58,6 +61,9 @@ public class VisitUtilsTest {
     private RecurringServiceRecordRepository recurringServiceRecordRepository;
 
     @Mock
+    private RecurringServiceTypeRepository recurringServiceTypeRepository;
+
+    @Mock
     private VaccineRepository vaccineRepository;
 
     @Mock
@@ -65,6 +71,12 @@ public class VisitUtilsTest {
 
     @Mock
     private AllSharedPreferences allSharedPreferences;
+
+    @Mock
+    private ServiceType serviceType;
+
+    @Mock
+    private List<ServiceType> serviceTypes;
 
     @Before
     public void setUp() {
@@ -78,12 +90,16 @@ public class VisitUtilsTest {
         Mockito.doReturn(visitRepository).when(ancLibrary).visitRepository();
         Mockito.doReturn(visitDetailsRepository).when(ancLibrary).visitDetailsRepository();
 
+        Mockito.doReturn(1).when(serviceTypes).size();
+        Mockito.doReturn(serviceTypes).when(recurringServiceTypeRepository).searchByName(Mockito.anyString());
+        Mockito.doReturn(serviceType).when(serviceTypes).get(Mockito.anyInt());
+
         BDDMockito.given(ImmunizationLibrary.getInstance()).willReturn(immunizationLibrary);
         BDDMockito.given(NCUtils.context()).willReturn(context);
         Mockito.doReturn(allSharedPreferences).when(context).allSharedPreferences();
         Mockito.doReturn(recurringServiceRecordRepository).when(immunizationLibrary).recurringServiceRecordRepository();
         Mockito.doReturn(vaccineRepository).when(immunizationLibrary).vaccineRepository();
-
+        Mockito.doReturn(recurringServiceTypeRepository).when(immunizationLibrary).recurringServiceTypeRepository();
     }
 
     private List<Visit> getRandomVisits() {
@@ -176,5 +192,15 @@ public class VisitUtilsTest {
 
         VisitUtils.saveVaccines(wrappers, "12345");
         Mockito.verify(vaccineRepository, Mockito.times(wrappers.size())).add(Mockito.any(Vaccine.class));
+    }
+
+    @Test
+    public void testSaveVisitDetailsAsServiceRecordCreatesInRepository() {
+        VisitDetail visitDetail = new VisitDetail();
+        visitDetail.setHumanReadable("2018-01-01");
+        visitDetail.setPreProcessedJson("sed");
+
+        VisitUtils.saveVisitDetailsAsServiceRecord(visitDetail, "12345", new Date());
+        Mockito.verify(recurringServiceRecordRepository).add(Mockito.any(ServiceRecord.class));
     }
 }

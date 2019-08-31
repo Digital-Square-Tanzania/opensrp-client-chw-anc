@@ -1,7 +1,5 @@
 package org.smartregister.chw.anc.util;
 
-import android.support.transition.Visibility;
-
 import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Rule;

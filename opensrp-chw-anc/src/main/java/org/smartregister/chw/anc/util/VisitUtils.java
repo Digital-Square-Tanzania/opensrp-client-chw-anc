@@ -172,10 +172,8 @@ public class VisitUtils {
         if (Constants.HOME_VISIT.DOSE_NOT_GIVEN.equalsIgnoreCase(val)) return null;
 
         RecurringServiceTypeRepository recurringServiceTypeRepository = ImmunizationLibrary.getInstance().recurringServiceTypeRepository();
-        List<ServiceType> serviceTypes = recurringServiceTypeRepository.searchByName(detail.getPreProcessedJson());
-        if (serviceTypes.size() != 1) return null;
-
-        ServiceType serviceType = serviceTypes.get(0);
+        ServiceType serviceType = recurringServiceTypeRepository.getByName(detail.getPreProcessedJson());
+        if (serviceType == null) return null;
 
         RecurringServiceRecordRepository recurringServiceRecordRepository = ImmunizationLibrary.getInstance().recurringServiceRecordRepository();
 

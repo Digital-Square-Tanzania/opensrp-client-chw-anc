@@ -660,7 +660,7 @@ public class NCUtils {
             }
             result = sb.deleteCharAt(sb.length() - 2).toString();
         }
-        return result;
+        return result.trim();
     }
 
     public static String getStringResourceByName(String name, Context context) {

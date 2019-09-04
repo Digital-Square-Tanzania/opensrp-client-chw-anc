@@ -10,6 +10,7 @@ import android.os.Bundle;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.Toolbar;
+import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.Gravity;
 import android.view.View;
@@ -40,6 +41,7 @@ import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.domain.AlertStatus;
 import org.smartregister.helper.ImageRenderHelper;
 import org.smartregister.view.activity.BaseProfileActivity;
+import org.smartregister.view.customcontrols.CustomFontTextView;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -53,6 +55,7 @@ import static org.smartregister.chw.anc.AncLibrary.getInstance;
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.FAMILY_HEAD_NAME;
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.FAMILY_HEAD_PHONE;
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER_PROFILE_OBJECT;
+import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.TITLE_VIEW_TEXT;
 import static org.smartregister.util.Utils.getName;
 
 public class BaseAncMemberProfileActivity extends BaseProfileActivity implements BaseAncMemberProfileContract.View {
@@ -73,6 +76,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     private ProgressBar progressBar;
     private String ancWomanName;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
+    private String titleViewText;
 
 
     public static void startMe(Activity activity, MemberObject memberObject, String familyHeadName, String familyHeadPhoneNumber) {
@@ -94,6 +98,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             MEMBER_OBJECT = (MemberObject) getIntent().getSerializableExtra(MEMBER_PROFILE_OBJECT);
             familyHeadName = getIntent().getStringExtra(FAMILY_HEAD_NAME);
             familyHeadPhoneNumber = getIntent().getStringExtra(FAMILY_HEAD_PHONE);
+            setTitleViewText(getIntent().getStringExtra(TITLE_VIEW_TEXT));
         }
 
         ActionBar actionBar = getSupportActionBar();
@@ -370,6 +375,10 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     protected void setupViews() {
+        CustomFontTextView titleView = findViewById(R.id.toolbar_title);
+        String titleText = TextUtils.isEmpty(getTitleViewText()) ? getString(R.string.return_to_all_anc_women) : getTitleViewText();
+        titleView.setText(titleText);
+
         if (StringUtils.isNotBlank(MEMBER_OBJECT.getMiddleName())) {
             ancWomanName = getName(MEMBER_OBJECT.getFirstName(), MEMBER_OBJECT.getMiddleName());
             ancWomanName = getName(ancWomanName, MEMBER_OBJECT.getMiddleName());
@@ -435,6 +444,14 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     @Override
     protected void fetchProfileData() {
         presenter().fetchProfileData();
+    }
+
+    public void setTitleViewText(String titleText) {
+        this.titleViewText = titleText;
+    }
+
+    public String getTitleViewText() {
+        return this.titleViewText;
     }
 
     public String getFamilyHeadName() {

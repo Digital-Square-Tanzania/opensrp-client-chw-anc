@@ -18,8 +18,6 @@ import org.smartregister.chw.anc.actionhelper.DangerSignsHelper;
 import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
 import org.smartregister.chw.anc.util.JsonFormUtils;
-import org.smartregister.immunization.domain.ServiceWrapper;
-import org.smartregister.immunization.domain.VaccineWrapper;
 
 import java.util.HashMap;
 import java.util.List;
@@ -54,8 +52,6 @@ public class BaseAncHomeVisitActionTest extends BaseUnitTest {
 
         Context context = RuntimeEnvironment.application;
         Map<String, List<VisitDetail>> details = new HashMap<>();
-        ServiceWrapper serviceWrapper = Mockito.mock(ServiceWrapper.class);
-        VaccineWrapper vaccineWrapper = Mockito.mock(VaccineWrapper.class);
 
         DangerSignsHelper dangerSignsHelper = Mockito.spy(new DangerSignsHelper());
         String title = "Visit title";
@@ -67,8 +63,6 @@ public class BaseAncHomeVisitActionTest extends BaseUnitTest {
                 .withFormName("danger_signs")
                 .withHelper(dangerSignsHelper)
                 .withScheduleStatus(BaseAncHomeVisitAction.ScheduleStatus.OVERDUE)
-                .withServiceWrapper(serviceWrapper)
-                .withVaccineWrapper(vaccineWrapper)
                 .build();
 
         // verify that the danger signs helper is called
@@ -87,8 +81,6 @@ public class BaseAncHomeVisitActionTest extends BaseUnitTest {
 
         Context context = RuntimeEnvironment.application;
         Map<String, List<VisitDetail>> details = new HashMap<>();
-        ServiceWrapper serviceWrapper = Mockito.mock(ServiceWrapper.class);
-        VaccineWrapper vaccineWrapper = Mockito.mock(VaccineWrapper.class);
 
         DangerSignsHelper dangerSignsHelper = Mockito.spy(new DangerSignsHelper());
         String title = "Visit title";
@@ -106,8 +98,6 @@ public class BaseAncHomeVisitActionTest extends BaseUnitTest {
                 .withDestinationFragment(fragment)
                 .withHelper(dangerSignsHelper)
                 .withScheduleStatus(BaseAncHomeVisitAction.ScheduleStatus.OVERDUE)
-                .withServiceWrapper(serviceWrapper)
-                .withVaccineWrapper(vaccineWrapper)
                 .build();
 
 
@@ -126,8 +116,6 @@ public class BaseAncHomeVisitActionTest extends BaseUnitTest {
 
         Context context = RuntimeEnvironment.application;
         Map<String, List<VisitDetail>> details = new HashMap<>();
-        ServiceWrapper serviceWrapper = Mockito.mock(ServiceWrapper.class);
-        VaccineWrapper vaccineWrapper = Mockito.mock(VaccineWrapper.class);
 
         BaseAncHomeVisitAction.AncHomeVisitActionHelper homeVisitActionHelper = Mockito.mock(BaseAncHomeVisitAction.AncHomeVisitActionHelper.class);
         String title = "Visit title";
@@ -144,8 +132,6 @@ public class BaseAncHomeVisitActionTest extends BaseUnitTest {
                 .withDestinationFragment(fragment)
                 .withHelper(homeVisitActionHelper)
                 .withScheduleStatus(BaseAncHomeVisitAction.ScheduleStatus.OVERDUE)
-                .withServiceWrapper(serviceWrapper)
-                .withVaccineWrapper(vaccineWrapper)
                 .build();
 
         String payload = "test payload";

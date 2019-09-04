@@ -75,9 +75,6 @@ public class VisitUtilsTest {
     @Mock
     private ServiceType serviceType;
 
-    @Mock
-    private List<ServiceType> serviceTypes;
-
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
@@ -90,9 +87,7 @@ public class VisitUtilsTest {
         Mockito.doReturn(visitRepository).when(ancLibrary).visitRepository();
         Mockito.doReturn(visitDetailsRepository).when(ancLibrary).visitDetailsRepository();
 
-        Mockito.doReturn(1).when(serviceTypes).size();
-        Mockito.doReturn(serviceTypes).when(recurringServiceTypeRepository).searchByName(Mockito.anyString());
-        Mockito.doReturn(serviceType).when(serviceTypes).get(Mockito.anyInt());
+        Mockito.doReturn(serviceType).when(recurringServiceTypeRepository).getByName(Mockito.anyString());
 
         BDDMockito.given(ImmunizationLibrary.getInstance()).willReturn(immunizationLibrary);
         BDDMockito.given(NCUtils.context()).willReturn(context);

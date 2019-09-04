@@ -72,6 +72,8 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
 
                 if (encounterType.equalsIgnoreCase(Constants.EVENT_TYPE.PREGNANCY_OUTCOME)) {
 
+                    saveRegistration(form.toString(), table);
+
                     String motherBaseId = form.optString(Constants.JSON_FORM_EXTRA.ENTITY_TYPE);
                     JSONArray fields = org.smartregister.util.JsonFormUtils.fields(form);
                     JSONObject deliveryDate = org.smartregister.util.JsonFormUtils.getFieldJSONObject(fields, DBConstants.KEY.DELIVERY_DATE);
@@ -87,14 +89,12 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
                         String familyBaseEntityId = familyIdObject.getString(JsonFormUtils.VALUE);
                         pncForm = JsonFormUtils.populatePNCForm(pncForm, fields, familyBaseEntityId);
 
-                        NCUtils.saveVaccineEvents(fields, childBaseEntityId);
-
                         processPncChild(fields, allSharedPreferences, childBaseEntityId, familyBaseEntityId, motherBaseId);
-                        if (pncForm != null)
+                        if (pncForm != null) {
                             saveRegistration(pncForm.toString(), EC_CHILD);
-                        processPncEvent(allSharedPreferences, pncForm);
+                            NCUtils.saveVaccineEvents(fields, childBaseEntityId);
+                        }
                     }
-                    saveRegistration(form.toString(), table);
 
                 } else if (encounterType.equalsIgnoreCase(Constants.EVENT_TYPE.ANC_REGISTRATION)) {
 
@@ -154,18 +154,6 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
 
             NCUtils.getSyncHelper().addClient(pncChild.getBaseEntityId(), eventJson);
 
-        } catch (Exception e) {
-            Timber.e(e);
-        }
-    }
-
-    public void processPncEvent(AllSharedPreferences allSharedPreferences, JSONObject pncForm) {
-
-        Event baseEvent = JsonFormUtils.processJsonForm(allSharedPreferences, pncForm.toString(), EC_CHILD);
-
-        try {
-            NCUtils.addEvent(allSharedPreferences, baseEvent);
-            NCUtils.startClientProcessing();
         } catch (Exception e) {
             Timber.e(e);
         }

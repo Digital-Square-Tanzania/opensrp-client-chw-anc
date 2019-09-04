@@ -127,7 +127,10 @@ public class VisitUtils {
                 }
 
 
-                if (Constants.HOME_VISIT_TASK.VACCINE.equalsIgnoreCase(visitDetail.getParentCode())) {
+                if (
+                        Constants.HOME_VISIT_TASK.VACCINE.equalsIgnoreCase(visitDetail.getParentCode()) ||
+                                Constants.HOME_VISIT_TASK.VACCINE.equalsIgnoreCase(visitDetail.getPreProcessedType())
+                ) {
                     saveVisitDetailsAsVaccine(visitDetail, baseEntityID, visit.getDate());
                     visitDetailsRepository.completeProcessing(visitDetail.getVisitDetailsId());
                     continue;
@@ -139,18 +142,20 @@ public class VisitUtils {
     }
 
     public static Vaccine saveVisitDetailsAsVaccine(VisitDetail detail, String baseEntityID, Date eventDate) {
-        if (!"vaccine".equalsIgnoreCase(detail.getParentCode()))
+        if (!"vaccine".equalsIgnoreCase(detail.getParentCode()) && !Constants.HOME_VISIT_TASK.VACCINE.equalsIgnoreCase(detail.getPreProcessedType()))
             return null;
 
-        if (Constants.HOME_VISIT.VACCINE_NOT_GIVEN.equalsIgnoreCase(detail.getParentCode()))
+        if (Constants.HOME_VISIT.VACCINE_NOT_GIVEN.equalsIgnoreCase(NCUtils.getText(detail)))
             return null;
 
         Date vacDate = getDateFromString(detail.getDetails());
         if (vacDate == null) return null;
 
+        String name = Constants.HOME_VISIT_TASK.VACCINE.equalsIgnoreCase(detail.getPreProcessedType()) ? detail.getJsonDetails() : detail.getVisitKey();
+
         Vaccine vaccine = new Vaccine();
         vaccine.setBaseEntityId(baseEntityID);
-        vaccine.setName(detail.getVisitKey());
+        vaccine.setName(name);
         vaccine.setDate(vacDate);
         vaccine.setCreatedAt(eventDate);
 

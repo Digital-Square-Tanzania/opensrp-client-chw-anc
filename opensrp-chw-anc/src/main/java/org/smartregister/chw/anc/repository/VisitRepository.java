@@ -142,7 +142,7 @@ public class VisitRepository extends BaseRepository {
         }
     }
 
-    private List<Visit> readVisits(Cursor cursor) {
+    public List<Visit> readVisits(Cursor cursor) {
         List<Visit> visits = new ArrayList<>();
 
         try {

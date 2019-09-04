@@ -18,9 +18,22 @@ import org.smartregister.repository.Repository;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Locale;
 
 public class VisitRepositoryTest extends BaseUnitTest {
+
+    private static final String VISIT_ID = "visit_id";
+    private static final String VISIT_TYPE = "visit_type";
+    private static final String PARENT_VISIT_ID = "parent_visit_id";
+    private static final String BASE_ENTITY_ID = "base_entity_id";
+    private static final String VISIT_DATE = "visit_date";
+    private static final String VISIT_JSON = "visit_json";
+    private static final String PRE_PROCESSED = "pre_processed";
+    private static final String FORM_SUBMISSION_ID = "form_submission_id";
+    private static final String PROCESSED = "processed";
+    private static final String UPDATED_AT = "updated_at";
+    private static final String CREATED_AT = "created_at";
 
     @Mock
     private SQLiteDatabase database;
@@ -77,5 +90,24 @@ public class VisitRepositoryTest extends BaseUnitTest {
 
         Mockito.verify(database).delete("visits", "visit_id= ?", new String[]{"123445"});
         Mockito.verify(database).delete("visit_details", "visit_id= ?", new String[]{"123445"});
+    }
+
+    @Test
+    public void testReadVisits() {
+        String[] VISIT_COLUMNS = {
+                VISIT_ID, VISIT_TYPE, PARENT_VISIT_ID, BASE_ENTITY_ID,
+                VISIT_DATE, VISIT_JSON, PRE_PROCESSED, FORM_SUBMISSION_ID,
+                PROCESSED, UPDATED_AT, CREATED_AT
+        };
+
+        MatrixCursor cursor = new MatrixCursor(VISIT_COLUMNS);
+        cursor.addRow(new Object[]{
+                "345678", "type", "0001", "234m234234",
+                "1567002594000", null, null, "asdasdasdasd",
+                "1", "1567002594000", "1567002594000"
+        });
+
+        List<Visit> visits = visitRepository.readVisits(cursor);
+        Assert.assertEquals(visits.size(), 1);
     }
 }

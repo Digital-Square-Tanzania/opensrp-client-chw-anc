@@ -121,7 +121,7 @@ public class VisitDetailsRepository extends BaseRepository {
         return visitDetails;
     }
 
-    private List<VisitDetail> readVisitDetails(Cursor cursor) {
+    public List<VisitDetail> readVisitDetails(Cursor cursor) {
         List<VisitDetail> visitDetailList = new ArrayList<>();
 
         try {

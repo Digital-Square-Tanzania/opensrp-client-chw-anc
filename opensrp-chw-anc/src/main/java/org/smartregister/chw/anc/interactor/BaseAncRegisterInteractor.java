@@ -155,8 +155,7 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
             NCUtils.getSyncHelper().addClient(pncChild.getBaseEntityId(), eventJson);
 
         } catch (Exception e) {
-            System.out.println(e.toString());
-            System.out.println(e.getStackTrace());
+            Timber.e(e);
         }
     }
 

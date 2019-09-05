@@ -62,6 +62,7 @@ public interface Constants {
         String MEMBER_PROFILE_OBJECT = "MemberObject";
         String FAMILY_HEAD_NAME = "familyHeadName";
         String FAMILY_HEAD_PHONE = "familyHeadPhoneNumber";
+        String TITLE_VIEW_TEXT = "titleViewText";
     }
 
     interface RELATIONSHIP {

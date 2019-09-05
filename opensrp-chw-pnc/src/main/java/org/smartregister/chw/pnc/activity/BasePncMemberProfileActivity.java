@@ -2,6 +2,7 @@ package org.smartregister.chw.pnc.activity;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.text.TextUtils;
 import android.view.View;
 
 import org.smartregister.chw.anc.activity.BaseAncMemberProfileActivity;
@@ -35,7 +36,8 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
     protected void setupViews() {
         super.setupViews();
         CustomFontTextView titleView = findViewById(R.id.toolbar_title);
-        titleView.setText(getString(R.string.return_to_all_pnc_women));
+        String titleText = TextUtils.isEmpty(getTitleViewText()) ? getString(R.string.return_to_all_pnc_women) : getTitleViewText();
+        titleView.setText(titleText);
         record_reccuringvisit_done_bar.setVisibility(View.GONE);
         textViewAncVisitNot.setVisibility(View.GONE);
 

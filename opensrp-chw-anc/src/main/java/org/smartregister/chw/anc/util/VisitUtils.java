@@ -138,6 +138,24 @@ public class VisitUtils {
         }
     }
 
+    public static void savePncChildVaccines(String vaccineName, String baseEntityID, Date eventDate){
+        Vaccine vaccine = new Vaccine();
+        vaccine.setBaseEntityId(baseEntityID);
+        vaccine.setName(vaccineName);
+        vaccine.setDate(eventDate);
+        vaccine.setCreatedAt(eventDate);
+
+        String lastChar = vaccine.getName().substring(vaccine.getName().length() - 1);
+        if (StringUtils.isNumeric(lastChar)) {
+            vaccine.setCalculation(Integer.valueOf(lastChar));
+        } else {
+            vaccine.setCalculation(0);
+        }
+
+        JsonFormUtils.tagSyncMetadata(NCUtils.context().allSharedPreferences(), vaccine);
+        getVaccineRepository().add(vaccine);
+    }
+
     public static Vaccine saveVisitDetailsAsVaccine(VisitDetail detail, String baseEntityID, Date eventDate) {
         if (!"vaccine".equalsIgnoreCase(detail.getParentCode()))
             return null;

@@ -235,8 +235,6 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
                 Timber.e(e);
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        } else {
-            finish();
         }
     }
 

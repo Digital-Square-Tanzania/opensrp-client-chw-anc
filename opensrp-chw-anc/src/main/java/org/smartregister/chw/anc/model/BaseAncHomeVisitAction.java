@@ -76,7 +76,10 @@ public class BaseAncHomeVisitAction {
                 ancHomeVisitActionHelper.onJsonFormLoaded(jsonPayload, context, details);
                 String pre_processed = ancHomeVisitActionHelper.getPreProcessed();
                 if (StringUtils.isNotBlank(pre_processed)) {
-                    this.jsonPayload = pre_processed;
+                    JSONObject jsonObject = new JSONObject(pre_processed);
+                    JsonFormUtils.populateForm(jsonObject, details);
+
+                    this.jsonPayload = jsonObject.toString();
                 }
 
                 String sub_title = ancHomeVisitActionHelper.getPreProcessedSubTitle();

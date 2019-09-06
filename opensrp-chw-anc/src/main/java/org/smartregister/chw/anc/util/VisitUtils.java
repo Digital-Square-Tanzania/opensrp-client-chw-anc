@@ -15,6 +15,7 @@ import org.smartregister.chw.anc.repository.VisitDetailsRepository;
 import org.smartregister.chw.anc.repository.VisitRepository;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.immunization.ImmunizationLibrary;
+import org.smartregister.immunization.db.VaccineRepo;
 import org.smartregister.immunization.domain.ServiceRecord;
 import org.smartregister.immunization.domain.ServiceType;
 import org.smartregister.immunization.domain.Vaccine;
@@ -35,6 +36,8 @@ import java.util.List;
 import java.util.Map;
 
 public class VisitUtils {
+
+    private static Map<String, VaccineRepo.Vaccine> vaccineMap;
 
     public static List<Visit> getVisits(String memberID, String... eventTypes) {
 
@@ -141,7 +144,7 @@ public class VisitUtils {
         }
     }
 
-    public static void savePncChildVaccines(String vaccineName, String baseEntityID, Date eventDate){
+    public static void savePncChildVaccines(String vaccineName, String baseEntityID, Date eventDate) {
         Vaccine vaccine = new Vaccine();
         vaccine.setBaseEntityId(baseEntityID);
         vaccine.setName(vaccineName);
@@ -169,7 +172,7 @@ public class VisitUtils {
         Date vacDate = getDateFromString(detail.getDetails());
         if (vacDate == null) return null;
 
-        String name = Constants.HOME_VISIT_TASK.VACCINE.equalsIgnoreCase(detail.getPreProcessedType()) ? detail.getJsonDetails() : detail.getVisitKey();
+        String name = isVaccine(detail.getPreProcessedJson()) ? detail.getPreProcessedJson() : detail.getVisitKey();
 
         Vaccine vaccine = new Vaccine();
         vaccine.setBaseEntityId(baseEntityID);
@@ -188,6 +191,32 @@ public class VisitUtils {
         getVaccineRepository().add(vaccine); // persist to local db
 
         return vaccine;
+    }
+
+    public static boolean isVaccine(String vaccine_name) {
+        if (StringUtils.isBlank(vaccine_name))
+            return false;
+
+        Map<String, VaccineRepo.Vaccine> map = getAllVaccines();
+
+        return map.get(vaccine_name.toLowerCase().replace(" ", "").replace("_", "")) != null;
+    }
+
+    public static Map<String, VaccineRepo.Vaccine> getAllVaccines() {
+        if (vaccineMap == null || vaccineMap.size() == 0) {
+            vaccineMap = new HashMap<>();
+
+            List<VaccineRepo.Vaccine> allVacs = VaccineRepo.getVaccines("woman");
+            allVacs.addAll(VaccineRepo.getVaccines("child"));
+
+            for (VaccineRepo.Vaccine vaccine : allVacs) {
+                vaccineMap.put(
+                        vaccine.display().toLowerCase().replace(" ", "").replace("_", ""),
+                        vaccine
+                );
+            }
+        }
+        return vaccineMap;
     }
 
     public static ServiceRecord saveVisitDetailsAsServiceRecord(VisitDetail detail, String baseEntityID, Date eventDate) {

@@ -180,7 +180,7 @@ public class VisitRepository extends BaseRepository {
         List<Visit> visits = new ArrayList<>();
         Cursor cursor = null;
         try {
-            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, PROCESSED + " = ? AND UPDATED_AT <= ? ", new String[]{"0", last_edit_time.toString()}, null, null, VISIT_DATE + " DESC ", null);
+            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, PROCESSED + " = ? AND UPDATED_AT <= ? ", new String[]{"0", last_edit_time.toString()}, null, null, CREATED_AT + " ASC ", null);
             visits = readVisits(cursor);
         } catch (Exception e) {
             Timber.e(e);

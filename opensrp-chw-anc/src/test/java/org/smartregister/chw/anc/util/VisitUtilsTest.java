@@ -1,6 +1,7 @@
 package org.smartregister.chw.anc.util;
 
 import org.joda.time.DateTime;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
@@ -197,5 +198,12 @@ public class VisitUtilsTest {
 
         VisitUtils.saveVisitDetailsAsServiceRecord(visitDetail, "12345", new Date());
         Mockito.verify(recurringServiceRecordRepository).add(Mockito.any(ServiceRecord.class));
+    }
+
+    @Test
+    public void testIsVaccine(){
+        Assert.assertTrue(VisitUtils.isVaccine("tt1"));
+        Assert.assertTrue(VisitUtils.isVaccine("opv0"));
+        Assert.assertFalse(VisitUtils.isVaccine("opv10"));
     }
 }

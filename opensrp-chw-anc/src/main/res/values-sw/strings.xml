@@ -55,6 +55,7 @@
     <string name="anc_woman">Mjamzito</string>
 
     <string name="last_visit_40_days_ago">Tembeleo la mwisho %1$s iliyopita</string>
+    <string name="days">siku</string>
     <string name="view_medical_history">Angalia historia ya matibabu</string>
     <string name="view_upcoming_services">Angalia huduma zinazokaribia</string>
     <string name="family_has_nothing_due">Muda haujafikia</string>
@@ -92,6 +93,7 @@
     <string name="opv_0">OPV 0</string>
     <string name="opv_1">OPV 1</string>
     <string name="opv_2">OPV 2</string>
+    <string name="opv_3">OPV 3</string>
     <string name="bcg">BCG</string>
     <string name="penta_1">Penta 1</string>
     <string name="penta_2">Penta 2</string>
@@ -109,6 +111,6 @@
     <string name="yellow_fever">Homa ya manjano</string>
     <string name="rubella_1">Rubella 1</string>
     <string name="rubella_2">Rubella 2</string>
-    <string name="mena">MenA</string>
+    <string name="mena">Homa ya uti wa mgongo</string>
 
 </resources>

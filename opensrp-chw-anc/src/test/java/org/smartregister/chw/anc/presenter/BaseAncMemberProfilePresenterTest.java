@@ -64,7 +64,7 @@ public class BaseAncMemberProfilePresenterTest {
 
     @Test
     public void testRefreshLastVisit() {
-        Date lastVisitDate = DateTime.now().toDate();
+        Date lastVisitDate = new Date();
         presenter.refreshLastVisit(lastVisitDate);
         Mockito.verify(view).setLastVisit(lastVisitDate);
     }

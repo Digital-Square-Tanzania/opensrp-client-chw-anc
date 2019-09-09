@@ -1,7 +1,5 @@
 package org.smartregister.chw.anc.presenter;
 
-import com.google.gson.JsonObject;
-
 import org.json.JSONObject;
 import org.junit.Before;
 import org.junit.Test;
@@ -22,7 +20,7 @@ public class BaseAncHomeVisitFragmentPresenterTest {
     private BaseAncHomeVisitFragmentContract.Model model;
 
     @Mock
-    private  List<JSONObject> options;
+    private List<JSONObject> options;
 
 
     BaseAncHomeVisitFragmentPresenter presenter;
@@ -33,11 +31,12 @@ public class BaseAncHomeVisitFragmentPresenterTest {
         BaseAncHomeVisitFragmentPresenter objct = new BaseAncHomeVisitFragmentPresenter(view, model);
         presenter = Mockito.spy(objct);
     }
+
     @Test
-   public void initialize() {
+    public void initialize() {
         presenter.initialize();
-        if(view != null){
-            Mockito.verify(model).processJson(view.getJsonObject(),presenter);
+        if (view != null) {
+            Mockito.verify(model).processJson(view.getJsonObject(), presenter);
         }
     }
 
@@ -45,8 +44,8 @@ public class BaseAncHomeVisitFragmentPresenterTest {
     public void setTitle() {
         String title = "Title";
         presenter.setTitle(title);
-        if(view != null){
-        Mockito.verify(view).setTitle(title);
+        if (view != null) {
+            Mockito.verify(view).setTitle(title);
         }
     }
 
@@ -54,7 +53,7 @@ public class BaseAncHomeVisitFragmentPresenterTest {
     public void setQuestion() {
         String question = "question?";
         presenter.setQuestion(question);
-        if(view != null){
+        if (view != null) {
             Mockito.verify(view).setQuestion(question);
         }
 
@@ -64,7 +63,7 @@ public class BaseAncHomeVisitFragmentPresenterTest {
     public void setImageRes() {
         Integer img = 12345654;
         presenter.setImageRes(img);
-        if(view != null){
+        if (view != null) {
             Mockito.verify(view).setImageRes(img);
         }
     }
@@ -74,7 +73,7 @@ public class BaseAncHomeVisitFragmentPresenterTest {
         BaseAncHomeVisitFragment baseAncHomeVisitFragment = new BaseAncHomeVisitFragment();
         baseAncHomeVisitFragment.setQuestionType(baseAncHomeVisitFragment.getQuestionType());
         presenter.setQuestionType(baseAncHomeVisitFragment.getQuestionType());
-        if(view != null){
+        if (view != null) {
             Mockito.verify(view).setQuestionType(baseAncHomeVisitFragment.getQuestionType());
         }
     }
@@ -83,7 +82,7 @@ public class BaseAncHomeVisitFragmentPresenterTest {
     public void setInfoIconTitle() {
         String infoIconTile = "StringInfoIcon";
         presenter.setInfoIconTitle(infoIconTile);
-        if(view !=null){
+        if (view != null) {
             Mockito.verify(view).setInfoIconTitle(infoIconTile);
         }
     }
@@ -92,25 +91,25 @@ public class BaseAncHomeVisitFragmentPresenterTest {
     public void setInfoIconDetails() {
         String iconDetails = "StringIconDetails";
         presenter.setInfoIconDetails(iconDetails);
-        if(view != null){
+        if (view != null) {
             Mockito.verify(view).setInfoIconDetails(iconDetails);
         }
     }
 
     @Test
     public void getView() {
-    presenter.getView();
-    if(view != null){
-        Mockito.verify(view);
-    }
+        presenter.getView();
+        if (view != null) {
+            Mockito.verify(view);
+        }
     }
 
     @Test
     public void writeValue() {
         JSONObject obj = new JSONObject();
         String value = "value";
-        presenter.writeValue(obj,value);
-        Mockito.verify(model).writeValue(obj,value);
+        presenter.writeValue(obj, value);
+        Mockito.verify(model).writeValue(obj, value);
 
     }
 
@@ -118,18 +117,18 @@ public class BaseAncHomeVisitFragmentPresenterTest {
     public void setValue() {
         String value = "value";
         presenter.setValue(value);
-        if(view != null){
+        if (view != null) {
             Mockito.verify(view).setValue(value);
         }
     }
 
     @Test
     public void setOptions() {
-      options.add(view.getJsonObject());
-      presenter.setOptions(options);
-      if(view != null){
-          Mockito.verify(view).setOptions(options);
-      }
+        options.add(view.getJsonObject());
+        presenter.setOptions(options);
+        if (view != null) {
+            Mockito.verify(view).setOptions(options);
+        }
 
     }
 }

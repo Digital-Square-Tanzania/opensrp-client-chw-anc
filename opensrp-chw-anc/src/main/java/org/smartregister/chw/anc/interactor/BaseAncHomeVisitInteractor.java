@@ -93,7 +93,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         appExecutors.diskIO().execute(runnable);
     }
 
-    private void submitVisit(final boolean editMode, final String memberID, final Map<String, BaseAncHomeVisitAction> map, String parentEventType) throws Exception {
+    protected void submitVisit(final boolean editMode, final String memberID, final Map<String, BaseAncHomeVisitAction> map, String parentEventType) throws Exception {
         // create a map of the different types
 
         Map<String, BaseAncHomeVisitAction> externalVisits = new HashMap<>();
@@ -140,19 +140,24 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
      * @param memberID
      * @throws Exception
      */
-    private void processExternalVisits(Visit visit, Map<String, BaseAncHomeVisitAction> externalVisits, String memberID) throws Exception {
+    protected void processExternalVisits(Visit visit, Map<String, BaseAncHomeVisitAction> externalVisits, String memberID) throws Exception {
         if (visit != null && !externalVisits.isEmpty()) {
             for (Map.Entry<String, BaseAncHomeVisitAction> entry : externalVisits.entrySet()) {
                 Map<String, BaseAncHomeVisitAction> subEvent = new HashMap<>();
                 subEvent.put(entry.getKey(), entry.getValue());
-                submitVisit(false, memberID, subEvent, visit.getVisitType());
+
+                String subMemberID = entry.getValue().getBaseEntityID();
+                if (StringUtils.isBlank(subMemberID))
+                    subMemberID = memberID;
+
+                submitVisit(false, subMemberID, subEvent, visit.getVisitType());
             }
         }
     }
 
-    private Visit saveVisit(boolean editMode, String memberID, String encounterType,
-                            final Map<String, String> jsonString,
-                            String parentEventType
+    protected Visit saveVisit(boolean editMode, String memberID, String encounterType,
+                              final Map<String, String> jsonString,
+                              String parentEventType
     ) throws Exception {
 
         AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
@@ -160,8 +165,12 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         String derivedEncounterType = StringUtils.isBlank(parentEventType) ? encounterType : "";
         Event baseEvent = JsonFormUtils.processVisitJsonForm(allSharedPreferences, memberID, derivedEncounterType, jsonString, getTableName());
 
-        if (StringUtils.isBlank(parentEventType))
+        // only tag the first event with the date
+        if (StringUtils.isBlank(parentEventType)) {
             prepareEvent(baseEvent);
+        } else {
+            prepareSubEvent(baseEvent);
+        }
 
         if (baseEvent != null) {
             baseEvent.setFormSubmissionId(JsonFormUtils.generateRandomUUIDString());
@@ -177,7 +186,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
             Visit visit = NCUtils.eventToVisit(baseEvent, visitID);
             visit.setPreProcessedJson(new Gson().toJson(baseEvent));
-            visit.setParentVisitID(visitRepository().getParentVisitEventID(visit.getBaseEntityId(), parentEventType, visit.getDate()));
+            visit.setParentVisitID(getParentVisitEventID(visit, parentEventType));
 
             visitRepository().addVisit(visit);
             return visit;
@@ -185,11 +194,15 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         return null;
     }
 
-    private VisitRepository visitRepository() {
+    protected String getParentVisitEventID(Visit visit, String parentEventType) {
+        return visitRepository().getParentVisitEventID(visit.getBaseEntityId(), parentEventType, visit.getDate());
+    }
+
+    protected VisitRepository visitRepository() {
         return AncLibrary.getInstance().visitRepository();
     }
 
-    private void deleteOldVisit(String visitID) {
+    protected void deleteOldVisit(String visitID) {
         visitRepository().deleteVisit(visitID);
         AncLibrary.getInstance().visitDetailsRepository().deleteVisitDetails(visitID);
 
@@ -200,7 +213,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         }
     }
 
-    private void saveVisitDetails(Visit visit, String payloadType, String payloadDetails) {
+    protected void saveVisitDetails(Visit visit, String payloadType, String payloadDetails) {
         if (visit.getVisitDetails() == null) return;
 
         for (Map.Entry<String, List<VisitDetail>> entry : visit.getVisitDetails().entrySet()) {
@@ -227,6 +240,15 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
             baseEvent.addObs(new Obs("concept", "text", "anc_visit_date", "",
                     list, new ArrayList<>(), null, "anc_visit_date"));
         }
+    }
+
+    /**
+     * injects additional meta data to the event
+     *
+     * @param baseEvent
+     */
+    protected void prepareSubEvent(Event baseEvent) {
+        Timber.v("You can add information to sub events");
     }
 
     protected String getEncounterType() {

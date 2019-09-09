@@ -7,10 +7,7 @@ import org.json.JSONObject;
 import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.anc.fragment.BaseHomeVisitFragment;
 import org.smartregister.chw.anc.util.JsonFormUtils;
-import org.smartregister.immunization.domain.ServiceWrapper;
-import org.smartregister.immunization.domain.VaccineWrapper;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -79,7 +76,10 @@ public class BaseAncHomeVisitAction {
                 ancHomeVisitActionHelper.onJsonFormLoaded(jsonPayload, context, details);
                 String pre_processed = ancHomeVisitActionHelper.getPreProcessed();
                 if (StringUtils.isNotBlank(pre_processed)) {
-                    this.jsonPayload = pre_processed;
+                    JSONObject jsonObject = new JSONObject(pre_processed);
+                    JsonFormUtils.populateForm(jsonObject, details);
+
+                    this.jsonPayload = jsonObject.toString();
                 }
 
                 String sub_title = ancHomeVisitActionHelper.getPreProcessedSubTitle();
@@ -385,8 +385,6 @@ public class BaseAncHomeVisitAction {
         private BaseHomeVisitFragment destinationFragment;
         private String formName;
         private AncHomeVisitActionHelper ancHomeVisitActionHelper;
-        private List<VaccineWrapper> vaccineWrapper = new ArrayList<>();
-        private List<ServiceWrapper> serviceWrapper = new ArrayList<>();
         private Map<String, List<VisitDetail>> details = new HashMap<>();
         private Context context;
         private String jsonPayload;
@@ -454,26 +452,6 @@ public class BaseAncHomeVisitAction {
 
         public Builder withProcessingMode(ProcessingMode processingMode) {
             this.processingMode = processingMode;
-            return this;
-        }
-
-        public Builder withVaccineWrapper(VaccineWrapper vaccineWrapper) {
-            this.vaccineWrapper.add(vaccineWrapper);
-            return this;
-        }
-
-        public Builder withVaccineWrapper(List<VaccineWrapper> vaccineWrapper) {
-            this.vaccineWrapper.addAll(vaccineWrapper);
-            return this;
-        }
-
-        public Builder withServiceWrapper(ServiceWrapper serviceWrapper) {
-            this.serviceWrapper.add(serviceWrapper);
-            return this;
-        }
-
-        public Builder withServiceWrapper(List<ServiceWrapper> serviceWrapper) {
-            this.serviceWrapper.addAll(serviceWrapper);
             return this;
         }
 

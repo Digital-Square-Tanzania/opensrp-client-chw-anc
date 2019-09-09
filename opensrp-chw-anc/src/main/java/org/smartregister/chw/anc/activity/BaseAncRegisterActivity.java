@@ -11,8 +11,6 @@ import android.widget.Toast;
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 import com.vijay.jsonwizard.domain.Form;
 
-import org.apache.commons.lang3.StringUtils;
-import org.json.JSONArray;
 import org.json.JSONObject;
 import org.smartregister.AllConstants;
 import org.smartregister.Context;
@@ -23,12 +21,9 @@ import org.smartregister.chw.anc.listener.BaseAncBottomNavigationListener;
 import org.smartregister.chw.anc.model.BaseAncRegisterModel;
 import org.smartregister.chw.anc.presenter.BaseAncRegisterPresenter;
 import org.smartregister.chw.anc.util.Constants;
-import org.smartregister.chw.anc.util.DBConstants;
-import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.helper.BottomNavigationHelper;
 import org.smartregister.listener.BottomNavigationListener;
-import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.view.activity.BaseRegisterActivity;
 import org.smartregister.view.fragment.BaseRegisterFragment;
 
@@ -37,23 +32,11 @@ import java.util.List;
 
 import timber.log.Timber;
 
-import static org.smartregister.chw.anc.util.Constants.EVENT_TYPE.PREGNANCY_OUTCOME;
-import static org.smartregister.chw.anc.util.Constants.EVENT_TYPE.UPDATE_EVENT_CONDITION;
-import static org.smartregister.chw.anc.util.NCUtils.saveVaccineEvents;
-import static org.smartregister.immunization.ImmunizationLibrary.getInstance;
-import static org.smartregister.util.JsonFormUtils.fields;
-import static org.smartregister.util.JsonFormUtils.getFieldJSONObject;
-
 public class BaseAncRegisterActivity extends BaseRegisterActivity implements BaseAncRegisterContract.View {
 
     protected String BASE_ENTITY_ID;
     protected String ACTION;
     protected String TABLE;
-    protected boolean hasChildRegistration = false;
-
-    private BaseAncRegisterModel baseAncRegisterModel = new BaseAncRegisterModel();
-
-    private BaseAncRegisterInteractor baseAncRegisterInteractor = new BaseAncRegisterInteractor();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,8 +99,29 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
     }
 
     @Override
-    public void onRegistrationSaved(boolean isEdit) {
-        Timber.v("onRegistrationSaved");
+    public void onRegistrationSaved(String encounterType, boolean isEdit, boolean hasChildren) {
+        if (encounterType.equalsIgnoreCase(Constants.EVENT_TYPE.ANC_REGISTRATION)) {
+            startRegisterActivity(getAncRegisterActivity());
+        } else if (encounterType.equalsIgnoreCase(Constants.EVENT_TYPE.PREGNANCY_OUTCOME)) {
+            startRegisterActivity(getPncRegisterActivity());
+        } else {
+            finish();
+        }
+    }
+
+    public Class getAncRegisterActivity() {
+        return BaseAncRegisterActivity.class;
+    }
+
+    public Class getPncRegisterActivity() {
+        return BaseAncRegisterActivity.class;
+    }
+
+    protected void startRegisterActivity(Class registerClass) {
+        Intent intent = new Intent(this, registerClass);
+        intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
+        this.startActivity(intent);
+        this.finish();
     }
 
     public Class getAncFormActivity() {
@@ -130,25 +134,6 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
 
     public String getFormEditRegistrationEvent() {
         return Constants.EVENT_TYPE.ANC_REGISTRATION;
-    }
-
-    @Override
-    protected void onActivityResultExtended(int requestCode, int resultCode, Intent data) {
-        if (requestCode == Constants.REQUEST_CODE_GET_JSON && resultCode == RESULT_OK) {
-            try {
-                String jsonString = data.getStringExtra(Constants.JSON_FORM_EXTRA.JSON);
-                String table = data.getStringExtra(Constants.ACTIVITY_PAYLOAD.TABLE_NAME);
-                Timber.d("JSONResult %s", jsonString);
-
-                JSONObject form = new JSONObject(jsonString);
-                if (form.getString(Constants.ENCOUNTER_TYPE).equals(getRegisterEventType())) {
-                    presenter().saveForm(jsonString, false, table);
-                }
-            } catch (Exception e) {
-                Timber.e(e);
-            }
-
-        }
     }
 
     @Override
@@ -201,7 +186,7 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
 
     @Override
     protected void initializePresenter() {
-        presenter = new BaseAncRegisterPresenter(this, baseAncRegisterModel, baseAncRegisterInteractor);
+        presenter = new BaseAncRegisterPresenter(this, new BaseAncRegisterModel(), new BaseAncRegisterInteractor());
     }
 
     @Override
@@ -220,8 +205,10 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_CODE_GET_JSON) {
+    protected void onActivityResultExtended(int requestCode, int resultCode, Intent data) {
+        if (resultCode != Activity.RESULT_OK) return;
+
+        if (requestCode == Constants.REQUEST_CODE_GET_JSON) {
 //            process the form
             try {
                 String jsonString = data.getStringExtra(Constants.JSON_FORM_EXTRA.JSON);
@@ -229,45 +216,25 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
 
                 JSONObject form = new JSONObject(jsonString);
                 String encounter_type = form.optString(Constants.JSON_FORM_EXTRA.ENCOUNTER_TYPE);
-                String motherBaseId = form.optString(Constants.JSON_FORM_EXTRA.ENTITY_TYPE);
+                String table = data.getStringExtra(Constants.ACTIVITY_PAYLOAD.TABLE_NAME);
 
-                if (encounter_type.equals(PREGNANCY_OUTCOME)) {
-                    JSONArray fields = fields(form);
+                if (encounter_type.equalsIgnoreCase(getRegisterEventType())) {
 
-                    JSONObject deliveryDate = getFieldJSONObject(fields, DBConstants.KEY.DELIVERY_DATE);
-                    hasChildRegistration = StringUtils.isNotBlank(deliveryDate.optString(JsonFormUtils.VALUE));
+                    presenter().saveForm(jsonString, false, table);
 
-                    JSONObject uniqueID = getFieldJSONObject(fields, DBConstants.KEY.UNIQUE_ID);
-                    if (StringUtils.isNotBlank(uniqueID.optString(JsonFormUtils.VALUE))) {
-                        String childBaseEntityId = JsonFormUtils.generateRandomUUIDString();
-                        AllSharedPreferences allSharedPreferences = getInstance().context().allSharedPreferences();
-                        JSONObject pncForm = baseAncRegisterModel.getFormAsJson(Constants.FORMS.PNC_CHILD_REGISTRATION,
-                                childBaseEntityId, getLocationID());
+                } else if (encounter_type.equalsIgnoreCase(Constants.EVENT_TYPE.PREGNANCY_OUTCOME)) {
 
-                        JSONObject familyIdObject = getFieldJSONObject(fields, DBConstants.KEY.RELATIONAL_ID);
-                        String familyBaseEntityId = familyIdObject.getString(JsonFormUtils.VALUE);
-                        pncForm = JsonFormUtils.populatePNCForm(pncForm, fields, familyBaseEntityId);
+                    presenter().saveForm(jsonString, false, table);
 
-                        saveVaccineEvents(fields, childBaseEntityId);
+                } else if (encounter_type.startsWith(Constants.EVENT_TYPE.UPDATE_EVENT_CONDITION)) {
 
-                        baseAncRegisterInteractor.processPncChild(fields, allSharedPreferences, childBaseEntityId,
-                                familyBaseEntityId, motherBaseId);
-                        baseAncRegisterInteractor.processPncEvent(allSharedPreferences, pncForm);
-                    }
-                }
-
-                // process anc registration
-                if (encounter_type != null && !encounter_type.startsWith(UPDATE_EVENT_CONDITION)) {
-                    presenter().saveForm(form.toString(), false, TABLE);
-                } else {
                     presenter().saveForm(form.toString(), true, TABLE);
+
                 }
             } catch (Exception e) {
                 Timber.e(e);
                 Toast.makeText(this, e.getMessage(), Toast.LENGTH_SHORT).show();
             }
-        } else {
-            finish();
         }
     }
 

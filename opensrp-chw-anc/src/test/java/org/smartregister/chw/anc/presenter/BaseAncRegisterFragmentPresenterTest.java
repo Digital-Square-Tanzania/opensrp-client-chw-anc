@@ -64,11 +64,17 @@ public class BaseAncRegisterFragmentPresenterTest {
 
     }
 
-    // @Test
-    // public void testInitializeQueries(){
-    //  presenter.initializeQueries("abc","abc","abc");
+   @Test
+    public void  testGetView(){
+        presenter.getView();
 
-    // }
+        if(view != null){
+            Mockito.verify(view);
+        }
+        else {
+            Mockito.verify(null);
+        }
+   }
 
 
 }

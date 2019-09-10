@@ -17,13 +17,13 @@ public class BaseAncMemberProfilePresenterTest {
     private BaseAncMemberProfileContract.View view;
 
     @Mock
-    BaseAncMemberProfileContract.Interactor interactor;
+    private BaseAncMemberProfileContract.Interactor interactor;
 
     @Mock
-    MemberObject memberObject;
+   private MemberObject memberObject;
 
 
-    BaseAncMemberProfilePresenter presenter;
+    private BaseAncMemberProfilePresenter presenter;
 
     @Before
     public void setUp() {
@@ -87,8 +87,6 @@ public class BaseAncMemberProfilePresenterTest {
     public void testGetView() {
         presenter.getView();
         Mockito.verify(view);
-
     }
-
 
 }

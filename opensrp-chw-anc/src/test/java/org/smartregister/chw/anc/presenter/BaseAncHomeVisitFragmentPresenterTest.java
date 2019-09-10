@@ -23,7 +23,7 @@ public class BaseAncHomeVisitFragmentPresenterTest {
     private List<JSONObject> options;
 
 
-    BaseAncHomeVisitFragmentPresenter presenter;
+    private BaseAncHomeVisitFragmentPresenter presenter;
 
     @Before
     public void setUp() {
@@ -87,7 +87,6 @@ public class BaseAncHomeVisitFragmentPresenterTest {
     @Test
     public void getView() {
         presenter.getView();
-        Mockito.verify(view);
         Mockito.verify(view);
     }
 

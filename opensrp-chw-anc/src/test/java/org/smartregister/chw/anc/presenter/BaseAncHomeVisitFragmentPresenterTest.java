@@ -35,27 +35,22 @@ public class BaseAncHomeVisitFragmentPresenterTest {
     @Test
     public void initialize() {
         presenter.initialize();
-        if (view != null) {
-            Mockito.verify(model).processJson(view.getJsonObject(), presenter);
-        }
+        Mockito.verify(model).processJson(view.getJsonObject(), presenter);
     }
 
     @Test
     public void setTitle() {
         String title = "Title";
         presenter.setTitle(title);
-        if (view != null) {
-            Mockito.verify(view).setTitle(title);
-        }
+        Mockito.verify(view).setTitle(title);
+
     }
 
     @Test
     public void setQuestion() {
         String question = "question?";
         presenter.setQuestion(question);
-        if (view != null) {
-            Mockito.verify(view).setQuestion(question);
-        }
+        Mockito.verify(view).setQuestion(question);
 
     }
 
@@ -63,9 +58,7 @@ public class BaseAncHomeVisitFragmentPresenterTest {
     public void setImageRes() {
         Integer img = 12345654;
         presenter.setImageRes(img);
-        if (view != null) {
-            Mockito.verify(view).setImageRes(img);
-        }
+        Mockito.verify(view).setImageRes(img);
     }
 
     @Test
@@ -73,36 +66,29 @@ public class BaseAncHomeVisitFragmentPresenterTest {
         BaseAncHomeVisitFragment baseAncHomeVisitFragment = new BaseAncHomeVisitFragment();
         baseAncHomeVisitFragment.setQuestionType(baseAncHomeVisitFragment.getQuestionType());
         presenter.setQuestionType(baseAncHomeVisitFragment.getQuestionType());
-        if (view != null) {
-            Mockito.verify(view).setQuestionType(baseAncHomeVisitFragment.getQuestionType());
-        }
+        Mockito.verify(view).setQuestionType(baseAncHomeVisitFragment.getQuestionType());
     }
 
-   /* @Test
+ @Test
     public void setInfoIconTitle() {
         String infoIconTile = "StringInfoIcon";
         presenter.setInfoIconTitle(infoIconTile);
-        if (view != null) {
-            Mockito.verify(view).setInfoIconTitle(infoIconTile);
-        }
+        Mockito.verify(view).setInfoIconTitle(infoIconTile);
     }
-    */
+
 
     @Test
     public void setInfoIconDetails() {
         String iconDetails = "StringIconDetails";
         presenter.setInfoIconDetails(iconDetails);
-        if (view != null) {
-            Mockito.verify(view).setInfoIconDetails(iconDetails);
-        }
+        Mockito.verify(view).setInfoIconDetails(iconDetails);
     }
 
     @Test
     public void getView() {
         presenter.getView();
-        if (view != null) {
-            Mockito.verify(view);
-        }
+        Mockito.verify(view);
+        Mockito.verify(view);
     }
 
     @Test
@@ -118,18 +104,13 @@ public class BaseAncHomeVisitFragmentPresenterTest {
     public void setValue() {
         String value = "value";
         presenter.setValue(value);
-        if (view != null) {
-            Mockito.verify(view).setValue(value);
-        }
+        Mockito.verify(view).setValue(value);
     }
 
     @Test
     public void setOptions() {
         options.add(view.getJsonObject());
         presenter.setOptions(options);
-        if (view != null) {
-            Mockito.verify(view).setOptions(options);
-        }
-
+        Mockito.verify(view).setOptions(options);
     }
 }

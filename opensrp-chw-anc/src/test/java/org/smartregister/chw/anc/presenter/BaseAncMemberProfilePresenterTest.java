@@ -61,14 +61,14 @@ public class BaseAncMemberProfilePresenterTest {
         presenter.fetchProfileData();
         Mockito.verify(interactor).refreshProfileView(memberObject, false, presenter);
     }
-  /*
+
     @Test
     public void testRefreshLastVisit() {
         Date lastVisitDate = new Date();
         presenter.refreshLastVisit(lastVisitDate);
         Mockito.verify(view).setLastVisit(lastVisitDate);
     }
-
+  /*
   @Test
     public void testRefreshUpComingServicesStatus(){
         String service = anyString();
@@ -86,11 +86,7 @@ public class BaseAncMemberProfilePresenterTest {
     @Test
     public void testGetView() {
         presenter.getView();
-        if (view != null) {
-            Mockito.verify(view);
-        } else {
-            Mockito.verify(null);
-        }
+        Mockito.verify(view);
 
     }
 

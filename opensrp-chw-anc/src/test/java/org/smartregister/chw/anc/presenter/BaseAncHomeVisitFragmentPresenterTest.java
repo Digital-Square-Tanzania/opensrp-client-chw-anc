@@ -78,7 +78,7 @@ public class BaseAncHomeVisitFragmentPresenterTest {
         }
     }
 
-    @Test
+   /* @Test
     public void setInfoIconTitle() {
         String infoIconTile = "StringInfoIcon";
         presenter.setInfoIconTitle(infoIconTile);
@@ -86,6 +86,7 @@ public class BaseAncHomeVisitFragmentPresenterTest {
             Mockito.verify(view).setInfoIconTitle(infoIconTile);
         }
     }
+    */
 
     @Test
     public void setInfoIconDetails() {

@@ -55,6 +55,7 @@
     <string name="anc_woman">Femme CPN</string>
 
     <string name="last_visit_40_days_ago">Dernière visite depuis %1$s</string>
+    <string name="days">jours</string>
     <string name="view_medical_history">Voir historique médical</string>
     <string name="view_upcoming_services">Voir les prochains services</string>
     <string name="family_has_nothing_due">Le ménage n\'a pas de service attendu</string>

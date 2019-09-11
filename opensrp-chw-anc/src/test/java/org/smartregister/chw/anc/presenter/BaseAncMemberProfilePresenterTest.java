@@ -1,6 +1,5 @@
 package org.smartregister.chw.anc.presenter;
 
-import org.joda.time.DateTime;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
@@ -20,7 +19,7 @@ public class BaseAncMemberProfilePresenterTest {
     private BaseAncMemberProfileContract.Interactor interactor;
 
     @Mock
-   private MemberObject memberObject;
+    private MemberObject memberObject;
 
 
     private BaseAncMemberProfilePresenter presenter;
@@ -49,7 +48,6 @@ public class BaseAncMemberProfilePresenterTest {
 
     }
 
-
     @Test
     public void testRefreshProfileBottom() {
         presenter.refreshProfileBottom();
@@ -64,7 +62,8 @@ public class BaseAncMemberProfilePresenterTest {
 
     @Test
     public void testRefreshLastVisit() {
-        Date lastVisitDate = new Date();
+       // Date lastVisitDate = new Date();
+        Date lastVisitDate = Mockito.mock(Date.class);
         presenter.refreshLastVisit(lastVisitDate);
         Mockito.verify(view).setLastVisit(lastVisitDate);
     }

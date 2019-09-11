@@ -78,6 +78,7 @@ public class NCUtils {
     public static final SimpleDateFormat yyyy_mm_dd = new SimpleDateFormat("yyyy-mm-dd");
     private static String[] default_obs = {"start", "end", "deviceid", "subscriberid", "simserial", "phonenumber"};
     private static String[] vaccines = {"bcg_date", "opv0_date"};
+    private static String VaccineName;
 
     public static String firstCharacterUppercase(String str) {
         if (TextUtils.isEmpty(str)) return "";
@@ -461,7 +462,15 @@ public class NCUtils {
                 String vaccineDate = getFieldJSONObject(fields, vaccines[i]).optString(VALUE);
                 SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
                 Date date = formatter.parse(vaccineDate);
-                VisitUtils.savePncChildVaccines(vaccines[i], baseID, date);
+                if(vaccines[i] == "bcg_date"){
+                    VaccineName = "bcg";
+                }
+                else if(vaccines[i] == "opv0_date"){
+                    VaccineName = "opv_0";
+                }
+                if(VaccineName != null){
+                    VisitUtils.savePncChildVaccines(VaccineName, baseID, date);
+                }
             } catch (ParseException e) {
                 e.printStackTrace();
             }

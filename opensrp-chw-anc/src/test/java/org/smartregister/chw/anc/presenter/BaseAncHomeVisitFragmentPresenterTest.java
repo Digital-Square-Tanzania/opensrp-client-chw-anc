@@ -71,7 +71,8 @@ public class BaseAncHomeVisitFragmentPresenterTest {
 
  @Test
     public void setInfoIconTitle() {
-        String infoIconTile = "StringInfoIcon";
+       // String infoIconTile = "StringInfoIcon";
+        String infoIconTile = Mockito.mock(String.class);
         presenter.setInfoIconTitle(infoIconTile);
         Mockito.verify(view).setInfoIconTitle(infoIconTile);
     }
@@ -79,7 +80,8 @@ public class BaseAncHomeVisitFragmentPresenterTest {
 
     @Test
     public void setInfoIconDetails() {
-        String iconDetails = "StringIconDetails";
+       // String iconDetails = "StringIconDetails";
+        String iconDetails = Mockito.mock(String.class);
         presenter.setInfoIconDetails(iconDetails);
         Mockito.verify(view).setInfoIconDetails(iconDetails);
     }
@@ -93,7 +95,8 @@ public class BaseAncHomeVisitFragmentPresenterTest {
     @Test
     public void writeValue() {
         JSONObject obj = new JSONObject();
-        String value = "value";
+       // String value = "value";
+        String value = Mockito.mock(String.class);
         presenter.writeValue(obj, value);
         Mockito.verify(model).writeValue(obj, value);
 
@@ -101,7 +104,8 @@ public class BaseAncHomeVisitFragmentPresenterTest {
 
     @Test
     public void setValue() {
-        String value = "value";
+       // String value = "value";
+        String value = Mockito.mock(String.class);
         presenter.setValue(value);
         Mockito.verify(view).setValue(value);
     }

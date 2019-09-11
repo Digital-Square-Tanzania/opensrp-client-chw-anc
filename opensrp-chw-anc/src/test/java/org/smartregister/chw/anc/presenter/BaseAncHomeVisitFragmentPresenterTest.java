@@ -69,10 +69,9 @@ public class BaseAncHomeVisitFragmentPresenterTest {
         Mockito.verify(view).setQuestionType(baseAncHomeVisitFragment.getQuestionType());
     }
 
- @Test
+ /*@Test
     public void setInfoIconTitle() {
-       // String infoIconTile = "StringInfoIcon";
-        String infoIconTile = Mockito.mock(String.class);
+        String infoIconTile = "StringInfoIcon";
         presenter.setInfoIconTitle(infoIconTile);
         Mockito.verify(view).setInfoIconTitle(infoIconTile);
     }
@@ -80,12 +79,11 @@ public class BaseAncHomeVisitFragmentPresenterTest {
 
     @Test
     public void setInfoIconDetails() {
-       // String iconDetails = "StringIconDetails";
-        String iconDetails = Mockito.mock(String.class);
+        String iconDetails = "StringIconDetails";
         presenter.setInfoIconDetails(iconDetails);
         Mockito.verify(view).setInfoIconDetails(iconDetails);
     }
-
+*/
     @Test
     public void getView() {
         presenter.getView();
@@ -95,8 +93,7 @@ public class BaseAncHomeVisitFragmentPresenterTest {
     @Test
     public void writeValue() {
         JSONObject obj = new JSONObject();
-       // String value = "value";
-        String value = Mockito.mock(String.class);
+        String value = "value";
         presenter.writeValue(obj, value);
         Mockito.verify(model).writeValue(obj, value);
 
@@ -104,8 +101,7 @@ public class BaseAncHomeVisitFragmentPresenterTest {
 
     @Test
     public void setValue() {
-       // String value = "value";
-        String value = Mockito.mock(String.class);
+        String value = "value";
         presenter.setValue(value);
         Mockito.verify(view).setValue(value);
     }

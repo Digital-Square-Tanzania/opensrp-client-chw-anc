@@ -6,12 +6,13 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.smartregister.chw.anc.BaseUnitTest;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitFragmentContract;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
 
 import java.util.List;
 
-public class BaseAncHomeVisitFragmentPresenterTest {
+public class BaseAncHomeVisitFragmentPresenterTest extends BaseUnitTest {
 
     @Mock
     private BaseAncHomeVisitFragmentContract.View view;
@@ -43,7 +44,6 @@ public class BaseAncHomeVisitFragmentPresenterTest {
         String title = "Title";
         presenter.setTitle(title);
         Mockito.verify(view).setTitle(title);
-
     }
 
     @Test
@@ -69,25 +69,18 @@ public class BaseAncHomeVisitFragmentPresenterTest {
         Mockito.verify(view).setQuestionType(baseAncHomeVisitFragment.getQuestionType());
     }
 
- /*@Test
+    @Test
     public void setInfoIconTitle() {
         String infoIconTile = "StringInfoIcon";
         presenter.setInfoIconTitle(infoIconTile);
         Mockito.verify(view).setInfoIconTitle(infoIconTile);
     }
 
-
     @Test
     public void setInfoIconDetails() {
         String iconDetails = "StringIconDetails";
         presenter.setInfoIconDetails(iconDetails);
         Mockito.verify(view).setInfoIconDetails(iconDetails);
-    }
-*/
-    @Test
-    public void getView() {
-        presenter.getView();
-        Mockito.verify(view);
     }
 
     @Test
@@ -96,7 +89,6 @@ public class BaseAncHomeVisitFragmentPresenterTest {
         String value = "value";
         presenter.writeValue(obj, value);
         Mockito.verify(model).writeValue(obj, value);
-
     }
 
     @Test

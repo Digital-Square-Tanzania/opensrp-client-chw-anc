@@ -5,12 +5,17 @@ import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.powermock.core.classloader.annotations.PrepareForTest;
+import org.smartregister.chw.anc.BaseUnitTest;
 import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.domain.MemberObject;
+import org.smartregister.domain.AlertStatus;
 
 import java.util.Date;
 
-public class BaseAncMemberProfilePresenterTest {
+
+@PrepareForTest(AlertStatus.class)
+public class BaseAncMemberProfilePresenterTest extends BaseUnitTest {
 
     @Mock
     private BaseAncMemberProfileContract.View view;
@@ -20,7 +25,6 @@ public class BaseAncMemberProfilePresenterTest {
 
     @Mock
     private MemberObject memberObject;
-
 
     private BaseAncMemberProfilePresenter presenter;
 
@@ -45,7 +49,6 @@ public class BaseAncMemberProfilePresenterTest {
         Mockito.verify(view).setMemberAddress(memberAddress);
         Mockito.verify(view).setMemberAddress(memberChwMemberId);
         Mockito.verify(view).setProfileImage(memberBaseObjectId, entityType);
-
     }
 
 
@@ -60,32 +63,24 @@ public class BaseAncMemberProfilePresenterTest {
         presenter.fetchProfileData();
         Mockito.verify(interactor).refreshProfileView(memberObject, false, presenter);
     }
- /*
+
     @Test
     public void testRefreshLastVisit() {
         Date lastVisitDate = new Date();
         presenter.refreshLastVisit(lastVisitDate);
         Mockito.verify(view).setLastVisit(lastVisitDate);
     }
-
-  @Test
-    public void testRefreshUpComingServicesStatus(){
-        String service = anyString();
+ /*
+    @Test
+   public void testRefreshUpComingServicesStatus() {
+        String service = Mockito.anyString();
         Date date = DateTime.now().toDate();
 
-        PowerMockito.mockStatic(AlertStatus.class);
+        AlertStatus alertStatus = PowerMockito.mockStatic(AlertStatus.class);
 
-        presenter.refreshUpComingServicesStatus(service,,date);
+        presenter.refreshUpComingServicesStatus(service, , date);
 
-        Mockito.verify(view).setUpComingServicesStatus(service,alertStatus,date);
-
-    }
-    */
-
-    @Test
-    public void testGetView() {
-        presenter.getView();
-        Mockito.verify(view);
-    }
+        Mockito.verify(view).setUpComingServicesStatus(service, alertStatus, date);
+    }*/
 
 }

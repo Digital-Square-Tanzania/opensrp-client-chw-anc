@@ -70,17 +70,5 @@ public class BaseAncMemberProfilePresenterTest extends BaseUnitTest {
         presenter.refreshLastVisit(lastVisitDate);
         Mockito.verify(view).setLastVisit(lastVisitDate);
     }
- /*
-    @Test
-   public void testRefreshUpComingServicesStatus() {
-        String service = Mockito.anyString();
-        Date date = DateTime.now().toDate();
-
-        AlertStatus alertStatus = PowerMockito.mockStatic(AlertStatus.class);
-
-        presenter.refreshUpComingServicesStatus(service, , date);
-
-        Mockito.verify(view).setUpComingServicesStatus(service, alertStatus, date);
-    }*/
 
 }

@@ -63,7 +63,7 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
             imageRenderHelper.refreshProfileImage(baseEntityId, imageView, NCUtils.getMemberProfileImageResourceIDentifier(entityType));
         }
         else {
-            imageRenderHelper.refreshProfileImage(baseEntityId, imageView, R.drawable.pnc_less_twenty_nine_days);
+            imageRenderHelper.refreshProfileImage(baseEntityId, imageView, R.drawable.pnc_woman);
         }
 
     }

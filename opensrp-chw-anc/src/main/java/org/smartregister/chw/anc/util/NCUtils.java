@@ -447,6 +447,14 @@ public class NCUtils {
         return R.mipmap.ic_member;
     }
 
+    public static int getAncMemberProfileImageResourceIdentifier() {
+        return R.drawable.anc_woman;
+    }
+
+    public static int getPncMemberProfileImageResourceIdentifier() {
+        return R.drawable.pnc_woman;
+    }
+
     public static String gestationAgeString(String lmp, Context context, boolean full) {
         DateTimeFormatter formatter = DateTimeFormat.forPattern("dd-MM-yyyy");
         int ga = Days.daysBetween(formatter.parseDateTime(lmp), new DateTime()).getDays() / 7;

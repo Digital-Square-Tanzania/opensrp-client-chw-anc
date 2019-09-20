@@ -268,7 +268,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     public void setProfileImage(String baseEntityId, String entityType) {
-        imageRenderHelper.refreshProfileImage(baseEntityId, imageView, R.drawable.anc_woman);
+        imageRenderHelper.refreshProfileImage(baseEntityId, imageView, NCUtils.getAncMemberProfileImageResourceIdentifier());
     }
 
     @Override

@@ -60,7 +60,7 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
     public void setProfileImage(String baseEntityId, String entityType) {
         String pncDay = basePncMemberProfileInteractor.getPncDay(MEMBER_OBJECT.getBaseEntityId());
         if(Integer.parseInt(pncDay) >= 29){
-            imageRenderHelper.refreshProfileImage(baseEntityId, imageView, R.drawable.pnc_woman);
+            imageRenderHelper.refreshProfileImage(baseEntityId, imageView, NCUtils.getPncMemberProfileImageResourceIdentifier());
         }
         else {
             imageRenderHelper.refreshProfileImage(baseEntityId, imageView, R.drawable.pnc_less_twenty_nine_days);

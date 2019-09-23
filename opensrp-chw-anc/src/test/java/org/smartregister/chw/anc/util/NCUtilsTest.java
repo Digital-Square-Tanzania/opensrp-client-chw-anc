@@ -10,6 +10,7 @@ import org.robolectric.RuntimeEnvironment;
 import org.smartregister.chw.anc.BaseUnitTest;
 import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.domain.VisitDetail;
+import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.domain.db.Event;
 import org.smartregister.domain.db.Obs;
 
@@ -102,6 +103,25 @@ public class NCUtilsTest extends BaseUnitTest {
 
         Assert.assertEquals(event.getBaseEntityId(), visit.getBaseEntityId());
         Assert.assertEquals(visit.getVisitDetails().size(), 2);
+    }
+
+    @Test
+    public void getAncMemberProfileImageReturnsCorrectResourceIdentifier() {
+        int ancImageResourceIdentifier = R.drawable.anc_woman;
+        Assert.assertEquals(ancImageResourceIdentifier, NCUtils.getAncMemberProfileImageResourceIdentifier());
+    }
+
+    @Test
+    public void getPncemberProfileImageReturnsCorrectResourceIdentifier() {
+        int pncImageResourceIdentifier = R.drawable.pnc_woman;
+        Assert.assertEquals(pncImageResourceIdentifier, NCUtils.getPncMemberProfileImageResourceIdentifier());
+    }
+
+    @Test
+    public void getMemberProfileImageReturnsCorrectResourceIDentifier() {
+        int memberImageResourceIdentifier = R.mipmap.ic_member;
+        String entityType = "";
+        Assert.assertEquals(memberImageResourceIdentifier, NCUtils.getMemberProfileImageResourceIDentifier(entityType));
     }
 
 }

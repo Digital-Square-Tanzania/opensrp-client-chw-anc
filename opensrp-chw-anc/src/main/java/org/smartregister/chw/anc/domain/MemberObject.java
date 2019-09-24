@@ -48,6 +48,7 @@ public class MemberObject implements Serializable {
         chwMemberId = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.UNIQUE_ID, false);
 
         familyBaseEntityId = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.RELATIONAL_ID, false);
+        familyBaseEntityId = StringUtils.isNotBlank(familyBaseEntityId) ? familyBaseEntityId : Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.RELATIONALID, false);
         familyHead = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.FAMILY_HEAD, false);
         primaryCareGiver = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.PRIMARY_CAREGIVER, false);
         familyName = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.FAMILY_NAME, false);

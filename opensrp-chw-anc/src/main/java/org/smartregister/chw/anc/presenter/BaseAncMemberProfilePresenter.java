@@ -32,6 +32,12 @@ public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presen
     }
 
     @Override
+    public void reloadMemberDetails(String memberID) {
+        view.get().showProgressBar(true);
+        interactor.reloadMemberDetails(memberID, this);
+    }
+
+    @Override
     public void refreshProfileTopSection(MemberObject memberObject) {
         String entityType = memberObject.getBaseEntityId();
         getView().setMemberName(memberObject.getMemberName());
@@ -60,6 +66,16 @@ public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presen
     public void refreshFamilyStatus(AlertStatus status) {
         if (getView() != null) {
             getView().setFamilyStatus(status);
+        }
+    }
+
+    @Override
+    public void onMemberDetailsReloaded(MemberObject memberObject) {
+        if (view.get() != null) {
+            this.memberObject = memberObject;
+
+            view.get().showProgressBar(false);
+            view.get().onMemberDetailsReloaded(memberObject);
         }
     }
 

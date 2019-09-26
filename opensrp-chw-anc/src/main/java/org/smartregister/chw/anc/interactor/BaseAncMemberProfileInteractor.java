@@ -29,17 +29,33 @@ public class BaseAncMemberProfileInteractor implements BaseAncMemberProfileContr
     }
 
     @Override
+    public void reloadMemberDetails(String memberID, final BaseAncMemberProfileContract.InteractorCallBack callBack) {
+        Runnable runnable = () -> {
+            MemberObject memberObject = getMemberClient(memberID);
+            appExecutors.mainThread().execute(() -> callBack.onMemberDetailsReloaded(memberObject));
+        };
+        appExecutors.diskIO().execute(runnable);
+    }
+
+    @Override
+    public MemberObject getMemberClient(String memberID) {
+        MemberObject memberObject = new MemberObject();
+        memberObject.setBaseEntityId(memberID);
+        return memberObject;
+    }
+
+    @Override
     public void refreshProfileView(final MemberObject memberObject, final boolean isForEdit, final BaseAncMemberProfileContract.InteractorCallBack callback) {
         Runnable runnable = () -> appExecutors.mainThread().execute(() -> callback.refreshProfileTopSection(memberObject));
         appExecutors.diskIO().execute(runnable);
     }
 
     @Override
-    public void refreshProfileInfo(MemberObject memberObject, final BaseAncMemberProfileContract.InteractorCallBack callback) {
+    public void refreshProfileInfo(MemberObject memberObject, final BaseAncMemberProfileContract.InteractorCallBack callBack) {
         Runnable runnable = () -> appExecutors.mainThread().execute(() -> {
-            callback.refreshFamilyStatus(AlertStatus.normal);
-            callback.refreshLastVisit(new Date());
-            callback.refreshUpComingServicesStatus("ANC Visit", AlertStatus.normal, new Date());
+            callBack.refreshFamilyStatus(AlertStatus.normal);
+            callBack.refreshLastVisit(new Date());
+            callBack.refreshUpComingServicesStatus("ANC Visit", AlertStatus.normal, new Date());
         });
         appExecutors.diskIO().execute(runnable);
     }

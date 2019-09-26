@@ -22,8 +22,6 @@ public class BaseAncHomeVisitPresenter implements BaseAncHomeVisitContract.Prese
         this.view = new WeakReference<>(view);
         this.interactor = interactor;
         this.memberObject = memberObject;
-
-        initialize();
     }
 
     @Override
@@ -56,6 +54,22 @@ public class BaseAncHomeVisitPresenter implements BaseAncHomeVisitContract.Prese
         if (view.get() != null) {
             view.get().displayProgressBar(true);
             interactor.submitVisit(view.get().getEditMode(), memberObject.getBaseEntityId(), view.get().getAncHomeVisitActions(), this);
+        }
+    }
+
+    @Override
+    public void reloadMemberDetails(String memberID) {
+        view.get().displayProgressBar(true);
+        interactor.reloadMemberDetails(memberID, this);
+    }
+
+    @Override
+    public void onMemberDetailsReloaded(MemberObject memberObject) {
+        if (view.get() != null) {
+            this.memberObject = memberObject;
+
+            view.get().displayProgressBar(false);
+            view.get().onMemberDetailsReloaded(memberObject);
         }
     }
 

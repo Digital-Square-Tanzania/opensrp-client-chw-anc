@@ -46,6 +46,23 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
     }
 
     @Override
+    public void reloadMemberDetails(String memberID, BaseAncHomeVisitContract.InteractorCallBack callBack) {
+        final Runnable runnable = () -> {
+            MemberObject memberObject = getMemberClient(memberID);
+            appExecutors.mainThread().execute(() -> callBack.onMemberDetailsReloaded(memberObject));
+        };
+
+        appExecutors.diskIO().execute(runnable);
+    }
+
+    @Override
+    public MemberObject getMemberClient(String memberID) {
+        MemberObject memberObject = new MemberObject();
+        memberObject.setBaseEntityId(memberID);
+        return memberObject;
+    }
+
+    @Override
     public void saveRegistration(String jsonString, boolean isEditMode, BaseAncHomeVisitContract.InteractorCallBack callBack) {
         Timber.v("saveRegistration");
     }

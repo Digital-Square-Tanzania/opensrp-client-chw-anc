@@ -6,7 +6,6 @@ import android.widget.TextView;
 import org.smartregister.chw.anc.activity.BaseAncHomeVisitActivity;
 import org.smartregister.chw.anc.activity.BaseAncMemberProfileActivity;
 import org.smartregister.chw.anc.contract.BaseAncRegisterFragmentContract;
-import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.model.BaseAncRegisterFragmentModel;
 import org.smartregister.chw.anc.presenter.BaseAncRegisterFragmentPresenter;
 import org.smartregister.chw.anc.provider.AncRegisterProvider;
@@ -131,10 +130,10 @@ public class BaseAncRegisterFragment extends BaseRegisterFragment implements Bas
     }
 
     protected void openProfile(CommonPersonObjectClient client) {
-        BaseAncMemberProfileActivity.startMe(getActivity(), new MemberObject(client), null, null);
+        BaseAncMemberProfileActivity.startMe(getActivity(), client.getCaseId());
     }
 
     protected void openHomeVisit(CommonPersonObjectClient client) {
-        BaseAncHomeVisitActivity.startMe(getActivity(), new MemberObject(client), false);
+        BaseAncHomeVisitActivity.startMe(getActivity(), client.getCaseId(), false);
     }
 }

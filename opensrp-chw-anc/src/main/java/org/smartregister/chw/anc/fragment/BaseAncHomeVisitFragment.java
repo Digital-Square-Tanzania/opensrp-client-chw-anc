@@ -357,7 +357,9 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
             // datePicker.updateDate();
             try {
                 Calendar cal = Calendar.getInstance();
-                cal.setTime(dateFormat.parse(value));
+                if (StringUtils.isNotBlank(value))
+                    cal.setTime(dateFormat.parse(value));
+
                 datePicker.updateDate(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH), cal.get(Calendar.DAY_OF_MONTH));
             } catch (Exception e) {
                 Calendar cal = Calendar.getInstance();

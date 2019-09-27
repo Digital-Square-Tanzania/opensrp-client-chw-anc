@@ -61,10 +61,11 @@ public class AncRegisterActivity extends BaseAncRegisterActivity {
 
     private void openVisitPage() {
         // dumy common person object
-        AncHomeVisitActivity.startMe(this, EntryActivity.getSampleMember(), false);
+        AncHomeVisitActivity.startMe(this, "12345", false);
     }
 
     private void openProfilePage() {
-        BaseAncMemberProfileActivity.startMe(this, EntryActivity.getSampleMember(), "Juma Family Head", "0976345634");
+        //BaseAncMemberProfileActivity.startMe(this, EntryActivity.getSampleMember(), "Juma Family Head", "0976345634");
+        BaseAncMemberProfileActivity.startMe(this, "123456");
     }
 }

@@ -19,6 +19,8 @@ public class MemberObject implements Serializable {
     protected String baseEntityId;
     protected String familyBaseEntityId;
     protected String familyHead;
+    protected String familyHeadName;
+    protected String familyHeadPhoneNumber;
     protected String primaryCareGiver;
     protected String familyName;
     protected String lastContactVisit;
@@ -169,4 +171,91 @@ public class MemberObject implements Serializable {
         return lastInteractedWith;
     }
 
+    public void setLastMenstrualPeriod(String lastMenstrualPeriod) {
+        this.lastMenstrualPeriod = lastMenstrualPeriod;
+    }
+
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    public void setChwMemberId(String chwMemberId) {
+        this.chwMemberId = chwMemberId;
+    }
+
+    public void setBaseEntityId(String baseEntityId) {
+        this.baseEntityId = baseEntityId;
+    }
+
+    public void setFamilyBaseEntityId(String familyBaseEntityId) {
+        this.familyBaseEntityId = familyBaseEntityId;
+    }
+
+    public void setFamilyHead(String familyHead) {
+        this.familyHead = familyHead;
+    }
+
+    public void setPrimaryCareGiver(String primaryCareGiver) {
+        this.primaryCareGiver = primaryCareGiver;
+    }
+
+    public void setFamilyName(String familyName) {
+        this.familyName = familyName;
+    }
+
+    public void setLastContactVisit(String lastContactVisit) {
+        this.lastContactVisit = lastContactVisit;
+    }
+
+    public void setLastInteractedWith(String lastInteractedWith) {
+        this.lastInteractedWith = lastInteractedWith;
+    }
+
+    public void setFirstName(String firstName) {
+        this.firstName = firstName;
+    }
+
+    public void setMiddleName(String middleName) {
+        this.middleName = middleName;
+    }
+
+    public void setLastName(String lastName) {
+        this.lastName = lastName;
+    }
+
+    public void setDob(String dob) {
+        this.dob = dob;
+    }
+
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
+
+    public void setConfirmedContacts(int confirmedContacts) {
+        this.confirmedContacts = confirmedContacts;
+    }
+
+    public void setDateCreated(String dateCreated) {
+        this.dateCreated = dateCreated;
+    }
+
+    public void setHasAncCard(String hasAncCard) {
+        this.hasAncCard = hasAncCard;
+    }
+
+    public String getFamilyHeadName() {
+        return familyHeadName;
+    }
+
+    public void setFamilyHeadName(String familyHeadName) {
+        this.familyHeadName = familyHeadName;
+    }
+
+    public String getFamilyHeadPhoneNumber() {
+        return familyHeadPhoneNumber;
+    }
+
+    public void setFamilyHeadPhoneNumber(String familyHeadPhoneNumber) {
+        this.familyHeadPhoneNumber = familyHeadPhoneNumber;
+    }
 }

@@ -8,6 +8,7 @@ import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.interactor.BaseAncHomeVisitInteractor;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.anc_sample.R;
+import org.smartregister.chw.anc_sample.activity.EntryActivity;
 import org.smartregister.chw.anc_sample.utils.Constants;
 
 import java.util.LinkedHashMap;
@@ -37,5 +38,10 @@ public class AncHomeVisitInteractor extends BaseAncHomeVisitInteractor {
         };
 
         appExecutors.diskIO().execute(runnable);
+    }
+
+    @Override
+    public MemberObject getMemberClient(String memberID) {
+        return EntryActivity.getSampleMember();
     }
 }

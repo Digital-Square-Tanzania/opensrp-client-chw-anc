@@ -39,6 +39,7 @@ import java.util.Map;
 
 import timber.log.Timber;
 
+import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.BASE_ENTITY_ID;
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.EDIT_MODE;
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER_PROFILE_OBJECT;
 
@@ -48,6 +49,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     protected Map<String, BaseAncHomeVisitAction> actionList = new LinkedHashMap<>();
     protected BaseAncHomeVisitContract.Presenter presenter;
     protected MemberObject memberObject;
+    protected String baseEntityID;
     protected Boolean isEditMode = false;
     protected RecyclerView.Adapter mAdapter;
     protected ProgressBar progressBar;
@@ -57,11 +59,11 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     protected String confirmCloseTitle;
     protected String confirmCloseMessage;
 
-    public static void startMe(Activity activity, MemberObject memberObject, Boolean isEditMode) {
+    public static void startMe(Activity activity, String baseEntityID, Boolean isEditMode) {
         Intent intent = new Intent(activity, BaseAncHomeVisitActivity.class);
-        intent.putExtra(MEMBER_PROFILE_OBJECT, memberObject);
+        intent.putExtra(BASE_ENTITY_ID, baseEntityID);
         intent.putExtra(EDIT_MODE, isEditMode);
-        activity.startActivityForResult(intent,Constants.REQUEST_CODE_HOME_VISIT);
+        activity.startActivityForResult(intent, Constants.REQUEST_CODE_HOME_VISIT);
     }
 
     @Override
@@ -72,6 +74,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         if (extras != null) {
             memberObject = (MemberObject) getIntent().getSerializableExtra(MEMBER_PROFILE_OBJECT);
             isEditMode = getIntent().getBooleanExtra(EDIT_MODE, false);
+            baseEntityID = getIntent().getStringExtra(BASE_ENTITY_ID);
         }
 
         confirmCloseTitle = getString(R.string.confirm_form_close);
@@ -79,6 +82,13 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
         setUpView();
         displayProgressBar(true);
         registerPresenter();
+        if (presenter != null) {
+            if (StringUtils.isNotBlank(baseEntityID)) {
+                presenter.reloadMemberDetails(baseEntityID);
+            } else {
+                presenter.initialize();
+            }
+        }
     }
 
     public void setUpView() {
@@ -130,6 +140,13 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     @Override
     public Boolean getEditMode() {
         return isEditMode;
+    }
+
+    @Override
+    public void onMemberDetailsReloaded(MemberObject memberObject) {
+        this.memberObject = memberObject;
+        presenter.initialize();
+        redrawHeader(memberObject);
     }
 
     @Override
@@ -245,7 +262,7 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
     @Override
     public void submittedAndClose() {
         Intent returnIntent = new Intent();
-        setResult(Activity.RESULT_OK,returnIntent);
+        setResult(Activity.RESULT_OK, returnIntent);
         close();
     }
 
@@ -314,19 +331,11 @@ public class BaseAncHomeVisitActivity extends SecuredActivity implements BaseAnc
 
     protected void displayExitDialog(final Runnable onConfirm) {
         AlertDialog dialog = new AlertDialog.Builder(this, com.vijay.jsonwizard.R.style.AppThemeAlertDialog).setTitle(confirmCloseTitle)
-                .setMessage(confirmCloseMessage).setNegativeButton(com.vijay.jsonwizard.R.string.yes, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        if (onConfirm != null) {
-                            onConfirm.run();
-                        }
+                .setMessage(confirmCloseMessage).setNegativeButton(com.vijay.jsonwizard.R.string.yes, (dialog1, which) -> {
+                    if (onConfirm != null) {
+                        onConfirm.run();
                     }
-                }).setPositiveButton(com.vijay.jsonwizard.R.string.no, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        Timber.d("No button on dialog in " + JsonFormActivity.class.getCanonicalName());
-                    }
-                }).create();
+                }).setPositiveButton(com.vijay.jsonwizard.R.string.no, (dialog2, which) -> Timber.d("No button on dialog in %s", JsonFormActivity.class.getCanonicalName())).create();
 
         dialog.show();
     }

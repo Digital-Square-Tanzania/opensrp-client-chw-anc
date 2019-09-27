@@ -64,7 +64,7 @@ public class BaseAncHomeVisitPresenterTest extends BaseUnitTest {
         Mockito.doReturn(false).when(view).getEditMode();
         Mockito.doReturn(map).when(view).getAncHomeVisitActions();
 
-        Mockito.verify(view, Mockito.times(2)).displayProgressBar(true);
+        Mockito.verify(view, Mockito.times(1)).displayProgressBar(true);
         Mockito.verify(interactor).submitVisit(false, null, map, presenter);
     }
 

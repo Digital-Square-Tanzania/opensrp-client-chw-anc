@@ -59,7 +59,8 @@ import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.TITLE_
 import static org.smartregister.util.Utils.getName;
 
 public class BaseAncMemberProfileActivity extends BaseProfileActivity implements BaseAncMemberProfileContract.View {
-    protected MemberObject MEMBER_OBJECT;
+    protected MemberObject memberObject;
+    protected String baseEntityID;
     protected TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id, textview_record_anc_visit, textViewAncVisitNot, textViewNotVisitMonth, textViewUndo, tvEdit;
     protected LinearLayout layoutRecordView, record_reccuringvisit_done_bar;
     protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue, layoutRecordButtonDone, layoutNotRecordView;
@@ -68,8 +69,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     protected CircleImageView imageView;
     protected BaseAncFloatingMenu baseAncFloatingMenu;
     protected TextView tvLastVisitDate;
-    private String familyHeadName;
-    private String familyHeadPhoneNumber;
     private ImageView imageViewCross;
     private TextView tvUpComingServices;
     private TextView tvFamilyStatus;
@@ -78,13 +77,14 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
     private String titleViewText;
 
+    public BaseAncMemberProfileActivity() {
+        memberObject = new MemberObject();
+    }
 
-    public static void startMe(Activity activity, MemberObject memberObject, String familyHeadName, String familyHeadPhoneNumber) {
-        Intent intent = new Intent(activity, BaseAncMemberProfileActivity.class);
-        intent.putExtra(MEMBER_PROFILE_OBJECT, memberObject);
-        intent.putExtra(FAMILY_HEAD_NAME, familyHeadName);
-        intent.putExtra(FAMILY_HEAD_PHONE, familyHeadPhoneNumber);
-        activity.startActivity(intent);
+    public static void startMe(Activity activity, String baseEntityID) {
+        Intent intent = new Intent(activity, BaseAncHomeVisitActivity.class);
+        intent.putExtra(Constants.ANC_MEMBER_OBJECTS.BASE_ENTITY_ID, baseEntityID);
+        activity.startActivityForResult(intent, Constants.REQUEST_CODE_HOME_VISIT);
     }
 
     @Override
@@ -95,9 +95,14 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         Bundle extras = getIntent().getExtras();
 
         if (extras != null) {
-            MEMBER_OBJECT = (MemberObject) getIntent().getSerializableExtra(MEMBER_PROFILE_OBJECT);
-            familyHeadName = getIntent().getStringExtra(FAMILY_HEAD_NAME);
-            familyHeadPhoneNumber = getIntent().getStringExtra(FAMILY_HEAD_PHONE);
+            memberObject = (MemberObject) getIntent().getSerializableExtra(MEMBER_PROFILE_OBJECT);
+            baseEntityID = getIntent().getStringExtra(Constants.ANC_MEMBER_OBJECTS.BASE_ENTITY_ID);
+            if (memberObject == null) {
+                memberObject = new MemberObject();
+                memberObject.setBaseEntityId(baseEntityID);
+            }
+            memberObject.setFamilyHead(getIntent().getStringExtra(FAMILY_HEAD_NAME));
+            memberObject.setFamilyHeadPhoneNumber(getIntent().getStringExtra(FAMILY_HEAD_PHONE));
             setTitleViewText(getIntent().getStringExtra(TITLE_VIEW_TEXT));
         }
 
@@ -127,16 +132,15 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         textview_record_visit = findViewById(R.id.textview_record_visit);
 
         initializePresenter();
-        setupViews();
     }
 
     protected void registerPresenter() {
-        presenter = new BaseAncMemberProfilePresenter(this, new BaseAncMemberProfileInteractor(), MEMBER_OBJECT);
+        presenter = new BaseAncMemberProfilePresenter(this, new BaseAncMemberProfileInteractor(), memberObject);
     }
 
     public void initializeFloatingMenu() {
-        if (StringUtils.isNotBlank(MEMBER_OBJECT.getPhoneNumber()) || StringUtils.isNotBlank(familyHeadPhoneNumber)) {
-            baseAncFloatingMenu = new BaseAncFloatingMenu(this, ancWomanName, MEMBER_OBJECT.getPhoneNumber(), familyHeadName, familyHeadPhoneNumber, getProfileType());
+        if (StringUtils.isNotBlank(memberObject.getPhoneNumber()) || StringUtils.isNotBlank(memberObject.getFamilyHeadPhoneNumber())) {
+            baseAncFloatingMenu = new BaseAncFloatingMenu(this, ancWomanName, memberObject.getPhoneNumber(), memberObject.getFamilyHeadName(), memberObject.getFamilyHeadPhoneNumber(), getProfileType());
             baseAncFloatingMenu.setGravity(Gravity.BOTTOM | Gravity.RIGHT);
             LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -146,7 +150,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     protected void displayView() {
-
         Visit lastAncHomeVisitNotDoneEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE);
         Visit lastAncHomeVisitNotDoneUndoEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE_UNDO);
 
@@ -169,7 +172,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     public Visit getVisit(String eventType) {
-        return getInstance().visitRepository().getLatestVisit(MEMBER_OBJECT.getBaseEntityId(), eventType);
+        return getInstance().visitRepository().getLatestVisit(memberObject.getBaseEntityId(), eventType);
     }
 
     protected boolean ancHomeVisitNotDoneEvent(Visit visit) {
@@ -212,7 +215,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         layoutNotRecordView.setVisibility(View.VISIBLE);
         layoutRecordButtonDone.setVisibility(View.GONE);
         layoutRecordView.setVisibility(View.GONE);
-
     }
 
     @Override
@@ -253,12 +255,12 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     public void openMedicalHistory() {
-        BaseAncMedicalHistoryActivity.startMe(this, MEMBER_OBJECT);
+        BaseAncMedicalHistoryActivity.startMe(this, memberObject);
     }
 
     @Override
     public void openUpcomingService() {
-        BaseAncUpcomingServicesActivity.startMe(this, MEMBER_OBJECT);
+        BaseAncUpcomingServicesActivity.startMe(this, memberObject);
     }
 
     @Override
@@ -279,7 +281,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     private void saveVisit(String eventType) {
         try {
-            Event event = JsonFormUtils.createUntaggedEvent(MEMBER_OBJECT.getBaseEntityId(), eventType, Constants.TABLES.ANC_MEMBERS);
+            Event event = JsonFormUtils.createUntaggedEvent(memberObject.getBaseEntityId(), eventType, Constants.TABLES.ANC_MEMBERS);
             Visit visit = NCUtils.eventToVisit(event, JsonFormUtils.generateRandomUUIDString());
             visit.setPreProcessedJson(new Gson().toJson(event));
             getInstance().visitRepository().addVisit(visit);
@@ -346,6 +348,17 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     @Override
+    public void onMemberDetailsReloaded(MemberObject memberObject) {
+        this.memberObject = memberObject;
+
+        // update the screen with profile info
+        setupViews();
+        fetchProfileData();
+        presenter().refreshProfileBottom();
+        initializeFloatingMenu();
+    }
+
+    @Override
     protected void onResumption() {
         Timber.v("Empty onResumption");
     }
@@ -369,8 +382,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     protected void initializePresenter() {
         showProgressBar(true);
         registerPresenter();
-        fetchProfileData();
-        presenter().refreshProfileBottom();
+        presenter().reloadMemberDetails(baseEntityID);
     }
 
     @Override
@@ -379,17 +391,17 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         String titleText = TextUtils.isEmpty(getTitleViewText()) ? getString(R.string.return_to_all_anc_women) : getTitleViewText();
         titleView.setText(titleText);
 
-        if (StringUtils.isNotBlank(MEMBER_OBJECT.getMiddleName())) {
-            ancWomanName = getName(MEMBER_OBJECT.getFirstName(), MEMBER_OBJECT.getMiddleName());
-            ancWomanName = getName(ancWomanName, MEMBER_OBJECT.getMiddleName());
+        if (StringUtils.isNotBlank(memberObject.getMiddleName())) {
+            ancWomanName = getName(memberObject.getFirstName(), memberObject.getMiddleName());
+            ancWomanName = getName(ancWomanName, memberObject.getMiddleName());
         } else {
-            ancWomanName = getName(MEMBER_OBJECT.getFirstName(), MEMBER_OBJECT.getLastName());
+            ancWomanName = getName(memberObject.getFirstName(), memberObject.getLastName());
         }
 
-        if (StringUtils.isNotBlank(MEMBER_OBJECT.getFamilyHead()) && MEMBER_OBJECT.getFamilyHead().equals(MEMBER_OBJECT.getBaseEntityId())) {
+        if (StringUtils.isNotBlank(memberObject.getFamilyHead()) && memberObject.getFamilyHead().equals(memberObject.getBaseEntityId())) {
             findViewById(R.id.family_anc_head).setVisibility(View.VISIBLE);
         }
-        if (StringUtils.isNotBlank(MEMBER_OBJECT.getPrimaryCareGiver()) && MEMBER_OBJECT.getPrimaryCareGiver().equals(MEMBER_OBJECT.getBaseEntityId())) {
+        if (StringUtils.isNotBlank(memberObject.getPrimaryCareGiver()) && memberObject.getPrimaryCareGiver().equals(memberObject.getBaseEntityId())) {
             findViewById(R.id.primary_anc_caregiver).setVisibility(View.VISIBLE);
         }
 
@@ -455,19 +467,19 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     public String getFamilyHeadName() {
-        return familyHeadName;
+        return memberObject.getFamilyHeadName();
     }
 
     public void setFamilyHeadName(String familyHeadName) {
-        this.familyHeadName = familyHeadName;
+        memberObject.setFamilyHeadName(familyHeadName);
     }
 
     public String getFamilyHeadPhoneNumber() {
-        return familyHeadPhoneNumber;
+        return memberObject.getFamilyHeadPhoneNumber();
     }
 
     public void setFamilyHeadPhoneNumber(String familyHeadPhoneNumber) {
-        this.familyHeadPhoneNumber = familyHeadPhoneNumber;
+        memberObject.setFamilyHeadPhoneNumber(familyHeadPhoneNumber);
     }
 
     public String getAncWomanName() {

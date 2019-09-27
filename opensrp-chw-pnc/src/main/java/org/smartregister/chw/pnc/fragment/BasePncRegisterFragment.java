@@ -1,6 +1,5 @@
 package org.smartregister.chw.pnc.fragment;
 
-import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.fragment.BaseAncRegisterFragment;
 import org.smartregister.chw.anc.model.BaseAncRegisterFragmentModel;
 import org.smartregister.chw.pnc.activity.BasePncHomeVisitActivity;
@@ -31,7 +30,7 @@ public class BasePncRegisterFragment extends BaseAncRegisterFragment {
 
         CustomFontTextView titleView = view.findViewById(org.smartregister.chw.opensrp_chw_anc.R.id.txt_title_label);
         if (titleView != null) {
-            titleView.setText( getString(org.smartregister.chw.pnc.R.string.pnc));
+            titleView.setText(getString(org.smartregister.chw.pnc.R.string.pnc));
         }
     }
 
@@ -51,11 +50,11 @@ public class BasePncRegisterFragment extends BaseAncRegisterFragment {
 
     @Override
     protected void openProfile(CommonPersonObjectClient client) {
-        BasePncMemberProfileActivity.startMe(getActivity(), new MemberObject(client), null, null);
+        BasePncMemberProfileActivity.startMe(getActivity(), client.getCaseId());
     }
 
     @Override
     protected void openHomeVisit(CommonPersonObjectClient client) {
-        BasePncHomeVisitActivity.startMe(getActivity(), new MemberObject(client), false);
+        BasePncHomeVisitActivity.startMe(getActivity(), client.getCaseId(), false);
     }
 }

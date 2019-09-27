@@ -44,6 +44,8 @@ public interface BaseAncMemberProfileContract {
         void setUpComingServicesStatus(String service, AlertStatus status, Date date);
 
         void setFamilyStatus(AlertStatus status);
+
+        void onMemberDetailsReloaded(MemberObject memberObject);
     }
 
     interface Presenter extends BaseProfileContract.Presenter {
@@ -53,15 +55,21 @@ public interface BaseAncMemberProfileContract {
         void fetchProfileData();
 
         void refreshProfileBottom();
+
+        void reloadMemberDetails(String memberID);
     }
 
     interface Interactor {
 
-        void refreshProfileView(MemberObject memberObject, boolean isForEdit, BaseAncMemberProfileContract.InteractorCallBack callback);
+        void reloadMemberDetails(String memberID, InteractorCallBack callBack);
 
-        void updateVisitNotDone(long value, BaseAncMemberProfileContract.InteractorCallBack callback);
+        MemberObject getMemberClient(String memberID);
 
-        void refreshProfileInfo(MemberObject memberObject, BaseAncMemberProfileContract.InteractorCallBack callback);
+        void refreshProfileView(MemberObject memberObject, boolean isForEdit, InteractorCallBack callback);
+
+        void updateVisitNotDone(long value, InteractorCallBack callback);
+
+        void refreshProfileInfo(MemberObject memberObject, InteractorCallBack callback);
 
     }
 
@@ -74,6 +82,8 @@ public interface BaseAncMemberProfileContract {
         void refreshUpComingServicesStatus(String service, AlertStatus status, Date date);
 
         void refreshFamilyStatus(AlertStatus status);
+
+        void onMemberDetailsReloaded(MemberObject memberObject);
     }
 
 }

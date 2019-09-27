@@ -314,7 +314,9 @@ public class NCUtils {
     }
 
     public static String getFormattedDate(SimpleDateFormat source_sdf, SimpleDateFormat dest_sdf, String value) {
-        if (StringUtils.isBlank(value))
+        if (StringUtils.isBlank(value) ||
+                Constants.HOME_VISIT.DOSE_NOT_GIVEN.equals(value) ||
+                Constants.HOME_VISIT.VACCINE_NOT_GIVEN.equals(value))
             return "";
 
         try {
@@ -470,17 +472,16 @@ public class NCUtils {
                 String vaccineDate = getFieldJSONObject(fields, vaccines[i]).optString(VALUE);
                 SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
                 Date date = formatter.parse(vaccineDate);
-                if(vaccines[i] == "bcg_date"){
+                if (vaccines[i] == "bcg_date") {
                     VaccineName = "bcg";
-                }
-                else if(vaccines[i] == "opv0_date"){
+                } else if (vaccines[i] == "opv0_date") {
                     VaccineName = "opv_0";
                 }
-                if(VaccineName != null){
+                if (VaccineName != null) {
                     VisitUtils.savePncChildVaccines(VaccineName, baseID, date);
                 }
             } catch (ParseException e) {
-               Timber.e(e.toString());
+                Timber.e(e.toString());
             }
         }
     }

@@ -52,6 +52,8 @@ public interface BaseAncHomeVisitContract {
         void displayToast(String message);
 
         Boolean getEditMode();
+
+        void onMemberDetailsReloaded(MemberObject memberObject);
     }
 
     interface VisitView {
@@ -83,6 +85,8 @@ public interface BaseAncHomeVisitContract {
         void initialize();
 
         void submitVisit();
+
+        void reloadMemberDetails(String memberID);
     }
 
     interface Model {
@@ -93,6 +97,10 @@ public interface BaseAncHomeVisitContract {
 
     interface Interactor {
 
+        void reloadMemberDetails(String memberID, InteractorCallBack callBack);
+
+        MemberObject getMemberClient(String memberID);
+
         void saveRegistration(String jsonString, boolean isEditMode, final BaseAncHomeVisitContract.InteractorCallBack callBack);
 
         void calculateActions(View view, MemberObject memberObject, BaseAncHomeVisitContract.InteractorCallBack callBack);
@@ -101,6 +109,8 @@ public interface BaseAncHomeVisitContract {
     }
 
     interface InteractorCallBack {
+
+        void onMemberDetailsReloaded(MemberObject memberObject);
 
         void onRegistrationSaved(boolean isEdit);
 

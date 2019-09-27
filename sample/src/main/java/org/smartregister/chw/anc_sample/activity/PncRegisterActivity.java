@@ -57,7 +57,8 @@ public class PncRegisterActivity extends BasePncRegisterActivity {
         commonPersonObject.setColumnmaps(details);
 
         MemberObject memberObject = new MemberObject(commonPersonObject);
-        AncHomeVisitActivity.startMe(this, memberObject, false);
+        //AncHomeVisitActivity.startMe(this, memberObject, false);
+        AncHomeVisitActivity.startMe(this, "12345", false);
     }
 
     private void openProfilePage() {
@@ -80,6 +81,7 @@ public class PncRegisterActivity extends BasePncRegisterActivity {
         commonPersonObject.setColumnmaps(details);
 
         MemberObject memberObject = new MemberObject(commonPersonObject);
-        BaseAncMemberProfileActivity.startMe(this, memberObject,"Juma Family Head", "0976345634");
+        // BaseAncMemberProfileActivity.startMe(this, memberObject,"Juma Family Head", "0976345634");
+        BaseAncMemberProfileActivity.startMe(this, "12345");
     }
 }

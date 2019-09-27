@@ -140,7 +140,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     public void initializeFloatingMenu() {
         if (StringUtils.isNotBlank(memberObject.getPhoneNumber()) || StringUtils.isNotBlank(memberObject.getFamilyHeadPhoneNumber())) {
-            baseAncFloatingMenu = new BaseAncFloatingMenu(this, ancWomanName, memberObject.getPhoneNumber(), memberObject.getFamilyHead(), memberObject.getFamilyHeadPhoneNumber(), getProfileType());
+            baseAncFloatingMenu = new BaseAncFloatingMenu(this, ancWomanName, memberObject.getPhoneNumber(), memberObject.getFamilyHeadName(), memberObject.getFamilyHeadPhoneNumber(), getProfileType());
             baseAncFloatingMenu.setGravity(Gravity.BOTTOM | Gravity.RIGHT);
             LinearLayout.LayoutParams linearLayoutParams = new LinearLayout.LayoutParams(
                     LinearLayout.LayoutParams.MATCH_PARENT,
@@ -215,7 +215,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         layoutNotRecordView.setVisibility(View.VISIBLE);
         layoutRecordButtonDone.setVisibility(View.GONE);
         layoutRecordView.setVisibility(View.GONE);
-
     }
 
     @Override

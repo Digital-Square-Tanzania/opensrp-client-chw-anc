@@ -71,10 +71,11 @@ public class EntryActivity extends SecuredActivity implements View.OnClickListen
                 startActivity(new Intent(this, AncRegisterActivity.class));
                 break;
             case R.id.anc_home_visit:
-                AncHomeVisitActivity.startMe(this, EntryActivity.getSampleMember(), false);
+                AncHomeVisitActivity.startMe(this, "12345", false);
                 break;
             case R.id.anc_profile:
-                BaseAncMemberProfileActivity.startMe(this, EntryActivity.getSampleMember(), "Juma Family Head", "0976345634");
+                //BaseAncMemberProfileActivity.startMe(this, EntryActivity.getSampleMember(), "Juma Family Head", "0976345634");
+                AncMemberProfileActivity.startMe(this, "12345");
                 break;
             case R.id.pnc_activity:
                 startActivity(new Intent(this, PncRegisterActivity.class));
@@ -83,7 +84,8 @@ public class EntryActivity extends SecuredActivity implements View.OnClickListen
                 BasePncHomeVisitActivity.startMe(this, EntryActivity.getSampleMember(), false);
                 break;
             case R.id.pnc_profile:
-                BasePncMemberProfileActivity.startMe(this, EntryActivity.getSampleMember(), "Juma Family Head", "0976345634");
+                BasePncMemberProfileActivity.startMe(this, "12345");
+                //BasePncMemberProfileActivity.startMe(this, EntryActivity.getSampleMember(), "Juma Family Head", "0976345634");
                 break;
             case R.id.immunization_fragment:
                 openImmunizationFrag();

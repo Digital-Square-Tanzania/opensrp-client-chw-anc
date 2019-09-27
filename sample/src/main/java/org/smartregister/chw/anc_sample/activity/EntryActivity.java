@@ -74,14 +74,13 @@ public class EntryActivity extends SecuredActivity implements View.OnClickListen
                 AncHomeVisitActivity.startMe(this, "12345", false);
                 break;
             case R.id.anc_profile:
-                //BaseAncMemberProfileActivity.startMe(this, EntryActivity.getSampleMember(), "Juma Family Head", "0976345634");
                 AncMemberProfileActivity.startMe(this, "12345");
                 break;
             case R.id.pnc_activity:
                 startActivity(new Intent(this, PncRegisterActivity.class));
                 break;
             case R.id.pnc_home_visit:
-                BasePncHomeVisitActivity.startMe(this, EntryActivity.getSampleMember(), false);
+                PncHomeVisitActivity.startMe(this, "12345", false);
                 break;
             case R.id.pnc_profile:
                 BasePncMemberProfileActivity.startMe(this, "12345");

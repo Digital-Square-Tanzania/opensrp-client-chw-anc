@@ -25,6 +25,7 @@
         <activity android:name=".activity.AncHomeVisitActivity" />
         <activity android:name="org.smartregister.chw.anc.activity.BaseAncMedicalHistoryActivity" />
         <activity android:name=".activity.AncMemberProfileActivity" />
+        <activity android:name=".activity.PncHomeVisitActivity" />
 
         <provider
             android:name="android.support.v4.content.FileProvider"

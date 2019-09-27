@@ -83,8 +83,7 @@ public class EntryActivity extends SecuredActivity implements View.OnClickListen
                 PncHomeVisitActivity.startMe(this, "12345", false);
                 break;
             case R.id.pnc_profile:
-                BasePncMemberProfileActivity.startMe(this, "12345");
-                //BasePncMemberProfileActivity.startMe(this, EntryActivity.getSampleMember(), "Juma Family Head", "0976345634");
+                PncMemberProfileActivity.startMe(this, "12345");
                 break;
             case R.id.immunization_fragment:
                 openImmunizationFrag();

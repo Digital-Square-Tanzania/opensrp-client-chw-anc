@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.text.TextUtils;
 import android.view.View;
 
+import org.apache.commons.lang3.StringUtils;
 import org.smartregister.chw.anc.activity.BaseAncMemberProfileActivity;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.NCUtils;
@@ -52,7 +53,7 @@ public class BasePncMemberProfileActivity extends BaseAncMemberProfileActivity {
     @Override
     public void setProfileImage(String baseEntityId, String entityType) {
         String pncDay = basePncMemberProfileInteractor.getPncDay(memberObject.getBaseEntityId());
-        if (Integer.parseInt(pncDay) >= 29) {
+        if (StringUtils.isNotBlank(pncDay) && Integer.parseInt(pncDay) >= 29) {
             imageRenderHelper.refreshProfileImage(baseEntityId, imageView, NCUtils.getPncMemberProfileImageResourceIdentifier());
         } else {
             imageRenderHelper.refreshProfileImage(baseEntityId, imageView, R.drawable.pnc_less_twenty_nine_days);

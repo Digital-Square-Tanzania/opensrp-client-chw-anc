@@ -99,21 +99,11 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
     }
 
     @Override
-    public void onRegistrationSaved(String encounterType, boolean isEdit, boolean hasChildren) {
-        if (encounterType.equalsIgnoreCase(Constants.EVENT_TYPE.ANC_REGISTRATION)) {
-            startRegisterActivity(getAncRegisterActivity());
-        } else if (encounterType.equalsIgnoreCase(Constants.EVENT_TYPE.PREGNANCY_OUTCOME)) {
-            startRegisterActivity(getPncRegisterActivity());
-        } else {
-            finish();
-        }
+    public void onRegistrationSaved(String register, boolean isEdit, boolean hasChildren) {
+        startRegisterActivity(getRegisterActivity(register));
     }
 
-    public Class getAncRegisterActivity() {
-        return BaseAncRegisterActivity.class;
-    }
-
-    public Class getPncRegisterActivity() {
+    public Class getRegisterActivity(String register) {
         return BaseAncRegisterActivity.class;
     }
 
@@ -206,9 +196,8 @@ public class BaseAncRegisterActivity extends BaseRegisterActivity implements Bas
 
     @Override
     protected void onActivityResultExtended(int requestCode, int resultCode, Intent data) {
-        if (resultCode != Activity.RESULT_OK) return;
 
-        if (requestCode == Constants.REQUEST_CODE_GET_JSON) {
+        if (resultCode == Activity.RESULT_OK && requestCode == Constants.REQUEST_CODE_GET_JSON) {
 //            process the form
             try {
                 String jsonString = data.getStringExtra(Constants.JSON_FORM_EXTRA.JSON);

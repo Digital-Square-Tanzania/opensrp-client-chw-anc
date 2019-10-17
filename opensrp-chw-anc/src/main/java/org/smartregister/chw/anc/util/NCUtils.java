@@ -340,23 +340,23 @@ public class NCUtils {
         return eventToVisit(event, JsonFormUtils.generateRandomUUIDString());
     }
 
-    public static void processAncHomeVisit(EventClient baseEvent) {
-        processAncHomeVisit(baseEvent, null);
+    public static void processHomeVisit(EventClient baseEvent) {
+        processHomeVisit(baseEvent, null);
     }
 
     public static void processSubHomeVisit(EventClient baseEvent, String parentEventType) {
-        processAncHomeVisit(baseEvent, null, parentEventType);
+        processHomeVisit(baseEvent, null, parentEventType);
     }
 
     public static void processSubHomeVisit(EventClient baseEvent, SQLiteDatabase database, String parentEventType) {
-        processAncHomeVisit(baseEvent, database, parentEventType);
+        processHomeVisit(baseEvent, database, parentEventType);
     }
 
-    public static void processAncHomeVisit(EventClient baseEvent, SQLiteDatabase database) {
-        processAncHomeVisit(baseEvent, database, null);
+    public static void processHomeVisit(EventClient baseEvent, SQLiteDatabase database) {
+        processHomeVisit(baseEvent, database, null);
     }
 
-    public static void processAncHomeVisit(EventClient baseEvent, SQLiteDatabase database, String parentEventType) {
+    public static void processHomeVisit(EventClient baseEvent, SQLiteDatabase database, String parentEventType) {
         try {
             Visit visit = AncLibrary.getInstance().visitRepository().getVisitByFormSubmissionID(baseEvent.getEvent().getFormSubmissionId());
             if (visit == null) {

@@ -57,6 +57,9 @@ public interface BaseAncMemberProfileContract {
         void refreshProfileBottom();
 
         void reloadMemberDetails(String memberID);
+
+        void updateVisitNotDone(long value);
+
     }
 
     interface Interactor {

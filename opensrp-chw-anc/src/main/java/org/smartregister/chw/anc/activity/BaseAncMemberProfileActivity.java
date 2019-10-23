@@ -150,17 +150,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     protected void displayView() {
-        Visit lastAncHomeVisitNotDoneEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE);
-        Visit lastAncHomeVisitNotDoneUndoEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE_UNDO);
-
-        if (lastAncHomeVisitNotDoneUndoEvent != null
-                && lastAncHomeVisitNotDoneUndoEvent.getDate().before(lastAncHomeVisitNotDoneEvent.getDate())
-                && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
-            setVisitViews();
-        } else if (lastAncHomeVisitNotDoneUndoEvent == null && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
-            setVisitViews();
-        }
-
         Visit lastVisit = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT);
         if (lastVisit != null) {
             setUpEditViews(true, VisitUtils.isVisitWithin24Hours(lastVisit), lastVisit.getDate().getTime());
@@ -216,6 +205,8 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         layoutRecordButtonDone.setVisibility(View.GONE);
         layoutRecordView.setVisibility(View.GONE);
     }
+
+
 
     @Override
     public Context getContext() {

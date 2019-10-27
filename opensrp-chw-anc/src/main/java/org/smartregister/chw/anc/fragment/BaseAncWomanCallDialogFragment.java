@@ -63,8 +63,11 @@ public class BaseAncWomanCallDialogFragment extends DialogFragment implements Ba
         ViewGroup dialogView = (ViewGroup) inflater.inflate(R.layout.anc_member_call_widget_dialog_fragment, container, false);
         setUpPosition();
         TextView callTittleTextView = dialogView.findViewById(R.id.call_title);
+        TextView callTitle = dialogView.findViewById(R.id.call_anc_woman_title);
+
         if (womanProfileType.equals(Constants.MEMBER_PROFILE_TYPES.PNC))
             callTittleTextView.setText(getString(R.string.call_pnc_woman));
+        callTitle.setText(getString((R.string.call_pnc_woman)));
 
         if (listener == null) {
             listener = new BaseAncWomanCallWidgetDialogListener(this);

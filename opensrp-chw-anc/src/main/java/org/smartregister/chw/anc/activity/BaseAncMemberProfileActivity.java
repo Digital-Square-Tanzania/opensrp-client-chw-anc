@@ -384,7 +384,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
         if (StringUtils.isNotBlank(memberObject.getMiddleName())) {
             ancWomanName = getName(memberObject.getFirstName(), memberObject.getMiddleName());
-            ancWomanName = getName(ancWomanName, memberObject.getMiddleName());
+            ancWomanName = getName(ancWomanName, memberObject.getLastName());
         } else {
             ancWomanName = getName(memberObject.getFirstName(), memberObject.getLastName());
         }

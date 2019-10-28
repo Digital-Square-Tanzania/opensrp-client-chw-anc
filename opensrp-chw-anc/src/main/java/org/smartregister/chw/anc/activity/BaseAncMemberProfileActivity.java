@@ -217,8 +217,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         layoutRecordView.setVisibility(View.GONE);
     }
 
-
-
     @Override
     public Context getContext() {
         return this;

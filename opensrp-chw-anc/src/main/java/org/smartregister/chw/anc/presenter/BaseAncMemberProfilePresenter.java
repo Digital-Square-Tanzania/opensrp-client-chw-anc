@@ -88,8 +88,6 @@ public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presen
         }
     }
 
-
-
     @Override
     public void onDestroy(boolean b) {
 //        TODO implement onDestroy

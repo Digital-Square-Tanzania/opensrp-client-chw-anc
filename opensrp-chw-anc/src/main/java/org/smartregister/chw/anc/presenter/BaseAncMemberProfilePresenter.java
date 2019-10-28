@@ -79,10 +79,6 @@ public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presen
         }
     }
 
-    public void updateVisitNotDone(long value) {
-      getView().updateVisitNotDone(0);
-    }
-
     @Override
     public BaseAncMemberProfileContract.View getView() {
         if (view != null) {

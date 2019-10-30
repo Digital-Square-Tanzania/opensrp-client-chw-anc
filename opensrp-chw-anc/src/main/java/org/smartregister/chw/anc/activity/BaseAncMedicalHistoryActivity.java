@@ -33,7 +33,7 @@ public class BaseAncMedicalHistoryActivity extends SecuredActivity implements Ba
     protected MemberObject memberObject;
     protected BaseAncMedicalHistoryContract.Presenter presenter;
     private TextView tvTitle;
-    private LinearLayout linearLayout;
+    protected LinearLayout linearLayout;
     private ProgressBar progressBar;
 
     public static void startMe(Activity activity, MemberObject memberObject) {

@@ -33,7 +33,7 @@ public class BaseAncMedicalHistoryActivity extends SecuredActivity implements Ba
     protected MemberObject memberObject;
     protected BaseAncMedicalHistoryContract.Presenter presenter;
     private TextView tvTitle;
-    private LinearLayout linearLayout;
+    protected LinearLayout linearLayout;
     private ProgressBar progressBar;
 
     public static void startMe(Activity activity, MemberObject memberObject) {
@@ -77,12 +77,7 @@ public class BaseAncMedicalHistoryActivity extends SecuredActivity implements Ba
             upArrow.setColorFilter(getResources().getColor(R.color.text_blue), PorterDuff.Mode.SRC_ATOP);
             actionBar.setHomeAsUpIndicator(upArrow);
         }
-        toolbar.setNavigationOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                finish();
-            }
-        });
+        toolbar.setNavigationOnClickListener(v -> finish());
     }
 
     public void setUpView() {

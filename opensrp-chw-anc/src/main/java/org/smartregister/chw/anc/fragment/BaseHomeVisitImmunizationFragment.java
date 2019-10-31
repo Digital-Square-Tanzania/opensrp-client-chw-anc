@@ -455,5 +455,6 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         public void setCheckBox(CheckBox checkBox) {
             this.checkBox = checkBox;
         }
+
     }
 }

@@ -6,6 +6,7 @@ import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
 
 import java.lang.ref.WeakReference;
 import java.util.List;
+import java.util.Map;
 
 public class BaseAncHomeVisitFragmentPresenter implements BaseAncHomeVisitFragmentContract.Presenter {
 
@@ -86,5 +87,13 @@ public class BaseAncHomeVisitFragmentPresenter implements BaseAncHomeVisitFragme
         if (view.get() != null)
             view.get().setOptions(options);
     }
+
+    @Override
+    public void setDateConstraints(Map<String, String> constraints) {
+        if (view.get() != null) {
+            view.get().setDateConstraints(constraints);
+        }
+    }
+
 
 }

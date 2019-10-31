@@ -1,6 +1,7 @@
 package org.smartregister.chw.anc.model;
 
 import android.content.res.Resources;
+import android.text.TextUtils;
 
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 
@@ -14,7 +15,9 @@ import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import timber.log.Timber;
 
@@ -34,6 +37,7 @@ public class BaseAncHomeVisitFragmentModel implements BaseAncHomeVisitFragmentCo
             String infoIconTitle = getInfoIconTitle(jsonObject);
             String infoIconDetails = getInfoIconDetails(jsonObject);
             List<JSONObject> options = getOptions(jsonObject);
+            Map<String, String> dateConstraints = getDateConstraints(jsonObject);
 
             presenter.setTitle(title);
             presenter.setQuestion(question);
@@ -42,6 +46,7 @@ public class BaseAncHomeVisitFragmentModel implements BaseAncHomeVisitFragmentCo
             presenter.setInfoIconTitle(infoIconTitle);
             presenter.setInfoIconDetails(infoIconDetails);
             presenter.setOptions(options);
+            presenter.setDateConstraints(dateConstraints);
 
             // must always be the last
             presenter.setValue(value);
@@ -175,5 +180,26 @@ public class BaseAncHomeVisitFragmentModel implements BaseAncHomeVisitFragmentCo
             Timber.e(e);
         }
         return new ArrayList<>();
+    }
+
+    private Map<String, String> getDateConstraints(JSONObject jsonObject) {
+        Map<String, String> dateConstraints = new HashMap<>();
+        String minDateString = "";
+        String maxDateString = "";
+        try {
+            JSONObject targetObject = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS).getJSONObject(0);
+            minDateString = (targetObject.has(JsonFormConstants.MIN_DATE)) ? targetObject.getString(JsonFormConstants.MIN_DATE) : "";
+            maxDateString = (targetObject.has(JsonFormConstants.MAX_DATE)) ? targetObject.getString(JsonFormConstants.MAX_DATE) : "";
+        } catch (JSONException je) {
+            Timber.e(je);
+        }
+
+        if (!TextUtils.isEmpty(minDateString))
+            dateConstraints.put(JsonFormConstants.MIN_DATE, minDateString);
+
+        if (!TextUtils.isEmpty(maxDateString))
+            dateConstraints.put(JsonFormConstants.MAX_DATE, maxDateString);
+
+        return dateConstraints;
     }
 }

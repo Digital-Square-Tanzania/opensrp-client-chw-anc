@@ -254,7 +254,8 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
             View layout = inflater.inflate(R.layout.custom_single_vaccine_view, null);
             TextView question = layout.findViewById(R.id.vaccines_given_when_title_question);
             DatePicker datePicker = layout.findViewById(R.id.earlier_date_picker);
-            question.setText(getString(R.string.when_vaccine, vaccineView.vaccineName));
+            String translatedVaccineName = NCUtils.getStringResourceByName(vaccineView.vaccineName.toLowerCase().replace(" ", "_"), getActivity());
+            question.setText(getString(R.string.when_vaccine, translatedVaccineName));
 
             VaccineDisplay vaccineDisplay = vaccineDisplays.get(vaccineView.getVaccineName());
             if (vaccineDisplay != null)

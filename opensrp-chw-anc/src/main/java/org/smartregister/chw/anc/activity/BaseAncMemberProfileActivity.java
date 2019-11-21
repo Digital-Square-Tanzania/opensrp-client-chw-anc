@@ -153,11 +153,10 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         Visit lastAncHomeVisitNotDoneEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE);
         Visit lastAncHomeVisitNotDoneUndoEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE_UNDO);
 
-        if(lastAncHomeVisitNotDoneEvent != null && lastAncHomeVisitNotDoneUndoEvent != null){
-            if( lastAncHomeVisitNotDoneUndoEvent.getDate().before(lastAncHomeVisitNotDoneEvent.getDate())
+        if(lastAncHomeVisitNotDoneEvent != null && lastAncHomeVisitNotDoneUndoEvent != null &&
+                lastAncHomeVisitNotDoneUndoEvent.getDate().before(lastAncHomeVisitNotDoneEvent.getDate())
                     && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)){
                 setVisitViews();
-            }
         }
         else if (lastAncHomeVisitNotDoneUndoEvent == null && lastAncHomeVisitNotDoneEvent != null && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
             setVisitViews();

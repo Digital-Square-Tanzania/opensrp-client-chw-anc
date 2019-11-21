@@ -161,7 +161,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         else if (lastAncHomeVisitNotDoneUndoEvent == null && lastAncHomeVisitNotDoneEvent != null && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
             setVisitViews();
         }
-
         Visit lastVisit = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT);
         if (lastVisit != null) {
             setUpEditViews(true, VisitUtils.isVisitWithin24Hours(lastVisit), lastVisit.getDate().getTime());

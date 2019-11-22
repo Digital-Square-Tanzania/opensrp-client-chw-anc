@@ -44,13 +44,13 @@ public class BaseUpcomingServiceAdapter extends RecyclerView.Adapter<BaseUpcomin
         holder.tvDue.setText(new SimpleDateFormat("dd MMM yyyy", Locale.getDefault()).format(service.getServiceDate()));
         int period = Days.daysBetween(new DateTime(service.getOverDueDate()).toLocalDate(), new DateTime().toLocalDate()).getDays();
 
-        if(period > 0 || period == 0 ){
+        if(period >= 0 ){
             holder.tvOverdue.setText(context.getString(R.string.days_overdue, String.valueOf(period)));
             holder.tvOverdue.setTextColor(context.getResources().getColor(R.color.vaccine_red_bg_end));
         }else {
             int periodDue = Days.daysBetween(new DateTime(service.getServiceDate()).toLocalDate(), new DateTime().toLocalDate()).getDays();
 
-            if(periodDue > 0 || periodDue == 0){
+            if(periodDue >= 0){
                 holder.tvOverdue.setText(context.getString(R.string.days_due, String.valueOf(Math.abs(periodDue))));
             }
             else {

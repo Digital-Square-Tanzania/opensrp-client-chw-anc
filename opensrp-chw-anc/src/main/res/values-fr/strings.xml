@@ -69,6 +69,7 @@
     <string name="back_to">Retour au profil de %1$s</string>
     <string name="days_overdue">%1$s jours en retard</string>
     <string name="days_until_due">%1$s jours jusqu\'à attendu</string>
+    <string name="days_due">%1$s jours attendu</string>
     <string name="anc_visit_done">%1$s visite faite</string>
     <string name="less_than_twenty_four">moins de 24 hr</string>
     <string name="primary_care_giver">Gardienne</string>

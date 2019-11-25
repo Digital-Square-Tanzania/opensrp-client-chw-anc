@@ -6,6 +6,7 @@ import org.json.JSONObject;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
 
 import java.util.List;
+import java.util.Map;
 
 public interface BaseAncHomeVisitFragmentContract {
 
@@ -39,6 +40,9 @@ public interface BaseAncHomeVisitFragmentContract {
         void setValue(String value);
 
         void setOptions(List<JSONObject> options);
+
+        // K-> Constraint min,max, V-> Constraint date (String) value
+        void setDateConstraints(Map<String, String> constraints);
     }
 
     interface Presenter {
@@ -67,6 +71,9 @@ public interface BaseAncHomeVisitFragmentContract {
         void setValue(String value);
 
         void setOptions(List<JSONObject> options);
+
+        // K-> Constraint min,max, V-> Constraint date (String) value
+        void setDateConstraints(Map<String, String> constraints);
     }
 
     interface Model {

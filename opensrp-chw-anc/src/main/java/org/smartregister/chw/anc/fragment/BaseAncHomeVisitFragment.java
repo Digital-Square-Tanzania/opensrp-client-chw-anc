@@ -37,6 +37,7 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
@@ -72,6 +73,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
     private DatePicker datePicker;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd-MM-yyyy", Locale.getDefault());
     private List<JSONObject> optionList = new ArrayList<>();
+    private Map<String, String> dateConstraints = new HashMap<>();
 
     public static BaseAncHomeVisitFragment getInstance(final BaseAncHomeVisitContract.VisitView view, String form_name, JSONObject json, Map<String, List<VisitDetail>> details, String count) {
         JSONObject jsonObject = json;
@@ -172,15 +174,36 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
     }
 
     private void prepareBooleanView() {
-        // hide date picker and cancel option. Enable radio group and save
         radioGroupChoices.setVisibility(View.VISIBLE);
         buttonSave.setVisibility(View.VISIBLE);
     }
 
     private void prepareDateView() {
-        // hide date picker and cancel option. Enable radio group and save
-        buttonSave.setVisibility(View.VISIBLE);
         datePicker.setVisibility(View.VISIBLE);
+        // Set DatePicker date constraints if defined
+        if (!this.dateConstraints.isEmpty()) {
+            Date maxDate = null;
+            Date minDate = null;
+            try {
+                maxDate = dateFormat.parse(dateConstraints.get(JsonFormConstants.MAX_DATE));
+            } catch (Exception ex) {
+                Timber.e(ex);
+            }
+
+            try {
+                minDate = dateFormat.parse(dateConstraints.get(JsonFormConstants.MIN_DATE));
+            }catch (Exception ex) {
+                Timber.e(ex);
+            }
+
+            if (maxDate != null)
+                datePicker.setMaxDate(maxDate.getTime());
+
+            if (minDate != null)
+                datePicker.setMinDate(minDate.getTime());
+        }
+
+        buttonSave.setVisibility(View.VISIBLE);
         buttonCancel.setVisibility(View.VISIBLE);
     }
 
@@ -401,6 +424,15 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
 
         this.optionList.clear();
         this.optionList.addAll(options);
+    }
+
+    @Override
+    public void setDateConstraints(Map<String, String> constraints) {
+        if (this.dateConstraints == null)
+            this.dateConstraints = new HashMap<>();
+
+        this.dateConstraints.clear();
+        this.dateConstraints.putAll(constraints);
     }
 
     public void setFormName(String formName) {

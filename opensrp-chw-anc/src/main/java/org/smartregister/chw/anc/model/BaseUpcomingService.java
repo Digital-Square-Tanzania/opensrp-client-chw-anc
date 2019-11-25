@@ -10,6 +10,7 @@ public class BaseUpcomingService {
 
     private List<String> serviceName = new ArrayList<>();
     private Date serviceDate;
+    private Date overDueDate;
     private List<BaseUpcomingService> upcomingServiceList;
 
     public BaseUpcomingService() {
@@ -40,6 +41,13 @@ public class BaseUpcomingService {
 
     public void setServiceDate(Date serviceDate) {
         this.serviceDate = serviceDate;
+    }
+    public Date getOverDueDate() {
+        return overDueDate;
+    }
+
+    public void setOverDueDate(Date overDueDate) {
+        this.overDueDate = overDueDate;
     }
 
     public List<BaseUpcomingService> getUpcomingServiceList() {

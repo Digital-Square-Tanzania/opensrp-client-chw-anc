@@ -69,7 +69,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     protected CircleImageView imageView;
     protected BaseAncFloatingMenu baseAncFloatingMenu;
     protected TextView tvLastVisitDate;
-    private ImageView imageViewCross;
+    protected ImageView imageViewCross;
     private TextView tvUpComingServices;
     private TextView tvFamilyStatus;
     private ProgressBar progressBar;
@@ -153,14 +153,14 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         Visit lastAncHomeVisitNotDoneEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE);
         Visit lastAncHomeVisitNotDoneUndoEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE_UNDO);
 
-        if (lastAncHomeVisitNotDoneUndoEvent != null
-                && lastAncHomeVisitNotDoneUndoEvent.getDate().before(lastAncHomeVisitNotDoneEvent.getDate())
-                && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
-            setVisitViews();
-        } else if (lastAncHomeVisitNotDoneUndoEvent == null && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
+        if(lastAncHomeVisitNotDoneEvent != null && lastAncHomeVisitNotDoneUndoEvent != null &&
+                lastAncHomeVisitNotDoneUndoEvent.getDate().before(lastAncHomeVisitNotDoneEvent.getDate())
+                    && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)){
+                setVisitViews();
+        }
+        else if (lastAncHomeVisitNotDoneUndoEvent == null && lastAncHomeVisitNotDoneEvent != null && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
             setVisitViews();
         }
-
         Visit lastVisit = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT);
         if (lastVisit != null) {
             setUpEditViews(true, VisitUtils.isVisitWithin24Hours(lastVisit), lastVisit.getDate().getTime());

@@ -53,12 +53,18 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
     private DatePicker singleDatePicker;
     private Button saveButton;
     private SimpleDateFormat dateFormat = new SimpleDateFormat(Constants.DATE_FORMATS.DOB, Locale.getDefault());
+    private boolean vaccinesDefaultChecked = true;
 
     public static BaseHomeVisitImmunizationFragment getInstance(final BaseAncHomeVisitContract.VisitView view, String baseEntityID, Map<String, List<VisitDetail>> details, List<VaccineDisplay> vaccineDisplays) {
+        return getInstance(view, baseEntityID, details, vaccineDisplays, true);
+    }
+
+    public static BaseHomeVisitImmunizationFragment getInstance(final BaseAncHomeVisitContract.VisitView view, String baseEntityID, Map<String, List<VisitDetail>> details, List<VaccineDisplay> vaccineDisplays, boolean defaultChecked) {
         BaseHomeVisitImmunizationFragment fragment = new BaseHomeVisitImmunizationFragment();
         fragment.visitView = view;
         fragment.baseEntityID = baseEntityID;
         fragment.details = details;
+        fragment.vaccinesDefaultChecked = defaultChecked;
         for (VaccineDisplay vaccineDisplay : vaccineDisplays) {
             fragment.vaccineDisplays.put(vaccineDisplay.getVaccineWrapper().getName(), vaccineDisplay);
         }
@@ -70,6 +76,7 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
 
         return fragment;
     }
+
 
     @Override
     public View onCreateView(@NotNull LayoutInflater inflater, ViewGroup container,
@@ -157,7 +164,9 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
             String name = (vaccineWrapper.getVaccine() != null) ? vaccine.display() : vaccineWrapper.getName();
             String translated_name = NCUtils.getStringResourceByName(name.toLowerCase().replace(" ", "_"), getActivity());
             vaccineView.setText(translated_name);
-
+            if (!vaccinesDefaultChecked && details == null) {
+                checkBox.setChecked(false);
+            }
             checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (isChecked) {
                     checkBoxNoVaccinesDone.setChecked(false);
@@ -447,5 +456,6 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         public void setCheckBox(CheckBox checkBox) {
             this.checkBox = checkBox;
         }
+
     }
 }

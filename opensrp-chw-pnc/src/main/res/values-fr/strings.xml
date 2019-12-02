@@ -1,0 +1,9 @@
+<resources>
+    <string name="pnc">Clients CPoN</string>
+    <string name="pnc_visit">CPoN Visite</string>
+    <string name="pnc_day">CPoN journée</string>
+    <string name="return_to_all_pnc_women">Retour à tous CPoN femmes</string>
+    <string name="pnc_day_count">d</string>
+    <string name="pnc_last_visit_text">Derniere visite{0}</string>
+    <string name="pnc_visit_done">CPoN journée {0} visite terminé</string>
+</resources>

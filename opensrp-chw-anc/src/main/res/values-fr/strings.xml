@@ -69,7 +69,7 @@
     <string name="back_to">Retour au profil de %1$s</string>
     <string name="days_overdue">%1$s jours en retard</string>
     <string name="days_until_due">%1$s jours jusqu\'à attendu</string>
-    <string name="days_due">%1$s jours attendu</string>
+    <string name="days_due">%1$s jours dus</string>
     <string name="anc_visit_done">%1$s visite faite</string>
     <string name="less_than_twenty_four">moins de 24 hr</string>
     <string name="primary_care_giver">Gardienne</string>
@@ -109,7 +109,7 @@
     <string name="mcv_1">MCV 1</string>
     <string name="mcv_2">MCV 2</string>
     <string name="mcv_3">MCV 3</string>
-    <string name="yellow_fever">Fièvre Jaune</string>
+    <string name="yellow_fever">VAA</string>
     <string name="rubella_1">Rubéole 1</string>
     <string name="rubella_2">Rubéole 2</string>
     <string name="mena">MenA</string>

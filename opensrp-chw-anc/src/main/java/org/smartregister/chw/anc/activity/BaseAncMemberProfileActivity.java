@@ -23,6 +23,7 @@ import android.widget.TextView;
 import com.google.gson.Gson;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.json.JSONException;
@@ -171,7 +172,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         return Constants.MEMBER_PROFILE_TYPES.ANC;
     }
 
-    public Visit getVisit(String eventType) {
+    public @Nullable Visit getVisit(String eventType) {
         return getInstance().visitRepository().getLatestVisit(memberObject.getBaseEntityId(), eventType);
     }
 

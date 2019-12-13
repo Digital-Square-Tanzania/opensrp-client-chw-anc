@@ -18,6 +18,7 @@ import com.vijay.jsonwizard.constants.JsonFormConstants;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -192,7 +193,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
 
             try {
                 minDate = dateFormat.parse(dateConstraints.get(JsonFormConstants.MIN_DATE));
-            }catch (Exception ex) {
+            } catch (Exception ex) {
                 Timber.e(ex);
             }
 
@@ -329,6 +330,9 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
     }
 
     protected void onShowInfo() {
+        if(getView() == null)
+            return;
+
         AlertDialog.Builder builderSingle = new AlertDialog.Builder(getView().getContext(), com.vijay.jsonwizard.R.style.AppThemeAlertDialog);
         builderSingle.setTitle(getInfoIconTitle());
         builderSingle.setMessage(getInfoIconDetails());
@@ -350,6 +354,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
         return presenter;
     }
 
+    @Nullable
     public JSONObject getJsonObject() {
         return jsonObject;
     }
@@ -489,7 +494,8 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
             onSelectOption(dateFormat.format(getDateFromDatePicker(datePicker)));
         }
 
-        getHomeVisitView().onDialogOptionUpdated(getJsonObject().toString());
+        if (getJsonObject() != null)
+            getHomeVisitView().onDialogOptionUpdated(getJsonObject().toString());
         dismiss();
     }
 
@@ -499,7 +505,8 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
 
     protected void onCancel() {
         onSelectOption(Constants.HOME_VISIT.DOSE_NOT_GIVEN);
-        getHomeVisitView().onDialogOptionUpdated(getJsonObject().toString());
+        if (getJsonObject() != null)
+            getHomeVisitView().onDialogOptionUpdated(getJsonObject().toString());
         dismiss();
     }
 

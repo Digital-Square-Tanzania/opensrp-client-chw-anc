@@ -1,11 +1,15 @@
 package org.smartregister.chw.anc.fragment;
 
 import android.app.DialogFragment;
+import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.os.Handler;
 import android.widget.FrameLayout;
 
 import org.json.JSONObject;
+
+import timber.log.Timber;
 
 public class BaseHomeVisitFragment extends DialogFragment {
 
@@ -30,5 +34,17 @@ public class BaseHomeVisitFragment extends DialogFragment {
                 getDialog().getWindow().setLayout(FrameLayout.LayoutParams.MATCH_PARENT, FrameLayout.LayoutParams.MATCH_PARENT);
             }
         });
+    }
+
+    @Override
+    public void show(FragmentManager manager, String tag) {
+        try {
+            FragmentTransaction ft = manager.beginTransaction();
+            ft.add(this, tag).addToBackStack(null);
+            ft.commitAllowingStateLoss();
+        } catch (IllegalStateException e) {
+            Timber.e(e);
+        }
+
     }
 }

@@ -315,7 +315,7 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         jsonObject = NCUtils.getVisitJSONFromWrapper(baseEntityID, vaccineDateMap);
 
         // notify the view
-        if (jsonObject != null) {
+        if (jsonObject != null && visitView != null) {
             visitView.onDialogOptionUpdated(jsonObject.toString());
 
             // save the view

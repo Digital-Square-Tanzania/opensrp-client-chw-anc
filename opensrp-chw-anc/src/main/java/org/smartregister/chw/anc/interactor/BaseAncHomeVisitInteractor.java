@@ -5,6 +5,7 @@ import android.support.annotation.VisibleForTesting;
 import com.google.gson.Gson;
 
 import org.apache.commons.lang3.StringUtils;
+import org.jetbrains.annotations.Nullable;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.actionhelper.DangerSignsHelper;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
@@ -37,7 +38,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
     protected AppExecutors appExecutors;
 
     @VisibleForTesting
-    BaseAncHomeVisitInteractor(AppExecutors appExecutors) {
+    public BaseAncHomeVisitInteractor(AppExecutors appExecutors) {
         this.appExecutors = appExecutors;
     }
 
@@ -172,9 +173,9 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         }
     }
 
-    protected Visit saveVisit(boolean editMode, String memberID, String encounterType,
-                              final Map<String, String> jsonString,
-                              String parentEventType
+    protected @Nullable Visit saveVisit(boolean editMode, String memberID, String encounterType,
+                                        final Map<String, String> jsonString,
+                                        String parentEventType
     ) throws Exception {
 
         AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
@@ -215,7 +216,8 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         return visitRepository().getParentVisitEventID(visit.getBaseEntityId(), parentEventType, visit.getDate());
     }
 
-    protected VisitRepository visitRepository() {
+    @VisibleForTesting
+    public VisitRepository visitRepository() {
         return AncLibrary.getInstance().visitRepository();
     }
 

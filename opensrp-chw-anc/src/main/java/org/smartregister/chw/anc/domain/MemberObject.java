@@ -7,9 +7,12 @@ import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
+import org.smartregister.domain.jsonmapping.Table;
 import org.smartregister.util.Utils;
 
 import java.io.Serializable;
+
+import timber.log.Timber;
 
 @SuppressWarnings("serial")
 public class MemberObject implements Serializable {
@@ -152,7 +155,12 @@ public class MemberObject implements Serializable {
     }
 
     public int getAge() {
-        return new Period(new DateTime(getDob()), new DateTime()).getYears();
+        try {
+            return new Period(new DateTime(getDob()), new DateTime()).getYears();
+        }catch (Exception e){
+            Timber.e(e);
+        }
+        return 0;
     }
 
     public int getGestationAge() {

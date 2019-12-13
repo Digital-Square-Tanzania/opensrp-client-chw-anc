@@ -38,7 +38,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
     protected AppExecutors appExecutors;
 
     @VisibleForTesting
-    BaseAncHomeVisitInteractor(AppExecutors appExecutors) {
+    public BaseAncHomeVisitInteractor(AppExecutors appExecutors) {
         this.appExecutors = appExecutors;
     }
 
@@ -216,7 +216,8 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         return visitRepository().getParentVisitEventID(visit.getBaseEntityId(), parentEventType, visit.getDate());
     }
 
-    protected VisitRepository visitRepository() {
+    @VisibleForTesting
+    public VisitRepository visitRepository() {
         return AncLibrary.getInstance().visitRepository();
     }
 

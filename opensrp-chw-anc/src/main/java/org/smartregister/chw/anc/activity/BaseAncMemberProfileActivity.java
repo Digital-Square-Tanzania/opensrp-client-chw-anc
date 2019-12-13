@@ -212,7 +212,11 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             tvEdit.setVisibility(View.GONE);
     }
 
+    //TODO: Find source of NPE
     public void openVisitMonthView() {
+        if(layoutNotRecordView == null || layoutRecordButtonDone == null || layoutRecordView == null)
+            return;
+
         layoutNotRecordView.setVisibility(View.VISIBLE);
         layoutRecordButtonDone.setVisibility(View.GONE);
         layoutRecordView.setVisibility(View.GONE);

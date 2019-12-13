@@ -11,7 +11,6 @@ import org.mockito.junit.MockitoJUnitRunner;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
-import org.smartregister.chw.anc.repository.VisitRepository;
 import org.smartregister.chw.anc.util.AppExecutors;
 
 import java.util.LinkedHashMap;
@@ -26,15 +25,11 @@ public class BaseAncHomeVisitInteractorTest implements Executor {
     @Mock
     private BaseAncHomeVisitContract.InteractorCallBack interactorCallBack;
 
-    @Mock
-    private VisitRepository visitRepository;
-
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         AppExecutors appExecutors = new AppExecutors(this, this, this);
         interactor = Mockito.spy(new BaseAncHomeVisitInteractor(appExecutors));
-        Mockito.doReturn(visitRepository).when(interactor).visitRepository();
     }
 
     @Override
@@ -43,19 +38,19 @@ public class BaseAncHomeVisitInteractorTest implements Executor {
     }
 
     @Test
-    public void testReloadMemberDetailsNotifiesPresenter(){
+    public void testReloadMemberDetailsNotifiesPresenter() {
         interactor.reloadMemberDetails("12334", interactorCallBack);
         Mockito.verify(interactorCallBack).onMemberDetailsReloaded(Mockito.any());
     }
 
     @Test
-    public void testGetMemberClient(){
+    public void testGetMemberClient() {
         MemberObject memberObject = interactor.getMemberClient("12345");
-        Assert.assertEquals("12345",memberObject.getBaseEntityId());
+        Assert.assertEquals("12345", memberObject.getBaseEntityId());
     }
 
     @Test
-    public void testSubmitVisitSavesVisits(){
+    public void testSubmitVisitSavesVisits() {
         // final boolean editMode, final String memberID, final Map<String, BaseAncHomeVisitAction> map, final BaseAncHomeVisitContract.InteractorCallBack callBack
         Map<String, BaseAncHomeVisitAction> map = new LinkedHashMap<>();
 

@@ -54,6 +54,26 @@ public class VisitUtils {
         return visits;
     }
 
+    public static List<Visit> getChildVisits(String parentVisitID){
+        List<Visit> res = new ArrayList<>();
+
+        List<Visit> visit_kids = AncLibrary.getInstance().visitRepository().getChildEvents(parentVisitID);
+
+        if (visit_kids != null && !visit_kids.isEmpty()) {
+            int x = 0;
+            while (x < visit_kids.size()) {
+                Visit v = visit_kids.get(x);
+                List<VisitDetail> visitDetails = AncLibrary.getInstance().visitDetailsRepository().getVisits(v.getVisitId());
+                visit_kids.get(x).setVisitDetails(VisitUtils.getVisitGroups(visitDetails));
+                x++;
+            }
+
+            res.addAll(visit_kids);
+        }
+
+        return res;
+    }
+
     public static List<Visit> getVisitsOnly(String memberID, String visitName) {
         return new ArrayList<>(AncLibrary.getInstance().visitRepository().getVisits(memberID, visitName));
     }

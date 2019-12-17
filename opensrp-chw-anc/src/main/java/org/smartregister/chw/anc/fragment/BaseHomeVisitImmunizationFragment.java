@@ -319,7 +319,7 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
             visitView.onDialogOptionUpdated(jsonObject.toString());
 
             // save the view
-            dismiss();
+            onClose();
         }
     }
 
@@ -335,7 +335,12 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
      * executed to close the vaccine screen
      */
     private void onClose() {
-        dismiss();
+        try {
+            if (getActivity() != null && getActivity().getSupportFragmentManager() != null)
+                getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+        } catch (Exception e) {
+            Timber.e(e);
+        }
     }
 
     /**

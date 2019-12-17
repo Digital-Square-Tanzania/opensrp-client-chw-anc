@@ -1,10 +1,10 @@
 package org.smartregister.chw.anc.fragment;
 
-import android.app.DialogFragment;
-import android.app.FragmentManager;
-import android.app.FragmentTransaction;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.DialogFragment;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.widget.FrameLayout;
 
 import org.json.JSONObject;
@@ -39,12 +39,20 @@ public class BaseHomeVisitFragment extends DialogFragment {
     @Override
     public void show(FragmentManager manager, String tag) {
         try {
+            removeIfExist(manager);
             FragmentTransaction ft = manager.beginTransaction();
             ft.add(this, tag).addToBackStack(null);
             ft.commitAllowingStateLoss();
-        } catch (IllegalStateException e) {
+        } catch (Exception e) {
             Timber.e(e);
         }
+    }
 
+    private void removeIfExist(FragmentManager manager) {
+        try {
+            manager.beginTransaction().remove(this).commit();
+        } catch (Exception e) {
+            Timber.v(e);
+        }
     }
 }

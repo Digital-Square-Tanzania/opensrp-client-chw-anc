@@ -4,6 +4,7 @@ import com.vijay.jsonwizard.constants.JsonFormConstants;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.lang3.tuple.Triple;
+import org.jetbrains.annotations.Nullable;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -208,7 +209,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
             int x = 0;
             while (jsonArray.length() > x) {
                 JSONObject jo = jsonArray.getJSONObject(x);
-                if (jo.getString(JsonFormConstants.KEY).equalsIgnoreCase(key)) {
+                if (jo.getString(JsonFormConstants.KEY).equalsIgnoreCase(key) && jo.has(JsonFormConstants.VALUE)) {
                     return jo.getString(JsonFormConstants.VALUE);
                 }
                 x++;
@@ -282,7 +283,8 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         return "";
     }
 
-    public static void populateForm(JSONObject jsonObject, Map<String, List<VisitDetail>> details) {
+    public static void populateForm(@Nullable JSONObject jsonObject, Map<String, @Nullable List<VisitDetail>> details) {
+        if (details == null || jsonObject == null) return;
         try {
             // x steps
             String count_str = jsonObject.getString(JsonFormConstants.COUNT);

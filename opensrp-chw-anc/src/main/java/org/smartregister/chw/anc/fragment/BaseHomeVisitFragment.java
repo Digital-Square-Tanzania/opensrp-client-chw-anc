@@ -39,12 +39,20 @@ public class BaseHomeVisitFragment extends DialogFragment {
     @Override
     public void show(FragmentManager manager, String tag) {
         try {
+            removeIfExist(manager);
             FragmentTransaction ft = manager.beginTransaction();
             ft.add(this, tag).addToBackStack(null);
             ft.commitAllowingStateLoss();
-        } catch (IllegalStateException e) {
+        } catch (Exception e) {
             Timber.e(e);
         }
+    }
 
+    private void removeIfExist(FragmentManager manager) {
+        try {
+            manager.beginTransaction().remove(this).commit();
+        } catch (Exception e) {
+            Timber.v(e);
+        }
     }
 }

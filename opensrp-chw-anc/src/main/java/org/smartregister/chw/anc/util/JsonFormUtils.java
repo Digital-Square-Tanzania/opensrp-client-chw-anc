@@ -209,7 +209,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
             int x = 0;
             while (jsonArray.length() > x) {
                 JSONObject jo = jsonArray.getJSONObject(x);
-                if (jo.getString(JsonFormConstants.KEY).equalsIgnoreCase(key)) {
+                if (jo.getString(JsonFormConstants.KEY).equalsIgnoreCase(key) && jo.has(JsonFormConstants.VALUE)) {
                     return jo.getString(JsonFormConstants.VALUE);
                 }
                 x++;

@@ -89,10 +89,10 @@ public class EntryActivity extends SecuredActivity implements View.OnClickListen
                 openImmunizationFrag();
                 break;
             case R.id.home_visit_multi_option:
-                BaseAncHomeVisitFragment.getInstance(this, "muac", null, null, null).show(getFragmentManager(), "HV");
+                BaseAncHomeVisitFragment.getInstance(this, "muac", null, null, null).show(getSupportFragmentManager(), "HV");
                 break;
             case R.id.home_visit_fragment:
-                BaseAncHomeVisitFragment.getInstance(this, Constants.HOME_VISIT_FORMS.IMMUNIZATION, null, null, null).show(getFragmentManager(), "HV");
+                BaseAncHomeVisitFragment.getInstance(this, Constants.HOME_VISIT_FORMS.IMMUNIZATION, null, null, null).show(getSupportFragmentManager(), "HV");
                 break;
             default:
                 break;
@@ -103,7 +103,7 @@ public class EntryActivity extends SecuredActivity implements View.OnClickListen
         if (immunizationFragment == null) {
             immunizationFragment = BaseHomeVisitImmunizationFragment.getInstance(this, "123345", null, getFakeVaccines());
         }
-        immunizationFragment.show(getFragmentManager(), "HV");
+        immunizationFragment.show(getSupportFragmentManager(), "HV");
     }
 
     public static MemberObject getSampleMember() {

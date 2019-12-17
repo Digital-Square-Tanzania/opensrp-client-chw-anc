@@ -134,7 +134,7 @@ public class SampleApplication extends DrishtiApplication {
 
     private void sampleUniqueIds() {
         List<String> ids = generateIds(20);
-        getUniqueIdRepository().bulkInserOpenmrsIds(ids);
+        getUniqueIdRepository().bulkInsertOpenmrsIds(ids);
     }
 
     private List<String> generateIds(int size) {

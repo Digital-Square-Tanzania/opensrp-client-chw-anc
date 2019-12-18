@@ -12,6 +12,7 @@ import android.widget.TextView;
 import com.vijay.jsonwizard.customviews.CheckBox;
 
 import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.contract.BaseHomeVisitImmunizationFragmentContract;
 import org.smartregister.chw.anc.domain.VaccineDisplay;
@@ -108,13 +109,21 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
 
         addVaccineViews();
 
+        checkBoxNoVaccinesDone.setOnClickListener(v -> checkBoxNoVaccinesDone.setChecked(true));
         checkBoxNoVaccinesDone.setOnCheckedChangeListener((buttonView, isChecked) -> {
+            Boolean manual = (Boolean) buttonView.getTag(R.id.cb_fired_manually);
+            if (manual != null && manual) {
+                buttonView.setTag(R.id.cb_fired_manually, false);
+                return;
+            }
+
             if (isChecked) {
                 setSingleEntryMode(true);
                 for (VaccineView vaccineView : vaccineViews) {
                     if (vaccineView.getCheckBox().isChecked())
                         vaccineView.getCheckBox().setChecked(false);
                 }
+                checkBoxNoVaccinesDone.setEnabled(false);
             }
 
             redrawView();
@@ -123,6 +132,13 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         initializePresenter();
 
         return view;
+    }
+
+    private void setCheckBoxState(@Nullable CheckBox checkBox, boolean state) {
+        if (checkBox == null) return;
+
+        checkBox.setTag(R.id.cb_fired_manually, true);
+        checkBox.setChecked(state);
     }
 
     @Override
@@ -165,11 +181,18 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
             String translated_name = NCUtils.getStringResourceByName(name.toLowerCase().replace(" ", "_"), getActivity());
             vaccineView.setText(translated_name);
             if (!vaccinesDefaultChecked && details == null) {
-                checkBox.setChecked(false);
+                setCheckBoxState(checkBox, false);
             }
             checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                Boolean manual = (Boolean) buttonView.getTag(R.id.cb_fired_manually);
+                if (manual != null && manual) {
+                    buttonView.setTag(R.id.cb_fired_manually, false);
+                    return;
+                }
+
                 if (isChecked) {
-                    checkBoxNoVaccinesDone.setChecked(false);
+                    setCheckBoxState(checkBoxNoVaccinesDone, false);
+                    checkBoxNoVaccinesDone.setEnabled(true);
                 } else {
                     // check if there are any active vaccine
                     boolean enableNoVaccines = true;
@@ -179,9 +202,10 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
                     }
 
                     if (enableNoVaccines && !checkBoxNoVaccinesDone.isChecked())
-                        checkBoxNoVaccinesDone.setChecked(true);
+                        setCheckBoxState(checkBoxNoVaccinesDone, true);
                 }
                 redrawView();
+                buttonView.setTag(R.id.cb_fired_manually, false);
             });
             vaccinationNameLayout.addView(vaccinationName);
             vaccineViews.add(view);
@@ -391,7 +415,7 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
 
     @Override
     public void updateNoVaccineCheck(boolean state) {
-        checkBoxNoVaccinesDone.setChecked(state);
+        setCheckBoxState(checkBoxNoVaccinesDone, state);
     }
 
     @Override
@@ -409,9 +433,9 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
             VaccineView vaccineView = lookup.get(entry.getKey());
             if (vaccineView != null) {
                 if (entry.getValue().equalsIgnoreCase(Constants.HOME_VISIT.VACCINE_NOT_GIVEN)) {
-                    vaccineView.getCheckBox().setChecked(false);
+                    setCheckBoxState(vaccineView.getCheckBox(), false);
                 } else {
-                    vaccineView.getCheckBox().setChecked(true);
+                    setCheckBoxState(vaccineView.getCheckBox(), true);
                     try {
                         DatePicker datePicker = vaccineView.getDatePickerView();
                         if (datePicker == null)

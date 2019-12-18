@@ -480,7 +480,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
         } else if (v.getId() == R.id.buttonSave) {
             onSave();
         } else if (v.getId() == R.id.close) {
-            dismiss();
+            onClose();
         } else if (v.getId() == R.id.buttonCancel) {
             onCancel();
         } else if (v.getId() == R.id.info_icon) {
@@ -496,7 +496,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
 
         if (getJsonObject() != null)
             getHomeVisitView().onDialogOptionUpdated(getJsonObject().toString());
-        dismiss();
+        onClose();
     }
 
     protected void onSelectOption(String option) {
@@ -507,7 +507,17 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
         onSelectOption(Constants.HOME_VISIT.DOSE_NOT_GIVEN);
         if (getJsonObject() != null)
             getHomeVisitView().onDialogOptionUpdated(getJsonObject().toString());
-        dismiss();
+        onClose();
+    }
+
+    @Override
+    public void onClose(){
+        try {
+            if (getActivity() != null && getActivity().getSupportFragmentManager() != null)
+                getActivity().getSupportFragmentManager().beginTransaction().remove(this).commit();
+        } catch (Exception e) {
+            Timber.e(e);
+        }
     }
 
     public java.util.Date getDateFromDatePicker(DatePicker datePicker) {

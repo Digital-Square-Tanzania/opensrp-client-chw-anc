@@ -43,6 +43,8 @@ public interface BaseAncHomeVisitFragmentContract {
 
         // K-> Constraint min,max, V-> Constraint date (String) value
         void setDateConstraints(Map<String, String> constraints);
+
+        void onClose();
     }
 
     interface Presenter {

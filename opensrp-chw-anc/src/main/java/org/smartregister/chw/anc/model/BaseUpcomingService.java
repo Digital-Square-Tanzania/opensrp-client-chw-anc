@@ -21,14 +21,15 @@ public class BaseUpcomingService {
     }
 
     public String getServiceName() {
-        return (serviceName.size() > 0) ? serviceName.get(0) : "" ;
+        return (serviceName.size() > 0) ? serviceName.get(0) : "";
     }
 
     public void setServiceName(String serviceName) {
         this.serviceName.add(serviceName);
     }
+
     public List<String> getServiceNames() {
-        return serviceName ;
+        return serviceName;
     }
 
     public void setServiceName(@NonNull List<String> serviceNames) {
@@ -42,8 +43,9 @@ public class BaseUpcomingService {
     public void setServiceDate(Date serviceDate) {
         this.serviceDate = serviceDate;
     }
+
     public Date getOverDueDate() {
-        return overDueDate;
+        return overDueDate == null ? getServiceDate() : overDueDate;
     }
 
     public void setOverDueDate(Date overDueDate) {

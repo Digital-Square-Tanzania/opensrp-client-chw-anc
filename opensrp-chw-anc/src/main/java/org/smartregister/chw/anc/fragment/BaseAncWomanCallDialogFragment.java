@@ -65,9 +65,10 @@ public class BaseAncWomanCallDialogFragment extends DialogFragment implements Ba
         TextView callTittleTextView = dialogView.findViewById(R.id.call_title);
         TextView callTitle = dialogView.findViewById(R.id.call_anc_woman_title);
 
-        if (womanProfileType.equals(Constants.MEMBER_PROFILE_TYPES.PNC))
+        if (womanProfileType.equals(Constants.MEMBER_PROFILE_TYPES.PNC)) {
             callTittleTextView.setText(getString(R.string.call_pnc_woman));
-        callTitle.setText(getString((R.string.call_pnc_woman)));
+            callTitle.setText(getString((R.string.call_pnc_woman)));
+        }
 
         if (listener == null) {
             listener = new BaseAncWomanCallWidgetDialogListener(this);

@@ -21,13 +21,8 @@ import timber.log.Timber;
 
 public class ProfileRepository extends BaseRepository {
 
-
     private static final String MOHTER_ENTITY_ID = "mother_entity_id";
     private static final String DELIVERY_DATE = "delivery_date";
-
-    public ProfileRepository(Repository repository) {
-        super(repository);
-    }
 
     private CommonPersonObjectClient getChildMember(Cursor cursor) {
         String[] columnNames = cursor.getColumnNames();

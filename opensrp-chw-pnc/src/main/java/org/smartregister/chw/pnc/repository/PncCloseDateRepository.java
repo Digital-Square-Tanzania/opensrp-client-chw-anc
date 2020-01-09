@@ -12,13 +12,6 @@ import java.util.Date;
 
 public class PncCloseDateRepository extends BaseRepository {
 
-
-    public PncCloseDateRepository(Repository repository) {
-
-        super(repository);
-    }
-
-
     public void closeOldPNCRecords(int duration) {
         SQLiteDatabase database = getWritableDatabase();
 
@@ -32,7 +25,6 @@ public class PncCloseDateRepository extends BaseRepository {
         String[] whereArgs = new String[]{String.valueOf(duration)};
         database.update(Constants.TABLES.EC_PREGNANCY_OUTCOME, contentValues, where, whereArgs);
     }
-
 
 }
 

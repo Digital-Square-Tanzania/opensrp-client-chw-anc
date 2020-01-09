@@ -226,8 +226,8 @@ public class VisitUtils {
         if (vaccineMap == null || vaccineMap.size() == 0) {
             vaccineMap = new HashMap<>();
 
-            List<VaccineRepo.Vaccine> allVacs = VaccineRepo.getVaccines("woman");
-            allVacs.addAll(VaccineRepo.getVaccines("child"));
+            List<VaccineRepo.Vaccine> allVacs = VaccineRepo.getVaccines("woman", true);
+            allVacs.addAll(VaccineRepo.getVaccines("child", true));
 
             for (VaccineRepo.Vaccine vaccine : allVacs) {
                 vaccineMap.put(

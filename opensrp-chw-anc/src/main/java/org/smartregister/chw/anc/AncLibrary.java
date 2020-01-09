@@ -67,14 +67,14 @@ public class AncLibrary {
 
     public VisitRepository visitRepository() {
         if (visitRepository == null) {
-            visitRepository = new VisitRepository(getRepository());
+            visitRepository = new VisitRepository();
         }
         return visitRepository;
     }
 
     public VisitDetailsRepository visitDetailsRepository() {
         if (visitDetailsRepository == null) {
-            visitDetailsRepository = new VisitDetailsRepository(getRepository());
+            visitDetailsRepository = new VisitDetailsRepository();
         }
         return visitDetailsRepository;
     }
@@ -97,7 +97,7 @@ public class AncLibrary {
 
     public UniqueIdRepository getUniqueIdRepository() {
         if (uniqueIdRepository == null) {
-            uniqueIdRepository = new UniqueIdRepository(getRepository());
+            uniqueIdRepository = new UniqueIdRepository();
         }
         return uniqueIdRepository;
     }

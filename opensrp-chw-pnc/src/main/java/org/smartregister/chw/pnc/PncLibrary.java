@@ -43,7 +43,7 @@ public class PncLibrary {
 
     public PncCloseDateRepository getPncCloseDateRepository() {
         if (pncCloseDateRepository == null) {
-            pncCloseDateRepository = new PncCloseDateRepository(getRepository());
+            pncCloseDateRepository = new PncCloseDateRepository();
         }
 
         return pncCloseDateRepository;
@@ -51,7 +51,7 @@ public class PncLibrary {
 
     public ProfileRepository profileRepository() {
         if (profileRepository == null) {
-            profileRepository = new ProfileRepository(getRepository());
+            profileRepository = new ProfileRepository();
         }
         return profileRepository;
     }

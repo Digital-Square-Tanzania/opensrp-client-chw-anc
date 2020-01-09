@@ -14,6 +14,7 @@ import org.powermock.core.classloader.annotations.PrepareForTest;
 import org.powermock.modules.junit4.rule.PowerMockRule;
 import org.smartregister.Context;
 import org.smartregister.chw.anc.AncLibrary;
+import org.smartregister.chw.anc.TestApplication;
 import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.anc.repository.VisitDetailsRepository;
@@ -28,6 +29,8 @@ import org.smartregister.immunization.repository.RecurringServiceRecordRepositor
 import org.smartregister.immunization.repository.RecurringServiceTypeRepository;
 import org.smartregister.immunization.repository.VaccineRepository;
 import org.smartregister.repository.AllSharedPreferences;
+import org.smartregister.repository.Repository;
+import org.smartregister.view.activity.DrishtiApplication;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -76,9 +79,18 @@ public class VisitUtilsTest {
     @Mock
     private ServiceType serviceType;
 
+    @Mock
+    private Repository repository;
+
+    @Mock
+    private DrishtiApplication application;
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
+
+        Mockito.when(application.getRepository()).thenReturn(repository);
+        TestApplication.setInstance(application);
 
         PowerMockito.mockStatic(AncLibrary.class);
         PowerMockito.mockStatic(ImmunizationLibrary.class);
@@ -202,8 +214,8 @@ public class VisitUtilsTest {
 
     @Test
     public void testIsVaccine(){
-        Assert.assertTrue(VisitUtils.isVaccine("tt1"));
         Assert.assertTrue(VisitUtils.isVaccine("opv0"));
         Assert.assertFalse(VisitUtils.isVaccine("opv10"));
+        Assert.assertTrue(VisitUtils.isVaccine("tt1"));
     }
 }

@@ -58,10 +58,6 @@ public class VisitRepository extends BaseRepository {
             + ");";
     private String[] VISIT_COLUMNS = {VISIT_ID, VISIT_TYPE, PARENT_VISIT_ID, BASE_ENTITY_ID, VISIT_DATE, VISIT_JSON, PRE_PROCESSED, FORM_SUBMISSION_ID, PROCESSED, UPDATED_AT, CREATED_AT};
 
-    public VisitRepository(Repository repository) {
-        super(repository);
-    }
-
     public static void createTable(SQLiteDatabase database) {
         database.execSQL(CREATE_VISIT_TABLE);
         database.execSQL(BASE_ENTITY_ID_INDEX);

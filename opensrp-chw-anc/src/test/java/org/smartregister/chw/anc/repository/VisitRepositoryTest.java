@@ -12,8 +12,10 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.smartregister.chw.anc.BaseUnitTest;
+import org.smartregister.chw.anc.TestApplication;
 import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.repository.Repository;
+import org.smartregister.view.activity.DrishtiApplication;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -37,15 +39,23 @@ public class VisitRepositoryTest extends BaseUnitTest {
 
     @Mock
     private SQLiteDatabase database;
+
     @Mock
     private Repository repository;
+
+    @Mock
+    private DrishtiApplication application;
 
     private VisitRepository visitRepository;
 
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
-        visitRepository = Mockito.spy(new VisitRepository(repository));
+
+        Mockito.when(application.getRepository()).thenReturn(repository);
+        TestApplication.setInstance(application);
+
+        visitRepository = Mockito.spy(new VisitRepository());
         Mockito.doReturn(database).when(visitRepository).getWritableDatabase();
         Mockito.doReturn(database).when(visitRepository).getReadableDatabase();
     }

@@ -50,7 +50,7 @@ public class ProfileRepository extends BaseRepository {
             if (database == null) {
                 return null;
             }
-            cursor = database.rawQuery("SELECT * fROM " + Constants.TABLES.EC_CHILD + " WHERE " + MOHTER_ENTITY_ID + "=? AND is_closed = 0",
+            cursor = database.rawQuery("SELECT * fROM " + Constants.TABLES.EC_CHILD + " WHERE " + MOHTER_ENTITY_ID + "=? AND is_closed = 0 ORDER by first_name ASC",
                     new String[]{motherBaseEntityID});
             if (cursor != null && cursor.getCount() > 0 && cursor.moveToFirst()) {
                 while (!cursor.isAfterLast()) {

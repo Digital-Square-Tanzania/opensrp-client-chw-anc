@@ -64,30 +64,31 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
         textView.setText(nameDetails);
         textView.setSingleLine(false);
         imageView.setImageResource(org.smartregister.chw.opensrp_chw_anc.R.mipmap.ic_member);
-        for (CommonPersonObjectClient childObject : children) {
-            try {
-                char gender = childObject.getColumnmaps().get(Constants.KEY.GENDER).charAt(0);
-                textView.append(" +\n" + childNameDetails(childObject.getColumnmaps().get(DBConstants.KEY.FIRST_NAME),
-                        childObject.getColumnmaps().get(DBConstants.KEY.MIDDLE_NAME),
-                        childObject.getColumnmaps().get(DBConstants.KEY.LAST_NAME),
-                        String.valueOf(PncUtil.getDaysDifference(childObject.getColumnmaps().get(DBConstants.KEY.DOB))),
-                        gender));
-                imageView.setBorderWidth(14);
-                imageView.setMaxWidth(10);
-                imageView.setMaxHeight(10);
-                imageView.setImageResource(R.drawable.pnc_less_twenty_nine_days);
-                if (gender == 'M'){
-                    imageView.setBorderColor(PncLibrary.getInstance().context().getColorResource(R.color.light_blue));
-                }
-                else{
-                    imageView.setBorderColor(PncLibrary.getInstance().context().getColorResource(R.color.light_pink));
-                }
+        if(children.size() == 1){
+            for (CommonPersonObjectClient childObject : children) {
+                try {
+                    char gender = childObject.getColumnmaps().get(Constants.KEY.GENDER).charAt(0);
+                    textView.append(" +\n" + childNameDetails(childObject.getColumnmaps().get(DBConstants.KEY.FIRST_NAME),
+                            childObject.getColumnmaps().get(DBConstants.KEY.MIDDLE_NAME),
+                            childObject.getColumnmaps().get(DBConstants.KEY.LAST_NAME),
+                            String.valueOf(PncUtil.getDaysDifference(childObject.getColumnmaps().get(DBConstants.KEY.DOB))),
+                            gender));
+                    imageView.setBorderWidth(14);
+                    imageView.setMaxWidth(10);
+                    imageView.setMaxHeight(10);
+                    imageView.setImageResource(R.drawable.pnc_less_twenty_nine_days);
+                    if (gender == 'M'){
+                        imageView.setBorderColor(PncLibrary.getInstance().context().getColorResource(R.color.light_blue));
+                    }
+                    else{
+                        imageView.setBorderColor(PncLibrary.getInstance().context().getColorResource(R.color.light_pink));
+                    }
 
-            } catch (NullPointerException npe) {
-                Timber.e(npe);
+                } catch (NullPointerException npe) {
+                    Timber.e(npe);
+                }
             }
         }
-
         return nameDetails;
     }
 

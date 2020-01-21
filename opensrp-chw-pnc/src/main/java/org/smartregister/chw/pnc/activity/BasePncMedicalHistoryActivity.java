@@ -4,7 +4,6 @@ import android.app.Activity;
 import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.widget.ProgressBar;
 
 import org.smartregister.chw.anc.activity.BaseAncMedicalHistoryActivity;
 import org.smartregister.chw.anc.domain.GroupedVisit;
@@ -17,10 +16,9 @@ import java.util.List;
 
 import static org.smartregister.chw.anc.util.Constants.ANC_MEMBER_OBJECTS.MEMBER_PROFILE_OBJECT;
 
-public class BasePncMedicalHistoryActivity extends BaseAncMedicalHistoryActivity implements BasePncMedicalHistoryContract.View{
+public class BasePncMedicalHistoryActivity extends BaseAncMedicalHistoryActivity implements BasePncMedicalHistoryContract.View {
 
     protected BasePncMedicalHistoryContract.Presenter pncPresenter;
-    private ProgressBar progressBar;
 
     public static void startMe(Activity activity, MemberObject memberObject) {
         Intent intent = new Intent(activity, BasePncMedicalHistoryActivity.class);
@@ -49,10 +47,4 @@ public class BasePncMedicalHistoryActivity extends BaseAncMedicalHistoryActivity
         LayoutInflater inflater = getLayoutInflater();
         return inflater.inflate(org.smartregister.chw.opensrp_chw_anc.R.layout.medical_history_details, null);
     }
-
-    @Override
-    public void displayLoadingState(boolean state) {
-        progressBar.setVisibility(state ? View.VISIBLE : View.GONE);
-    }
-
 }

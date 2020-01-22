@@ -27,6 +27,7 @@ import timber.log.Timber;
 
 import static org.smartregister.chw.anc.util.Constants.ENCOUNTER_TYPE;
 import static org.smartregister.chw.anc.util.DBConstants.KEY.DOB;
+import static org.smartregister.chw.anc.util.DBConstants.KEY.LAST_NAME;
 import static org.smartregister.chw.anc.util.DBConstants.KEY.MOTHER_ENTITY_ID;
 import static org.smartregister.chw.anc.util.DBConstants.KEY.RELATIONAL_ID;
 import static org.smartregister.chw.anc.util.DBConstants.KEY.UNIQUE_ID;
@@ -372,7 +373,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         return dirtyString.substring(1, dirtyString.length() - 1);
     }
 
-    public static JSONObject populatePNCForm(JSONObject form, JSONArray fields, String familyBaseEntityId, String motherBaseId, String uniqueChildID, String dob) {
+    public static JSONObject populatePNCForm(JSONObject form, JSONArray fields, String familyBaseEntityId, String motherBaseId, String uniqueChildID, String dob, String lastName) {
         try {
             if (form != null) {
                 form.put(RELATIONAL_ID, familyBaseEntityId);
@@ -386,6 +387,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
                 updateFormField(jsonArray, MOTHER_ENTITY_ID, motherBaseId);
                 updateFormField(jsonArray, UNIQUE_ID, uniqueChildID);
                 updateFormField(jsonArray, DOB, dob);
+                updateFormField(jsonArray, LAST_NAME, lastName);
                 for (int i = 0; i < jsonArray.length(); i++) {
                     jsonObject = jsonArray.getJSONObject(i);
                     preLoadObject = getFieldJSONObject(fields, jsonObject.optString(JsonFormUtils.KEY));

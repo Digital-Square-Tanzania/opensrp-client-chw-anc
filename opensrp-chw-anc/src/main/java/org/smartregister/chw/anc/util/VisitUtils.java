@@ -35,7 +35,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class VisitUtils {
 
@@ -100,17 +99,16 @@ public class VisitUtils {
         return visitMap;
     }
 
-    public static List<GroupedVisit> getGroupedVisitsByEntity(String baseEntityId, String name, List<GroupedVisit> groupedVisits, List<Visit> visits) {
-        if (groupedVisits == null || groupedVisits.isEmpty()) {
-            groupedVisits = new ArrayList<>();
-        }
+    public static List<GroupedVisit> getGroupedVisitsByEntity(String baseEntityId, String memberName, List<Visit> visits) {
+        List<GroupedVisit> groupedVisits = new ArrayList<>();
         List<Visit> visitList = new ArrayList<>();
-        for (Visit visit: visits) {
+
+        for (Visit visit : visits) {
             if (visit.getBaseEntityId().equals(baseEntityId)) {
                 visitList.add(visit);
             }
         }
-        groupedVisits.add(new GroupedVisit(baseEntityId, name, visitList));
+        groupedVisits.add(new GroupedVisit(baseEntityId, memberName, visitList));
         return groupedVisits;
     }
 

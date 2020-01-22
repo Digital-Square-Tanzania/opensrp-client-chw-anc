@@ -4,12 +4,12 @@ import java.util.List;
 
 public class GroupedVisit {
     private String baseEntityId;
-    private String name;
+    private String memberName;
     private List<Visit> visitList;
 
     public GroupedVisit(String baseEntityId, String name, List<Visit> visitList) {
         this.baseEntityId = baseEntityId;
-        this.name = name;
+        this.memberName = name;
         this.visitList = visitList;
     }
 
@@ -22,11 +22,11 @@ public class GroupedVisit {
     }
 
     public String getName() {
-        return name;
+        return memberName;
     }
 
     public void setName(String name) {
-        this.name = name;
+        this.memberName = name;
     }
 
     public List<Visit> getVisitList() {

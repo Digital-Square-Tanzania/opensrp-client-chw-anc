@@ -85,7 +85,7 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
                     JSONObject deliveryDate = org.smartregister.util.JsonFormUtils.getFieldJSONObject(fields, DBConstants.KEY.DELIVERY_DATE);
                     JSONObject famNameObject = org.smartregister.util.JsonFormUtils.getFieldJSONObject(fields, DBConstants.KEY.FAM_NAME);
 
-                    String familyName = famNameObject != null ? famNameObject.optString(JsonFormUtils.VALUE) : null;
+                    String familyName = famNameObject != null ? famNameObject.optString(JsonFormUtils.VALUE) : "";
                     String dob = deliveryDate.optString(JsonFormUtils.VALUE);
                     hasChildren = StringUtils.isNotBlank(deliveryDate.optString(JsonFormUtils.VALUE));
 
@@ -199,7 +199,7 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
 
                     String lastName = sameAsFamName ? familyName : surName;
                     JSONObject pncForm = getModel().getFormAsJson(Constants.FORMS.PNC_CHILD_REGISTRATION, childBaseEntityId, getLocationID());
-                    pncForm = JsonFormUtils.populatePNCForm(pncForm, childFields, familyBaseEntityId, motherBaseId, uniqueChildID, dob);
+                    pncForm = JsonFormUtils.populatePNCForm(pncForm, childFields, familyBaseEntityId, motherBaseId, uniqueChildID, dob, lastName);
 
                     processPncChild(childFields, allSharedPreferences, childBaseEntityId, familyBaseEntityId, motherBaseId, uniqueChildID, lastName);
                     if (pncForm != null) {

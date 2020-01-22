@@ -9,6 +9,7 @@ public class DBConstants {
         public static final String FAMILY_NAME = "family_name";
         public static final String MIDDLE_NAME = "middle_name";
         public static final String LAST_NAME = "last_name";
+        public static final String FAM_NAME = "fam_name";
         public static final String BASE_ENTITY_ID = "base_entity_id";
         public static final String RELATIONAL_ID = "relational_id";
         public static final String RELATIONALID = "relationalid";
@@ -33,6 +34,8 @@ public class DBConstants {
         public static final String HAS_ANC_CARD = "has_anc_card";
         public static final String MOTHER_ENTITY_ID = "mother_entity_id";
         public static final String DELIVERY_DATE = "delivery_date";
+        public static final String SAME_AS_FAM_NAME = "same_as_fam_name_chk";
+        public static final String OPTIONS = "options";
 
 
     }

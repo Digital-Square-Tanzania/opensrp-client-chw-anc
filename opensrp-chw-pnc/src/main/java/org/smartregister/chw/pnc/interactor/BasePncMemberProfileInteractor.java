@@ -76,13 +76,14 @@ public class BasePncMemberProfileInteractor extends BaseAncMemberProfileInteract
                 imageView.setMaxWidth(10);
                 imageView.setMaxHeight(10);
                 imageView.setImageResource(R.drawable.pnc_less_twenty_nine_days);
-                if (gender == 'M'){
-                    imageView.setBorderColor(PncLibrary.getInstance().context().getColorResource(R.color.light_blue));
+                if(children.size() == 1){
+                    if (gender == 'M'){
+                        imageView.setBorderColor(PncLibrary.getInstance().context().getColorResource(R.color.light_blue));
+                    }
+                    else{
+                        imageView.setBorderColor(PncLibrary.getInstance().context().getColorResource(R.color.light_pink));
+                    }
                 }
-                else{
-                    imageView.setBorderColor(PncLibrary.getInstance().context().getColorResource(R.color.light_pink));
-                }
-
             } catch (NullPointerException npe) {
                 Timber.e(npe);
             }

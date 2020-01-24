@@ -24,7 +24,9 @@ import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.immunization.ImmunizationLibrary;
 import org.smartregister.repository.AllSharedPreferences;
 
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -190,8 +192,8 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
             try {
 
                 JSONObject sameAsFamNameCheck = org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.SAME_AS_FAM_NAME);
-                JSONObject surNameObject = org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.FAM_NAME);
 
+                JSONObject surNameObject = org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.SUR_NAME);
                 String surName = surNameObject != null ? surNameObject.optString(JsonFormUtils.VALUE) : null;
                 if (sameAsFamNameCheck != null) {
                     JSONObject sameAsFamNameObject = sameAsFamNameCheck.optJSONArray(DBConstants.KEY.OPTIONS).optJSONObject(0);
@@ -201,7 +203,7 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
                     JSONObject pncForm = getModel().getFormAsJson(Constants.FORMS.PNC_CHILD_REGISTRATION, childBaseEntityId, getLocationID());
                     pncForm = JsonFormUtils.populatePNCForm(pncForm, childFields, familyBaseEntityId, motherBaseId, uniqueChildID, dob, lastName);
 
-                    processPncChild(childFields, allSharedPreferences, childBaseEntityId, familyBaseEntityId, motherBaseId, uniqueChildID, lastName);
+                    processPncChild(childFields, allSharedPreferences, childBaseEntityId, familyBaseEntityId, motherBaseId, uniqueChildID, lastName, dob);
                     if (pncForm != null) {
                         saveRegistration(pncForm.toString(), EC_CHILD);
                         NCUtils.saveVaccineEvents(childFields, childBaseEntityId);
@@ -226,13 +228,15 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
         NCUtils.startClientProcessing();
     }
 
-    public void processPncChild(JSONArray fields, AllSharedPreferences allSharedPreferences, String entityId, String familyBaseEntityId, String motherBaseId, String uniqueChildID, String lastName) {
+    public void processPncChild(JSONArray fields, AllSharedPreferences allSharedPreferences, String entityId, String familyBaseEntityId, String motherBaseId, String uniqueChildID, String lastName, String dob) {
         try {
             Client pncChild = org.smartregister.util.JsonFormUtils.createBaseClient(fields, JsonFormUtils.formTag(allSharedPreferences), entityId);
             Map<String, String> identifiers = new HashMap<>();
-            identifiers.put(Constants.JSON_FORM_EXTRA.OPENSPR_ID, uniqueChildID);
-
+            identifiers.put(Constants.JSON_FORM_EXTRA.OPENSPR_ID, uniqueChildID.replace("-", ""));
+            SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+            Date date = formatter.parse(dob);
             pncChild.setLastName(lastName);
+            pncChild.setBirthdate(date);
             pncChild.setIdentifiers(identifiers);
             pncChild.addRelationship(Constants.RELATIONSHIP.FAMILY, familyBaseEntityId);
             pncChild.addRelationship(Constants.RELATIONSHIP.MOTHER, motherBaseId);

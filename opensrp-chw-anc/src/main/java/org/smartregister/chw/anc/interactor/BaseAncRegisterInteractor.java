@@ -246,7 +246,6 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
             Timber.e(e);
         }
     }
-
 }
 
 

@@ -133,7 +133,7 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
         appExecutors.diskIO().execute(runnable);
     }
 
-    private void generateAndSaveFormsForEachChild(Map<String, List<JSONObject>> jsonObjectMap, String motherBaseId, String familyBaseEntityId, String dob, String familyName) {
+    protected void generateAndSaveFormsForEachChild(Map<String, List<JSONObject>> jsonObjectMap, String motherBaseId, String familyBaseEntityId, String dob, String familyName) {
 
         AllSharedPreferences allSharedPreferences = ImmunizationLibrary.getInstance().context().allSharedPreferences();
 

@@ -14,9 +14,12 @@ import org.powermock.reflect.Whitebox;
 import org.smartregister.chw.anc.contract.BaseAncRegisterContract;
 import org.smartregister.chw.anc.util.AppExecutors;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.concurrent.Executor;
+
+import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BaseAncRegisterInteractorTest implements Executor {
@@ -24,6 +27,7 @@ public class BaseAncRegisterInteractorTest implements Executor {
 
     private String jsonTestString = "{\"openmrs_entity\":\"person\",\"hint\":\"First name\",\"openmrs_entity_id\":\"first_name\",\"edit_type\":\"name\",\"v_required\":{\"err\":\"Please enter the first name\",\"value\":\"true\"},\"openmrs_entity_parent\":\"\",\"type\":\"edit_text\",\"value\":\"tet\",\"key\":\"first_name_640c9321e2f84bbb9fb71868f44ad1fd\",\"v_regex\":{\"err\":\"Please enter a valid name\",\"value\":\"[A-Za-z\\\\u00C0-\\\\u017F\\\\s\\\\u00C0-\\\\u017F\\\\.\\\\-]*\"}}";
 
+    private Map<String, List<JSONObject>> jsonObjectMap;
     private BaseAncRegisterInteractor interactor;
 
     @Mock
@@ -72,5 +76,20 @@ public class BaseAncRegisterInteractorTest implements Executor {
             break;
         }
     }
+
+    @Test
+    public void whenGenerateAndSaveFormsForEachChildCalledAnswered() {
+        Map map = new HashMap<String, List<JSONObject>>();
+        Mockito.doAnswer(invocation -> {
+            Assert.assertEquals(new HashMap<String, List<JSONObject>>(), invocation.getArgument(0));
+            Assert.assertEquals("motherBaseId", invocation.getArgument(1));
+            Assert.assertEquals("familyBaseEntityId", invocation.getArgument(2));
+            Assert.assertEquals("dob", invocation.getArgument(3));
+            Assert.assertEquals("familyName", invocation.getArgument(4));
+            return null;
+        }).when(interactor).generateAndSaveFormsForEachChild(any(Map.class), any(String.class), any(String.class), any(String.class), any(String.class));
+        interactor.generateAndSaveFormsForEachChild(map, "motherBaseId", "familyBaseEntityId", "dob", "familyName");
+    }
+
 
 }

@@ -1,5 +1,7 @@
 package org.smartregister.chw.anc.interactor;
 
+import org.json.JSONArray;
+import org.json.JSONObject;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
@@ -8,14 +10,24 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.powermock.reflect.Whitebox;
 import org.smartregister.chw.anc.contract.BaseAncRegisterContract;
 import org.smartregister.chw.anc.util.AppExecutors;
 
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.concurrent.Executor;
+
+import static org.mockito.ArgumentMatchers.any;
 
 @RunWith(MockitoJUnitRunner.class)
 public class BaseAncRegisterInteractorTest implements Executor {
+    private String jsonString = "[{\"key\":\"first_name_640c9321e2f84bbb9fb71868f44ad1fd\",\"openmrs_entity_parent\":\"\",\"openmrs_entity\":\"person\",\"openmrs_entity_id\":\"first_name\",\"type\":\"edit_text\",\"hint\":\"First name\",\"edit_type\":\"name\",\"v_required\":{\"value\":\"true\",\"err\":\"Please enter the first name\"},\"v_regex\":{\"value\":\"[A-Za-z\\\\u00C0-\\\\u017F\\\\s\\\\u00C0-\\\\u017F\\\\.\\\\-]*\",\"err\":\"Please enter a valid name\"},\"value\":\"tet\"},{\"key\":\"middle_name_640c9321e2f84bbb9fb71868f44ad1fd\",\"openmrs_entity_parent\":\"\",\"openmrs_entity\":\"person\",\"openmrs_entity_id\":\"middle_name\",\"type\":\"edit_text\",\"hint\":\"Middle name\",\"edit_type\":\"name\",\"v_regex\":{\"value\":\"[A-Za-z\\\\u00C0-\\\\u017F\\\\s\\\\u00C0-\\\\u017F\\\\.\\\\-]*\",\"err\":\"Please enter a valid name\"},\"value\":\"te\"},{\"key\":\"dob_640c9321e2f84bbb9fb71868f44ad1fd\",\"openmrs_entity_parent\":\"\",\"openmrs_entity\":\"person\",\"openmrs_entity_id\":\"birthdate\",\"type\":\"hidden\",\"value\":\"\"}]";
 
+    private String jsonTestString = "{\"openmrs_entity\":\"person\",\"hint\":\"First name\",\"openmrs_entity_id\":\"first_name\",\"edit_type\":\"name\",\"v_required\":{\"err\":\"Please enter the first name\",\"value\":\"true\"},\"openmrs_entity_parent\":\"\",\"type\":\"edit_text\",\"value\":\"tet\",\"key\":\"first_name_640c9321e2f84bbb9fb71868f44ad1fd\",\"v_regex\":{\"err\":\"Please enter a valid name\",\"value\":\"[A-Za-z\\\\u00C0-\\\\u017F\\\\s\\\\u00C0-\\\\u017F\\\\.\\\\-]*\"}}";
+
+    private Map<String, List<JSONObject>> jsonObjectMap;
     private BaseAncRegisterInteractor interactor;
 
     @Mock
@@ -51,4 +63,33 @@ public class BaseAncRegisterInteractorTest implements Executor {
     public void execute(Runnable command) {
         command.run();
     }
+
+    @Test
+    public void testGetChildFieldMaps() throws Exception {
+        JSONArray jsonArray = new JSONArray(jsonString);
+        Map<String, List<JSONObject>> getValue = Whitebox.invokeMethod(interactor, "getChildFieldMaps", jsonArray);
+        Assert.assertNotNull(getValue);
+        Assert.assertEquals(1, getValue.size());
+
+        for (Map.Entry<String, List<JSONObject>> entry : getValue.entrySet()) {
+            Assert.assertEquals(jsonTestString, entry.getValue().get(0).toString());
+            break;
+        }
+    }
+
+    @Test
+    public void whenGenerateAndSaveFormsForEachChildCalledAnswered() {
+        Map map = new HashMap<String, List<JSONObject>>();
+        Mockito.doAnswer(invocation -> {
+            Assert.assertEquals(new HashMap<String, List<JSONObject>>(), invocation.getArgument(0));
+            Assert.assertEquals("motherBaseId", invocation.getArgument(1));
+            Assert.assertEquals("familyBaseEntityId", invocation.getArgument(2));
+            Assert.assertEquals("dob", invocation.getArgument(3));
+            Assert.assertEquals("familyName", invocation.getArgument(4));
+            return null;
+        }).when(interactor).generateAndSaveFormsForEachChild(any(Map.class), any(String.class), any(String.class), any(String.class), any(String.class));
+        interactor.generateAndSaveFormsForEachChild(map, "motherBaseId", "familyBaseEntityId", "dob", "familyName");
+    }
+
+
 }

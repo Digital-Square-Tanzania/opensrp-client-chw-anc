@@ -234,6 +234,6 @@ public class VisitUtilsTest {
 
         // Expected grouping
         Assert.assertEquals(motherBaseEntityId, VisitUtils.getGroupedVisitsByEntity(motherBaseEntityId, "", visits).get(0).getBaseEntityId());
-        Assert.assertEquals(childBaseEntityId, VisitUtils.getGroupedVisitsByEntity(childBaseEntityId, "", visits).get(0).getBaseEntityId());
+        Assert.assertEquals(0, VisitUtils.getGroupedVisitsByEntity(childBaseEntityId, "", visits).get(0).getVisitList().size());
     }
 }

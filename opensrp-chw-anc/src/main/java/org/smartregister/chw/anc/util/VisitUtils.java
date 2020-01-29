@@ -101,14 +101,16 @@ public class VisitUtils {
 
     public static List<GroupedVisit> getGroupedVisitsByEntity(String baseEntityId, String memberName, List<Visit> visits) {
         List<GroupedVisit> groupedVisits = new ArrayList<>();
-        List<Visit> visitList = new ArrayList<>();
+        if (visits.size() > 0) {
+            List<Visit> visitList = new ArrayList<>();
 
-        for (Visit visit : visits) {
-            if (visit.getBaseEntityId().equals(baseEntityId)) {
-                visitList.add(visit);
+            for (Visit visit : visits) {
+                if (visit.getBaseEntityId().equals(baseEntityId)) {
+                    visitList.add(visit);
+                }
             }
+            groupedVisits.add(new GroupedVisit(baseEntityId, memberName, visitList));
         }
-        groupedVisits.add(new GroupedVisit(baseEntityId, memberName, visitList));
         return groupedVisits;
     }
 

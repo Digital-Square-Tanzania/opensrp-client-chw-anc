@@ -9,6 +9,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.joda.time.DateTime;
 import org.joda.time.Days;
 import org.smartregister.chw.anc.AncLibrary;
+import org.smartregister.chw.anc.domain.GroupedVisit;
 import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.anc.repository.VisitDetailsRepository;
@@ -54,7 +55,7 @@ public class VisitUtils {
         return visits;
     }
 
-    public static List<Visit> getChildVisits(String parentVisitID){
+    public static List<Visit> getChildVisits(String parentVisitID) {
         List<Visit> res = new ArrayList<>();
 
         List<Visit> visit_kids = AncLibrary.getInstance().visitRepository().getChildEvents(parentVisitID);
@@ -96,6 +97,21 @@ public class VisitUtils {
             visitMap.put(visitDetail.getVisitKey(), visitDetailList);
         }
         return visitMap;
+    }
+
+    public static List<GroupedVisit> getGroupedVisitsByEntity(String baseEntityId, String memberName, List<Visit> visits) {
+        List<GroupedVisit> groupedVisits = new ArrayList<>();
+        if (visits.size() > 0) {
+            List<Visit> visitList = new ArrayList<>();
+
+            for (Visit visit : visits) {
+                if (visit.getBaseEntityId().equals(baseEntityId)) {
+                    visitList.add(visit);
+                }
+            }
+            groupedVisits.add(new GroupedVisit(baseEntityId, memberName, visitList));
+        }
+        return groupedVisits;
     }
 
     /**

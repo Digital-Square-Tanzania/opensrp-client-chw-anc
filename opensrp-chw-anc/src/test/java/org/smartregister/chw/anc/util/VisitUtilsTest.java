@@ -213,9 +213,27 @@ public class VisitUtilsTest {
     }
 
     @Test
-    public void testIsVaccine(){
+    public void testIsVaccine() {
         Assert.assertTrue(VisitUtils.isVaccine("opv0"));
         Assert.assertFalse(VisitUtils.isVaccine("opv10"));
         Assert.assertTrue(VisitUtils.isVaccine("tt1"));
+    }
+
+    @Test
+    public void visitsCanBeGroupedByEntityId() {
+        String motherBaseEntityId = "mother-uno-1";
+        String childBaseEntityId = "child-uno-1";
+
+        Visit motherVisit = new Visit();
+        motherVisit.setBaseEntityId(motherBaseEntityId);
+        Visit firstChildVisit = new Visit();
+        firstChildVisit.setBaseEntityId(childBaseEntityId);
+
+        List<Visit> visits = new ArrayList<>();
+        visits.add(motherVisit);
+
+        // Expected grouping
+        Assert.assertEquals(motherBaseEntityId, VisitUtils.getGroupedVisitsByEntity(motherBaseEntityId, "", visits).get(0).getBaseEntityId());
+        Assert.assertEquals(0, VisitUtils.getGroupedVisitsByEntity(childBaseEntityId, "", visits).get(0).getVisitList().size());
     }
 }

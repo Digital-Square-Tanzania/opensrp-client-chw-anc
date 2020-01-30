@@ -191,29 +191,32 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
             String childBaseEntityId = JsonFormUtils.generateRandomUUIDString();
             try {
 
-                JSONObject sameAsFamNameCheck = org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.SAME_AS_FAM_NAME_CHK);
-                sameAsFamNameCheck = sameAsFamNameCheck != null ? sameAsFamNameCheck : org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.SAME_AS_FAM_NAME);
-
                 JSONObject surNameObject = org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.SUR_NAME);
                 String surName = surNameObject != null ? surNameObject.optString(JsonFormUtils.VALUE) : null;
-                if (sameAsFamNameCheck != null) {
-                    JSONObject sameAsFamNameObject = sameAsFamNameCheck.optJSONArray(DBConstants.KEY.OPTIONS).optJSONObject(0);
-                    boolean sameAsFamName = sameAsFamNameObject.optBoolean(JsonFormUtils.VALUE);
 
-                    String lastName = sameAsFamName ? familyName : surName;
+                String lastName = sameASFamilyNameCheck(childFields) ? familyName : surName;
                     JSONObject pncForm = getModel().getFormAsJson(Constants.FORMS.PNC_CHILD_REGISTRATION, childBaseEntityId, getLocationID());
                     pncForm = JsonFormUtils.populatePNCForm(pncForm, childFields, familyBaseEntityId, motherBaseId, uniqueChildID, dob, lastName);
-
                     processPncChild(childFields, allSharedPreferences, childBaseEntityId, familyBaseEntityId, motherBaseId, uniqueChildID, lastName, dob);
                     if (pncForm != null) {
                         saveRegistration(pncForm.toString(), EC_CHILD);
                         NCUtils.saveVaccineEvents(childFields, childBaseEntityId);
                     }
-                }
+
             } catch (Exception e) {
                 e.printStackTrace();
             }
         }
+    }
+
+    protected boolean sameASFamilyNameCheck(JSONArray childFields) {
+        JSONObject sameAsFamNameCheck = org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.SAME_AS_FAM_NAME_CHK);
+        sameAsFamNameCheck = sameAsFamNameCheck != null ? sameAsFamNameCheck : org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.SAME_AS_FAM_NAME);
+        JSONObject sameAsFamNameObject = sameAsFamNameCheck.optJSONArray(DBConstants.KEY.OPTIONS).optJSONObject(0);
+        if (sameAsFamNameCheck != null) {
+            return sameAsFamNameObject.optBoolean(JsonFormUtils.VALUE);
+        }
+        return false;
     }
 
     protected String getLocationID() {

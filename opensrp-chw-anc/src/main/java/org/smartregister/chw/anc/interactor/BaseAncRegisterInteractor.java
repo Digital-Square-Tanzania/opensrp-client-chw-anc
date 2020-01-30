@@ -209,7 +209,7 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
         }
     }
 
-    protected boolean sameASFamilyNameCheck(JSONArray childFields) {
+    private boolean sameASFamilyNameCheck(JSONArray childFields) {
         JSONObject sameAsFamNameCheck = org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.SAME_AS_FAM_NAME_CHK);
         sameAsFamNameCheck = sameAsFamNameCheck != null ? sameAsFamNameCheck : org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.SAME_AS_FAM_NAME);
         JSONObject sameAsFamNameObject = sameAsFamNameCheck.optJSONArray(DBConstants.KEY.OPTIONS).optJSONObject(0);

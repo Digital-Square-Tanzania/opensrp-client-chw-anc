@@ -191,7 +191,8 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
             String childBaseEntityId = JsonFormUtils.generateRandomUUIDString();
             try {
 
-                JSONObject sameAsFamNameCheck = org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.SAME_AS_FAM_NAME);
+                JSONObject sameAsFamNameCheck = org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.SAME_AS_FAM_NAME_CHK);
+                sameAsFamNameCheck = sameAsFamNameCheck != null ? sameAsFamNameCheck : org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.SAME_AS_FAM_NAME);
 
                 JSONObject surNameObject = org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.SUR_NAME);
                 String surName = surNameObject != null ? surNameObject.optString(JsonFormUtils.VALUE) : null;
@@ -212,7 +213,6 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
             } catch (Exception e) {
                 e.printStackTrace();
             }
-
         }
     }
 

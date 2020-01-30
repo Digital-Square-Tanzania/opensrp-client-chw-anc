@@ -27,6 +27,9 @@ public class BaseAncRegisterInteractorTest implements Executor {
 
     private String jsonTestString = "{\"openmrs_entity\":\"person\",\"hint\":\"First name\",\"openmrs_entity_id\":\"first_name\",\"edit_type\":\"name\",\"v_required\":{\"err\":\"Please enter the first name\",\"value\":\"true\"},\"openmrs_entity_parent\":\"\",\"type\":\"edit_text\",\"value\":\"tet\",\"key\":\"first_name_640c9321e2f84bbb9fb71868f44ad1fd\",\"v_regex\":{\"err\":\"Please enter a valid name\",\"value\":\"[A-Za-z\\\\u00C0-\\\\u017F\\\\s\\\\u00C0-\\\\u017F\\\\.\\\\-]*\"}}";
 
+    private String childFields = "[{\"key\":\"same_as_fam_name\",\"openmrs_entity_parent\":\"\",\"openmrs_entity\":\"concept\",\"openmrs_entity_id\":\"\",\"openmrs_data_type\":\"text\",\"type\":\"check_box\",\"options\":[{\"key\":\"same_as_fam_name\",\"text\":\"Surname same as family name\",\"text_size\":\"18px\",\"value\":true}],\"step\":\"step1\",\"is-rule-check\":true,\"value\":[\"same_as_fam_name\"]},{\"key\":\"first_name\",\"openmrs_entity_parent\":\"\",\"openmrs_entity\":\"person\",\"openmrs_entity_id\":\"first_name\",\"type\":\"edit_text\",\"hint\":\"First name\",\"edit_type\":\"name\",\"value\":\"ggg\"}]";
+
+
     private Map<String, List<JSONObject>> jsonObjectMap;
     private BaseAncRegisterInteractor interactor;
 
@@ -91,5 +94,10 @@ public class BaseAncRegisterInteractorTest implements Executor {
         interactor.generateAndSaveFormsForEachChild(map, "motherBaseId", "familyBaseEntityId", "dob", "familyName");
     }
 
-
+    @Test
+    public void testSameASFamilyNameCheck() throws Exception {
+        JSONArray jsonArray = new JSONArray(childFields);
+        boolean sameASFamilyNameCheck = Whitebox.invokeMethod(interactor, "sameASFamilyNameCheck", jsonArray);
+        Assert.assertTrue(sameASFamilyNameCheck);
+    }
 }

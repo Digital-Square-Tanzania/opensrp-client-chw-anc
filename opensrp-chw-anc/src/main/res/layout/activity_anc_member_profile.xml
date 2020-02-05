@@ -74,7 +74,7 @@
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"
                     android:layout_marginTop="5dp"
-                    android:paddingLeft="0dp"
+                    android:textAlignment="center"
                        android:text="Glory Juma, 26"
                     android:textColor="@color/text_black"
                     android:textSize="@dimen/activity_anc_title_size" />

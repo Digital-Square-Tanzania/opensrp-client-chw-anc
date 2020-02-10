@@ -203,7 +203,7 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
                     processPncChild(childFields, allSharedPreferences, childBaseEntityId, familyBaseEntityId, motherBaseId, uniqueChildID, lastName, dob);
                     if (pncForm != null) {
                         saveRegistration(pncForm.toString(), EC_CHILD);
-                        NCUtils.saveVaccineEvents(childFields, childBaseEntityId);
+                        NCUtils.saveVaccineEvents(childFields, childBaseEntityId, dob);
                     }
 
             } catch (Exception e) {

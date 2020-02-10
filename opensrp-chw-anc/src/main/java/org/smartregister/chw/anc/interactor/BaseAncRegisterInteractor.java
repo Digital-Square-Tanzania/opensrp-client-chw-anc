@@ -164,9 +164,12 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
             try {
                 JSONObject jsonObject = fields.getJSONObject(i);
                 String key = jsonObject.getString(JsonFormUtils.KEY);
-                if (key.matches(".*\\d.*")) {
+                String keySplit = key.substring(key.lastIndexOf("_"));
+                if (keySplit.matches(".*\\d.*")) {
 
-                    String formattedKey = key.replaceAll("[^\\d.]", "");
+                    String formattedKey = keySplit.replaceAll("[^\\d.]", "");
+                    if (formattedKey.length() < 10)
+                        continue;
                     List<JSONObject> jsonObjectList = jsonObjectMap.get(formattedKey);
 
                     if (jsonObjectList == null)

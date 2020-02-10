@@ -461,24 +461,46 @@ public class NCUtils {
         return String.valueOf(ga);
     }
 
-    public static void saveVaccineEvents(JSONArray fields, String baseID) {
-        String[] vaccines = {"bcg_date", "opv0_date"};
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        for (int i = 0; i < vaccines.length; i++) {
+    public static void saveVaccineEvents(JSONArray fields, String baseID, String dob) {
 
-            String vaccineDate = getFieldJSONObject(fields, vaccines[i]).optString(VALUE);
-            if (StringUtils.isNotBlank(vaccineDate)) {
-                try {
-                    Date dateVaccinated = formatter.parse(vaccineDate);
-                    String VaccineName = vaccines[i] == "bcg_date" ? "bcg" : "opv_0";
-                    VisitUtils.savePncChildVaccines(VaccineName, baseID, dateVaccinated);
+        JSONObject vaccinesAtBirthObject = org.smartregister.util.JsonFormUtils.getFieldJSONObject(fields, DBConstants.KEY.VACCINES_AT_BIRTH);
+        JSONArray vaccinesAtBirthArray = vaccinesAtBirthObject != null ? vaccinesAtBirthObject.optJSONArray(DBConstants.KEY.OPTIONS) : null;
 
-                } catch (ParseException e) {
-                    e.printStackTrace();
+        if (vaccinesAtBirthArray != null) {
+            for (int i = 0; i < vaccinesAtBirthArray.length(); i++) {
+                JSONObject currentVaccine = vaccinesAtBirthArray.optJSONObject(i);
+                if (currentVaccine != null && currentVaccine.optBoolean(JsonFormUtils.VALUE)) {
+                    String VaccineName = currentVaccine.optString(JsonFormUtils.KEY) == "chk_bcg" ? "bcg" : "opv_0";
+                    VisitUtils.savePncChildVaccines(VaccineName, baseID, vaccinationDate(dob));
                 }
             }
+
+        } else {
+            saveVaccines(fields, baseID);
+        }
+    }
+
+    private static Date vaccinationDate(String vaccineDate) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            return formatter.parse(vaccineDate);
+        } catch (ParseException e) {
+            Timber.e(e);
         }
 
+        return null;
+    }
+
+    private static void saveVaccines(JSONArray fields, String baseID) {
+        String[] vaccines = {"bcg_date", "opv0_date"};
+        for (int i = 0; i < vaccines.length; i++) {
+            String vaccineDate = getFieldJSONObject(fields, vaccines[i]).optString(VALUE);
+            if (StringUtils.isNotBlank(vaccineDate)) {
+                Date dateVaccinated = vaccinationDate(vaccineDate);
+                String VaccineName = vaccines[i] == "bcg_date" ? "bcg" : "opv_0";
+                VisitUtils.savePncChildVaccines(VaccineName, baseID, dateVaccinated);
+            }
+        }
     }
 
     @Nullable

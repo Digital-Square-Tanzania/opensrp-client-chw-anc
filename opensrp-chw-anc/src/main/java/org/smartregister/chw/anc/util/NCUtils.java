@@ -441,16 +441,13 @@ public class NCUtils {
         return clean_val;
     }
 
-    public static int getMemberProfileImageResourceIDentifier(String entityType) {
+    public static int getMemberProfileImageResourceIDentifier(@Nullable String memberType) {
+        if (memberType.equals("anc")) {
+            return R.drawable.anc_woman;
+        } else if (memberType.equals("pnc")) {
+            return R.drawable.pnc_woman;
+        } else
         return R.mipmap.ic_member;
-    }
-
-    public static int getAncMemberProfileImageResourceIdentifier() {
-        return R.drawable.anc_woman;
-    }
-
-    public static int getPncMemberProfileImageResourceIdentifier() {
-        return R.drawable.pnc_woman;
     }
 
     public static String gestationAgeString(String lmp, Context context, boolean full) {

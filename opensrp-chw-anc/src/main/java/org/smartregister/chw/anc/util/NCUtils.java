@@ -74,11 +74,7 @@ import static org.smartregister.util.Utils.getAllSharedPreferences;
 
 public class NCUtils {
 
-    public static final SimpleDateFormat dd_MMM_yyyy = new SimpleDateFormat("dd MMM yyyy");
-    public static final SimpleDateFormat yyyy_mm_dd = new SimpleDateFormat("yyyy-mm-dd");
     private static String[] default_obs = {"start", "end", "deviceid", "subscriberid", "simserial", "phonenumber"};
-    private static String[] vaccines = {"bcg_date", "opv0_date"};
-    private static String VaccineName;
 
     public static String firstCharacterUppercase(String str) {
         if (TextUtils.isEmpty(str)) return "";
@@ -466,24 +462,23 @@ public class NCUtils {
     }
 
     public static void saveVaccineEvents(JSONArray fields, String baseID) {
+        String[] vaccines = {"bcg_date", "opv0_date"};
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         for (int i = 0; i < vaccines.length; i++) {
 
-            try {
-                String vaccineDate = getFieldJSONObject(fields, vaccines[i]).optString(VALUE);
-                SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-                Date date = formatter.parse(vaccineDate);
-                if (vaccines[i] == "bcg_date") {
-                    VaccineName = "bcg";
-                } else if (vaccines[i] == "opv0_date") {
-                    VaccineName = "opv_0";
+            String vaccineDate = getFieldJSONObject(fields, vaccines[i]).optString(VALUE);
+            if (StringUtils.isNotBlank(vaccineDate)) {
+                try {
+                    Date dateVaccinated = formatter.parse(vaccineDate);
+                    String VaccineName = vaccines[i] == "bcg_date" ? "bcg" : "opv_0";
+                    VisitUtils.savePncChildVaccines(VaccineName, baseID, dateVaccinated);
+
+                } catch (ParseException e) {
+                    e.printStackTrace();
                 }
-                if (VaccineName != null) {
-                    VisitUtils.savePncChildVaccines(VaccineName, baseID, date);
-                }
-            } catch (ParseException e) {
-                Timber.e(e.toString());
             }
         }
+
     }
 
     @Nullable

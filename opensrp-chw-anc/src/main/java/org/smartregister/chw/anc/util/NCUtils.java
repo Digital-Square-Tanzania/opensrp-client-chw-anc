@@ -441,10 +441,11 @@ public class NCUtils {
         return clean_val;
     }
 
+    @Nullable
     public static int getMemberProfileImageResourceIDentifier(@Nullable String memberType) {
-        if (memberType.equals("anc")) {
+        if ("anc".equals(memberType)) {
             return R.drawable.anc_woman;
-        } else if (memberType.equals("pnc")) {
+        } else if ("pnc".equals(memberType)) {
             return R.drawable.pnc_woman;
         } else
         return R.mipmap.ic_member;

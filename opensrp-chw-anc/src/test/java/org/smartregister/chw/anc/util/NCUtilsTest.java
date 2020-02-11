@@ -3,9 +3,13 @@ package org.smartregister.chw.anc.util;
 import android.content.Context;
 
 import org.joda.time.DateTime;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.junit.Assert;
+import org.junit.Before;
 import org.junit.Test;
+import org.mockito.Mock;
+import org.mockito.Mockito;
 import org.robolectric.RuntimeEnvironment;
 import org.smartregister.chw.anc.BaseUnitTest;
 import org.smartregister.chw.anc.domain.Visit;
@@ -17,9 +21,30 @@ import org.smartregister.domain.db.Obs;
 import java.util.ArrayList;
 import java.util.List;
 
+import timber.log.Timber;
+
+import static org.mockito.ArgumentMatchers.any;
+
 public class NCUtilsTest extends BaseUnitTest {
 
     private Context context = RuntimeEnvironment.application;
+
+    private String childFields = "[{\"key\":\"same_as_fam_name\",\"openmrs_entity_parent\":\"\",\"openmrs_entity\":\"concept\",\"openmrs_entity_id\":\"\",\"openmrs_data_type\":\"text\",\"type\":\"check_box\",\"options\":[{\"key\":\"same_as_fam_name\",\"text\":\"Surname same as family name\",\"text_size\":\"18px\",\"value\":true}],\"step\":\"step1\",\"is-rule-check\":true,\"value\":[\"same_as_fam_name\"]},{\"key\":\"first_name\",\"openmrs_entity_parent\":\"\",\"openmrs_entity\":\"person\",\"openmrs_entity_id\":\"first_name\",\"type\":\"edit_text\",\"hint\":\"First name\",\"edit_type\":\"name\",\"value\":\"ggg\"}]";
+
+    @Mock
+    private NCUtils ncUtils;
+
+    private JSONArray childJsonArray;
+
+    @Before
+    public void setUp() {
+        ncUtils = Mockito.spy(new NCUtils());
+        try {
+            childJsonArray = new JSONArray(childFields);
+        } catch (JSONException e) {
+            Timber.e(e);
+        }
+    }
 
     @Test
     public void testGetText() {
@@ -123,6 +148,19 @@ public class NCUtilsTest extends BaseUnitTest {
     public void getMemberProfileImageReturnsCorrectResourceIDentifier() {
         int memberImageResourceIdentifier = R.mipmap.ic_member;
         Assert.assertEquals(memberImageResourceIdentifier, NCUtils.getMemberProfileImageResourceIDentifier(null));
+    }
+
+
+    @Test
+    public void whenSaveVaccineCalledAnswered() {
+
+        Mockito.doAnswer(invocation -> {
+            Assert.assertEquals(childJsonArray, invocation.getArgument(0));
+            Assert.assertEquals("motherBaseId", invocation.getArgument(1));
+            Assert.assertEquals("familyBaseEntityId", invocation.getArgument(2));
+            return null;
+        }).when(ncUtils).saveVaccineEvents(any(JSONArray.class), any(String.class), any(String.class));
+        ncUtils.saveVaccineEvents(childJsonArray, "motherBaseId", "familyBaseEntityId");
     }
 
 }

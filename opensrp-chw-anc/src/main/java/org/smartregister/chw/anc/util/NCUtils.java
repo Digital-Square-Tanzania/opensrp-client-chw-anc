@@ -468,7 +468,7 @@ public class NCUtils {
             for (int i = 0; i < vaccinesAtBirthArray.length(); i++) {
                 JSONObject currentVaccine = vaccinesAtBirthArray.optJSONObject(i);
                 if (currentVaccine != null && currentVaccine.optBoolean(JsonFormUtils.VALUE)) {
-                    String VaccineName = currentVaccine.optString(JsonFormUtils.KEY) == "chk_bcg" ? "bcg" : "opv_0";
+                    String VaccineName = currentVaccine.optString(JsonFormUtils.KEY).equals("chk_bcg") ? "bcg" : "opv_0";
                     VisitUtils.savePncChildVaccines(VaccineName, baseID, vaccinationDate(dob));
                 }
             }

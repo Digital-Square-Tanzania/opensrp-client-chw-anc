@@ -485,20 +485,23 @@ public class NCUtils {
         } catch (ParseException e) {
             Timber.e(e);
         }
-
         return null;
     }
 
     private static void saveVaccines(JSONArray fields, String baseID) {
         String[] vaccines = {"bcg_date", "opv0_date"};
         for (int i = 0; i < vaccines.length; i++) {
-            String vaccineDate = getFieldJSONObject(fields, vaccines[i]).optString(VALUE);
-            if (StringUtils.isNotBlank(vaccineDate)) {
-                Date dateVaccinated = vaccinationDate(vaccineDate);
-                String VaccineName = vaccines[i] == "bcg_date" ? "bcg" : "opv_0";
-                VisitUtils.savePncChildVaccines(VaccineName, baseID, dateVaccinated);
+            try {
+                String vaccineDate = getFieldJSONObject(fields, vaccines[i]).optString(VALUE);
+                if (StringUtils.isNotBlank(vaccineDate)) {
+                    Date dateVaccinated = vaccinationDate(vaccineDate);
+                    String VaccineName = vaccines[i] == "bcg_date" ? "bcg" : "opv_0";
+                    VisitUtils.savePncChildVaccines(VaccineName, baseID, dateVaccinated);
+                }
+            } catch (NullPointerException e) {
+                Timber.d(e);
             }
-        }
+            }
     }
 
     @Nullable

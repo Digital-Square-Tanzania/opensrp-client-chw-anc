@@ -14,6 +14,8 @@ import org.smartregister.chw.anc.util.AppExecutors;
 import org.smartregister.domain.AlertStatus;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.Executor;
 @RunWith(MockitoJUnitRunner.class)
 public class BaseAncMemberProfileInteractorTest implements Executor {
@@ -45,6 +47,12 @@ public class BaseAncMemberProfileInteractorTest implements Executor {
     public void testGetMemberClient() {
         MemberObject memberObject = interactor.getMemberClient("12345");
         Assert.assertEquals("12345", memberObject.getBaseEntityId());
+    }
+
+    @Test
+    public void testGetVaccineList() {
+        Map<String, Date> vaccineList = interactor.getVaccineList();
+        Assert.assertEquals(vaccineList, new LinkedHashMap<>());
     }
 
     @Test

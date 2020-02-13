@@ -3,9 +3,11 @@ package org.smartregister.chw.anc.interactor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.util.AppExecutors;
@@ -13,7 +15,7 @@ import org.smartregister.domain.AlertStatus;
 
 import java.util.Date;
 import java.util.concurrent.Executor;
-
+@RunWith(MockitoJUnitRunner.class)
 public class BaseAncMemberProfileInteractorTest implements Executor {
 
     private BaseAncMemberProfileInteractor interactor;

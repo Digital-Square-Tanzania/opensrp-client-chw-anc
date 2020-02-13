@@ -4,14 +4,16 @@ import android.content.Context;
 
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.smartregister.chw.anc.contract.BaseAncMedicalHistoryContract;
 import org.smartregister.chw.anc.util.AppExecutors;
 
 import java.util.concurrent.Executor;
-
+@RunWith(MockitoJUnitRunner.class)
 public class BaseAncMedicalHistoryInteractorTest implements Executor {
 
     private BaseAncMedicalHistoryInteractor interactor;

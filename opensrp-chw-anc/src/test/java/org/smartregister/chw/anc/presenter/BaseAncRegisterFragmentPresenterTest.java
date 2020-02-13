@@ -1,16 +1,20 @@
 package org.smartregister.chw.anc.presenter;
 
 
+import org.junit.After;
+import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.exceptions.misusing.UnfinishedVerificationException;
 import org.smartregister.chw.anc.contract.BaseAncRegisterFragmentContract;
 import org.smartregister.configurableviews.model.RegisterConfiguration;
 import org.smartregister.configurableviews.model.ViewConfiguration;
 
 import static org.mockito.ArgumentMatchers.anyString;
+import static org.mockito.Mockito.validateMockitoUsage;
 
 public class BaseAncRegisterFragmentPresenterTest {
 
@@ -29,6 +33,11 @@ public class BaseAncRegisterFragmentPresenterTest {
         MockitoAnnotations.initMocks(this);
         BaseAncRegisterFragmentPresenter objct = new BaseAncRegisterFragmentPresenter(view, model, "abc");
         presenter = Mockito.spy(objct);
+    }
+
+    @After
+    public void validate() {
+        validateMockitoUsage();
     }
 
 
@@ -64,11 +73,11 @@ public class BaseAncRegisterFragmentPresenterTest {
 
     }
 
-   @Test
-    public void  testGetView(){
-        presenter.getView();
-        Mockito.verify(view);
-   }
+    @Test
+    public void testGetView() {
+        BaseAncRegisterFragmentContract.View myView = presenter.getView();
+        Assert.assertEquals(myView, view);
+    }
 
 
 }

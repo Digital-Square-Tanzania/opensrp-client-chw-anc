@@ -459,26 +459,7 @@ public class NCUtils {
         return String.valueOf(ga);
     }
 
-    public static void saveVaccineEvents(JSONArray fields, String baseID, String dob) {
-
-        JSONObject vaccinesAtBirthObject = org.smartregister.util.JsonFormUtils.getFieldJSONObject(fields, DBConstants.KEY.VACCINES_AT_BIRTH);
-        JSONArray vaccinesAtBirthArray = vaccinesAtBirthObject != null ? vaccinesAtBirthObject.optJSONArray(DBConstants.KEY.OPTIONS) : null;
-
-        if (vaccinesAtBirthArray != null) {
-            for (int i = 0; i < vaccinesAtBirthArray.length(); i++) {
-                JSONObject currentVaccine = vaccinesAtBirthArray.optJSONObject(i);
-                if (currentVaccine != null && currentVaccine.optBoolean(JsonFormUtils.VALUE)) {
-                    String VaccineName = currentVaccine.optString(JsonFormUtils.KEY).equals("chk_bcg") ? "bcg" : "opv_0";
-                    VisitUtils.savePncChildVaccines(VaccineName, baseID, vaccinationDate(dob));
-                }
-            }
-
-        } else {
-            saveVaccines(fields, baseID);
-        }
-    }
-
-    private static Date vaccinationDate(String vaccineDate) {
+    public static Date vaccinationDate(String vaccineDate) {
         SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
         try {
             return formatter.parse(vaccineDate);
@@ -486,22 +467,6 @@ public class NCUtils {
             Timber.e(e);
         }
         return null;
-    }
-
-    private static void saveVaccines(JSONArray fields, String baseID) {
-        String[] vaccines = {"bcg_date", "opv0_date"};
-        for (int i = 0; i < vaccines.length; i++) {
-            try {
-                String vaccineDate = getFieldJSONObject(fields, vaccines[i]).optString(VALUE);
-                if (StringUtils.isNotBlank(vaccineDate)) {
-                    Date dateVaccinated = vaccinationDate(vaccineDate);
-                    String VaccineName = vaccines[i] == "bcg_date" ? "bcg" : "opv_0";
-                    VisitUtils.savePncChildVaccines(VaccineName, baseID, dateVaccinated);
-                }
-            } catch (NullPointerException e) {
-                Timber.d(e);
-            }
-            }
     }
 
     @Nullable

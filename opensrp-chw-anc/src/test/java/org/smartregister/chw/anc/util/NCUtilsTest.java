@@ -149,18 +149,4 @@ public class NCUtilsTest extends BaseUnitTest {
         int memberImageResourceIdentifier = R.mipmap.ic_member;
         Assert.assertEquals(memberImageResourceIdentifier, NCUtils.getMemberProfileImageResourceIDentifier(null));
     }
-
-
-    @Test
-    public void whenSaveVaccineCalledAnswered() {
-
-        Mockito.doAnswer(invocation -> {
-            Assert.assertEquals(childJsonArray, invocation.getArgument(0));
-            Assert.assertEquals("motherBaseId", invocation.getArgument(1));
-            Assert.assertEquals("familyBaseEntityId", invocation.getArgument(2));
-            return null;
-        }).when(ncUtils).saveVaccineEvents(any(JSONArray.class), any(String.class), any(String.class));
-        ncUtils.saveVaccineEvents(childJsonArray, "motherBaseId", "familyBaseEntityId");
-    }
-
 }

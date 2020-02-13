@@ -68,8 +68,6 @@ import java.util.Map;
 import timber.log.Timber;
 
 import static org.smartregister.chw.anc.util.JsonFormUtils.cleanString;
-import static org.smartregister.util.JsonFormUtils.VALUE;
-import static org.smartregister.util.JsonFormUtils.getFieldJSONObject;
 import static org.smartregister.util.Utils.getAllSharedPreferences;
 
 public class NCUtils {
@@ -457,16 +455,6 @@ public class NCUtils {
         if (full)
             return String.format(context.getString(R.string.gest_age), String.valueOf(ga)) + " " + context.getString(R.string.gest_age_weeks);
         return String.valueOf(ga);
-    }
-
-    public static Date vaccinationDate(String vaccineDate) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-        try {
-            return formatter.parse(vaccineDate);
-        } catch (ParseException e) {
-            Timber.e(e);
-        }
-        return null;
     }
 
     @Nullable

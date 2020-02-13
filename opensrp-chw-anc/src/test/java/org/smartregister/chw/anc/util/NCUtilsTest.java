@@ -107,21 +107,21 @@ public class NCUtilsTest extends BaseUnitTest {
 
     @Test
     public void getAncMemberProfileImageReturnsCorrectResourceIdentifier() {
+        String memberType = "anc";
         int ancImageResourceIdentifier = R.drawable.anc_woman;
-        Assert.assertEquals(ancImageResourceIdentifier, NCUtils.getAncMemberProfileImageResourceIdentifier());
+        Assert.assertEquals(ancImageResourceIdentifier, NCUtils.getMemberProfileImageResourceIDentifier(memberType));
     }
 
     @Test
     public void getPncemberProfileImageReturnsCorrectResourceIdentifier() {
+        String memberType = "pnc";
         int pncImageResourceIdentifier = R.drawable.pnc_woman;
-        Assert.assertEquals(pncImageResourceIdentifier, NCUtils.getPncMemberProfileImageResourceIdentifier());
+        Assert.assertEquals(pncImageResourceIdentifier, NCUtils.getMemberProfileImageResourceIDentifier(memberType));
     }
 
     @Test
     public void getMemberProfileImageReturnsCorrectResourceIDentifier() {
         int memberImageResourceIdentifier = R.mipmap.ic_member;
-        String entityType = "";
-        Assert.assertEquals(memberImageResourceIdentifier, NCUtils.getMemberProfileImageResourceIDentifier(entityType));
+        Assert.assertEquals(memberImageResourceIdentifier, NCUtils.getMemberProfileImageResourceIDentifier(null));
     }
-
 }

@@ -36,6 +36,7 @@ public class DBConstants {
         public static final String MOTHER_ENTITY_ID = "mother_entity_id";
         public static final String DELIVERY_DATE = "delivery_date";
         public static final String SAME_AS_FAM_NAME_CHK = "same_as_fam_name_chk";
+        public static final String VACCINES_AT_BIRTH = "vacc_birth";
         public static final String SAME_AS_FAM_NAME = "same_as_fam_name";
         public static final String OPTIONS = "options";
 

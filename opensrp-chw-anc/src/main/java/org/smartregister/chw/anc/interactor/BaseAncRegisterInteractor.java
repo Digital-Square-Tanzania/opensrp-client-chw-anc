@@ -19,11 +19,13 @@ import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.anc.util.NCUtils;
+import org.smartregister.chw.anc.util.VisitUtils;
 import org.smartregister.clientandeventmodel.Client;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.immunization.ImmunizationLibrary;
 import org.smartregister.repository.AllSharedPreferences;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -34,6 +36,8 @@ import java.util.Map;
 import timber.log.Timber;
 
 import static org.smartregister.chw.anc.util.Constants.TABLES.EC_CHILD;
+import static org.smartregister.util.JsonFormUtils.VALUE;
+import static org.smartregister.util.JsonFormUtils.getFieldJSONObject;
 
 public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Interactor {
 
@@ -164,9 +168,12 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
             try {
                 JSONObject jsonObject = fields.getJSONObject(i);
                 String key = jsonObject.getString(JsonFormUtils.KEY);
-                if (key.matches(".*\\d.*")) {
+                String keySplit = key.substring(key.lastIndexOf("_"));
+                if (keySplit.matches(".*\\d.*")) {
 
-                    String formattedKey = key.replaceAll("[^\\d.]", "");
+                    String formattedKey = keySplit.replaceAll("[^\\d.]", "");
+                    if (formattedKey.length() < 10)
+                        continue;
                     List<JSONObject> jsonObjectList = jsonObjectMap.get(formattedKey);
 
                     if (jsonObjectList == null)
@@ -200,7 +207,7 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
                     processPncChild(childFields, allSharedPreferences, childBaseEntityId, familyBaseEntityId, motherBaseId, uniqueChildID, lastName, dob);
                     if (pncForm != null) {
                         saveRegistration(pncForm.toString(), EC_CHILD);
-                        NCUtils.saveVaccineEvents(childFields, childBaseEntityId);
+                        saveVaccineEvents(childFields, childBaseEntityId, dob);
                     }
 
             } catch (Exception e) {
@@ -209,12 +216,58 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
         }
     }
 
+    public static void saveVaccineEvents(JSONArray fields, String baseID, String dob) {
+
+        JSONObject vaccinesAtBirthObject = org.smartregister.util.JsonFormUtils.getFieldJSONObject(fields, DBConstants.KEY.VACCINES_AT_BIRTH);
+        JSONArray vaccinesAtBirthArray = vaccinesAtBirthObject != null ? vaccinesAtBirthObject.optJSONArray(DBConstants.KEY.OPTIONS) : null;
+
+        if (vaccinesAtBirthArray != null) {
+            for (int i = 0; i < vaccinesAtBirthArray.length(); i++) {
+                JSONObject currentVaccine = vaccinesAtBirthArray.optJSONObject(i);
+                if (currentVaccine != null && currentVaccine.optBoolean(JsonFormUtils.VALUE)) {
+                    String VaccineName = currentVaccine.optString(JsonFormUtils.KEY).equals("chk_bcg") ? "bcg" : "opv_0";
+                    VisitUtils.savePncChildVaccines(VaccineName, baseID, vaccinationDate(dob));
+                }
+            }
+
+        } else {
+            saveVaccines(fields, baseID);
+        }
+    }
+
+    public static Date vaccinationDate(String vaccineDate) {
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        try {
+            return formatter.parse(vaccineDate);
+        } catch (ParseException e) {
+            Timber.e(e);
+        }
+        return null;
+    }
+    private static void saveVaccines(JSONArray fields, String baseID) {
+        String[] vaccines = {"bcg_date", "opv0_date"};
+        for (int i = 0; i < vaccines.length; i++) {
+            try {
+                String vaccineDate = getFieldJSONObject(fields, vaccines[i]).optString(VALUE);
+                if (StringUtils.isNotBlank(vaccineDate)) {
+                    Date dateVaccinated = vaccinationDate(vaccineDate);
+                    String VaccineName = vaccines[i] == "bcg_date" ? "bcg" : "opv_0";
+                    VisitUtils.savePncChildVaccines(VaccineName, baseID, dateVaccinated);
+                }
+            } catch (NullPointerException e) {
+                Timber.d(e);
+            }
+        }
+    }
+
     private boolean sameASFamilyNameCheck(JSONArray childFields) {
-        JSONObject sameAsFamNameCheck = org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.SAME_AS_FAM_NAME_CHK);
-        sameAsFamNameCheck = sameAsFamNameCheck != null ? sameAsFamNameCheck : org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.SAME_AS_FAM_NAME);
-        JSONObject sameAsFamNameObject = sameAsFamNameCheck.optJSONArray(DBConstants.KEY.OPTIONS).optJSONObject(0);
-        if (sameAsFamNameCheck != null) {
-            return sameAsFamNameObject.optBoolean(JsonFormUtils.VALUE);
+        if (childFields.length()>0) {
+            JSONObject sameAsFamNameCheck = org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.SAME_AS_FAM_NAME_CHK);
+            sameAsFamNameCheck = sameAsFamNameCheck != null ? sameAsFamNameCheck : org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.SAME_AS_FAM_NAME);
+            JSONObject sameAsFamNameObject = sameAsFamNameCheck.optJSONArray(DBConstants.KEY.OPTIONS).optJSONObject(0);
+            if (sameAsFamNameCheck != null) {
+                return sameAsFamNameObject.optBoolean(JsonFormUtils.VALUE);
+            }
         }
         return false;
     }

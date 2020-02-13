@@ -3,17 +3,21 @@ package org.smartregister.chw.anc.interactor;
 import org.junit.Assert;
 import org.junit.Before;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
+import org.mockito.junit.MockitoJUnitRunner;
 import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.util.AppExecutors;
 import org.smartregister.domain.AlertStatus;
 
 import java.util.Date;
+import java.util.LinkedHashMap;
+import java.util.Map;
 import java.util.concurrent.Executor;
-
+@RunWith(MockitoJUnitRunner.class)
 public class BaseAncMemberProfileInteractorTest implements Executor {
 
     private BaseAncMemberProfileInteractor interactor;
@@ -43,6 +47,12 @@ public class BaseAncMemberProfileInteractorTest implements Executor {
     public void testGetMemberClient() {
         MemberObject memberObject = interactor.getMemberClient("12345");
         Assert.assertEquals("12345", memberObject.getBaseEntityId());
+    }
+
+    @Test
+    public void testGetVaccineList() {
+        Map<String, Date> vaccineList = interactor.getVaccineList();
+        Assert.assertEquals(vaccineList, new LinkedHashMap<>());
     }
 
     @Test

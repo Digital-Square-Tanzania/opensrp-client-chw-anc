@@ -68,17 +68,11 @@ import java.util.Map;
 import timber.log.Timber;
 
 import static org.smartregister.chw.anc.util.JsonFormUtils.cleanString;
-import static org.smartregister.util.JsonFormUtils.VALUE;
-import static org.smartregister.util.JsonFormUtils.getFieldJSONObject;
 import static org.smartregister.util.Utils.getAllSharedPreferences;
 
 public class NCUtils {
 
-    public static final SimpleDateFormat dd_MMM_yyyy = new SimpleDateFormat("dd MMM yyyy");
-    public static final SimpleDateFormat yyyy_mm_dd = new SimpleDateFormat("yyyy-mm-dd");
     private static String[] default_obs = {"start", "end", "deviceid", "subscriberid", "simserial", "phonenumber"};
-    private static String[] vaccines = {"bcg_date", "opv0_date"};
-    private static String VaccineName;
 
     public static String firstCharacterUppercase(String str) {
         if (TextUtils.isEmpty(str)) return "";
@@ -445,16 +439,14 @@ public class NCUtils {
         return clean_val;
     }
 
-    public static int getMemberProfileImageResourceIDentifier(String entityType) {
+    @Nullable
+    public static int getMemberProfileImageResourceIDentifier(@Nullable String memberType) {
+        if ("anc".equals(memberType)) {
+            return R.drawable.anc_woman;
+        } else if ("pnc".equals(memberType)) {
+            return R.drawable.pnc_woman;
+        } else
         return R.mipmap.ic_member;
-    }
-
-    public static int getAncMemberProfileImageResourceIdentifier() {
-        return R.drawable.anc_woman;
-    }
-
-    public static int getPncMemberProfileImageResourceIdentifier() {
-        return R.drawable.pnc_woman;
     }
 
     public static String gestationAgeString(String lmp, Context context, boolean full) {
@@ -463,27 +455,6 @@ public class NCUtils {
         if (full)
             return String.format(context.getString(R.string.gest_age), String.valueOf(ga)) + " " + context.getString(R.string.gest_age_weeks);
         return String.valueOf(ga);
-    }
-
-    public static void saveVaccineEvents(JSONArray fields, String baseID) {
-        for (int i = 0; i < vaccines.length; i++) {
-
-            try {
-                String vaccineDate = getFieldJSONObject(fields, vaccines[i]).optString(VALUE);
-                SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
-                Date date = formatter.parse(vaccineDate);
-                if (vaccines[i] == "bcg_date") {
-                    VaccineName = "bcg";
-                } else if (vaccines[i] == "opv0_date") {
-                    VaccineName = "opv_0";
-                }
-                if (VaccineName != null) {
-                    VisitUtils.savePncChildVaccines(VaccineName, baseID, date);
-                }
-            } catch (ParseException e) {
-                Timber.e(e.toString());
-            }
-        }
     }
 
     @Nullable

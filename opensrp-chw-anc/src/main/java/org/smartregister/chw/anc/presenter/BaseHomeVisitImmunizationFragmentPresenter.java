@@ -24,7 +24,7 @@ public class BaseHomeVisitImmunizationFragmentPresenter implements BaseHomeVisit
     }
 
     @Override
-    public void onNoVaccineStatus(boolean state) {
+    public void onNoVaccineState(boolean state) {
         if (view.get() != null) {
             view.get().updateNoVaccineCheck(state);
         }
@@ -34,6 +34,14 @@ public class BaseHomeVisitImmunizationFragmentPresenter implements BaseHomeVisit
     public void onSelectedVaccinesInitialized(Map<String, String> selectedVaccines, boolean variedMode) {
         if (view.get() != null) {
             view.get().updateSelectedVaccines(selectedVaccines, variedMode);
+            view.get().setSingleEntryMode(!variedMode);
+        }
+    }
+
+    @Override
+    public void onNoVaccineSelected() {
+        if (view.get() != null) {
+            view.get().noVaccineGivenMode();
         }
     }
 }

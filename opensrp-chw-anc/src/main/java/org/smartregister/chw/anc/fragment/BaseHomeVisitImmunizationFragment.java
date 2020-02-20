@@ -1,6 +1,7 @@
 package org.smartregister.chw.anc.fragment;
 
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -105,28 +106,13 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
 
         checkBoxNoVaccinesDone = view.findViewById(R.id.select);
         checkBoxNoVaccinesDone.setOnClickListener(this);
-        checkBoxNoVaccinesDone.setChecked(false);
+        setCheckBoxState(checkBoxNoVaccinesDone, false);
 
         addVaccineViews();
 
-        checkBoxNoVaccinesDone.setOnClickListener(v -> checkBoxNoVaccinesDone.setChecked(true));
-        checkBoxNoVaccinesDone.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            Boolean manual = (Boolean) buttonView.getTag(R.id.cb_fired_manually);
-            if (manual != null && manual) {
-                buttonView.setTag(R.id.cb_fired_manually, false);
-                return;
-            }
-
-            if (isChecked) {
-                setSingleEntryMode(true);
-                for (VaccineView vaccineView : vaccineViews) {
-                    if (vaccineView.getCheckBox().isChecked())
-                        vaccineView.getCheckBox().setChecked(false);
-                }
-                checkBoxNoVaccinesDone.setEnabled(false);
-            }
-
-            redrawView();
+        checkBoxNoVaccinesDone.setOnClickListener(v -> {
+            if (presenter != null)
+                presenter.onNoVaccineSelected();
         });
 
         initializePresenter();
@@ -136,9 +122,8 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
 
     private void setCheckBoxState(@Nullable CheckBox checkBox, boolean state) {
         if (checkBox == null) return;
-
-        checkBox.setTag(R.id.cb_fired_manually, true);
-        checkBox.setChecked(state);
+        final Handler handler = new Handler();
+        handler.postDelayed(() -> checkBox.setChecked(state), 100);
     }
 
     @Override
@@ -174,42 +159,39 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
             View vaccinationName = inflater.inflate(R.layout.custom_vaccine_name_check, null);
             TextView vaccineView = vaccinationName.findViewById(R.id.vaccine);
             CheckBox checkBox = vaccinationName.findViewById(R.id.select);
+            setCheckBoxState(checkBox, false);
             VaccineRepo.Vaccine vaccine = vaccineWrapper.getVaccine();
             final VaccineView view = new VaccineView(vaccineWrapper.getName(), null, checkBox);
 
             String name = (vaccineWrapper.getVaccine() != null) ? vaccine.display() : vaccineWrapper.getName();
             String translated_name = NCUtils.getStringResourceByName(name.toLowerCase().replace(" ", "_"), getActivity());
             vaccineView.setText(translated_name);
-            if (!vaccinesDefaultChecked && details == null) {
+            if (!vaccinesDefaultChecked && details == null)
                 setCheckBoxState(checkBox, false);
-            }
-            checkBox.setOnCheckedChangeListener((buttonView, isChecked) -> {
-                Boolean manual = (Boolean) buttonView.getTag(R.id.cb_fired_manually);
-                if (manual != null && manual) {
-                    buttonView.setTag(R.id.cb_fired_manually, false);
-                    return;
-                }
 
-                if (isChecked) {
-                    setCheckBoxState(checkBoxNoVaccinesDone, false);
-                    checkBoxNoVaccinesDone.setEnabled(true);
-                } else {
-                    // check if there are any active vaccine
-                    boolean enableNoVaccines = true;
-                    for (VaccineView vaccineView1 : vaccineViews) {
-                        if (vaccineView1.getCheckBox().isChecked())
-                            enableNoVaccines = false;
-                    }
+            checkBox.setOnClickListener(v -> onVaccineCheckBoxStateChange(checkBox.isChecked()));
 
-                    if (enableNoVaccines && !checkBoxNoVaccinesDone.isChecked())
-                        setCheckBoxState(checkBoxNoVaccinesDone, true);
-                }
-                redrawView();
-                buttonView.setTag(R.id.cb_fired_manually, false);
-            });
             vaccinationNameLayout.addView(vaccinationName);
             vaccineViews.add(view);
         }
+    }
+
+    private void onVaccineCheckBoxStateChange(boolean isChecked) {
+        if (isChecked) {
+            setCheckBoxState(checkBoxNoVaccinesDone, false);
+            //checkBoxNoVaccinesDone.setEnabled(true);
+        } else {
+            // check if there are any active vaccine
+            boolean enableNoVaccines = true;
+            for (VaccineView vaccineView1 : vaccineViews) {
+                if (vaccineView1.getCheckBox().isChecked())
+                    enableNoVaccines = false;
+            }
+
+            if (enableNoVaccines && !checkBoxNoVaccinesDone.isChecked())
+                setCheckBoxState(checkBoxNoVaccinesDone, true);
+        }
+        redrawView();
     }
 
     private void initializeDatePicker(@NotNull DatePicker datePicker, @NotNull VaccineDisplay vaccineDisplay) {
@@ -370,6 +352,7 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
     /**
      * Is called on every ui updating action
      */
+    @Override
     public void redrawView() {
         boolean noVaccine = true;
         for (VaccineView vaccineView : vaccineViews) {
@@ -390,15 +373,21 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         }
     }
 
-    /**
-     * toggle vaccine entry mode
-     *
-     * @param state
-     */
-    private void setSingleEntryMode(boolean state) {
-        textViewAddDate.setVisibility(state ? View.VISIBLE : View.GONE);
-        multipleVaccineDatePickerView.setVisibility(state ? View.VISIBLE : View.GONE);
-        singleVaccineAddView.setVisibility(state ? View.GONE : View.VISIBLE);
+    @Override
+    public void setSingleEntryMode(boolean singleEntryMode) {
+        textViewAddDate.setVisibility(singleEntryMode ? View.VISIBLE : View.GONE);
+        multipleVaccineDatePickerView.setVisibility(singleEntryMode ? View.VISIBLE : View.GONE);
+        singleVaccineAddView.setVisibility(singleEntryMode ? View.GONE : View.VISIBLE);
+    }
+
+    @Override
+    public void noVaccineGivenMode() {
+        setSingleEntryMode(true);
+        for (VaccineView vaccineView : vaccineViews) {
+            if (vaccineView.getCheckBox().isChecked())
+                setCheckBoxState(vaccineView.getCheckBox(), false);
+        }
+        checkBoxNoVaccinesDone.setEnabled(false);
     }
 
     @Override
@@ -436,6 +425,7 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
                     setCheckBoxState(vaccineView.getCheckBox(), false);
                 } else {
                     setCheckBoxState(vaccineView.getCheckBox(), true);
+                    setCheckBoxState(checkBoxNoVaccinesDone, false);
                     try {
                         DatePicker datePicker = vaccineView.getDatePickerView();
                         if (datePicker == null)
@@ -448,8 +438,6 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
                 }
             }
         }
-
-        setSingleEntryMode(!variedMode);
     }
 
     /**

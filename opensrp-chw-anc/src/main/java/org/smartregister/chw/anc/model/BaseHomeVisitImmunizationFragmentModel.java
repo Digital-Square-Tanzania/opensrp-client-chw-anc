@@ -53,8 +53,10 @@ public class BaseHomeVisitImmunizationFragmentModel implements BaseHomeVisitImmu
                 // if the view has multiple dates, notify the ui to prepare it self for multi mode.
                 // This function must be called before the other 2 functions
 
-                presenter.onNoVaccineStatus(noSelected);
+                presenter.onNoVaccineState(noSelected);
                 presenter.onSelectedVaccinesInitialized(map, variedMode);
+            }else{
+                presenter.onNoVaccineState(false);
             }
         } catch (Exception e) {
             Timber.e(e);

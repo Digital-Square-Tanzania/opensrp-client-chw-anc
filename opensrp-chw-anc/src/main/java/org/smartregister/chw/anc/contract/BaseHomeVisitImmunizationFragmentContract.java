@@ -19,6 +19,17 @@ public interface BaseHomeVisitImmunizationFragmentContract {
         Map<String, VaccineDisplay> getVaccineDisplays();
 
         void setVaccineDisplays(Map<String, VaccineDisplay> vaccineDisplays);
+
+        /**
+         * toggle vaccine entry mode
+         *
+         * @param singleEntryMode
+         */
+        void setSingleEntryMode(boolean singleEntryMode);
+
+        void noVaccineGivenMode();
+
+        void redrawView();
     }
 
     interface Presenter {
@@ -28,7 +39,7 @@ public interface BaseHomeVisitImmunizationFragmentContract {
          *
          * @param state
          */
-        void onNoVaccineStatus(boolean state);
+        void onNoVaccineState(boolean state);
 
         /**
          * Returns a map of the vaccine and the current value
@@ -36,6 +47,11 @@ public interface BaseHomeVisitImmunizationFragmentContract {
          * @param selectedVaccines
          */
         void onSelectedVaccinesInitialized(Map<String, String> selectedVaccines, boolean variedMode);
+
+        /**
+         * notifies the view that no vaccine should be selected
+         */
+        void onNoVaccineSelected();
     }
 
     interface Model {

@@ -224,7 +224,7 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
         if (vaccinesAtBirthArray != null) {
             for (int i = 0; i < vaccinesAtBirthArray.length(); i++) {
                 JSONObject currentVaccine = vaccinesAtBirthArray.optJSONObject(i);
-                if (currentVaccine != null && currentVaccine.optBoolean(JsonFormUtils.VALUE)) {
+                if (currentVaccine != null && currentVaccine.optBoolean(JsonFormUtils.VALUE) && currentVaccine.optString(JsonFormUtils.KEY).equals("chk_none")) {
                     String VaccineName = currentVaccine.optString(JsonFormUtils.KEY).equals("chk_bcg") ? "bcg" : "opv_0";
                     VisitUtils.savePncChildVaccines(VaccineName, baseID, vaccinationDate(dob));
                 }

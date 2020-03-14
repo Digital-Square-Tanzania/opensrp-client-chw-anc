@@ -3,7 +3,7 @@
 
     <string name="error_unable_to_start_form">Hitilafu imejitokeza wakati wa kuanza kufungua fomu</string>
     <string name="error_unable_save_home_visit">Hitilafu imejitokeza wakati wa kuhifadhi taarifa za tembeleo</string>
-    <string name="anc">Wateja wa huduma ya Wajawazito ANC</string>
+    <string name="anc">Wateja wa wajawazito</string>
 
     <!-- menu -->
     <string name="add_member">Sajili Mwanafamilia</string>
@@ -23,15 +23,15 @@
 
     <!-- anc home visit -->
     <string name="optional">hiari</string>
-    <string name="anc_visit">Hudhurio wakati wa ujauzito</string>
+    <string name="anc_visit">Tembeleo wakati wa ujauzito</string>
     <string name="anc_home_visit">Tembeleo</string>
     <string name="dose_not_given">DOZI HAIJATOLEWA</string>
 
 
     <string name="return_to_family_members">Rudi kwa wanafamilia</string>
     <string name="return_to_all_anc_women">Rudi kwa wanawake wajawazito wote</string>
-    <string name="record_pnc_visit">Rekodi hudhurio la mtoto na mama baada ya kujifungua</string>
-    <string name="record_anc_visit">Rekodi hudhurio la mjamzito</string>
+    <string name="record_pnc_visit">Rekodi tembeleo baada ya kujifungua</string>
+    <string name="record_anc_visit">Rekodi tembeleo la mjamzito</string>
     <string name="visit_not_done_btn_child_profile">Tembeleo halijafanyika</string>
     <string name="not_visiting_this_month">Hajatembelea mwezi huu</string>
     <string name="undo">UNDO</string>
@@ -69,6 +69,7 @@
     <string name="back_to">Rudi kwenye taarifa za msingi za %1$s</string>
     <string name="days_overdue">Siku  %1$s zimezidi</string>
     <string name="days_until_due">%1$s siku mpaka kufikia</string>
+    <string name="days_due">%1$s siku zimefika</string>
     <string name="anc_visit_done">%1$s tembeleo limefanyika</string>
     <string name="less_than_twenty_four">chini ya masaa 24</string>
     <string name="primary_care_giver">Mlezi</string>
@@ -78,7 +79,7 @@
     <string name="danger_signs_counselling">Ushauri juu ya dalili za hatari</string>
     <string name="not_done">Haijafanyika</string>
     <string name="medical_history">Historia ya matibabu</string>
-    <string name="upcoming_services">Huduma zinazokaribia</string>
+    <string name="upcoming_services">Huduma zilizopita na zinazokaribia</string>
 
     <string name="vaccines_not_done">CHANJO HAZIJATOLEWA</string>
     <string name="add_date_separately">+ONGEZA TAREHE YA KILA CHANJO</string>

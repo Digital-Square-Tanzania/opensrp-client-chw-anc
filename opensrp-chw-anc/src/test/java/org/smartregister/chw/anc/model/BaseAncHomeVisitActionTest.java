@@ -17,7 +17,7 @@ import org.smartregister.chw.anc.BaseUnitTest;
 import org.smartregister.chw.anc.actionhelper.DangerSignsHelper;
 import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.anc.fragment.BaseAncHomeVisitFragment;
-import org.smartregister.chw.anc.util.JsonFormUtils;
+import org.smartregister.util.FormUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -26,7 +26,7 @@ import java.util.Map;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 
-@PrepareForTest(JsonFormUtils.class)
+@PrepareForTest(FormUtils.class)
 public class BaseAncHomeVisitActionTest extends BaseUnitTest {
     @Rule
     public PowerMockRule rule = new PowerMockRule();
@@ -45,9 +45,12 @@ public class BaseAncHomeVisitActionTest extends BaseUnitTest {
 
     @Test
     public void testInitializerReadsHelper() throws Exception {
-        PowerMockito.mockStatic(JsonFormUtils.class);
+        PowerMockito.mockStatic(FormUtils.class);
         JSONObject jsonObject = Mockito.mock(JSONObject.class);
-        BDDMockito.given(JsonFormUtils.getFormAsJson(Mockito.anyString())).willReturn(jsonObject);
+        FormUtils formUtils = Mockito.mock(FormUtils.class);
+        Mockito.doReturn(jsonObject).when(formUtils).getFormJson(Mockito.anyString());
+
+        BDDMockito.given(FormUtils.getInstance(Mockito.any())).willReturn(formUtils);
 
 
         Context context = RuntimeEnvironment.application;
@@ -74,9 +77,12 @@ public class BaseAncHomeVisitActionTest extends BaseUnitTest {
 
     @Test
     public void testBuilderInitializesObject() throws Exception {
-        PowerMockito.mockStatic(JsonFormUtils.class);
+        PowerMockito.mockStatic(FormUtils.class);
         JSONObject jsonObject = Mockito.mock(JSONObject.class);
-        BDDMockito.given(JsonFormUtils.getFormAsJson(Mockito.anyString())).willReturn(jsonObject);
+        FormUtils formUtils = Mockito.mock(FormUtils.class);
+        Mockito.doReturn(jsonObject).when(formUtils).getFormJson(Mockito.anyString());
+
+        BDDMockito.given(FormUtils.getInstance(Mockito.any())).willReturn(formUtils);
 
 
         Context context = RuntimeEnvironment.application;
@@ -109,9 +115,12 @@ public class BaseAncHomeVisitActionTest extends BaseUnitTest {
 
     @Test
     public void testSetJsonPayloadNotifiesHelper() throws Exception {
-        PowerMockito.mockStatic(JsonFormUtils.class);
+        PowerMockito.mockStatic(FormUtils.class);
         JSONObject jsonObject = Mockito.mock(JSONObject.class);
-        BDDMockito.given(JsonFormUtils.getFormAsJson(Mockito.anyString())).willReturn(jsonObject);
+        FormUtils formUtils = Mockito.mock(FormUtils.class);
+        Mockito.doReturn(jsonObject).when(formUtils).getFormJson(Mockito.anyString());
+
+        BDDMockito.given(FormUtils.getInstance(Mockito.any())).willReturn(formUtils);
 
 
         Context context = RuntimeEnvironment.application;

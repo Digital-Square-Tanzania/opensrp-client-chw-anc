@@ -30,7 +30,7 @@ public class BaseAncRegisterPresenterTest extends BaseUnitTest {
     @Test
     public void testStartForm() throws Exception {
         JSONObject jsonObject = Mockito.mock(JSONObject.class);
-        Mockito.doReturn(jsonObject).when(model).getFormAsJson(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
+        Mockito.doReturn(jsonObject).when(model).getFormAsJson(Mockito.any(), Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
 
         presenter.startForm("formName", "entityId", "metadata", "currentLocationId");
         Mockito.verify(view).startFormActivity(jsonObject);

@@ -7,6 +7,7 @@ import org.json.JSONObject;
 import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.anc.fragment.BaseHomeVisitFragment;
 import org.smartregister.chw.anc.util.JsonFormUtils;
+import org.smartregister.util.FormUtils;
 
 import java.util.HashMap;
 import java.util.List;
@@ -62,7 +63,7 @@ public class BaseAncHomeVisitAction {
     private void initialize() {
         try {
             if (StringUtils.isBlank(jsonPayload) && StringUtils.isNotBlank(formName)) {
-                JSONObject jsonObject = JsonFormUtils.getFormAsJson(formName);
+                JSONObject jsonObject = FormUtils.getInstance(context).getFormJson(formName);
 
                 // update the form details
                 if (details != null && details.size() > 0) {

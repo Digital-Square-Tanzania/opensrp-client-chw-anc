@@ -203,7 +203,12 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
                 String surName = surNameObject != null ? surNameObject.optString(JsonFormUtils.VALUE) : null;
 
                 String lastName = sameASFamilyNameCheck(childFields) ? familyName : surName;
-                JSONObject pncForm = getModel().getFormAsJson(Constants.FORMS.PNC_CHILD_REGISTRATION, childBaseEntityId, getLocationID());
+                JSONObject pncForm = getModel().getFormAsJson(
+                        AncLibrary.getInstance().context().applicationContext(),
+                        Constants.FORMS.PNC_CHILD_REGISTRATION,
+                        childBaseEntityId,
+                        getLocationID()
+                );
                 pncForm = JsonFormUtils.populatePNCForm(pncForm, childFields, familyBaseEntityId, motherBaseId, uniqueChildID, dob, lastName);
                 processPncChild(childFields, allSharedPreferences, childBaseEntityId, familyBaseEntityId, motherBaseId, uniqueChildID, lastName, dob);
                 if (pncForm != null) {

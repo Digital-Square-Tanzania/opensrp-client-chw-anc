@@ -52,6 +52,7 @@ import org.smartregister.repository.AllSharedPreferences;
 import org.smartregister.repository.BaseRepository;
 import org.smartregister.sync.ClientProcessorForJava;
 import org.smartregister.sync.helper.ECSyncHelper;
+import org.smartregister.util.FormUtils;
 import org.smartregister.util.PermissionUtils;
 
 import java.text.MessageFormat;
@@ -446,7 +447,7 @@ public class NCUtils {
         } else if ("pnc".equals(memberType)) {
             return R.drawable.pnc_woman;
         } else
-        return R.mipmap.ic_member;
+            return R.mipmap.ic_member;
     }
 
     public static String gestationAgeString(String lmp, Context context, boolean full) {
@@ -458,10 +459,13 @@ public class NCUtils {
     }
 
     @Nullable
-    public static JSONObject getVisitJSONFromWrapper(String entityID, Map<VaccineWrapper, String> vaccineWrapperDateMap) {
+    public static JSONObject getVisitJSONFromWrapper(@Nullable Context context, String entityID, Map<VaccineWrapper, String> vaccineWrapperDateMap) {
+        Context _context = context;
+        if (context == null)
+            _context = AncLibrary.getInstance().context().applicationContext();
 
         try {
-            JSONObject jsonObject = JsonFormUtils.getFormAsJson(Constants.FORMS.IMMUNIZATIOIN_VISIT);
+            JSONObject jsonObject = FormUtils.getInstance(_context).getFormJson(Constants.FORMS.IMMUNIZATIOIN_VISIT);
             jsonObject.put("entity_id", entityID);
             JSONArray jsonArray = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
 
@@ -486,9 +490,13 @@ public class NCUtils {
     }
 
     @Nullable
-    public static JSONObject getVisitJSONFromVisitDetails(String entityID, Map<String, List<VisitDetail>> detailsMap, List<VaccineDisplay> vaccineDisplays) {
+    public static JSONObject getVisitJSONFromVisitDetails(@Nullable Context context, String entityID, Map<String, List<VisitDetail>> detailsMap, List<VaccineDisplay> vaccineDisplays) {
+        Context _context = context;
+        if (context == null)
+            _context = AncLibrary.getInstance().context().applicationContext();
+
         try {
-            JSONObject jsonObject = JsonFormUtils.getFormAsJson(Constants.FORMS.IMMUNIZATIOIN_VISIT);
+            JSONObject jsonObject = FormUtils.getInstance(_context).getFormJson(Constants.FORMS.IMMUNIZATIOIN_VISIT);
             jsonObject.put("entity_id", entityID);
             JSONArray jsonArray = jsonObject.getJSONObject(JsonFormConstants.STEP1).getJSONArray(JsonFormConstants.FIELDS);
 

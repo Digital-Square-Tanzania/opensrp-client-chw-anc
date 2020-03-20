@@ -15,7 +15,6 @@ import org.smartregister.domain.tag.FormTag;
 import org.smartregister.immunization.domain.ServiceRecord;
 import org.smartregister.immunization.domain.Vaccine;
 import org.smartregister.repository.AllSharedPreferences;
-import org.smartregister.util.FormUtils;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;
@@ -172,10 +171,6 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
     public static void getRegistrationForm(JSONObject jsonObject, String entityId, String currentLocationId) throws JSONException {
         jsonObject.getJSONObject(METADATA).put(ENCOUNTER_LOCATION, currentLocationId);
         jsonObject.put(org.smartregister.util.JsonFormUtils.ENTITY_ID, entityId);
-    }
-
-    public static JSONObject getFormAsJson(String formName) throws Exception {
-        return FormUtils.getInstance(AncLibrary.getInstance().context().applicationContext()).getFormJson(formName);
     }
 
     public static Vaccine tagSyncMetadata(AllSharedPreferences allSharedPreferences, Vaccine vaccine) {
@@ -395,7 +390,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
                         jsonObject.put(JsonFormUtils.VALUE, preLoadObject.opt(JsonFormUtils.VALUE));
 
                         String type = preLoadObject.getString(JsonFormConstants.TYPE);
-                        if(type.equals(JsonFormConstants.CHECK_BOX)){
+                        if (type.equals(JsonFormConstants.CHECK_BOX)) {
                             // replace the options
                             jsonObject.put(JsonFormConstants.OPTIONS_FIELD_NAME, preLoadObject.opt(JsonFormConstants.OPTIONS_FIELD_NAME));
                         }

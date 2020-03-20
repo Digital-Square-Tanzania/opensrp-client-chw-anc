@@ -31,6 +31,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 import timber.log.Timber;
@@ -202,13 +203,13 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
                 String surName = surNameObject != null ? surNameObject.optString(JsonFormUtils.VALUE) : null;
 
                 String lastName = sameASFamilyNameCheck(childFields) ? familyName : surName;
-                    JSONObject pncForm = getModel().getFormAsJson(Constants.FORMS.PNC_CHILD_REGISTRATION, childBaseEntityId, getLocationID());
-                    pncForm = JsonFormUtils.populatePNCForm(pncForm, childFields, familyBaseEntityId, motherBaseId, uniqueChildID, dob, lastName);
-                    processPncChild(childFields, allSharedPreferences, childBaseEntityId, familyBaseEntityId, motherBaseId, uniqueChildID, lastName, dob);
-                    if (pncForm != null) {
-                        saveRegistration(pncForm.toString(), EC_CHILD);
-                        saveVaccineEvents(childFields, childBaseEntityId, dob);
-                    }
+                JSONObject pncForm = getModel().getFormAsJson(Constants.FORMS.PNC_CHILD_REGISTRATION, childBaseEntityId, getLocationID());
+                pncForm = JsonFormUtils.populatePNCForm(pncForm, childFields, familyBaseEntityId, motherBaseId, uniqueChildID, dob, lastName);
+                processPncChild(childFields, allSharedPreferences, childBaseEntityId, familyBaseEntityId, motherBaseId, uniqueChildID, lastName, dob);
+                if (pncForm != null) {
+                    saveRegistration(pncForm.toString(), EC_CHILD);
+                    saveVaccineEvents(childFields, childBaseEntityId, dob);
+                }
 
             } catch (Exception e) {
                 e.printStackTrace();
@@ -236,7 +237,7 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
     }
 
     public static Date vaccinationDate(String vaccineDate) {
-        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy");
+        SimpleDateFormat formatter = new SimpleDateFormat("dd-MM-yyyy", Locale.US);
         try {
             return formatter.parse(vaccineDate);
         } catch (ParseException e) {
@@ -244,6 +245,7 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
         }
         return null;
     }
+
     private static void saveVaccines(JSONArray fields, String baseID) {
         String[] vaccines = {"bcg_date", "opv0_date"};
         for (int i = 0; i < vaccines.length; i++) {
@@ -261,7 +263,7 @@ public class BaseAncRegisterInteractor implements BaseAncRegisterContract.Intera
     }
 
     private boolean sameASFamilyNameCheck(JSONArray childFields) {
-        if (childFields.length()>0) {
+        if (childFields.length() > 0) {
             JSONObject sameAsFamNameCheck = org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.SAME_AS_FAM_NAME_CHK);
             sameAsFamNameCheck = sameAsFamNameCheck != null ? sameAsFamNameCheck : org.smartregister.util.JsonFormUtils.getFieldJSONObject(childFields, DBConstants.KEY.SAME_AS_FAM_NAME);
             JSONObject sameAsFamNameObject = sameAsFamNameCheck.optJSONArray(DBConstants.KEY.OPTIONS).optJSONObject(0);

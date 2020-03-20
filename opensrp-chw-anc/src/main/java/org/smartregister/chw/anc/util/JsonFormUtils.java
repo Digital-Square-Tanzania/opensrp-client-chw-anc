@@ -391,8 +391,15 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
                 for (int i = 0; i < jsonArray.length(); i++) {
                     jsonObject = jsonArray.getJSONObject(i);
                     preLoadObject = getFieldJSONObject(fields, jsonObject.optString(JsonFormUtils.KEY));
-                    if (preLoadObject != null)
+                    if (preLoadObject != null) {
                         jsonObject.put(JsonFormUtils.VALUE, preLoadObject.opt(JsonFormUtils.VALUE));
+
+                        String type = preLoadObject.getString(JsonFormConstants.TYPE);
+                        if(type.equals(JsonFormConstants.CHECK_BOX)){
+                            // replace the options
+                            jsonObject.put(JsonFormConstants.OPTIONS_FIELD_NAME, preLoadObject.opt(JsonFormConstants.OPTIONS_FIELD_NAME));
+                        }
+                    }
                 }
 
                 return form;

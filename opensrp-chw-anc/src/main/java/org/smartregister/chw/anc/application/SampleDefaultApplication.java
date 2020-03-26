@@ -26,7 +26,7 @@ public class SampleDefaultApplication extends DrishtiApplication {
 
         //Initialize Modules
         CoreLibrary.init(context);
-        ConfigurableViewsLibrary.init(context, getRepository());
+        ConfigurableViewsLibrary.init(context);
         AncLibrary.init(context, getRepository(), 1, 1);
 
         SyncStatusBroadcastReceiver.init(this);

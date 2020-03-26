@@ -31,6 +31,7 @@ import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
 import org.smartregister.util.DatePickerUtils;
+import org.smartregister.util.FormUtils;
 import org.smartregister.view.customcontrols.CustomFontTextView;
 
 import java.text.MessageFormat;
@@ -80,7 +81,7 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
         JSONObject jsonObject = json;
         if (StringUtils.isNotBlank(form_name) && json == null) {
             try {
-                jsonObject = JsonFormUtils.getFormAsJson(form_name);
+                jsonObject = FormUtils.getInstance(view.getMyContext()).getFormJson(form_name);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -444,7 +445,8 @@ public class BaseAncHomeVisitFragment extends BaseHomeVisitFragment implements V
         if (this.getJsonObject() == null) {
             // load form from assets directory
             try {
-                JSONObject jsonObject = JsonFormUtils.getFormAsJson(formName);
+                JSONObject jsonObject = FormUtils.getInstance(getMyContext()).getFormJson(formName);
+
                 // evaluate the count
                 if (StringUtils.isNotBlank(count)) {
                     try {

@@ -15,13 +15,15 @@ import org.smartregister.chw.anc.BaseUnitTest;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
-import org.smartregister.chw.anc.util.JsonFormUtils;
+import org.smartregister.util.FormUtils;
 
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.Map;
 
-@PrepareForTest(JsonFormUtils.class)
+import static org.smartregister.chw.anc.util.JsonFormUtils.METADATA;
+
+@PrepareForTest(FormUtils.class)
 public class BaseAncHomeVisitPresenterTest extends BaseUnitTest {
     @Rule
     public PowerMockRule rule = new PowerMockRule();
@@ -43,9 +45,13 @@ public class BaseAncHomeVisitPresenterTest extends BaseUnitTest {
 
     @Test
     public void testStartFormOpensForm() throws Exception {
-        PowerMockito.mockStatic(JsonFormUtils.class);
+        PowerMockito.mockStatic(FormUtils.class);
         JSONObject jsonObject = Mockito.mock(JSONObject.class);
-        BDDMockito.given(JsonFormUtils.getFormAsJson(Mockito.anyString())).willReturn(jsonObject);
+        Mockito.doReturn(Mockito.mock(JSONObject.class)).when(jsonObject).getJSONObject(METADATA);
+        FormUtils formUtils = Mockito.mock(FormUtils.class);
+        Mockito.doReturn(jsonObject).when(formUtils).getFormJson(Mockito.anyString());
+
+        BDDMockito.given(FormUtils.getInstance(Mockito.any())).willReturn(formUtils);
 
         presenter.startForm(Mockito.anyString(), Mockito.anyString(), Mockito.anyString());
         Mockito.verify(view).startFormActivity(jsonObject);

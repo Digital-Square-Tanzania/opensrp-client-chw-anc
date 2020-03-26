@@ -72,7 +72,7 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         }
 
         if (details != null && details.size() > 0) {
-            fragment.jsonObject = NCUtils.getVisitJSONFromVisitDetails(baseEntityID, details, vaccineDisplays);
+            fragment.jsonObject = NCUtils.getVisitJSONFromVisitDetails(view.getMyContext(), baseEntityID, details, vaccineDisplays);
             JsonFormUtils.populateForm(fragment.jsonObject, details);
         }
 
@@ -318,7 +318,7 @@ public class BaseHomeVisitImmunizationFragment extends BaseHomeVisitFragment imp
         }
 
         // create a json object and write values to it that have the vaccine dates
-        jsonObject = NCUtils.getVisitJSONFromWrapper(baseEntityID, vaccineDateMap);
+        jsonObject = NCUtils.getVisitJSONFromWrapper(getContext(), baseEntityID, vaccineDateMap);
 
         // notify the view
         if (jsonObject != null && visitView != null) {

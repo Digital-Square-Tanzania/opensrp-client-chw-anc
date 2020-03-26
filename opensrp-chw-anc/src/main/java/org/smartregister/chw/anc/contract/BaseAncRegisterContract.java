@@ -1,5 +1,7 @@
 package org.smartregister.chw.anc.contract;
 
+import android.content.Context;
+
 import com.vijay.jsonwizard.domain.Form;
 
 import org.json.JSONObject;
@@ -27,7 +29,7 @@ public interface BaseAncRegisterContract {
 
     interface Model {
 
-        JSONObject getFormAsJson(String formName, String entityId, String currentLocationId) throws Exception;
+        JSONObject getFormAsJson(Context context, String formName, String entityId, String currentLocationId) throws Exception;
 
     }
 

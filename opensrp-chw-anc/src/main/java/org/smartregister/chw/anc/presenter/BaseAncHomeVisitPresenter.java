@@ -6,6 +6,7 @@ import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.opensrp_chw_anc.R;
+import org.smartregister.util.FormUtils;
 
 import java.lang.ref.WeakReference;
 import java.util.LinkedHashMap;
@@ -27,11 +28,11 @@ public class BaseAncHomeVisitPresenter implements BaseAncHomeVisitContract.Prese
     @Override
     public void startForm(String formName, String memberID, String currentLocationId) {
         try {
-            JSONObject jsonObject = JsonFormUtils.getFormAsJson(formName);
-            JsonFormUtils.getRegistrationForm(jsonObject, memberID, currentLocationId);
-
-            if (view.get() != null)
+            if (view.get() != null) {
+                JSONObject jsonObject = FormUtils.getInstance(view.get().getContext()).getFormJson(formName);
+                JsonFormUtils.getRegistrationForm(jsonObject, memberID, currentLocationId);
                 view.get().startFormActivity(jsonObject);
+            }
         } catch (Exception e) {
             Timber.e(e);
         }

@@ -31,8 +31,11 @@ public class BaseAncRegisterPresenter implements BaseAncRegisterContract.Present
             return;
         }
 
-        JSONObject form = model.getFormAsJson(formName, entityId, currentLocationId);
-        getView().startFormActivity(form);
+        BaseAncRegisterContract.View view = getView();
+        if (view == null) return;
+
+        JSONObject form = model.getFormAsJson(view.getContext(), formName, entityId, currentLocationId);
+        view.startFormActivity(form);
     }
 
     /**

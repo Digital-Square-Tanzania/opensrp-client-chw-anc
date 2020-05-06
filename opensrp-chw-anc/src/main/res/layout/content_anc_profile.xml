@@ -19,7 +19,7 @@
                 android:layout_height="wrap_content"
                 android:background="@drawable/list_item_background_selctor"
                 android:padding="20dp"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/tick_image"
@@ -69,7 +69,7 @@
                 android:layout_height="1.5px"
                 android:layout_below="@+id/rlLastVisit"
                 android:background="@color/light_grey"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <RelativeLayout
                 android:id="@+id/rlUpcomingServices"
@@ -78,7 +78,7 @@
                 android:layout_below="@+id/view_last_visit_row"
                 android:background="@drawable/list_item_background_selctor"
                 android:padding="20dp"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/cross_image"
@@ -129,7 +129,7 @@
                 android:layout_height="1.5px"
                 android:layout_below="@+id/rlUpcomingServices"
                 android:background="@color/light_grey"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <RelativeLayout
                 android:id="@+id/rlFamilyLocation"
@@ -138,7 +138,7 @@
                 android:layout_below="@+id/view_most_due_overdue_row"
                 android:background="@drawable/list_item_background_selctor"
                 android:padding="20dp"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/family_location_image"
@@ -174,7 +174,7 @@
                 android:layout_height="1.5px"
                 android:layout_below="@+id/rlFamilyLocation"
                 android:background="@color/light_grey"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
             <RelativeLayout
                 android:id="@+id/rlFamilyServicesDue"
@@ -183,7 +183,7 @@
                 android:layout_below="@+id/view_family_location_row"
                 android:background="@drawable/list_item_background_selctor"
                 android:padding="20dp"
-                android:visibility="visible">
+                android:visibility="gone">
 
                 <ImageView
                     android:id="@+id/family_image"
@@ -231,7 +231,7 @@
                 android:layout_height="1.5px"
                 android:layout_below="@+id/rlFamilyServicesDue"
                 android:background="@color/light_grey"
-                android:visibility="visible" />
+                android:visibility="gone" />
 
         </RelativeLayout>
     </ScrollView>
@@ -242,5 +242,5 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerInParent="true"
-        android:visibility="visible" />
+        android:visibility="gone" />
 </RelativeLayout>

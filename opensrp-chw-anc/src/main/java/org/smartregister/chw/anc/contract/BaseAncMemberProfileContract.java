@@ -31,6 +31,8 @@ public interface BaseAncMemberProfileContract {
 
         void openFamilyDueServices();
 
+        void openFamilyLocation();
+
         void setProfileImage(String baseEntityId, String entityType);
 
         void setVisitNotDoneThisMonth();

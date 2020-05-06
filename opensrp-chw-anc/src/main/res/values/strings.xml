@@ -114,4 +114,6 @@
     <string name="rubella_2">Rubella 2</string>
     <string name="mena">MenA</string>
 
+    <!-- Emergency Transport-->
+    <string name="family_location">View house location</string>
 </resources>

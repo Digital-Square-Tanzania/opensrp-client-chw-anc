@@ -62,11 +62,30 @@ import static org.smartregister.util.Utils.getName;
 public class BaseAncMemberProfileActivity extends BaseProfileActivity implements BaseAncMemberProfileContract.View {
     protected MemberObject memberObject;
     protected String baseEntityID;
-    protected TextView text_view_anc_member_name, text_view_ga, text_view_address, text_view_id, textview_record_anc_visit, textViewAncVisitNot, textViewNotVisitMonth, textViewUndo, tvEdit;
-    protected LinearLayout layoutRecordView, record_reccuringvisit_done_bar;
-    protected RelativeLayout rlLastVisit, rlUpcomingServices, rlFamilyServicesDue, layoutRecordButtonDone, layoutNotRecordView;
-    protected TextView recordRecurringVisit, textview_record_visit;
-    protected View view_anc_record, view_last_visit_row, view_most_due_overdue_row, view_family_row;
+    protected TextView text_view_anc_member_name;
+    protected TextView text_view_ga;
+    protected TextView text_view_address;
+    protected TextView text_view_id;
+    protected TextView textview_record_anc_visit;
+    protected TextView textViewAncVisitNot;
+    protected TextView textViewNotVisitMonth;
+    protected TextView textViewUndo;
+    protected TextView tvEdit;
+    protected LinearLayout layoutRecordView;
+    protected LinearLayout record_reccuringvisit_done_bar;
+    protected RelativeLayout rlLastVisit;
+    protected RelativeLayout rlUpcomingServices;
+    protected RelativeLayout rlFamilyServicesDue;
+    protected RelativeLayout layoutRecordButtonDone;
+    protected RelativeLayout layoutNotRecordView;
+    protected RelativeLayout rlFamilyLocation;
+    protected TextView textview_record_visit;
+    protected TextView recordRecurringVisit;
+    protected View view_anc_record;
+    protected View view_last_visit_row;
+    protected View view_most_due_overdue_row;
+    protected View view_family_row;
+    protected View view_family_location_row;
     protected CircleImageView imageView;
     protected BaseAncFloatingMenu baseAncFloatingMenu;
     protected TextView tvLastVisitDate;
@@ -125,6 +144,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         view_last_visit_row = findViewById(R.id.view_last_visit_row);
         view_most_due_overdue_row = findViewById(R.id.view_most_due_overdue_row);
         view_family_row = findViewById(R.id.view_family_row);
+        view_family_location_row = findViewById(R.id.view_family_location_row);
 
         tvLastVisitDate = findViewById(R.id.textview_last_vist_day);
         tvUpComingServices = findViewById(R.id.textview_name_due);
@@ -132,7 +152,11 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         record_reccuringvisit_done_bar = findViewById(R.id.record_reccuringvisit_done_bar);
         textview_record_visit = findViewById(R.id.textview_record_visit);
 
+        rlFamilyLocation = findViewById(R.id.rlFamilyLocation);
+
+
         initializePresenter();
+        setFamilyLocation();
     }
 
     protected void registerPresenter() {
@@ -156,8 +180,8 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
         if(lastAncHomeVisitNotDoneEvent != null && lastAncHomeVisitNotDoneUndoEvent != null &&
                 lastAncHomeVisitNotDoneUndoEvent.getDate().before(lastAncHomeVisitNotDoneEvent.getDate())
-                    && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)){
-                setVisitViews();
+                && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)){
+            setVisitViews();
         }
         else if (lastAncHomeVisitNotDoneUndoEvent == null && lastAncHomeVisitNotDoneEvent != null && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
             setVisitViews();
@@ -272,6 +296,10 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     public void openFamilyDueServices() {
         // TODO implement
     }
+    @Override
+    public void openFamilyLocation() {
+        // TODO implement
+    }
 
     @Override
     public void setProfileImage(String baseEntityId, String entityType) {
@@ -325,7 +353,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     public void setUpComingServicesStatus(String service, AlertStatus status, Date date) {
         if (status == AlertStatus.complete)
             return;
-
         view_most_due_overdue_row.setVisibility(View.VISIBLE);
         rlUpcomingServices.setVisibility(View.VISIBLE);
 
@@ -352,6 +379,11 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         }
     }
 
+    public void setFamilyLocation() {
+        view_family_location_row.setVisibility(View.GONE);
+        rlFamilyLocation.setVisibility(View.GONE);
+    }
+
     @Override
     public void onMemberDetailsReloaded(MemberObject memberObject) {
         this.memberObject = memberObject;
@@ -374,9 +406,12 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             this.openMedicalHistory();
         } else if (v.getId() == R.id.rlUpcomingServices) {
             this.openUpcomingService();
-        } else if (v.getId() == R.id.rlFamilyServicesDue) {
+        } else if (v.getId() == R.id.rlFamilyLocation) {
+            this.openFamilyLocation();
+        }
+        else if (v.getId() == R.id.rlFamilyServicesDue) {
             this.openFamilyDueServices();
-        } else if (v.getId() == R.id.textview_anc_visit_not) {
+        }else if (v.getId() == R.id.textview_anc_visit_not) {
             presenter().getView().setVisitNotDoneThisMonth();
         } else if (v.getId() == R.id.textview_undo) {
             presenter().getView().updateVisitNotDone(0);
@@ -424,7 +459,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
         rlLastVisit = findViewById(R.id.rlLastVisit);
         rlUpcomingServices = findViewById(R.id.rlUpcomingServices);
-
         rlFamilyServicesDue = findViewById(R.id.rlFamilyServicesDue);
         textViewAncVisitNot = findViewById(R.id.textview_anc_visit_not);
         layoutRecordButtonDone = findViewById(R.id.record_visit_done_bar);
@@ -437,6 +471,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         rlLastVisit.setOnClickListener(this);
         rlUpcomingServices.setOnClickListener(this);
         rlFamilyServicesDue.setOnClickListener(this);
+        rlFamilyLocation.setOnClickListener(this);
         tvEdit.setOnClickListener(this);
 
         textViewAncVisitNot.setOnClickListener(this);
@@ -444,7 +479,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         imageViewCross.setOnClickListener(this);
         layoutRecordButtonDone.setOnClickListener(this);
         recordRecurringVisit.setOnClickListener(this);
-
 
         imageView = findViewById(R.id.imageview_profile);
         imageView.setBorderWidth(2);

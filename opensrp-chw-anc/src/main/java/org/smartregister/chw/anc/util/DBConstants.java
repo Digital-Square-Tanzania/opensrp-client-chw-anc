@@ -39,6 +39,7 @@ public class DBConstants {
         public static final String VACCINES_AT_BIRTH = "vacc_birth";
         public static final String SAME_AS_FAM_NAME = "same_as_fam_name";
         public static final String OPTIONS = "options";
+        public static final String GPS ="gps";
 
 
     }

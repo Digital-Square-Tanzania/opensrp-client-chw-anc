@@ -36,6 +36,7 @@ public class MemberObject implements Serializable {
     protected int confirmedContacts = 0;
     protected String dateCreated;
     protected String hasAncCard;
+    protected String gps;
 
     public MemberObject() {
     }
@@ -59,6 +60,8 @@ public class MemberObject implements Serializable {
         familyName = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.FAMILY_NAME, false);
         phoneNumber = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.PHONE_NUMBER, false);
         hasAncCard = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.HAS_ANC_CARD, false);
+        gps = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.GPS, false);
+
 
         String visits = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.CONFIRMED_VISITS, false);
         if (StringUtils.isNotBlank(visits)) {
@@ -265,5 +268,12 @@ public class MemberObject implements Serializable {
 
     public void setFamilyHeadPhoneNumber(String familyHeadPhoneNumber) {
         this.familyHeadPhoneNumber = familyHeadPhoneNumber;
+    }
+
+    public String getGps() {
+        return gps;
+    }
+    public void setGps(String gps) {
+        this.gps = gps;
     }
 }

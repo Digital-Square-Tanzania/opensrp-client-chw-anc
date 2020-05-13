@@ -66,6 +66,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     protected TextView text_view_ga;
     protected TextView text_view_address;
     protected TextView text_view_id;
+    protected TextView textViewGravida;
     protected TextView textview_record_anc_visit;
     protected TextView textViewAncVisitNot;
     protected TextView textViewNotVisitMonth;
@@ -178,12 +179,11 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         Visit lastAncHomeVisitNotDoneEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE);
         Visit lastAncHomeVisitNotDoneUndoEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE_UNDO);
 
-        if(lastAncHomeVisitNotDoneEvent != null && lastAncHomeVisitNotDoneUndoEvent != null &&
+        if (lastAncHomeVisitNotDoneEvent != null && lastAncHomeVisitNotDoneUndoEvent != null &&
                 lastAncHomeVisitNotDoneUndoEvent.getDate().before(lastAncHomeVisitNotDoneEvent.getDate())
-                && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)){
+                && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
             setVisitViews();
-        }
-        else if (lastAncHomeVisitNotDoneUndoEvent == null && lastAncHomeVisitNotDoneEvent != null && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
+        } else if (lastAncHomeVisitNotDoneUndoEvent == null && lastAncHomeVisitNotDoneEvent != null && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
             setVisitViews();
         }
         Visit lastVisit = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT);
@@ -238,7 +238,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     //TODO: Find source of NPE
     public void openVisitMonthView() {
-        if(layoutNotRecordView == null || layoutRecordButtonDone == null || layoutRecordView == null)
+        if (layoutNotRecordView == null || layoutRecordButtonDone == null || layoutRecordView == null)
             return;
 
         layoutNotRecordView.setVisibility(View.VISIBLE);
@@ -278,6 +278,13 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     @Override
+    public void setMemberGravida(String gravida) {
+        String gravidaTextValue = String.format(getString(R.string.gravida_text), gravida);
+        if (textViewGravida != null)
+            textViewGravida.setText(gravidaTextValue);
+    }
+
+    @Override
     public BaseAncMemberProfileContract.Presenter presenter() {
         return (BaseAncMemberProfileContract.Presenter) presenter;
     }
@@ -296,6 +303,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     public void openFamilyDueServices() {
         // TODO implement
     }
+
     @Override
     public void openFamilyLocation() {
         // TODO implement
@@ -408,10 +416,9 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             this.openUpcomingService();
         } else if (v.getId() == R.id.rlFamilyLocation) {
             this.openFamilyLocation();
-        }
-        else if (v.getId() == R.id.rlFamilyServicesDue) {
+        } else if (v.getId() == R.id.rlFamilyServicesDue) {
             this.openFamilyDueServices();
-        }else if (v.getId() == R.id.textview_anc_visit_not) {
+        } else if (v.getId() == R.id.textview_anc_visit_not) {
             presenter().getView().setVisitNotDoneThisMonth();
         } else if (v.getId() == R.id.textview_undo) {
             presenter().getView().updateVisitNotDone(0);
@@ -450,6 +457,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         text_view_ga = findViewById(R.id.text_view_ga);
         text_view_address = findViewById(R.id.text_view_address);
         text_view_id = findViewById(R.id.text_view_id);
+        textViewGravida = findViewById(R.id.text_view_gravida);
         textview_record_anc_visit = findViewById(R.id.textview_record_visit);
         view_anc_record = findViewById(R.id.view_record);
         layoutRecordView = findViewById(R.id.record_visit_bar);

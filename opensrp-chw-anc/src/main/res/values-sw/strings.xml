@@ -38,6 +38,7 @@
     <string name="edit">HARIRI</string>
 
     <string name="unique_id_text">ID: %1$s</string>
+    <string name="gravida_text">Gravida %1$s</string>
 
     <string name="confirm_form_close">Thibitisha kufunga fomu</string>
     <string name="confirm_form_close_explanation">Unauwakika unataka kurudi nyuma?Data zote ulizoingiza kwenye fomu zitafutika</string>

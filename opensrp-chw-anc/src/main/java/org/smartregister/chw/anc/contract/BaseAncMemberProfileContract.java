@@ -23,6 +23,8 @@ public interface BaseAncMemberProfileContract {
 
         void setMemberChwMemberId(String memberChwMemberId);
 
+        void setMemberGravida(String gravida);
+
         BaseAncMemberProfileContract.Presenter presenter();
 
         void openMedicalHistory();

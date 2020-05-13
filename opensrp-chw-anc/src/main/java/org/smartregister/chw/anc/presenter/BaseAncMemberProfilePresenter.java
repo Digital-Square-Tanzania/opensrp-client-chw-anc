@@ -45,6 +45,7 @@ public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presen
         getView().setMemberAddress(memberObject.getAddress());
         getView().setMemberChwMemberId(memberObject.getChwMemberId());
         getView().setProfileImage(memberObject.getBaseEntityId(), entityType);
+        getView().setMemberGravida(memberObject.getGravida());
     }
 
     @Override

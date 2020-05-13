@@ -31,6 +31,7 @@ public class MemberObject implements Serializable {
     protected String firstName;
     protected String middleName;
     protected String lastName;
+    protected String gravida;
     protected String dob;
     protected String phoneNumber;
     protected int confirmedContacts = 0;
@@ -138,6 +139,7 @@ public class MemberObject implements Serializable {
         return lastName;
     }
 
+
     public String getDob() {
         return dob;
     }
@@ -157,7 +159,7 @@ public class MemberObject implements Serializable {
     public int getAge() {
         try {
             return new Period(new DateTime(getDob()), new DateTime()).getYears();
-        }catch (Exception e){
+        } catch (Exception e) {
             Timber.e(e);
         }
         return 0;
@@ -181,6 +183,14 @@ public class MemberObject implements Serializable {
 
     public void setLastMenstrualPeriod(String lastMenstrualPeriod) {
         this.lastMenstrualPeriod = lastMenstrualPeriod;
+    }
+
+    public String getGravida() {
+        return this.gravida;
+    }
+
+    public void setGravida(String gravida) {
+        this.gravida = gravida;
     }
 
     public void setAddress(String address) {

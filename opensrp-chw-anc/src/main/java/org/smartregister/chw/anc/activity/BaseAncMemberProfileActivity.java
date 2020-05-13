@@ -118,8 +118,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             memberObject = (MemberObject) getIntent().getSerializableExtra(MEMBER_PROFILE_OBJECT);
             baseEntityID = getIntent().getStringExtra(Constants.ANC_MEMBER_OBJECTS.BASE_ENTITY_ID);
             if (memberObject == null) {
-                memberObject = new MemberObject();
-                memberObject.setBaseEntityId(baseEntityID);
+                memberObject = getMemberObject(baseEntityID);
             }
             memberObject.setFamilyHead(getIntent().getStringExtra(FAMILY_HEAD_NAME));
             memberObject.setFamilyHeadPhoneNumber(getIntent().getStringExtra(FAMILY_HEAD_PHONE));
@@ -275,6 +274,11 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     public void setMemberChwMemberId(String memberChwMemberId) {
         String uniqueId = String.format(getString(R.string.unique_id_text), memberChwMemberId);
         text_view_id.setText(uniqueId);
+    }
+
+    @Override
+    public MemberObject getMemberObject(String baseEntityID) {
+        return null;
     }
 
     @Override

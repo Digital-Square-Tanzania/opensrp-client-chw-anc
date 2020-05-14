@@ -40,6 +40,8 @@ public class DBConstants {
         public static final String SAME_AS_FAM_NAME = "same_as_fam_name";
         public static final String OPTIONS = "options";
         public static final String GPS ="gps";
+        public static final String LANDMARK ="landmark";
+
 
 
     }

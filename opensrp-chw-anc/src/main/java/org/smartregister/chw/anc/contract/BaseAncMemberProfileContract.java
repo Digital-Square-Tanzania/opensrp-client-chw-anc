@@ -25,6 +25,8 @@ public interface BaseAncMemberProfileContract {
 
         void setMemberGravida(String gravida);
 
+        MemberObject getMemberObject(String baseEntityID);
+
         BaseAncMemberProfileContract.Presenter presenter();
 
         void openMedicalHistory();

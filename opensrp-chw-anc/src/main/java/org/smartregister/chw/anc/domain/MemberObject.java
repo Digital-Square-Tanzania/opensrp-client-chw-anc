@@ -32,6 +32,7 @@ public class MemberObject implements Serializable {
     protected String middleName;
     protected String lastName;
     protected String gravida;
+    protected String pregnancyRiskLevel;
     protected String dob;
     protected String phoneNumber;
     protected int confirmedContacts = 0;
@@ -65,7 +66,6 @@ public class MemberObject implements Serializable {
         hasAncCard = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.HAS_ANC_CARD, false);
         gps = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.GPS, false);
         landmark = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LANDMARK, false);
-
 
 
         String visits = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.CONFIRMED_VISITS, false);
@@ -200,6 +200,14 @@ public class MemberObject implements Serializable {
         this.gravida = gravida;
     }
 
+    public String getPregnancyRiskLevel() {
+        return pregnancyRiskLevel;
+    }
+
+    public void setPregnancyRiskLevel(String pregnancyRiskLevel) {
+        this.pregnancyRiskLevel = pregnancyRiskLevel;
+    }
+
     public void setAddress(String address) {
         this.address = address;
     }
@@ -287,9 +295,11 @@ public class MemberObject implements Serializable {
     public String getGps() {
         return gps;
     }
+
     public void setGps(String gps) {
         this.gps = gps;
     }
+
     public String getLandmark() {
         return landmark;
     }

@@ -25,6 +25,8 @@ public interface BaseAncMemberProfileContract {
 
         void setMemberGravida(String gravida);
 
+        void setPregnancyRiskLabel(String pregnancyRiskLevel);
+
         MemberObject getMemberObject(String baseEntityID);
 
         BaseAncMemberProfileContract.Presenter presenter();

@@ -67,6 +67,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     protected TextView text_view_address;
     protected TextView text_view_id;
     protected TextView textViewGravida;
+    protected TextView pregnancyRiskLabel;
     protected TextView textview_record_anc_visit;
     protected TextView textViewAncVisitNot;
     protected TextView textViewNotVisitMonth;
@@ -278,9 +279,39 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     @Override
     public void setMemberGravida(String gravida) {
-        String gravidaTextValue = String.format(getString(R.string.gravida_text), gravida);
-        if (textViewGravida != null)
+        if (textViewGravida != null && StringUtils.isNotBlank(gravida)) {
+            String gravidaTextValue = String.format(getString(R.string.gravida_text), gravida);
             textViewGravida.setText(gravidaTextValue);
+        }
+    }
+
+    @Override
+    public void setPregnancyRiskLabel(String pregnancyRiskLevel) {
+        if (pregnancyRiskLabel != null && StringUtils.isNotBlank(pregnancyRiskLevel)) {
+            int labelTextColor;
+            int labelBackgroundColor;
+            switch (pregnancyRiskLevel) {
+                case Constants.HOME_VISIT.PREGNANCY_RISK_LOW:
+                    labelTextColor = context().getColorResource(R.color.low_risk_text_green);
+                    labelBackgroundColor = context().getColorResource(R.color.low_risk_background_green);
+                    break;
+                case Constants.HOME_VISIT.PREGNANCY_RISK_MEDIUM:
+                    labelTextColor = context().getColorResource(R.color.medium_risk_text_orange);
+                    labelBackgroundColor = context().getColorResource(R.color.low_risk_background_green);
+                    break;
+                case Constants.HOME_VISIT.PREGNANCY_RISK_HIGH:
+                    labelTextColor = context().getColorResource(R.color.high_risk_text_red);
+                    labelBackgroundColor = context().getColorResource(R.color.low_risk_background_green);
+                    break;
+                default:
+                    labelTextColor = context().getColorResource(R.color.default_risk_text_black);
+                    labelBackgroundColor = context().getColorResource(R.color.default_risk_background_black);
+                    break;
+            }
+            pregnancyRiskLabel.setText(pregnancyRiskLevel);
+            pregnancyRiskLabel.setTextColor(labelTextColor);
+            pregnancyRiskLabel.setBackgroundColor(labelBackgroundColor);
+        }
     }
 
     @Override
@@ -462,6 +493,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         text_view_address = findViewById(R.id.text_view_address);
         text_view_id = findViewById(R.id.text_view_id);
         textViewGravida = findViewById(R.id.text_view_gravida);
+        pregnancyRiskLabel = findViewById(R.id.risk_label);
         textview_record_anc_visit = findViewById(R.id.textview_record_visit);
         view_anc_record = findViewById(R.id.view_record);
         layoutRecordView = findViewById(R.id.record_visit_bar);

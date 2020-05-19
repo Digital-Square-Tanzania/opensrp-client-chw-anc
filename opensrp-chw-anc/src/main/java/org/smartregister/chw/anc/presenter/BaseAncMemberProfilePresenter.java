@@ -46,6 +46,7 @@ public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presen
         getView().setMemberChwMemberId(memberObject.getChwMemberId());
         getView().setProfileImage(memberObject.getBaseEntityId(), entityType);
         getView().setMemberGravida(memberObject.getGravida());
+        getView().setPregnancyRiskLabel(memberObject.getPregnancyRiskLevel());
     }
 
     @Override

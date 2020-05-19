@@ -98,6 +98,8 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     private String ancWomanName;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
     private String titleViewText;
+    private LinearLayout defaultProfileHeaderLayout;
+    private LinearLayout etProfileHeaderLayout;
 
     public BaseAncMemberProfileActivity() {
         memberObject = new MemberObject();
@@ -486,6 +488,8 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         if (StringUtils.isNotBlank(memberObject.getPrimaryCareGiver()) && memberObject.getPrimaryCareGiver().equals(memberObject.getBaseEntityId())) {
             findViewById(R.id.primary_anc_caregiver).setVisibility(View.VISIBLE);
         }
+        defaultProfileHeaderLayout = findViewById(R.id.default_profile_header_layout);
+        etProfileHeaderLayout = findViewById(R.id.et_profile_header_layout);
 
         initializeFloatingMenu();
         text_view_anc_member_name = findViewById(R.id.text_view_anc_member_name);
@@ -530,7 +534,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
         displayView();
     }
-
     @Override
     protected ViewPager setupViewPager(ViewPager viewPager) {
         return null;
@@ -547,6 +550,18 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     public String getTitleViewText() {
         return this.titleViewText;
+    }
+
+    @Override
+    public void setDefaultProfileHeaderActive() {
+        defaultProfileHeaderLayout.setVisibility(View.VISIBLE);
+        etProfileHeaderLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setEmTransProfileHeaderActive() {
+        defaultProfileHeaderLayout.setVisibility(View.GONE);
+        etProfileHeaderLayout.setVisibility(View.VISIBLE);
     }
 
     public String getFamilyHeadName() {

@@ -27,6 +27,10 @@ public interface BaseAncMemberProfileContract {
 
         void setPregnancyRiskLabel(String pregnancyRiskLevel);
 
+        void setDefaultProfileHeaderActive();
+
+        void setEmTransProfileHeaderActive();
+
         MemberObject getMemberObject(String baseEntityID);
 
         BaseAncMemberProfileContract.Presenter presenter();

@@ -117,4 +117,6 @@
 
     <!-- Emergency Transport-->
     <string name="family_location">View house location</string>
+    <string name="call_community_responder">Call community responder</string>
+    <string name="community_responder">Community responder</string>
 </resources>

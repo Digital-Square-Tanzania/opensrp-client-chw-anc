@@ -25,7 +25,7 @@ import static org.smartregister.util.Utils.getName;
 public class BaseAncWomanCallDialogFragment extends DialogFragment implements BaseAncWomanCallDialogContract.View {
 
     public static final String DIALOG_TAG = "BaseAncCallWidgetDialogFragment_DIALOG_TAG";
-    private static String ancWomanName, ancWomanPhoneNumber, ancFamillyHeadName, ancFamilyHeadPhone, womanProfileType;
+    private static String ancWomanName, ancWomanPhoneNumber, ancFamilyHeadName, ancFamilyHeadPhone, womanProfileType;
     private View.OnClickListener listener = null;
 
     public static BaseAncWomanCallDialogFragment launchDialog(Activity activity, String womanName, String ancWomanPhone, String familyHeadName, String familyHeadPhone, String profileType) {
@@ -34,7 +34,7 @@ public class BaseAncWomanCallDialogFragment extends DialogFragment implements Ba
         Fragment prev = activity.getFragmentManager().findFragmentByTag(DIALOG_TAG);
         ancWomanPhoneNumber = ancWomanPhone;
         ancWomanName = womanName;
-        ancFamillyHeadName = familyHeadName;
+        ancFamilyHeadName = familyHeadName;
         ancFamilyHeadPhone = familyHeadPhone;
         womanProfileType = profileType;
         if (prev != null) {
@@ -95,7 +95,7 @@ public class BaseAncWomanCallDialogFragment extends DialogFragment implements Ba
 
         if (StringUtils.isNotBlank(ancFamilyHeadPhone)) {
             TextView familyHeadName = rootView.findViewById(R.id.anc_call_head_name);
-            familyHeadName.setText(ancFamillyHeadName);
+            familyHeadName.setText(ancFamilyHeadName);
 
             TextView ancCallHeadPhone = rootView.findViewById(R.id.anc_call_head_phone);
             ancCallHeadPhone.setTag(ancFamilyHeadPhone);
@@ -108,10 +108,9 @@ public class BaseAncWomanCallDialogFragment extends DialogFragment implements Ba
         }
 
         rootView.findViewById(R.id.anc_call_close).setOnClickListener(listener);
-
     }
 
-    private void setUpPosition() {
+    protected void setUpPosition() {
         getDialog().getWindow().setGravity(Gravity.CENTER_HORIZONTAL | Gravity.TOP);
         WindowManager.LayoutParams p = getDialog().getWindow().getAttributes();
         p.width = ViewGroup.LayoutParams.MATCH_PARENT;

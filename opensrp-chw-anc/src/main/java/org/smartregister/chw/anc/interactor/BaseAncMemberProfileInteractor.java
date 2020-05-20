@@ -5,6 +5,7 @@ import android.support.annotation.VisibleForTesting;
 import org.smartregister.chw.anc.contract.BaseAncMemberProfileContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.util.AppExecutors;
+import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.domain.AlertStatus;
 
 import java.util.Date;
@@ -45,8 +46,14 @@ public class BaseAncMemberProfileInteractor implements BaseAncMemberProfileContr
     }
 
     @Override
-    public void refreshProfileView(final MemberObject memberObject, final boolean isForEdit, final BaseAncMemberProfileContract.InteractorCallBack callback) {
-        Runnable runnable = () -> appExecutors.mainThread().execute(() -> callback.refreshProfileTopSection(memberObject));
+    public void refreshProfileView(MemberObject memberObject, final boolean isForEdit, boolean hasEmergencyTransport, final BaseAncMemberProfileContract.InteractorCallBack callback) {
+        Runnable runnable = () -> appExecutors.mainThread().execute(() -> {
+            callback.refreshProfileTopSection(memberObject);
+            if (hasEmergencyTransport) {
+                MemberObject etMemberObject = getEmergencyTransportDetails(memberObject.getBaseEntityId());
+                callback.setEmergencyTransportProfileDetails(etMemberObject);
+            }
+        });
         appExecutors.diskIO().execute(runnable);
     }
 
@@ -60,12 +67,15 @@ public class BaseAncMemberProfileInteractor implements BaseAncMemberProfileContr
         appExecutors.diskIO().execute(runnable);
     }
 
-
     @Override
     public void updateVisitNotDone(long value, BaseAncMemberProfileContract.InteractorCallBack callback) {
-
-//       Implement
+        // Implement
     }
 
-
+    protected MemberObject getEmergencyTransportDetails(String baseEntityId) {
+        MemberObject etMemberObject = new MemberObject();
+        etMemberObject.setGravida("1");
+        etMemberObject.setPregnancyRiskLevel(Constants.HOME_VISIT.PREGNANCY_RISK_LOW);
+        return etMemberObject;
+    }
 }

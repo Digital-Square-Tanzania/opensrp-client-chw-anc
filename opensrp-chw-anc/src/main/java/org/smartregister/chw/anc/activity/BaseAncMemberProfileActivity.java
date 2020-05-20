@@ -441,6 +441,11 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     @Override
+    public boolean hasEmergencyTransport() {
+        return false;
+    }
+
+    @Override
     protected void onResumption() {
         Timber.v("Empty onResumption");
     }

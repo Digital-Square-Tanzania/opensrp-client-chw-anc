@@ -122,4 +122,6 @@
     <string name="low_pregnancy_risk">Low risk</string>
     <string name="medium_pregnancy_risk">Medium risk</string>
     <string name="high_pregnancy_risk">High risk</string>
+    <string name="call_community_responder">Call community responder</string>
+    <string name="community_responder">Community responder</string>
 </resources>

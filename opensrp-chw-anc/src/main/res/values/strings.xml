@@ -118,4 +118,8 @@
 
     <!-- Emergency Transport-->
     <string name="family_location">View house location</string>
+    <string name="default_pregnancy_risk_text">Risk default</string>
+    <string name="low_pregnancy_risk">Low risk</string>
+    <string name="medium_pregnancy_risk">Medium risk</string>
+    <string name="high_pregnancy_risk">High risk</string>
 </resources>

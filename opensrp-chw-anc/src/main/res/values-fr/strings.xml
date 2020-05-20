@@ -114,5 +114,6 @@
     <string name="rubella_1">Rubéole 1</string>
     <string name="rubella_2">Rubéole 2</string>
     <string name="mena">MenA</string>
+    <string name="default_pregnancy_risk_text">Risk default</string>
 
 </resources>

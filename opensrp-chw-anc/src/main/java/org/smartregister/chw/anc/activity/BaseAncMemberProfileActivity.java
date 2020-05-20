@@ -291,28 +291,34 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     public void setPregnancyRiskLabel(String pregnancyRiskLevel) {
         if (pregnancyRiskLabel != null && StringUtils.isNotBlank(pregnancyRiskLevel)) {
             int labelTextColor;
-            int labelBackgroundColor;
+            int background;
+            String labelText;
             switch (pregnancyRiskLevel) {
                 case Constants.HOME_VISIT.PREGNANCY_RISK_LOW:
                     labelTextColor = context().getColorResource(R.color.low_risk_text_green);
-                    labelBackgroundColor = context().getColorResource(R.color.low_risk_background_green);
+                    background = R.drawable.low_risk_label;
+                    labelText = getContext().getString(R.string.low_pregnancy_risk);
                     break;
                 case Constants.HOME_VISIT.PREGNANCY_RISK_MEDIUM:
                     labelTextColor = context().getColorResource(R.color.medium_risk_text_orange);
-                    labelBackgroundColor = context().getColorResource(R.color.low_risk_background_green);
+                    background = R.drawable.medium_risk_label;
+                    labelText = getContext().getString(R.string.medium_pregnancy_risk);
                     break;
                 case Constants.HOME_VISIT.PREGNANCY_RISK_HIGH:
                     labelTextColor = context().getColorResource(R.color.high_risk_text_red);
-                    labelBackgroundColor = context().getColorResource(R.color.low_risk_background_green);
+                    background = R.drawable.high_risk_label;
+                    labelText = getContext().getString(R.string.high_pregnancy_risk);
                     break;
                 default:
                     labelTextColor = context().getColorResource(R.color.default_risk_text_black);
-                    labelBackgroundColor = context().getColorResource(R.color.default_risk_background_black);
+                    background = R.drawable.risk_label;
+                    labelText = getContext().getString(R.string.low_pregnancy_risk);
                     break;
             }
-            pregnancyRiskLabel.setText(pregnancyRiskLevel);
+            pregnancyRiskLabel.setVisibility(View.VISIBLE);
+            pregnancyRiskLabel.setText(labelText);
             pregnancyRiskLabel.setTextColor(labelTextColor);
-            pregnancyRiskLabel.setBackgroundColor(labelBackgroundColor);
+            pregnancyRiskLabel.setBackgroundResource(background);
         }
     }
 
@@ -539,6 +545,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
         displayView();
     }
+
     @Override
     protected ViewPager setupViewPager(ViewPager viewPager) {
         return null;

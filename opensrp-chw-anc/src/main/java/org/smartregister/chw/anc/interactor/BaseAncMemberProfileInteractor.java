@@ -50,7 +50,7 @@ public class BaseAncMemberProfileInteractor implements BaseAncMemberProfileContr
         Runnable runnable = () -> appExecutors.mainThread().execute(() -> {
             callback.refreshProfileTopSection(memberObject);
             if (hasEmergencyTransport) {
-                MemberObject etMemberObject = getEmergencyTransportDetails(memberObject.getBaseEntityId());
+                MemberObject etMemberObject = getEmergencyTransportDetails(memberObject);
                 callback.setEmergencyTransportProfileDetails(etMemberObject);
             }
         });
@@ -72,10 +72,9 @@ public class BaseAncMemberProfileInteractor implements BaseAncMemberProfileContr
         // Implement
     }
 
-    protected MemberObject getEmergencyTransportDetails(String baseEntityId) {
-        MemberObject etMemberObject = new MemberObject();
-        etMemberObject.setGravida("1");
-        etMemberObject.setPregnancyRiskLevel(Constants.HOME_VISIT.PREGNANCY_RISK_LOW);
-        return etMemberObject;
+    protected MemberObject getEmergencyTransportDetails(MemberObject memberObject) {
+        memberObject.setGravida("1");
+        memberObject.setPregnancyRiskLevel(Constants.HOME_VISIT.PREGNANCY_RISK_LOW);
+        return memberObject;
     }
 }

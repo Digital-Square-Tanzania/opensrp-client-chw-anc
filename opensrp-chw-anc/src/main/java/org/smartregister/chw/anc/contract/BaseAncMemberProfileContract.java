@@ -58,6 +58,8 @@ public interface BaseAncMemberProfileContract {
         void setFamilyStatus(AlertStatus status);
 
         void onMemberDetailsReloaded(MemberObject memberObject);
+
+        boolean hasEmergencyTransport();
     }
 
     interface Presenter extends BaseProfileContract.Presenter {
@@ -77,7 +79,7 @@ public interface BaseAncMemberProfileContract {
 
         MemberObject getMemberClient(String memberID);
 
-        void refreshProfileView(MemberObject memberObject, boolean isForEdit, InteractorCallBack callback);
+        void refreshProfileView(MemberObject memberObject, boolean isForEdit, boolean hasEmergencyTransport, InteractorCallBack callback);
 
         void updateVisitNotDone(long value, InteractorCallBack callback);
 
@@ -88,6 +90,8 @@ public interface BaseAncMemberProfileContract {
     interface InteractorCallBack {
 
         void refreshProfileTopSection(MemberObject memberObject);
+
+        void setEmergencyTransportProfileDetails(MemberObject memberObject);
 
         void refreshLastVisit(Date lastVisitDate);
 

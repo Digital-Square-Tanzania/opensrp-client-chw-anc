@@ -66,6 +66,8 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     protected TextView text_view_ga;
     protected TextView text_view_address;
     protected TextView text_view_id;
+    protected TextView textViewGravida;
+    protected TextView pregnancyRiskLabel;
     protected TextView textview_record_anc_visit;
     protected TextView textViewAncVisitNot;
     protected TextView textViewNotVisitMonth;
@@ -96,6 +98,8 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     private String ancWomanName;
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
     private String titleViewText;
+    private LinearLayout defaultProfileHeaderLayout;
+    private LinearLayout etProfileHeaderLayout;
 
     public BaseAncMemberProfileActivity() {
         memberObject = new MemberObject();
@@ -177,12 +181,11 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         Visit lastAncHomeVisitNotDoneEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE);
         Visit lastAncHomeVisitNotDoneUndoEvent = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT_NOT_DONE_UNDO);
 
-        if(lastAncHomeVisitNotDoneEvent != null && lastAncHomeVisitNotDoneUndoEvent != null &&
+        if (lastAncHomeVisitNotDoneEvent != null && lastAncHomeVisitNotDoneUndoEvent != null &&
                 lastAncHomeVisitNotDoneUndoEvent.getDate().before(lastAncHomeVisitNotDoneEvent.getDate())
-                && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)){
+                && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
             setVisitViews();
-        }
-        else if (lastAncHomeVisitNotDoneUndoEvent == null && lastAncHomeVisitNotDoneEvent != null && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
+        } else if (lastAncHomeVisitNotDoneUndoEvent == null && lastAncHomeVisitNotDoneEvent != null && ancHomeVisitNotDoneEvent(lastAncHomeVisitNotDoneEvent)) {
             setVisitViews();
         }
         Visit lastVisit = getVisit(Constants.EVENT_TYPE.ANC_HOME_VISIT);
@@ -237,7 +240,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     //TODO: Find source of NPE
     public void openVisitMonthView() {
-        if(layoutNotRecordView == null || layoutRecordButtonDone == null || layoutRecordView == null)
+        if (layoutNotRecordView == null || layoutRecordButtonDone == null || layoutRecordView == null)
             return;
 
         layoutNotRecordView.setVisibility(View.VISIBLE);
@@ -277,6 +280,49 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     @Override
+    public void setMemberGravida(String gravida) {
+        if (textViewGravida != null && StringUtils.isNotBlank(gravida)) {
+            String gravidaTextValue = String.format(getString(R.string.gravida_text), gravida);
+            textViewGravida.setText(gravidaTextValue);
+        }
+    }
+
+    @Override
+    public void setPregnancyRiskLabel(String pregnancyRiskLevel) {
+        if (pregnancyRiskLabel != null && StringUtils.isNotBlank(pregnancyRiskLevel)) {
+            int labelTextColor;
+            int background;
+            String labelText;
+            switch (pregnancyRiskLevel) {
+                case Constants.HOME_VISIT.PREGNANCY_RISK_LOW:
+                    labelTextColor = context().getColorResource(R.color.low_risk_text_green);
+                    background = R.drawable.low_risk_label;
+                    labelText = getContext().getString(R.string.low_pregnancy_risk);
+                    break;
+                case Constants.HOME_VISIT.PREGNANCY_RISK_MEDIUM:
+                    labelTextColor = context().getColorResource(R.color.medium_risk_text_orange);
+                    background = R.drawable.medium_risk_label;
+                    labelText = getContext().getString(R.string.medium_pregnancy_risk);
+                    break;
+                case Constants.HOME_VISIT.PREGNANCY_RISK_HIGH:
+                    labelTextColor = context().getColorResource(R.color.high_risk_text_red);
+                    background = R.drawable.high_risk_label;
+                    labelText = getContext().getString(R.string.high_pregnancy_risk);
+                    break;
+                default:
+                    labelTextColor = context().getColorResource(R.color.default_risk_text_black);
+                    background = R.drawable.risk_label;
+                    labelText = getContext().getString(R.string.low_pregnancy_risk);
+                    break;
+            }
+            pregnancyRiskLabel.setVisibility(View.VISIBLE);
+            pregnancyRiskLabel.setText(labelText);
+            pregnancyRiskLabel.setTextColor(labelTextColor);
+            pregnancyRiskLabel.setBackgroundResource(background);
+        }
+    }
+
+    @Override
     public MemberObject getMemberObject(String baseEntityID) {
         return null;
     }
@@ -300,6 +346,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     public void openFamilyDueServices() {
         // TODO implement
     }
+
     @Override
     public void openFamilyLocation() {
         // TODO implement
@@ -400,6 +447,11 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     @Override
+    public boolean hasEmergencyTransport() {
+        return false;
+    }
+
+    @Override
     protected void onResumption() {
         Timber.v("Empty onResumption");
     }
@@ -412,10 +464,9 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             this.openUpcomingService();
         } else if (v.getId() == R.id.rlFamilyLocation) {
             this.openFamilyLocation();
-        }
-        else if (v.getId() == R.id.rlFamilyServicesDue) {
+        } else if (v.getId() == R.id.rlFamilyServicesDue) {
             this.openFamilyDueServices();
-        }else if (v.getId() == R.id.textview_anc_visit_not) {
+        } else if (v.getId() == R.id.textview_anc_visit_not) {
             presenter().getView().setVisitNotDoneThisMonth();
         } else if (v.getId() == R.id.textview_undo) {
             presenter().getView().updateVisitNotDone(0);
@@ -448,12 +499,16 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         if (StringUtils.isNotBlank(memberObject.getPrimaryCareGiver()) && memberObject.getPrimaryCareGiver().equals(memberObject.getBaseEntityId())) {
             findViewById(R.id.primary_anc_caregiver).setVisibility(View.VISIBLE);
         }
+        defaultProfileHeaderLayout = findViewById(R.id.default_profile_header_layout);
+        etProfileHeaderLayout = findViewById(R.id.et_profile_header_layout);
 
         initializeFloatingMenu();
         text_view_anc_member_name = findViewById(R.id.text_view_anc_member_name);
         text_view_ga = findViewById(R.id.text_view_ga);
         text_view_address = findViewById(R.id.text_view_address);
         text_view_id = findViewById(R.id.text_view_id);
+        textViewGravida = findViewById(R.id.text_view_gravida);
+        pregnancyRiskLabel = findViewById(R.id.risk_label);
         textview_record_anc_visit = findViewById(R.id.textview_record_visit);
         view_anc_record = findViewById(R.id.view_record);
         layoutRecordView = findViewById(R.id.record_visit_bar);
@@ -507,6 +562,18 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
 
     public String getTitleViewText() {
         return this.titleViewText;
+    }
+
+    @Override
+    public void setDefaultProfileHeaderActive() {
+        defaultProfileHeaderLayout.setVisibility(View.VISIBLE);
+        etProfileHeaderLayout.setVisibility(View.GONE);
+    }
+
+    @Override
+    public void setEmTransProfileHeaderActive() {
+        defaultProfileHeaderLayout.setVisibility(View.GONE);
+        etProfileHeaderLayout.setVisibility(View.VISIBLE);
     }
 
     public String getFamilyHeadName() {

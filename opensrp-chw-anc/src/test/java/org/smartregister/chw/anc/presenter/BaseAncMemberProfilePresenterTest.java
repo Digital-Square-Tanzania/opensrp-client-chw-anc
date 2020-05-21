@@ -51,6 +51,13 @@ public class BaseAncMemberProfilePresenterTest extends BaseUnitTest {
         Mockito.verify(view).setProfileImage(memberBaseObjectId, entityType);
     }
 
+    @Test
+    public void canSetEmergencyTransportDetails() {
+        presenter.setEmergencyTransportProfileDetails(memberObject);
+        Mockito.verify(view).setEmTransProfileHeaderActive();
+        Mockito.verify(view).setMemberGravida(memberObject.getGravida());
+        Mockito.verify(view).setPregnancyRiskLabel(memberObject.getPregnancyRiskLevel());
+    }
 
     @Test
     public void testRefreshProfileBottom() {
@@ -61,7 +68,7 @@ public class BaseAncMemberProfilePresenterTest extends BaseUnitTest {
     @Test
     public void testFetchProfileData() {
         presenter.fetchProfileData();
-        Mockito.verify(interactor).refreshProfileView(memberObject, false, presenter);
+        Mockito.verify(interactor).refreshProfileView(memberObject, false, false, presenter);
     }
 
     @Test

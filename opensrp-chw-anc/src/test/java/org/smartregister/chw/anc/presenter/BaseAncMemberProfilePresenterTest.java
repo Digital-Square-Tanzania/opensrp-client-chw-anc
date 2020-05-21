@@ -61,7 +61,7 @@ public class BaseAncMemberProfilePresenterTest extends BaseUnitTest {
     @Test
     public void testFetchProfileData() {
         presenter.fetchProfileData();
-        Mockito.verify(interactor).refreshProfileView(memberObject, false, presenter);
+        Mockito.verify(interactor).refreshProfileView(memberObject, false, false, presenter);
     }
 
     @Test

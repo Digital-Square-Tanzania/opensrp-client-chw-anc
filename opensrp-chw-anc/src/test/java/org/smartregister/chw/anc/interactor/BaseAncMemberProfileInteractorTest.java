@@ -49,6 +49,7 @@ public class BaseAncMemberProfileInteractorTest implements Executor {
         Assert.assertEquals("12345", memberObject.getBaseEntityId());
     }
 
+
     @Test
     public void testGetVaccineList() {
         Map<String, Date> vaccineList = interactor.getVaccineList();
@@ -63,5 +64,13 @@ public class BaseAncMemberProfileInteractorTest implements Executor {
         Mockito.verify(callBack).refreshFamilyStatus(AlertStatus.normal);
         Mockito.verify(callBack).refreshLastVisit(Mockito.any(Date.class));
         Mockito.verify(callBack).refreshUpComingServicesStatus(Mockito.anyString(), Mockito.any(AlertStatus.class), Mockito.any(Date.class));
+    }
+
+    @Test
+    public void canRefreshEmergencyTransportDetailsOnTheProfile() {
+        MemberObject memberObject = new MemberObject();
+        interactor.refreshProfileView(memberObject, false, true, callBack);
+        Mockito.verify(callBack).refreshProfileTopSection(memberObject);
+        Mockito.verify(callBack).setEmergencyTransportProfileDetails(memberObject);
     }
 }

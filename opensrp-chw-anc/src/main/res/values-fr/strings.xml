@@ -38,6 +38,7 @@
     <string name="edit">EDITER</string>
 
     <string name="unique_id_text">ID: %1$s</string>
+    <string name="gravida_text">Gravida %1$s</string>
 
     <string name="confirm_form_close">Confirmer la fermeture du formulaire</string>
     <string name="confirm_form_close_explanation">Êtes-vous certain de vouloir retourner? Toutes les données que vous avez entré dans ce formulaire seront éffacées.</string>
@@ -113,5 +114,6 @@
     <string name="rubella_1">Rubéole 1</string>
     <string name="rubella_2">Rubéole 2</string>
     <string name="mena">MenA</string>
+    <string name="default_pregnancy_risk_text">Risk default</string>
 
 </resources>

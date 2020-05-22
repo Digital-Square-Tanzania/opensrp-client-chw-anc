@@ -12,7 +12,6 @@ public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presen
 
     protected WeakReference<BaseAncMemberProfileContract.View> view;
     protected BaseAncMemberProfileContract.Interactor interactor;
-
     private MemberObject memberObject;
 
     public BaseAncMemberProfilePresenter(BaseAncMemberProfileContract.View view, BaseAncMemberProfileContract.Interactor interactor, MemberObject memberObject) {
@@ -23,7 +22,8 @@ public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presen
 
     @Override
     public void fetchProfileData() {
-        interactor.refreshProfileView(memberObject, false, this);
+        boolean hasEmergencyTransport = getView().hasEmergencyTransport();
+        interactor.refreshProfileView(memberObject, false, hasEmergencyTransport, this);
     }
 
     @Override
@@ -45,6 +45,15 @@ public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presen
         getView().setMemberAddress(memberObject.getAddress());
         getView().setMemberChwMemberId(memberObject.getChwMemberId());
         getView().setProfileImage(memberObject.getBaseEntityId(), entityType);
+        getView().setMemberGravida(memberObject.getGravida());
+        getView().setPregnancyRiskLabel(memberObject.getPregnancyRiskLevel());
+    }
+
+    @Override
+    public void setEmergencyTransportProfileDetails(MemberObject memberObject) {
+        getView().setEmTransProfileHeaderActive();
+        getView().setMemberGravida(memberObject.getGravida());
+        getView().setPregnancyRiskLabel(memberObject.getPregnancyRiskLevel());
     }
 
     @Override

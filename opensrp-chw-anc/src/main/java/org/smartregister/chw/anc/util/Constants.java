@@ -84,6 +84,9 @@ public interface Constants {
     interface HOME_VISIT {
         String VACCINE_NOT_GIVEN = "Vaccine not given";
         String DOSE_NOT_GIVEN = "Dose not given";
+        String PREGNANCY_RISK_LOW = "Low";
+        String PREGNANCY_RISK_MEDIUM = "Medium";
+        String PREGNANCY_RISK_HIGH = "High";
     }
 
     interface HOME_VISIT_TASK {

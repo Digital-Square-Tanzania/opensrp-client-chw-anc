@@ -119,4 +119,9 @@
     <string name="family_location">View house location</string>
     <string name="call_community_responder">Call community responder</string>
     <string name="community_responder">Community responder</string>
+    <string name="anc_yes">Yes</string>
+    <string name="anc_no">No</string>
+    <string name="basic_services_provided">Basic Services Provided: %1$s</string>
+    <string name="cEmONC">CEmONC: %1$s</string>
+    <string name="facility_ownership">Ownership: %1$s</string>
 </resources>

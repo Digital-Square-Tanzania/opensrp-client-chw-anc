@@ -30,7 +30,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="5dp"
             android:layout_marginBottom="5dp"
-            android:text="@string/call_community_responder"
+            android:text="@string/community_responder"
             android:textColor="@color/black"
             android:textSize="@dimen/call_widget_font1"
             android:textStyle="normal" />
@@ -53,12 +53,34 @@
                 android:textStyle="normal" />
 
             <org.smartregister.view.customcontrols.CustomFontTextView
+                android:id="@+id/basic_services_provided"
+                style="@style/CustomFontTextViewStyle.ClientList.Light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:textColor="@color/black"
+                android:visibility="gone"
+                android:textSize="@dimen/call_widget_font2"
+                android:textStyle="normal" />
+
+            <org.smartregister.view.customcontrols.CustomFontTextView
+                android:id="@+id/cEmONCView"
+                style="@style/CustomFontTextViewStyle.ClientList.Light"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
+                android:textColor="@color/black"
+                android:visibility="gone"
+                android:textSize="@dimen/call_widget_font2"
+                android:textStyle="normal" />
+
+            <org.smartregister.view.customcontrols.CustomFontTextView
                 android:id="@+id/call_responder_title"
                 style="@style/CustomFontTextViewStyle.ClientList.Light"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="5dp"
-                android:text="@string/community_responder"
+                android:text="@string/call_community_responder"
                 android:textColor="@color/grey"
                 android:textSize="@dimen/call_widget_font3"
                 android:textStyle="normal" />

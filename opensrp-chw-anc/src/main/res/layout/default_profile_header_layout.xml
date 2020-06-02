@@ -14,7 +14,6 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:text="GA: 10 weeks"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="@android:color/black"
         android:textSize="@dimen/register_member_village_size" />
@@ -34,8 +33,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:gravity="center_horizontal"
-        android:paddingLeft="0dp"
-        android:text="Lavingtone #445"
+        android:paddingStart="0dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="@android:color/black"
         android:textSize="@dimen/register_member_village_size" />
@@ -56,8 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_gravity="center"
         android:gravity="center"
-        android:paddingLeft="0dp"
-        android:text="ID:123456"
+        android:paddingStart="0dp"
         android:textAppearance="@style/TextAppearance.AppCompat.Small"
         android:textColor="@android:color/black"
         android:textSize="@dimen/register_member_village_size" />

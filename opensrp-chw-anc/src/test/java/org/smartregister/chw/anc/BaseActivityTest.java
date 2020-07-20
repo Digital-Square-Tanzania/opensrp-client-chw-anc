@@ -2,6 +2,7 @@ package org.smartregister.chw.anc;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.os.Build;
 
 import org.junit.After;
 import org.junit.Assert;
@@ -17,7 +18,7 @@ import org.smartregister.chw.anc.application.TestApplication;
 import org.smartregister.immunization.BuildConfig;
 
 @RunWith(RobolectricTestRunner.class)
-@Config(application = TestApplication.class, constants = BuildConfig.class, sdk = 22)
+@Config(application = TestApplication.class, constants = BuildConfig.class, sdk = Build.VERSION_CODES.O_MR1)
 public abstract class BaseActivityTest<T extends Activity> {
 
     private T activity;

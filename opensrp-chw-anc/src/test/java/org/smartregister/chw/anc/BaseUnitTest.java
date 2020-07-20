@@ -13,7 +13,7 @@ import org.smartregister.immunization.BuildConfig;
 
 @RunWith(PowerMockRunner.class)
 @PowerMockRunnerDelegate(RobolectricTestRunner.class)
-@Config(application = TestApplication.class, constants = BuildConfig.class, sdk = Build.VERSION_CODES.O_MR1)
+@Config(application = TestApplication.class, sdk = Build.VERSION_CODES.O_MR1)
 @PowerMockIgnore({"org.mockito.*", "org.robolectric.*", "android.*"})
 public abstract class BaseUnitTest {
 }

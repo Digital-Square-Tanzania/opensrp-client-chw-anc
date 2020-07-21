@@ -3,10 +3,12 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
 
     dependencies {
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.11.0"
+        classpath 'org.smartregister:gradle-jarjar-plugin:1.0.0-SNAPSHOT'
     }
 }
 
@@ -49,6 +51,7 @@ subprojects {
         maven { url "https://repo.maven.apache.org/maven2" }
         maven { url "https://cloudant.github.io/cloudant-sync-eap/repository" }
         maven { url "https://s3.amazonaws.com/repo.commonsware.com" }
+        maven { url 'https://dl.bintray.com/ibm-watson-health/ibm-fhir-server-releases'}
         mavenLocal()
     }
 

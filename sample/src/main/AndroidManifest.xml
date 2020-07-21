@@ -19,16 +19,36 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity android:name=".activity.AncRegisterActivity" />
-        <activity android:name="org.smartregister.chw.pnc.activity.BasePncHomeVisitActivity" />
-        <activity android:name="org.smartregister.chw.pnc.activity.BasePncMemberProfileActivity" />
-        <activity android:name=".activity.PncRegisterActivity" />
-        <activity android:name="com.vijay.jsonwizard.activities.JsonFormActivity" />
-        <activity android:name=".activity.AncHomeVisitActivity" />
-        <activity android:name="org.smartregister.chw.anc.activity.BaseAncMedicalHistoryActivity" />
-        <activity android:name=".activity.AncMemberProfileActivity" />
-        <activity android:name=".activity.PncHomeVisitActivity" />
-        <activity android:name=".activity.PncMemberProfileActivity" />
+        <activity
+            android:name=".activity.AncRegisterActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="org.smartregister.chw.pnc.activity.BasePncHomeVisitActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="org.smartregister.chw.pnc.activity.BasePncMemberProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.PncRegisterActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="com.vijay.jsonwizard.activities.JsonFormActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.AncHomeVisitActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name="org.smartregister.chw.anc.activity.BaseAncMedicalHistoryActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.AncMemberProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.PncHomeVisitActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
+        <activity
+            android:name=".activity.PncMemberProfileActivity"
+            android:theme="@style/AppTheme.NoActionBar" />
 
         <provider
             android:name="androidx.core.content.FileProvider"

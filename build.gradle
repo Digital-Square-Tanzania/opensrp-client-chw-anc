@@ -3,10 +3,12 @@ buildscript {
     repositories {
         google()
         mavenCentral()
+        maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
     }
 
     dependencies {
         classpath "io.codearte.gradle.nexus:gradle-nexus-staging-plugin:0.11.0"
+        classpath 'org.smartregister:gradle-jarjar-plugin:1.0.0-SNAPSHOT'
     }
 }
 

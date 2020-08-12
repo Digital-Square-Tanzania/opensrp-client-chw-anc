@@ -53,8 +53,8 @@ public class BaseAncMemberProfilePresenterTest extends BaseUnitTest {
 
     @Test
     public void canSetEmergencyTransportDetails() {
-        presenter.setEmergencyTransportProfileDetails(memberObject);
-        Mockito.verify(view).setEmTransProfileHeaderActive();
+        presenter.setPregnancyRiskTransportProfileDetails(memberObject);
+        Mockito.verify(view).setPregnancyRiskProfileHeaderActive();
         Mockito.verify(view).setMemberGravida(memberObject.getGravida());
         Mockito.verify(view).setPregnancyRiskLabel(memberObject.getPregnancyRiskLevel());
     }

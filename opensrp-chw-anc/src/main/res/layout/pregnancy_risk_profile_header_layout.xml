@@ -13,7 +13,7 @@
         android:layout_height="wrap_content">
 
         <org.smartregister.view.customcontrols.CustomFontTextView
-            android:id="@+id/text_view_ga"
+            android:id="@+id/text_view_pg_risk_ga"
             style="@style/CustomFontTextViewStyle.ClientList.Light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -33,7 +33,7 @@
             android:textColor="@android:color/black" />
 
         <org.smartregister.view.customcontrols.CustomFontTextView
-            android:id="@+id/text_view_gravida"
+            android:id="@+id/text_view_pg_risk_gravida"
             style="@style/CustomFontTextViewStyle.ClientList.Light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -51,7 +51,7 @@
         android:layout_height="wrap_content">
 
         <org.smartregister.view.customcontrols.CustomFontTextView
-            android:id="@+id/text_view_address"
+            android:id="@+id/text_view_pg_risk_address"
             style="@style/CustomFontTextViewStyle.ClientList.Light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -72,7 +72,7 @@
             android:textColor="@android:color/black" />
 
         <org.smartregister.view.customcontrols.CustomFontTextView
-            android:id="@+id/text_view_id"
+            android:id="@+id/text_view_pg_risk_id"
             style="@style/CustomFontTextViewStyle.ClientList.Light"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

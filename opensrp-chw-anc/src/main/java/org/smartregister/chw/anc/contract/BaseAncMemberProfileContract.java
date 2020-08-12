@@ -19,6 +19,14 @@ public interface BaseAncMemberProfileContract {
 
         void setMemberGA(String memberGA);
 
+        void setPgRiskMemberGA(String memberGA);
+
+        void setMemberPgRiskAddress(String memberAddress);
+
+        void setMemberPgRiskChwMemberId(String memberChwMemberId);
+
+        void setMemberPgRiskGravida(String gravida);
+
         void setMemberAddress(String memberAddress);
 
         void setMemberChwMemberId(String memberChwMemberId);
@@ -29,7 +37,7 @@ public interface BaseAncMemberProfileContract {
 
         void setDefaultProfileHeaderActive();
 
-        void setEmTransProfileHeaderActive();
+        void setPregnancyRiskProfileHeaderActive();
 
         MemberObject getMemberObject(String baseEntityID);
 
@@ -59,7 +67,7 @@ public interface BaseAncMemberProfileContract {
 
         void onMemberDetailsReloaded(MemberObject memberObject);
 
-        boolean hasEmergencyTransport();
+        boolean usesPregnancyRiskProfileLayout();
     }
 
     interface Presenter extends BaseProfileContract.Presenter {
@@ -79,7 +87,7 @@ public interface BaseAncMemberProfileContract {
 
         MemberObject getMemberClient(String memberID);
 
-        void refreshProfileView(MemberObject memberObject, boolean isForEdit, boolean hasEmergencyTransport, InteractorCallBack callback);
+        void refreshProfileView(MemberObject memberObject, boolean isForEdit, boolean usesPregnancyRiskProfileLayout, InteractorCallBack callback);
 
         void updateVisitNotDone(long value, InteractorCallBack callback);
 
@@ -91,7 +99,7 @@ public interface BaseAncMemberProfileContract {
 
         void refreshProfileTopSection(MemberObject memberObject);
 
-        void setEmergencyTransportProfileDetails(MemberObject memberObject);
+        void setPregnancyRiskTransportProfileDetails(MemberObject memberObject);
 
         void refreshLastVisit(Date lastVisitDate);
 

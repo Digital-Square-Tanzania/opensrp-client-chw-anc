@@ -135,8 +135,8 @@
                         android:visibility="visible" />
 
                     <include
-                        android:id="@+id/et_profile_header_layout"
-                        layout="@layout/et_profile_header_layout"
+                        android:id="@+id/pregnancy_risk_profile_header_layout"
+                        layout="@layout/pregnancy_risk_profile_header_layout"
                         android:visibility="gone" />
 
                     <org.smartregister.view.customcontrols.CustomFontTextView

@@ -22,8 +22,8 @@ public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presen
 
     @Override
     public void fetchProfileData() {
-        boolean hasEmergencyTransport = getView().hasEmergencyTransport();
-        interactor.refreshProfileView(memberObject, false, hasEmergencyTransport, this);
+        boolean usesPregnancyRiskProfileLayout = getView().usesPregnancyRiskProfileLayout();
+        interactor.refreshProfileView(memberObject, false, usesPregnancyRiskProfileLayout, this);
     }
 
     @Override
@@ -50,9 +50,12 @@ public class BaseAncMemberProfilePresenter implements BaseProfileContract.Presen
     }
 
     @Override
-    public void setEmergencyTransportProfileDetails(MemberObject memberObject) {
-        getView().setEmTransProfileHeaderActive();
-        getView().setMemberGravida(memberObject.getGravida());
+    public void setPregnancyRiskTransportProfileDetails(MemberObject memberObject) {
+        getView().setPregnancyRiskProfileHeaderActive();
+        getView().setPgRiskMemberGA(String.valueOf(memberObject.getGestationAge()));
+        getView().setMemberPgRiskGravida(memberObject.getGravida());
+        getView().setMemberPgRiskAddress(memberObject.getAddress());
+        getView().setMemberPgRiskChwMemberId(memberObject.getChwMemberId());
         getView().setPregnancyRiskLabel(memberObject.getPregnancyRiskLevel());
     }
 

@@ -46,12 +46,12 @@ public class BaseAncMemberProfileInteractor implements BaseAncMemberProfileContr
     }
 
     @Override
-    public void refreshProfileView(MemberObject memberObject, final boolean isForEdit, boolean hasEmergencyTransport, final BaseAncMemberProfileContract.InteractorCallBack callback) {
+    public void refreshProfileView(MemberObject memberObject, final boolean isForEdit, boolean usesPregnancyRiskProfileLayout, final BaseAncMemberProfileContract.InteractorCallBack callback) {
         Runnable runnable = () -> appExecutors.mainThread().execute(() -> {
             callback.refreshProfileTopSection(memberObject);
-            if (hasEmergencyTransport) {
-                MemberObject etMemberObject = getEmergencyTransportDetails(memberObject);
-                callback.setEmergencyTransportProfileDetails(etMemberObject);
+            if (usesPregnancyRiskProfileLayout) {
+                MemberObject etMemberObject = getPregnancyRiskDetails(memberObject);
+                callback.setPregnancyRiskTransportProfileDetails(etMemberObject);
             }
         });
         appExecutors.diskIO().execute(runnable);
@@ -72,8 +72,8 @@ public class BaseAncMemberProfileInteractor implements BaseAncMemberProfileContr
         // Implement
     }
 
-    protected MemberObject getEmergencyTransportDetails(MemberObject memberObject) {
-        memberObject.setGravida("1");
+    protected MemberObject getPregnancyRiskDetails(MemberObject memberObject) {
+      //  memberObject.setGravida("1");
         memberObject.setPregnancyRiskLevel(Constants.HOME_VISIT.PREGNANCY_RISK_LOW);
         return memberObject;
     }

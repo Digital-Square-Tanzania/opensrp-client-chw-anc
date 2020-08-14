@@ -71,6 +71,6 @@ public class BaseAncMemberProfileInteractorTest implements Executor {
         MemberObject memberObject = new MemberObject();
         interactor.refreshProfileView(memberObject, false, true, callBack);
         Mockito.verify(callBack).refreshProfileTopSection(memberObject);
-        Mockito.verify(callBack).setEmergencyTransportProfileDetails(memberObject);
+        Mockito.verify(callBack).setPregnancyRiskTransportProfileDetails(memberObject);
     }
 }

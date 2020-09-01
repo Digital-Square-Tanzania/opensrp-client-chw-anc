@@ -181,7 +181,10 @@ public class MemberObject implements Serializable {
     }
 
     public String getFullName() {
-        return Utils.getName(Utils.getName(getFirstName(), getMiddleName()), getLastName());
+        if (StringUtils.isNotBlank(getMiddleName())) {
+            return Utils.getName(Utils.getName(getFirstName(), getMiddleName()), getLastName());
+        }
+        return Utils.getName(getFirstName(), getLastName());
     }
 
     public String getLastInteractedWith() {

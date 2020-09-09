@@ -37,7 +37,6 @@ These instructions will get you a copy of the project up and running on your loc
 |Service Delivery Support                  |PNC visit schedules - at home and at health facility                                                                                                                                                      |opensrp-client-native-form (rules engine)                          |
 |Service Delivery Support                  |Schedules for high priority PNC services                                                                                                                                                      |opensrp-client-native-form (rules engine)                          |
 |Client Management            |Record services provided during PNC home visit                                                                                                                                  |opensrp-client-native-form (rules engine)                          |
-                                                                |opensrp-server-web, opensrp-client-core, opensrp-client-native-form|
 
 
 ## Versioning

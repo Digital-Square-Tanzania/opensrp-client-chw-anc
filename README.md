@@ -25,25 +25,24 @@ These instructions will get you a copy of the project up and running on your loc
 
 ## Features
 
-|Function                            |Feature                                                                                                                                                                                        |Dependencies                                                       |
-|------------------------------------|-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|-------------------------------------------------------------------|
-|Client Identification & Registration|Register a pregnant woman                                                                                                                                                                      |opensrp-client-core, opensrp-client-native-form                    |
-|Client Management                   |Record the woman's pregnancy outcome                                                                                                                                                           |opensrp-client-core, opensrp-client-native-form                    |
-|Service Delivery Support                  |Monthly home visit schedules                                                                                                                                                      |opensrp-client-native-form (rules engine)                          |
-|Service Delivery Support                  |Schedules for high priority ANC services                                                                                                                                                      |opensrp-client-native-form (rules engine)                          |
-|Client Management            |Record services provided during monthly home visit                                                                                                                                  |opensrp-client-native-form (rules engine)                          |
-|Service Delivery Support            |Call the woman                                                                                                                                                                        |                                                                   |
-|Client Identification & Registration|Register the woman for PNC services after delivery outcome                                                                                                                                                                      |opensrp-client-core, opensrp-client-native-form                    |
-|Service Delivery Support                  |PNC visit schedules - at home and at health facility                                                                                                                                                      |opensrp-client-native-form (rules engine)                          |
-|Service Delivery Support                  |Schedules for high priority PNC services                                                                                                                                                      |opensrp-client-native-form (rules engine)                          |
-|Client Management            |Record services provided during PNC home visit                                                                                                                                  |opensrp-client-native-form (rules engine)                          |
-
+|Function                            |Feature                                                   |Dependencies                                   |
+|------------------------------------|----------------------------------------------------------|-----------------------------------------------|
+|Client Identification & Registration|Register a pregnant woman                                 |opensrp-client-core, opensrp-client-native-form|
+|Client Management                   |Record the woman's pregnancy outcome                      |opensrp-client-core, opensrp-client-native-form|
+|Service Delivery Support            |Monthly home visit schedules                              |opensrp-client-native-form (rules engine)      |
+|Service Delivery Support            |Schedules for high priority ANC services                  |opensrp-client-native-form (rules engine)      |
+|Client Management                   |Record services provided during monthly home visit        |opensrp-client-native-form (rules engine)      |
+|Service Delivery Support            |Call the woman                                            |                                               |
+|Client Identification & Registration|Register the woman for PNC services after delivery outcome|opensrp-client-core, opensrp-client-native-form|
+|Service Delivery Support            |PNC visit schedules - at home and at health facility      |opensrp-client-native-form (rules engine)      |
+|Service Delivery Support            |Schedules for high priority PNC services                  |opensrp-client-native-form (rules engine)      |
+|Client Management                   |Record services provided during PNC home visit            |opensrp-client-native-form (rules engine)      |
 
 ## Versioning
 We use SemVer for versioning. For the versions available, see the tags on this repository.
 For more details check out <https://semver.org/>
 
-## Authors/Team 
+## Authors/Team
 -   The OpenSRP team
 -   See the list of contributors who participated in this project from the [Contributors](../../graphs/contributors) link
 

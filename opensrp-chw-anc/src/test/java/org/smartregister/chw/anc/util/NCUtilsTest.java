@@ -11,8 +11,8 @@ import org.smartregister.chw.anc.BaseUnitTest;
 import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.domain.VisitDetail;
 import org.smartregister.chw.opensrp_chw_anc.R;
-import org.smartregister.domain.db.Event;
-import org.smartregister.domain.db.Obs;
+import org.smartregister.domain.Event;
+import org.smartregister.domain.Obs;
 
 import java.util.ArrayList;
 import java.util.List;

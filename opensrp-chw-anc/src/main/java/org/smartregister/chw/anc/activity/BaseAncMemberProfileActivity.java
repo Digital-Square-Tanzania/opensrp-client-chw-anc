@@ -7,9 +7,9 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.v4.view.ViewPager;
-import android.support.v7.app.ActionBar;
-import android.support.v7.widget.Toolbar;
+import androidx.viewpager.widget.ViewPager;
+import androidx.appcompat.app.ActionBar;
+import androidx.appcompat.widget.Toolbar;
 import android.text.TextUtils;
 import android.text.format.DateFormat;
 import android.view.Gravity;
@@ -99,7 +99,11 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     private SimpleDateFormat dateFormat = new SimpleDateFormat("dd MMM", Locale.getDefault());
     private String titleViewText;
     private LinearLayout defaultProfileHeaderLayout;
-    private LinearLayout etProfileHeaderLayout;
+    private LinearLayout pregnancyRiskProfileHeaderLayout;
+    protected TextView text_view_pg_risk_ga;
+    protected TextView text_view_pg_risk_address;
+    protected  TextView text_view_pg_risk_id;
+
 
     public BaseAncMemberProfileActivity() {
         memberObject = new MemberObject();
@@ -156,7 +160,6 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         textview_record_visit = findViewById(R.id.textview_record_visit);
 
         rlFamilyLocation = findViewById(R.id.rlFamilyLocation);
-
 
         initializePresenter();
         setFamilyLocation();
@@ -263,10 +266,36 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
         textview_record_anc_visit.setText(title);
     }
 
+    private String gestAge(String memberGA){
+      return  String.format(getString(R.string.gest_age), String.valueOf(memberGA)) + " " + getString(R.string.gest_age_weeks);
+    }
+
     @Override
     public void setMemberGA(String memberGA) {
-        String gest_age = String.format(getString(R.string.gest_age), String.valueOf(memberGA)) + " " + getString(R.string.gest_age_weeks);
-        text_view_ga.setText(gest_age);
+        text_view_ga.setText(gestAge(memberGA));
+    }
+
+    @Override
+    public void setPgRiskMemberGA(String memberGA) {
+        text_view_pg_risk_ga.setText(gestAge(memberGA));
+    }
+
+    @Override
+    public void setMemberPgRiskGravida(String gravida) {
+        if (textViewGravida != null && StringUtils.isNotBlank(gravida)) {
+            String gravidaTextValue = String.format(getString(R.string.gravida_text), gravida);
+            textViewGravida.setText(gravidaTextValue);
+        }
+    }
+
+    @Override
+    public void setMemberPgRiskAddress(String memberAddress) {
+        text_view_pg_risk_address.setText(memberAddress);
+    }
+
+    public void setMemberPgRiskChwMemberId(String memberChwMemberId) {
+        String uniqueId = String.format(getString(R.string.unique_id_text), memberChwMemberId);
+        text_view_pg_risk_id.setText(uniqueId);
     }
 
     @Override
@@ -447,7 +476,7 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     }
 
     @Override
-    public boolean hasEmergencyTransport() {
+    public boolean usesPregnancyRiskProfileLayout() {
         return false;
     }
 
@@ -500,14 +529,19 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
             findViewById(R.id.primary_anc_caregiver).setVisibility(View.VISIBLE);
         }
         defaultProfileHeaderLayout = findViewById(R.id.default_profile_header_layout);
-        etProfileHeaderLayout = findViewById(R.id.et_profile_header_layout);
+        pregnancyRiskProfileHeaderLayout = findViewById(R.id.pregnancy_risk_profile_header_layout);
 
         initializeFloatingMenu();
         text_view_anc_member_name = findViewById(R.id.text_view_anc_member_name);
         text_view_ga = findViewById(R.id.text_view_ga);
+
+        text_view_pg_risk_ga = findViewById(R.id.text_view_pg_risk_ga);
+        text_view_pg_risk_address = findViewById(R.id.text_view_pg_risk_address);
+        text_view_pg_risk_id = findViewById(R.id.text_view_pg_risk_id);
+
         text_view_address = findViewById(R.id.text_view_address);
         text_view_id = findViewById(R.id.text_view_id);
-        textViewGravida = findViewById(R.id.text_view_gravida);
+        textViewGravida = findViewById(R.id.text_view_pg_risk_gravida);
         pregnancyRiskLabel = findViewById(R.id.risk_label);
         textview_record_anc_visit = findViewById(R.id.textview_record_visit);
         view_anc_record = findViewById(R.id.view_record);
@@ -567,13 +601,13 @@ public class BaseAncMemberProfileActivity extends BaseProfileActivity implements
     @Override
     public void setDefaultProfileHeaderActive() {
         defaultProfileHeaderLayout.setVisibility(View.VISIBLE);
-        etProfileHeaderLayout.setVisibility(View.GONE);
+        pregnancyRiskProfileHeaderLayout.setVisibility(View.GONE);
     }
 
     @Override
-    public void setEmTransProfileHeaderActive() {
+    public void setPregnancyRiskProfileHeaderActive() {
         defaultProfileHeaderLayout.setVisibility(View.GONE);
-        etProfileHeaderLayout.setVisibility(View.VISIBLE);
+        pregnancyRiskProfileHeaderLayout.setVisibility(View.VISIBLE);
     }
 
     public String getFamilyHeadName() {

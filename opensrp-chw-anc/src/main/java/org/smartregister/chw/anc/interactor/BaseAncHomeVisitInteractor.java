@@ -1,6 +1,6 @@
 package org.smartregister.chw.anc.interactor;
 
-import android.support.annotation.VisibleForTesting;
+import androidx.annotation.VisibleForTesting;
 
 import com.google.gson.Gson;
 
@@ -48,19 +48,23 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
     @Override
     public void reloadMemberDetails(String memberID, BaseAncHomeVisitContract.InteractorCallBack callBack) {
-        final Runnable runnable = () -> {
-            MemberObject memberObject = getMemberClient(memberID);
-            appExecutors.mainThread().execute(() -> callBack.onMemberDetailsReloaded(memberObject));
-        };
-
-        appExecutors.diskIO().execute(runnable);
+        MemberObject memberObject = getMemberClient(memberID);
+        if (memberObject != null) {
+            final Runnable runnable = () -> {
+                appExecutors.mainThread().execute(() -> callBack.onMemberDetailsReloaded(memberObject));
+            };
+            appExecutors.diskIO().execute(runnable);
+        }
     }
 
+    /**
+     * Override this method and return actual member object for the provided user
+     * @param memberID unique identifier for the user
+     * @return MemberObject wrapper for the user's data
+     */
     @Override
     public MemberObject getMemberClient(String memberID) {
-        MemberObject memberObject = new MemberObject();
-        memberObject.setBaseEntityId(memberID);
-        return memberObject;
+        return null;
     }
 
     @Override

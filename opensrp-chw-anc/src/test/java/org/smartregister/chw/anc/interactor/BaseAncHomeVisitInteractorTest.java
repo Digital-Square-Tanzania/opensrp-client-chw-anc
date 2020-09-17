@@ -40,13 +40,13 @@ public class BaseAncHomeVisitInteractorTest implements Executor {
     @Test
     public void testReloadMemberDetailsNotifiesPresenter() {
         interactor.reloadMemberDetails("12334", interactorCallBack);
-        Mockito.verify(interactorCallBack).onMemberDetailsReloaded(Mockito.any());
+        Mockito.verify(interactorCallBack, Mockito.never()).onMemberDetailsReloaded(Mockito.any());
     }
 
     @Test
     public void testGetMemberClient() {
         MemberObject memberObject = interactor.getMemberClient("12345");
-        Assert.assertEquals("12345", memberObject.getBaseEntityId());
+        Assert.assertNull(memberObject);
     }
 
     @Test

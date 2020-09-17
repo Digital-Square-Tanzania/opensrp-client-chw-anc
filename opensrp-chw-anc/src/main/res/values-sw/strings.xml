@@ -1,47 +1,47 @@
 <resources>
-    <string name="app_name">OpenSRP CHW Wajawazito</string>
+    <string name="app_name">OpenSRP Chw Anc</string>
 
-    <string name="error_unable_to_start_form">Hitilafu imejitokeza wakati wa kuanza kufungua fomu</string>
-    <string name="error_unable_save_home_visit">Hitilafu imejitokeza wakati wa kuhifadhi taarifa za tembeleo</string>
-    <string name="anc">Wateja wa wajawazito</string>
+    <string name="error_unable_to_start_form">Hitilafu imejitokeza wakati wa kufungua fomu</string>
+    <string name="error_unable_save_home_visit">Hitilafu imejitokeza wakati wa kuhifadhi tembeleo</string>
+    <string name="anc">Wajawazito</string>
 
     <!-- menu -->
     <string name="add_member">Sajili Mwanafamilia</string>
-    <string name="sort">Chagua</string>
+    <string name="sort">Panga</string>
     <string name="home">Nyumbani</string>
-    <string name="add_family">Sajili kaya</string>
+    <string name="add_family">Sajili Kaya</string>
     <string name="scan_qr">Scan QR</string>
     <string name="job_aids">Vitendea kazi</string>
 
     <!-- register details -->
     <string name="age">Umri</string>
     <string name="weeks">Wiki</string>
-    <string name="gestation_age_initial">Umri wa Mimba GA</string>
+    <string name="gestation_age_initial">Umri wa Mimba</string>
 
     <!-- other -->
     <string name="saving_dialog_title">Kuhifadhi</string>
 
     <!-- anc home visit -->
-    <string name="optional">hiari</string>
-    <string name="anc_visit">Tembeleo wakati wa ujauzito</string>
+    <string name="optional">hiyari</string>
+    <string name="anc_visit">Tembeleo la mjamzito</string>
     <string name="anc_home_visit">Tembeleo</string>
     <string name="dose_not_given">DOZI HAIJATOLEWA</string>
 
 
     <string name="return_to_family_members">Rudi kwa wanafamilia</string>
-    <string name="return_to_all_anc_women">Rudi kwa wanawake wajawazito wote</string>
+    <string name="return_to_all_anc_women">Rudi kwa wajawazito wote</string>
     <string name="record_pnc_visit">Rekodi tembeleo baada ya kujifungua</string>
     <string name="record_anc_visit">Rekodi tembeleo la mjamzito</string>
     <string name="visit_not_done_btn_child_profile">Tembeleo halijafanyika</string>
-    <string name="not_visiting_this_month">Hajatembelea mwezi huu</string>
-    <string name="undo">UNDO</string>
+    <string name="not_visiting_this_month">Tembeleo halijafanyika mwezi huu</string>
+    <string name="undo">TENGUA</string>
     <string name="edit">HARIRI</string>
 
     <string name="unique_id_text">ID: %1$s</string>
-    <string name="gravida_text">Gravida %1$s</string>
+    <string name="gravida_text">Ujauzito %1$s</string>
 
     <string name="confirm_form_close">Thibitisha kufunga fomu</string>
-    <string name="confirm_form_close_explanation">Unauwakika unataka kurudi nyuma?Data zote ulizoingiza kwenye fomu zitafutika</string>
+    <string name="confirm_form_close_explanation">Una uhakika unataka kurudi nyuma? Taarifa zote ulizoingiza kwenye fomu zitafutika</string>
 
     <!-- anc profile -->
     <string name="gest_age">UMRI WA MIMBA: %1$s</string>
@@ -57,21 +57,21 @@
 
     <string name="last_visit_40_days_ago">Tembeleo la mwisho %1$s iliyopita</string>
     <string name="days">siku</string>
-    <string name="view_medical_history">Angalia historia ya matibabu</string>
+    <string name="view_medical_history">Angalia historia ya huduma</string>
     <string name="view_upcoming_services">Angalia huduma zinazokaribia</string>
-    <string name="family_has_nothing_due">Muda haujafikia</string>
-    <string name="go_to_family_s_profile">Fungua wasifu wa kaya</string>
-    <string name="family_has_services_due">Muda haujafikia</string>
-    <string name="family_has_service_overdue"><![CDATA[Kaya ina <font color=#FF0000> huduma zilizopitiliza muda wake </font> </b>]]></string>
+    <string name="family_has_nothing_due">Muda wa huduma haujafikia</string>
+    <string name="go_to_family_s_profile">Elekea kwenye taarifa za kaya</string>
+    <string name="family_has_services_due">Huduma katika kaya zimefikia muda wake</string>
+    <string name="family_has_service_overdue"><![CDATA[Kaya ina huduma<font color=#FF0000>  zilizopitiliza muda wake </font> </b>]]></string>
     <string name="vaccine_service_upcoming"><![CDATA[%1$s <font color=#7f7f7f> inakaribia (%2$s) </font> </b>]]></string>
     <string name="vaccine_service_overdue"><![CDATA[%1$s <font color=#f04646> muda umepita (%2$s)</font> </b>]]></string>
     <string name="vaccine_service_due"><![CDATA[%1$s <font color=#000000> imefika (%2$s)</font></b>]]></string>
 
-    <string name="back_to">Rudi kwenye taarifa za msingi za %1$s</string>
-    <string name="days_overdue">Siku  %1$s zimezidi</string>
-    <string name="days_until_due">%1$s siku mpaka kufikia</string>
+    <string name="back_to">Rudi kwenye taarifa za %1$s</string>
+    <string name="days_overdue">Siku  %1$s zimepitiliza</string>
+    <string name="days_until_due">%1$s siku mpaka kufikia muda</string>
     <string name="days_due">%1$s siku zimefika</string>
-    <string name="anc_visit_done">%1$s tembeleo limefanyika</string>
+    <string name="anc_visit_done">%1$s tembeleo limekamilika</string>
     <string name="less_than_twenty_four">chini ya masaa 24</string>
     <string name="primary_care_giver">Mlezi</string>
     <string name="family_head">Mkuu wa kaya</string>
@@ -79,8 +79,8 @@
     <string name="anc_home_visit_danger_signs">Dalili za hatari</string>
     <string name="danger_signs_counselling">Ushauri juu ya dalili za hatari</string>
     <string name="not_done">Haijafanyika</string>
-    <string name="medical_history">Historia ya matibabu</string>
-    <string name="upcoming_services">Huduma zilizopita na zinazokaribia</string>
+    <string name="medical_history">Historia ya huduma</string>
+    <string name="upcoming_services">Huduma zinazokaribia</string>
 
     <string name="vaccines_not_done">CHANJO HAZIJATOLEWA</string>
     <string name="add_date_separately">+ONGEZA TAREHE YA KILA CHANJO</string>
@@ -115,10 +115,13 @@
     <string name="rubella_2">Rubella 2</string>
     <string name="mena">Homa ya uti wa mgongo</string>
 
-    <!-- Emergency Transport-->
-    <string name="default_pregnancy_risk_text">Risk default</string>
-    <string name="low_pregnancy_risk">Low risk</string>
-    <string name="medium_pregnancy_risk">Medium risk</string>
-    <string name="high_pregnancy_risk">High risk</string>
 
+    <!-- Emergency Transport-->
+    <string name="family_location">Angalia ramani ya makazi</string>
+    <string name="default_pregnancy_risk_text">Risk default</string>
+    <string name="low_pregnancy_risk">Hatari ndogo</string>
+    <string name="medium_pregnancy_risk">Hatari ya kati</string>
+    <string name="high_pregnancy_risk">Hatari sana</string>
+    <string name="call_community_responder">Piga simu kwa mtoa huduma ya usafiri wa dharura</string>
+    <string name="community_responder">Usafiri wa dharura</string>
 </resources>

@@ -68,12 +68,12 @@ public class BaseAncRespondersCallDialogFragment extends BaseAncWomanCallDialogF
 
     private void initUI(ViewGroup rootView) {
         if (isResponder && StringUtils.isNotBlank(ancResponderPhoneNumber)) {
-            TextView ancWomanNameTextView = rootView.findViewById(R.id.responder_name);
-            ancWomanNameTextView.setText(ancResponderName);
-            TextView ancCallAncWomanPhone = rootView.findViewById(R.id.anc_call_responder_phone);
-            ancCallAncWomanPhone.setTag(ancResponderPhoneNumber);
-            ancCallAncWomanPhone.setText(getName(getCurrentContext().getString(R.string.anc_call), ancResponderPhoneNumber));
-            ancCallAncWomanPhone.setOnClickListener(listener);
+            TextView ancResponderNameTextView = rootView.findViewById(R.id.responder_name);
+            ancResponderNameTextView.setText(ancResponderName);
+            TextView ancCallResponderPhone = rootView.findViewById(R.id.anc_call_responder_phone);
+            ancCallResponderPhone.setTag(ancResponderPhoneNumber);
+            ancCallResponderPhone.setText(getName(getCurrentContext().getString(R.string.anc_call), ancResponderPhoneNumber));
+            ancCallResponderPhone.setOnClickListener(listener);
         } else if (!isResponder) {
             rootView.findViewById(R.id.call_responder_title).setVisibility(View.GONE);
             TextView callTitle = rootView.findViewById(R.id.call_title);

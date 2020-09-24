@@ -3,13 +3,18 @@ package org.smartregister.chw.anc.contract;
 import android.content.Context;
 
 public interface BaseAncRespondersCallDialogContract {
-    interface View extends BaseAncWomanCallDialogContract.View{
+    interface View extends BaseAncWomanCallDialogContract.View {
         Context getCurrentContext();
 
         void setUpPosition();
     }
 
     interface Model {
+
+        void setId(String id);
+
+        String getId();
+
         void setResponderName(String responderName);
 
         void setResponderPhoneNumber(String responderPhoneNumber);

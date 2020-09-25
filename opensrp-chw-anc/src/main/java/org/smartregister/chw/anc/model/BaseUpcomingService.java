@@ -11,6 +11,7 @@ public class BaseUpcomingService {
     private List<String> serviceName = new ArrayList<>();
     private Date serviceDate;
     private Date overDueDate;
+    private Date expiryDate;
     private List<BaseUpcomingService> upcomingServiceList;
 
     public BaseUpcomingService() {
@@ -58,5 +59,13 @@ public class BaseUpcomingService {
 
     public void setUpcomingServiceList(List<BaseUpcomingService> upcomingServiceList) {
         this.upcomingServiceList = upcomingServiceList;
+    }
+
+    public Date getExpiryDate() {
+        return expiryDate;
+    }
+
+    public void setExpiryDate(Date expiryDate) {
+        this.expiryDate = expiryDate;
     }
 }

@@ -11,7 +11,6 @@ import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.repository.BaseRepository;
-import org.smartregister.repository.Repository;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,6 +25,7 @@ public class VisitRepository extends BaseRepository {
     public static final String VISIT_TABLE = "visits";
     private static final String VISIT_ID = "visit_id";
     private static final String VISIT_TYPE = "visit_type";
+    private static final String VISIT_GROUP = "visit_group";
     private static final String PARENT_VISIT_ID = "parent_visit_id";
     public static final String PARENT_VISIT_ID_INDEX = "CREATE INDEX " + VISIT_TABLE + "_" + PARENT_VISIT_ID + "_index ON " + VISIT_TABLE
             + "(" + PARENT_VISIT_ID + " COLLATE NOCASE );";
@@ -58,6 +58,8 @@ public class VisitRepository extends BaseRepository {
             + ");";
     private String[] VISIT_COLUMNS = {VISIT_ID, VISIT_TYPE, PARENT_VISIT_ID, BASE_ENTITY_ID, VISIT_DATE, VISIT_JSON, PRE_PROCESSED, FORM_SUBMISSION_ID, PROCESSED, UPDATED_AT, CREATED_AT};
 
+    public static String ADD_VISIT_GROUP_COLUMN ="ALTER TABLE " + VISIT_TABLE + " ADD COLUMN " + VISIT_GROUP + " VARCHAR;";
+
     public static void createTable(SQLiteDatabase database) {
         database.execSQL(CREATE_VISIT_TABLE);
         database.execSQL(BASE_ENTITY_ID_INDEX);
@@ -68,6 +70,7 @@ public class VisitRepository extends BaseRepository {
         ContentValues values = new ContentValues();
         values.put(VISIT_ID, visit.getVisitId());
         values.put(VISIT_TYPE, visit.getVisitType());
+        values.put(VISIT_GROUP, visit.getVisitGroup());
         values.put(PARENT_VISIT_ID, visit.getParentVisitID());
         values.put(BASE_ENTITY_ID, visit.getBaseEntityId());
         values.put(VISIT_DATE, visit.getDate() != null ? visit.getDate().getTime() : null);
@@ -151,6 +154,7 @@ public class VisitRepository extends BaseRepository {
                     Visit visit = new Visit();
                     visit.setVisitId(cursor.getString(cursor.getColumnIndex(VISIT_ID)));
                     visit.setVisitType(cursor.getString(cursor.getColumnIndex(VISIT_TYPE)));
+                    visit.setVisitGroup(cursor.getString(cursor.getColumnIndex(VISIT_GROUP)));
                     visit.setParentVisitID(cursor.getString(cursor.getColumnIndex(PARENT_VISIT_ID)));
                     visit.setPreProcessedJson(cursor.getString(cursor.getColumnIndex(PRE_PROCESSED)));
                     visit.setBaseEntityId(cursor.getString(cursor.getColumnIndex(BASE_ENTITY_ID)));
@@ -225,6 +229,22 @@ public class VisitRepository extends BaseRepository {
         return visits;
     }
 
+    public List<Visit> getVisitsByGroup(String visitGroup) {
+        List<Visit> visits = new ArrayList<>();
+        Cursor cursor = null;
+        try {
+            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, VISIT_GROUP + " = ? ", new String[]{visitGroup}, null, null, CREATED_AT + " ASC ", null);
+            visits = readVisits(cursor);
+        } catch (Exception e) {
+            Timber.e(e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return visits;
+    }
+
     public List<Visit> getUniqueDayLatestThreeVisits(String baseEntityID, String visitType) {
         List<Visit> visits = new ArrayList<>();
         Cursor cursor = null;
@@ -257,6 +277,22 @@ public class VisitRepository extends BaseRepository {
             }
         }
         return visits;
+    }
+
+    public Visit getVisitByVisitId(String visitID) {
+        List<Visit> visits = new ArrayList<>();
+        Cursor cursor = null;
+        try {
+            cursor = getReadableDatabase().query(VISIT_TABLE, VISIT_COLUMNS, VISIT_ID + " = ? ", new String[]{visitID}, null, null, VISIT_DATE + " DESC ", null);
+            visits = readVisits(cursor);
+        } catch (Exception e) {
+            Timber.e(e);
+        } finally {
+            if (cursor != null) {
+                cursor.close();
+            }
+        }
+        return visits.size() == 1 ? visits.get(0) : null;
     }
 
     public List<Visit> getChildEvents(String visitID) {

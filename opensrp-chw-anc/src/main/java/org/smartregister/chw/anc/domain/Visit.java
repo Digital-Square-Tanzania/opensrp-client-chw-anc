@@ -8,6 +8,7 @@ import java.util.Map;
 public class Visit {
     private String visitId;
     private String visitType;
+    private String visitGroup;
     private String parentVisitID;
     private String baseEntityId;
     private Date date;
@@ -34,6 +35,14 @@ public class Visit {
 
     public void setVisitType(String visitType) {
         this.visitType = visitType;
+    }
+
+    public String getVisitGroup() {
+        return visitGroup;
+    }
+
+    public void setVisitGroup(String visitGroup) {
+        this.visitGroup = visitGroup;
     }
 
     public String getParentVisitID() {

@@ -1,14 +1,19 @@
 package org.smartregister.chw.anc.interactor;
 
+import android.content.Context;
+import android.content.Intent;
+
 import androidx.annotation.VisibleForTesting;
 
 import com.google.gson.Gson;
 
 import org.apache.commons.lang3.StringUtils;
 import org.jetbrains.annotations.Nullable;
+import org.json.JSONObject;
 import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.actionhelper.DangerSignsHelper;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
+import org.smartregister.chw.anc.dao.HomeVisitDao;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.domain.Visit;
 import org.smartregister.chw.anc.domain.VisitDetail;
@@ -18,9 +23,16 @@ import org.smartregister.chw.anc.util.AppExecutors;
 import org.smartregister.chw.anc.util.Constants;
 import org.smartregister.chw.anc.util.JsonFormUtils;
 import org.smartregister.chw.anc.util.NCUtils;
+import org.smartregister.chw.anc.util.VisitUtils;
 import org.smartregister.clientandeventmodel.Event;
 import org.smartregister.clientandeventmodel.Obs;
+import org.smartregister.immunization.ImmunizationLibrary;
+import org.smartregister.immunization.domain.ServiceRecord;
+import org.smartregister.immunization.domain.Vaccine;
+import org.smartregister.immunization.service.intent.RecurringIntentService;
+import org.smartregister.immunization.service.intent.VaccineIntentService;
 import org.smartregister.repository.AllSharedPreferences;
+import org.smartregister.sync.helper.ECSyncHelper;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -30,12 +42,15 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.UUID;
 
 import timber.log.Timber;
 
 public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Interactor {
 
     protected AppExecutors appExecutors;
+    private AncLibrary ancLibrary = AncLibrary.getInstance();
+    private ECSyncHelper syncHelper = AncLibrary.getInstance().getEcSyncHelper();
 
     @VisibleForTesting
     public BaseAncHomeVisitInteractor(AppExecutors appExecutors) {
@@ -59,6 +74,7 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
 
     /**
      * Override this method and return actual member object for the provided user
+     *
      * @param memberID unique identifier for the user
      * @return MemberObject wrapper for the user's data
      */
@@ -152,6 +168,17 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
             saveVisitDetails(visit, payloadType, payloadDetails);
             processExternalVisits(visit, externalVisits, memberID);
         }
+
+        if (ancLibrary.isSubmitOnSave()) {
+            List<Visit> visits = new ArrayList<>(1);
+            visits.add(visit);
+            VisitUtils.processVisits(visits, ancLibrary.visitRepository(), ancLibrary.visitDetailsRepository());
+
+
+            Context context = AncLibrary.getInstance().context().applicationContext();
+            context.startService(new Intent(context, VaccineIntentService.class));
+            context.startService(new Intent(context, RecurringIntentService.class));
+        }
     }
 
     /**
@@ -203,8 +230,10 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
                     JsonFormUtils.generateRandomUUIDString();
 
             // reset database
-            if (editMode)
+            if (editMode) {
+                deleteProcessedVisit(visitID, memberID);
                 deleteOldVisit(visitID);
+            }
 
             Visit visit = NCUtils.eventToVisit(baseEvent, visitID);
             visit.setPreProcessedJson(new Gson().toJson(baseEvent));
@@ -233,6 +262,61 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
         for (Visit v : childVisits) {
             visitRepository().deleteVisit(v.getVisitId());
             AncLibrary.getInstance().visitDetailsRepository().deleteVisitDetails(v.getVisitId());
+        }
+    }
+
+
+    protected void deleteProcessedVisit(String visitID, String baseEntityId) {
+        // check if the event
+        AllSharedPreferences allSharedPreferences = ImmunizationLibrary.getInstance().context().allSharedPreferences();
+        Visit visit = visitRepository().getVisitByVisitId(visitID);
+        if (visit == null || !visit.getProcessed()) return;
+
+        Event processedEvent = HomeVisitDao.getEventByFormSubmissionId(visit.getFormSubmissionId());
+        if (processedEvent == null) return;
+
+        deleteSavedEvent(allSharedPreferences, baseEntityId, processedEvent.getEventId(), processedEvent.getFormSubmissionId(), "event");
+
+        Map<String, String> details = processedEvent.getDetails();
+        String homeVisitGroup = details.get(Constants.HOME_VISIT_GROUP);
+        if (StringUtils.isBlank(homeVisitGroup)) return;
+
+
+        // delete all related vaccines
+        List<Vaccine> vaccineList = HomeVisitDao.fetchVaccinesSubmissionIdByProgramId(homeVisitGroup);
+        for (Vaccine vaccine : vaccineList)
+            deleteSavedEvent(allSharedPreferences, baseEntityId, vaccine.getEventId(), vaccine.getFormSubmissionId(), "vaccine");
+
+        // delete all related recurring services
+        List<ServiceRecord> serviceRecords = HomeVisitDao.fetchServicesSubmissionIdByProgramId(homeVisitGroup);
+        for (ServiceRecord serviceRecord : serviceRecords)
+            deleteSavedEvent(allSharedPreferences, baseEntityId, serviceRecord.getEventId(), serviceRecord.getFormSubmissionId(), "service");
+
+        // delete all related visit events
+        List<Visit> visits = visitRepository().getVisitsByGroup(homeVisitGroup);
+        for (Visit childVisit : visits)
+            if (!childVisit.getVisitId().equalsIgnoreCase(visitID))
+                deleteSavedEvent(allSharedPreferences, baseEntityId, childVisit.getEventId(), childVisit.getFormSubmissionId(), "event");
+    }
+
+    protected void deleteSavedEvent(AllSharedPreferences allSharedPreferences, String baseEntityId, String eventId, String formSubmissionId, String type) {
+        Event event = (Event) new Event()
+                .withBaseEntityId(baseEntityId)
+                .withEventDate(new Date())
+                .withEventType(Constants.EVENT_TYPE.DELETE_EVENT)
+                .withLocationId(JsonFormUtils.locationId(allSharedPreferences))
+                .withProviderId(allSharedPreferences.fetchRegisteredANM())
+                .withEntityType(type)
+                .withFormSubmissionId(UUID.randomUUID().toString())
+                .withDateCreated(new Date());
+
+        event.addDetails(Constants.JSON_FORM_EXTRA.DELETE_EVENT_ID, eventId);
+        event.addDetails(Constants.JSON_FORM_EXTRA.DELETE_FORM_SUBMISSION_ID, formSubmissionId);
+
+        try {
+            syncHelper.addEvent(event.getBaseEntityId(), new JSONObject(JsonFormUtils.gson.toJson(event)));
+        } catch (Exception e) {
+            Timber.e(e);
         }
     }
 

@@ -158,7 +158,7 @@ public class JsonFormUtils extends org.smartregister.util.JsonFormUtils {
         event.setClientDatabaseVersion(AncLibrary.getInstance().getDatabaseVersion());
     }
 
-    private static String locationId(AllSharedPreferences allSharedPreferences) {
+    public static String locationId(AllSharedPreferences allSharedPreferences) {
         String providerId = allSharedPreferences.fetchRegisteredANM();
         String userLocationId = allSharedPreferences.fetchUserLocalityId(providerId);
         if (StringUtils.isBlank(userLocationId)) {

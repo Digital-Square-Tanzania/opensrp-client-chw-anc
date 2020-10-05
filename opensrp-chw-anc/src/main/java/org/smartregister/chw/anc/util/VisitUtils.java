@@ -35,6 +35,7 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.UUID;
 
 public class VisitUtils {
 
@@ -131,16 +132,26 @@ public class VisitUtils {
         List<Visit> visits = StringUtils.isNotBlank(baseEntityID) ?
                 visitRepository.getAllUnSynced(calendar.getTime().getTime(), baseEntityID) :
                 visitRepository.getAllUnSynced(calendar.getTime().getTime());
+        processVisits(visits, visitRepository, visitDetailsRepository);
+    }
+
+    public static void processVisits(List<Visit> visits, VisitRepository visitRepository, VisitDetailsRepository visitDetailsRepository) throws Exception {
+        String visitGroupId = UUID.randomUUID().toString();
         for (Visit v : visits) {
             if (!v.getProcessed()) {
 
                 // persist to db
                 Event baseEvent = new Gson().fromJson(v.getPreProcessedJson(), Event.class);
+                if (StringUtils.isBlank(baseEvent.getFormSubmissionId()))
+                    baseEvent.setFormSubmissionId(UUID.randomUUID().toString());
+
+                baseEvent.addDetails(Constants.HOME_VISIT_GROUP, visitGroupId);
+
                 AllSharedPreferences allSharedPreferences = AncLibrary.getInstance().context().allSharedPreferences();
                 NCUtils.addEvent(allSharedPreferences, baseEvent);
 
                 // process details
-                processVisitDetails(v, visitDetailsRepository, v.getVisitId(), v.getBaseEntityId());
+                processVisitDetails(visitGroupId, v, visitDetailsRepository, v.getVisitId(), v.getBaseEntityId(), baseEvent.getFormSubmissionId());
 
                 visitRepository.completeProcessing(v.getVisitId());
             }
@@ -155,12 +166,12 @@ public class VisitUtils {
         context.startService(new Intent(context, RecurringIntentService.class));
     }
 
-    private static void processVisitDetails(Visit visit, VisitDetailsRepository visitDetailsRepository, String visitID, String baseEntityID) throws Exception {
+    private static void processVisitDetails(String visitGroupId, Visit visit, VisitDetailsRepository visitDetailsRepository, String visitID, String baseEntityID, String formSubmissionId) throws Exception {
         List<VisitDetail> visitDetailList = visitDetailsRepository.getVisits(visitID);
         for (VisitDetail visitDetail : visitDetailList) {
             if (!visitDetail.getProcessed()) {
                 if (Constants.HOME_VISIT_TASK.SERVICE.equalsIgnoreCase(visitDetail.getPreProcessedType())) {
-                    saveVisitDetailsAsServiceRecord(visitDetail, baseEntityID, visit.getDate());
+                    saveVisitDetailsAsServiceRecord(visitGroupId, visitDetail, baseEntityID, visit.getDate());
                     visitDetailsRepository.completeProcessing(visitDetail.getVisitDetailsId());
                     continue;
                 }
@@ -170,7 +181,7 @@ public class VisitUtils {
                         Constants.HOME_VISIT_TASK.VACCINE.equalsIgnoreCase(visitDetail.getParentCode()) ||
                                 Constants.HOME_VISIT_TASK.VACCINE.equalsIgnoreCase(visitDetail.getPreProcessedType())
                 ) {
-                    saveVisitDetailsAsVaccine(visitDetail, baseEntityID, visit.getDate());
+                    saveVisitDetailsAsVaccine(visitGroupId, visitDetail, baseEntityID, visit.getDate());
                     visitDetailsRepository.completeProcessing(visitDetail.getVisitDetailsId());
                     continue;
                 }
@@ -198,7 +209,7 @@ public class VisitUtils {
         getVaccineRepository().add(vaccine);
     }
 
-    public static Vaccine saveVisitDetailsAsVaccine(VisitDetail detail, String baseEntityID, Date eventDate) {
+    public static Vaccine saveVisitDetailsAsVaccine(String visitGroupId, VisitDetail detail, String baseEntityID, Date eventDate) {
         if (!"vaccine".equalsIgnoreCase(detail.getParentCode()) && !Constants.HOME_VISIT_TASK.VACCINE.equalsIgnoreCase(detail.getPreProcessedType()))
             return null;
 
@@ -215,6 +226,7 @@ public class VisitUtils {
         vaccine.setName(name);
         vaccine.setDate(vacDate);
         vaccine.setCreatedAt(eventDate);
+        vaccine.setProgramClientId(visitGroupId);
 
         String lastChar = vaccine.getName().substring(vaccine.getName().length() - 1);
         if (StringUtils.isNumeric(lastChar)) {
@@ -255,7 +267,7 @@ public class VisitUtils {
         return vaccineMap;
     }
 
-    public static ServiceRecord saveVisitDetailsAsServiceRecord(VisitDetail detail, String baseEntityID, Date eventDate) {
+    public static ServiceRecord saveVisitDetailsAsServiceRecord(String visitGroupId, VisitDetail detail, String baseEntityID, Date eventDate) {
         String val = NCUtils.getText(detail).trim();
         if (Constants.HOME_VISIT.DOSE_NOT_GIVEN.equalsIgnoreCase(val)) return null;
 
@@ -271,6 +283,7 @@ public class VisitUtils {
         serviceRecord.setBaseEntityId(baseEntityID);
         serviceRecord.setRecurringServiceId(serviceType.getId());
         serviceRecord.setValue("yes");
+        serviceRecord.setProgramClientId(visitGroupId);
 
         JsonFormUtils.tagSyncMetadata(NCUtils.context().allSharedPreferences(), serviceRecord);
         recurringServiceRecordRepository.add(serviceRecord);

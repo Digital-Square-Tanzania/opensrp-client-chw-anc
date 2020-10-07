@@ -15,14 +15,15 @@ import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.os.Build;
-import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 import android.telephony.TelephonyManager;
 import android.text.Html;
 import android.text.Spanned;
 import android.text.TextUtils;
 import android.util.DisplayMetrics;
 import android.widget.Toast;
+
+import androidx.core.app.ActivityCompat;
+import androidx.core.content.ContextCompat;
 
 import com.vijay.jsonwizard.constants.JsonFormConstants;
 
@@ -265,6 +266,9 @@ public class NCUtils {
         visit.setProcessed(false);
         visit.setCreatedAt(new Date());
         visit.setUpdatedAt(new Date());
+        Map<String, String> eventDetails = event.getDetails();
+        if (eventDetails != null)
+            visit.setVisitGroup(eventDetails.get(Constants.HOME_VISIT_GROUP));
 
         Map<String, List<VisitDetail>> details = new HashMap<>();
         if (event.getObs() != null) {
@@ -401,6 +405,9 @@ public class NCUtils {
         visit.setProcessed(true);
         visit.setCreatedAt(new Date());
         visit.setUpdatedAt(new Date());
+        Map<String, String> eventDetails = event.getDetails();
+        if (eventDetails != null)
+            visit.setVisitGroup(eventDetails.get(Constants.HOME_VISIT_GROUP));
 
         Map<String, List<VisitDetail>> details = new HashMap<>();
         if (event.getObs() != null) {

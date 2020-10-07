@@ -29,6 +29,7 @@ public class AncLibrary {
     private VisitDetailsRepository visitDetailsRepository;
     private String sourceDateFormat = "dd-MM-yyyy";
     private String saveDateFormat = "yyyy-MM-dd";
+    private boolean submitOnSave = false;
 
     protected AncLibrary(Context contextArg, Repository repositoryArg, int applicationVersion, int databaseVersion) {
         this.context = contextArg;
@@ -141,5 +142,13 @@ public class AncLibrary {
 
     public void setSaveDateFormat(String saveDateFormat) {
         this.saveDateFormat = saveDateFormat;
+    }
+
+    public boolean isSubmitOnSave() {
+        return submitOnSave;
+    }
+
+    public void setSubmitOnSave(boolean submitOnSave) {
+        this.submitOnSave = submitOnSave;
     }
 }

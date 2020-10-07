@@ -27,6 +27,7 @@ public class VisitRepositoryTest extends BaseUnitTest {
 
     private static final String VISIT_ID = "visit_id";
     private static final String VISIT_TYPE = "visit_type";
+    private static final String VISIT_GROUP = "visit_group";
     private static final String PARENT_VISIT_ID = "parent_visit_id";
     private static final String BASE_ENTITY_ID = "base_entity_id";
     private static final String VISIT_DATE = "visit_date";
@@ -105,14 +106,14 @@ public class VisitRepositoryTest extends BaseUnitTest {
     @Test
     public void testReadVisits() {
         String[] VISIT_COLUMNS = {
-                VISIT_ID, VISIT_TYPE, PARENT_VISIT_ID, BASE_ENTITY_ID,
+                VISIT_ID, VISIT_TYPE, VISIT_GROUP, PARENT_VISIT_ID, BASE_ENTITY_ID,
                 VISIT_DATE, VISIT_JSON, PRE_PROCESSED, FORM_SUBMISSION_ID,
                 PROCESSED, UPDATED_AT, CREATED_AT
         };
 
         MatrixCursor cursor = new MatrixCursor(VISIT_COLUMNS);
         cursor.addRow(new Object[]{
-                "345678", "type", "0001", "234m234234",
+                "345678", "type", "1111-group", "0001", "234m234234",
                 "1567002594000", null, null, "asdasdasdasd",
                 "1", "1567002594000", "1567002594000"
         });

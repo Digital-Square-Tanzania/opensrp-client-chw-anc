@@ -208,7 +208,7 @@ public class VisitUtilsTest {
         visitDetail.setHumanReadable("2018-01-01");
         visitDetail.setPreProcessedJson("sed");
 
-        VisitUtils.saveVisitDetailsAsServiceRecord(visitDetail, "12345", new Date());
+        VisitUtils.saveVisitDetailsAsServiceRecord("",visitDetail, "12345", new Date());
         Mockito.verify(recurringServiceRecordRepository).add(Mockito.any(ServiceRecord.class));
     }
 

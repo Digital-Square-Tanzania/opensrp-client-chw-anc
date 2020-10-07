@@ -5,6 +5,7 @@ public interface Constants {
     int REQUEST_CODE_GET_JSON = 2244;
     int REQUEST_CODE_HOME_VISIT = 3344;
     String ENCOUNTER_TYPE = "encounter_type";
+    String HOME_VISIT_GROUP = "home_visit_group";
 
     interface JSON_FORM_EXTRA {
         String JSON = "json";
@@ -12,6 +13,8 @@ public interface Constants {
         String ENCOUNTER_TYPE = "encounter_type";
         String ENTITY_TYPE = "entity_id";
         String OPENSPR_ID = "opensrp_id";
+        String DELETE_EVENT_ID = "deleted_event_id";
+        String DELETE_FORM_SUBMISSION_ID = "deleted_form_submission_id";
     }
 
     interface EVENT_TYPE {
@@ -26,7 +29,7 @@ public interface Constants {
         String UPDATE_EVENT_CONDITION = "Update";
         String PREGNANCY_OUTCOME = "Pregnancy Outcome";
         String CHILD_REGISTRATION = "Child Registration";
-
+        String DELETE_EVENT = "Delete Event";
     }
 
     interface FORMS {

@@ -174,7 +174,6 @@ public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Inte
             visits.add(visit);
             VisitUtils.processVisits(visits, ancLibrary.visitRepository(), ancLibrary.visitDetailsRepository());
 
-
             Context context = AncLibrary.getInstance().context().applicationContext();
             context.startService(new Intent(context, VaccineIntentService.class));
             context.startService(new Intent(context, RecurringIntentService.class));

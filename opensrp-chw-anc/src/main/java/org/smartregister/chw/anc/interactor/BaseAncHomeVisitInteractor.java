@@ -49,16 +49,18 @@ import timber.log.Timber;
 public class BaseAncHomeVisitInteractor implements BaseAncHomeVisitContract.Interactor {
 
     protected AppExecutors appExecutors;
-    private AncLibrary ancLibrary = AncLibrary.getInstance();
-    private ECSyncHelper syncHelper = AncLibrary.getInstance().getEcSyncHelper();
+    private AncLibrary ancLibrary;
+    private ECSyncHelper syncHelper;
 
     @VisibleForTesting
-    public BaseAncHomeVisitInteractor(AppExecutors appExecutors) {
+    public BaseAncHomeVisitInteractor(AppExecutors appExecutors, AncLibrary ancLibrary, ECSyncHelper syncHelper) {
         this.appExecutors = appExecutors;
+        this.ancLibrary = ancLibrary;
+        this.syncHelper = syncHelper;
     }
 
     public BaseAncHomeVisitInteractor() {
-        this(new AppExecutors());
+        this(new AppExecutors(), AncLibrary.getInstance(), AncLibrary.getInstance().getEcSyncHelper());
     }
 
     @Override

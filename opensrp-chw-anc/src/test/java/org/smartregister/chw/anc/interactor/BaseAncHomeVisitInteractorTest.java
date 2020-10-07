@@ -8,10 +8,12 @@ import org.mockito.Mock;
 import org.mockito.Mockito;
 import org.mockito.MockitoAnnotations;
 import org.mockito.junit.MockitoJUnitRunner;
+import org.smartregister.chw.anc.AncLibrary;
 import org.smartregister.chw.anc.contract.BaseAncHomeVisitContract;
 import org.smartregister.chw.anc.domain.MemberObject;
 import org.smartregister.chw.anc.model.BaseAncHomeVisitAction;
 import org.smartregister.chw.anc.util.AppExecutors;
+import org.smartregister.sync.helper.ECSyncHelper;
 
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -25,11 +27,17 @@ public class BaseAncHomeVisitInteractorTest implements Executor {
     @Mock
     private BaseAncHomeVisitContract.InteractorCallBack interactorCallBack;
 
+    @Mock
+    private AncLibrary ancLibrary;
+
+    @Mock
+    private ECSyncHelper syncHelper;
+
     @Before
     public void setUp() {
         MockitoAnnotations.initMocks(this);
         AppExecutors appExecutors = new AppExecutors(this, this, this);
-        interactor = Mockito.spy(new BaseAncHomeVisitInteractor(appExecutors));
+        interactor = Mockito.spy(new BaseAncHomeVisitInteractor(appExecutors, ancLibrary, syncHelper));
     }
 
     @Override

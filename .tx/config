@@ -1,0 +1,14 @@
+[main]
+host = https://www.transifex.com
+
+[opensrp-client-chw-anc.strings-xml--master]
+file_filter = opensrp-chw-anc/src/main/res/values-<lang>/strings.xml
+source_file = opensrp-chw-anc/src/main/res/values/strings.xml
+source_lang = en
+type = ANDROID
+
+[opensrp-client-chw-anc-pnc.strings-xml--master]
+file_filter = opensrp-chw-pnc/src/main/res/values-<lang>/strings.xml
+source_file = opensrp-chw-pnc/src/main/res/values/strings.xml
+source_lang = en
+type = ANDROID

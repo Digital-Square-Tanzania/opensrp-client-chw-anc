@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">opensrp-chw-pnc</string>
+    <string name="pnc">Wateja waliojifungua</string>
+    <string name="pnc_visit">Tembeleo baada ya kujifungua</string>
+    <string name="pnc_day">Siku ya</string>
+    <string name="return_to_all_pnc_women">Rudi kwa wateja waliojifungua</string>
+    <string name="pnc_day_count">d</string>
+    <string name="pnc_last_visit_text">Tembeleo la mwisho {0}</string>
+    <string name="pnc_visit_done">Tembeleo la baada ya kujifungua siku ya {0}  limefanyika</string>
+</resources>

@@ -124,4 +124,9 @@
     <string name="high_pregnancy_risk">Hatari sana</string>
     <string name="call_community_responder">Piga simu kwa mtoa huduma ya usafiri wa dharura</string>
     <string name="community_responder">Usafiri wa dharura</string>
+    <string name="anc_yes">Ndiyo</string>
+    <string name="anc_no">Hapana</string>
+    <string name="basic_services_provided">Huduma za Msingi Zinazotolewa:%1$s</string>
+    <string name="cEmONC">CEmONC:%1$s</string>
+    <string name="facility_ownership">Umiliki: %1$s</string>
 </resources>

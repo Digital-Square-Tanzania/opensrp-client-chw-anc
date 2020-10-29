@@ -7,7 +7,6 @@ import org.joda.time.Period;
 import org.joda.time.format.DateTimeFormat;
 import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.commonregistry.CommonPersonObjectClient;
-import org.smartregister.domain.jsonmapping.Table;
 import org.smartregister.util.Utils;
 
 import java.io.Serializable;
@@ -38,9 +37,9 @@ public class MemberObject implements Serializable {
     protected int confirmedContacts = 0;
     protected String dateCreated;
     protected String hasAncCard;
+    protected String deliveryKit;
     protected String gps;
     protected String landmark;
-
 
     public MemberObject() {
     }
@@ -64,6 +63,7 @@ public class MemberObject implements Serializable {
         familyName = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.FAMILY_NAME, false);
         phoneNumber = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.PHONE_NUMBER, false);
         hasAncCard = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.HAS_ANC_CARD, false);
+        deliveryKit = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.DELIVERY_KIT, false);
         gps = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.GPS, false);
         landmark = Utils.getValue(pc.getColumnmaps(), DBConstants.KEY.LANDMARK, false);
 
@@ -309,5 +309,13 @@ public class MemberObject implements Serializable {
 
     public void setLandmark(String landmark) {
         this.landmark = landmark;
+    }
+
+    public String getDeliveryKit() {
+        return deliveryKit;
+    }
+
+    public void setDeliveryKit(String deliveryKit) {
+        this.deliveryKit = deliveryKit;
     }
 }

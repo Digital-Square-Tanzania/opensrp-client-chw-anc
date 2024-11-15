@@ -163,6 +163,7 @@ allprojects {
     repositories {
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         mavenLocal()
+        mavenCentral()
     }
 }
 
@@ -212,7 +213,7 @@ dependencies {
     implementation group: 'com.fatboyindustrial.gson-jodatime-serialisers', name: 'gson-jodatime-serialisers', version: '1.0.0'
 
     implementation 'com.google.guava:guava:24.1-jre'
-    implementation 'id.zelory:compressor:2.1.0'
+    implementation 'id.zelory:compressor:2.1.1'
 
     testImplementation 'org.mockito:mockito-core:3.1.0'
     androidTestImplementation 'org.mockito:mockito-android:3.0.0'

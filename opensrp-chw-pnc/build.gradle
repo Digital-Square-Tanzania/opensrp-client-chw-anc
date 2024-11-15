@@ -3,7 +3,8 @@ description = 'OpenSRP chw pnc client library'
 buildscript {
     repositories {
         google()
-        jcenter()
+        mavenCentral()
+        mavenLocal()
     }
     dependencies {
         classpath "com.android.tools.build:gradle:4.0.2"
@@ -215,7 +216,7 @@ dependencies {
     implementation group: 'com.fatboyindustrial.gson-jodatime-serialisers', name: 'gson-jodatime-serialisers', version: '1.0.0'
 
     implementation 'com.google.guava:guava:24.1-jre'
-    implementation 'id.zelory:compressor:2.1.0'
+    implementation 'id.zelory:compressor:2.1.1'
 
     testImplementation 'org.mockito:mockito-core:3.1.0'
     androidTestImplementation 'org.mockito:mockito-android:3.0.0'

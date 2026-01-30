@@ -2,7 +2,7 @@ package org.smartregister.chw.pnc.repository;
 
 import android.content.ContentValues;
 
-import net.sqlcipher.database.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import org.smartregister.chw.pnc.util.Constants;
 import org.smartregister.repository.BaseRepository;
@@ -27,4 +27,3 @@ public class PncCloseDateRepository extends BaseRepository {
     }
 
 }
-

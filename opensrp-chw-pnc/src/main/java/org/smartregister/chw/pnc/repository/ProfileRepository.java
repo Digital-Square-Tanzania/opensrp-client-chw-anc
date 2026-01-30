@@ -2,7 +2,7 @@ package org.smartregister.chw.pnc.repository;
 
 import android.database.Cursor;
 
-import net.sqlcipher.database.SQLiteDatabase;
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import org.smartregister.chw.anc.util.DBConstants;
 import org.smartregister.chw.pnc.util.Constants;
@@ -45,7 +45,7 @@ public class ProfileRepository extends BaseRepository {
         List<CommonPersonObjectClient> childMemberObjects = new ArrayList<>();
 
         SQLiteDatabase database = getReadableDatabase();
-        net.sqlcipher.Cursor cursor = null;
+        Cursor cursor = null;
         try {
             if (database == null) {
                 return null;
@@ -78,7 +78,7 @@ public class ProfileRepository extends BaseRepository {
 
         String delivery_date = null;
 
-        net.sqlcipher.Cursor cursor = null;
+        Cursor cursor = null;
         try {
             if (database == null) {
                 return null;
@@ -104,7 +104,7 @@ public class ProfileRepository extends BaseRepository {
 
         Long lastVisitDate = null;
 
-        net.sqlcipher.Cursor cursor = null;
+        Cursor cursor = null;
 
         try {
             if (database == null) {

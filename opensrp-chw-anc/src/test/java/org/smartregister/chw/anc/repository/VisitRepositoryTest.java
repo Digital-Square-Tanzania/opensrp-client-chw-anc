@@ -2,8 +2,9 @@ package org.smartregister.chw.anc.repository;
 
 import android.content.ContentValues;
 
-import net.sqlcipher.MatrixCursor;
-import net.sqlcipher.database.SQLiteDatabase;
+import android.database.MatrixCursor;
+
+import net.zetetic.database.sqlcipher.SQLiteDatabase;
 
 import org.junit.Assert;
 import org.junit.Before;

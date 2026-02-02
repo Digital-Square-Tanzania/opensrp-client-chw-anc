@@ -156,6 +156,13 @@ publishing {
     }
 }
 
+// Ensure the debug AAR exists before publishing the custom 'bar' publication
+afterEvaluate {
+    tasks.matching { it.name == "publishBarPublicationToGitHubPackagesRepository" }.configureEach {
+        dependsOn tasks.named("assembleDebug")
+    }
+}
+
 
 tasks.withType(Test) {
     jacoco.includeNoLocationClasses = true
@@ -166,7 +173,21 @@ allprojects {
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         mavenCentral()
         mavenLocal()
+
+        maven {
+
+            name = "GitHubPackages"
+
+            url = uri("https://maven.pkg.github.com/Digital-Square-Tanzania/opensrp-client-core")
+            credentials {
+                username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
+                password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
+            }
+
+        }
     }
+
+
 }
 
 dependencies {

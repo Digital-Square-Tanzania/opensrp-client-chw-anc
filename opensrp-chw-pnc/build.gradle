@@ -20,6 +20,13 @@ jacoco {
     toolVersion = "0.8.0"
 }
 
+// Load GitHub package credentials if present; keep empty map otherwise to avoid missing-property errors
+def githubProperties = new Properties()
+def githubPropsFile = rootProject.file("github.properties")
+if (githubPropsFile.exists()) {
+    githubProperties.load(new FileInputStream(githubPropsFile))
+}
+
 android {
     compileSdkVersion androidCompileSdkVersion
     buildToolsVersion androidBuildToolsVersion
@@ -86,6 +93,24 @@ allprojects {
         maven { url 'https://oss.sonatype.org/content/repositories/snapshots/' }
         mavenCentral()
         mavenLocal()
+
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Digital-Square-Tanzania/opensrp-client-core")
+            credentials {
+                username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
+                password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
+            }
+        }
+
+        maven {
+            name = "GitHubPackages"
+            url = uri("https://maven.pkg.github.com/Digital-Square-Tanzania/opensrp-client-chw-anc")
+            credentials {
+                username = githubProperties['gpr.usr'] ?: System.getenv("GPR_USER")
+                password = githubProperties['gpr.key'] ?: System.getenv("GPR_API_KEY")
+            }
+        }
     }
 }
 
@@ -125,7 +150,7 @@ dependencies {
         exclude group: 'com.android.support', module: 'appcompat-v7'
     }
 
-    implementation('org.smartregister:opensrp-client-chw-anc:2.0.0-SNAPSHOT@aar') {
+    implementation('org.smartregister:opensrp-client-chw-anc:2.0.0-MOH-SNAPSHOT@aar') {
         transitive = true
         exclude group: 'org.smartregister', module: 'opensrp-client-core'
         exclude group: 'com.android.support', module: 'appcompat-v7'
